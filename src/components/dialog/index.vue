@@ -1,0 +1,14 @@
+<template>
+  <fh-wrap class="dialog-layer" v-model:visible="visible">
+    <div class="dialog">
+      <div v-if="title" class="dialog__title">{{ title }}</div>
+      <div class="dialog__message">{{ message }}</div>
+      <div class="dialog__buttons">
+        <fh-button size="small" v-if="type !== DialogType.info" @click="cancel()">
+          {{ cancelText }}
+        </fh-button>
+        <fh-button size="small" @click="ok()">{{ okText }}</fh-button>
+      </div>
+    </div>
+  </fh-wrap>
+</template>
