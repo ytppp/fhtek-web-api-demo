@@ -63,7 +63,7 @@ const classes = computed(() => [
     'is-plain': props.type !== 'text' && props.plain,
   },
 ])
-const btnDisabled = computed(() => props.disabled || form.props.disabled)
+const btnDisabled = computed(() => props.disabled || form.props?.disabled)
 const processedSlots = computed(() => {
   const defaultSlots = slots.default?.() || []
   return defaultSlots.map((node) => insertSpace(node))

@@ -41,3 +41,10 @@ export function getIpAfter(ip) {
   const pattern = /\d{1,3}\.\d{1,3}\.\d{1,3}\./
   return ip.replace(pattern, '')
 }
+
+export function mergeOptions(opt1, opt2) {
+  return {
+    ...opt1,
+    ...opt2,
+  };
+}

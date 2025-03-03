@@ -5,6 +5,7 @@ import FhForm from './components/form/index.vue'
 import FhFormItem from './components/form-item/index.vue'
 import FhSwitch from './components/switch/index.vue'
 import FhSelect from './components/select/index.vue'
+import FhModal from './components/modal/index.vue'
 import clickoutside from './components/directives/clickoutside.js'
 
 const registerComponents = (app) => {
@@ -15,6 +16,7 @@ const registerComponents = (app) => {
   app.component('FhFormItem', FhFormItem)
   app.component('FhSwitch', FhSwitch)
   app.component('FhSelect', FhSelect)
+  app.component('FhModal', FhModal)
   app.directive('clickoutside', clickoutside)
 }
 
