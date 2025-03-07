@@ -6,7 +6,7 @@
   </button>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, useSlots, inject } from 'vue'
 const rxTwoCNChar = /^[\u4e00-\u9fa5]{2}$/
 const isTwoCNChar = rxTwoCNChar.test.bind(rxTwoCNChar)
@@ -58,7 +58,7 @@ const classes = computed(() => [
   `btn--${props.type}`,
   `btn--${props.size}`,
   {
-    'is-disabled': props.btnDisabled,
+    'is-disabled': btnDisabled.value,
     'is-block': props.block,
     'is-plain': props.type !== 'text' && props.plain,
   },

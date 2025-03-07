@@ -1,7 +1,7 @@
 <template>
   <transition name="wrap">
-    <teleport to="body" :disabled="isAppendBody === false">
-      <div ref="teleportEle" class="wrap" v-show="model">
+    <teleport to="body" :disabled="!isAppendBody">
+      <div v-bind="attrs" ref="wrapRef" class="wrap" v-show="model">
         <div class="wrap__mask" :style="wrapStyleObj" @click="close" @touchstart="close"></div>
         <slot></slot>
       </div>
@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, useAttrs, onMounted } from 'vue'
 
 defineOptions({
   name: 'FhWrap',
@@ -34,8 +34,9 @@ const model = defineModel('visible', {
   type: Boolean,
   default: false,
 })
+const attrs = useAttrs()
 const overflow = ref('')
-const teleportEle = ref(null)
+const wrapRef = ref(null)
 
 const wrapStyleObj = computed(() => {
   return {
@@ -46,7 +47,7 @@ const parentNode = computed(() => {
   if (props.isAppendBody) {
     return document.body
   } else {
-    return teleportEle.value.parentNode
+    return wrapRef.value.parentNode
   }
 })
 
@@ -55,7 +56,7 @@ watch(
   (val) => {
     model.value = val
     if (model.value) {
-      teleportEle.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
+      wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
       // desktop prevent scroll
       overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
       parentNode.value.style.overflow = 'hidden'
@@ -68,6 +69,12 @@ watch(
   },
 )
 
+onMounted(() => {
+  if (model.value) {
+    wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
+  }
+})
+
 const preventDefault = (e) => {
   e.preventDefault()
 }
@@ -77,4 +84,9 @@ const close = () => {
   }
   model.value = false
 }
+
+defineExpose({
+  parentNode,
+  wrapRef,
+})
 </script>

@@ -46,5 +46,56 @@ export function mergeOptions(opt1, opt2) {
   return {
     ...opt1,
     ...opt2,
-  };
+  }
+}
+
+// 对象数组中是否存在某个值
+export function isObjArrHasVal(arr, val, childNodeName = 'children', keyName = 'url') {
+  return arr.some((item) => {
+    if (item[childNodeName]) {
+      return isObjArrHasVal(item[childNodeName], val, childNodeName, keyName)
+    } else {
+      return item[keyName] === val
+    }
+  })
+}
+
+export function isMobileDevice(width = 768) {
+  // let isMobileUserAgent = false;
+  // const userAgent = navigator.userAgent;
+  // const mobileKeywords = [
+  //   "Android",
+  //   "webOS",
+  //   "iPhone",
+  //   "iPad",
+  //   "iPod",
+  //   "BlackBerry",
+  //   "Windows Phone"
+  // ];
+  // const isTouchSupported = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  // const isMobileScreen = document.body.clientWidth <= width;
+  // for (const keyword of mobileKeywords) {
+  //   if (userAgent.includes(keyword)) {
+  //     isMobileUserAgent = true;
+  //     break;
+  //   }
+  // }
+
+  // return isMobileUserAgent || isTouchSupported || isMobileScreen;
+  return document.body.clientWidth <= width
+}
+
+export function setFavicon(favicon) {
+  const link = document.createElement('link')
+  link.rel = 'icon'
+  link.href = favicon
+  const head = document.getElementsByTagName('head')[0]
+  const existingLink = head.querySelector("link[rel*='icon']")
+  if (existingLink) {
+    head.removeChild(existingLink)
+  }
+  head.appendChild(link)
+}
+export function setDocTitle(title) {
+  document.title = title
 }

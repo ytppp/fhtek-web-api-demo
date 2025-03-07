@@ -1,5 +1,9 @@
 <template>
-  <fh-wrap v-model:visible="model" :close-on-click-wrap="closeOnClickWrap">
+  <fh-wrap
+    v-model:visible="model"
+    :close-on-click-wrap="closeOnClickWrap"
+    :is-append-body="isAppendBody"
+  >
     <div
       class="modal"
       :style="{ width: fullscreen ? '100%' : width, height: fullscreen ? '100%' : 'auto' }"
@@ -54,6 +58,10 @@ const props = defineProps({
     default: () => ({}),
   },
   closeOnClickWrap: {
+    type: Boolean,
+    default: true,
+  },
+  isAppendBody: {
     type: Boolean,
     default: true,
   },

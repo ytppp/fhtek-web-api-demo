@@ -17,7 +17,7 @@
         :for="labelFor"
         :class="`form-item__label--${labelPositionCom}`"
         :style="labelStyle"
-        v-if="label || $slots.label"
+        v-if="label || slots.label"
       >
         <slot name="label">{{ label }}</slot>
       </label>
@@ -28,14 +28,14 @@
     <transition name="el-zoom-in-top">
       <div v-if="error" class="form-item__error">{{ validateMessage }}</div>
     </transition>
-    <div class="form-item__extra" :style="contentStyle" v-if="$slots.extra">
+    <div class="form-item__extra" :style="contentStyle" v-if="slots.extra">
       <slot name="extra"></slot>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, getCurrentInstance, provide } from 'vue'
+import { ref, computed, getCurrentInstance, provide, inject, useSlots } from 'vue'
 import LabelWrap from './label-wrap.vue'
 
 defineOptions({
@@ -67,13 +67,13 @@ const props = defineProps({
     type: String,
   },
 })
+const slots = useSlots()
 const validateMessage = ref('')
 const computedLabelWidth = ref('')
 const validators = ref([])
 const result = ref(null) // null表示没有进行校验，true通过，false未通过
+const parent = inject('form')
 const instance = getCurrentInstance()
-const parent = instance.parent
-
 provide('formItem', instance)
 
 const labelWidthCom = computed(() => {
@@ -83,7 +83,7 @@ const labelPositionCom = computed(() => {
   return props.labelPosition || parent.props.labelPosition
 })
 const labelStyle = computed(() => {
-  let ret = {}
+  const ret = {}
   if (labelPositionCom.value === 'top') return ret
   if (labelWidthCom.value) {
     ret.width = labelWidthCom.value
@@ -91,7 +91,7 @@ const labelStyle = computed(() => {
   return ret
 })
 const contentStyle = computed(() => {
-  let ret = {}
+  const ret = {}
   if (labelPositionCom.value === 'top') return ret
   if (!props.label && !props.labelWidth) return ret
   if (labelWidthCom.value === 'auto') {

@@ -1,5 +1,5 @@
 <template>
-  <div class="select" @click="open" v-clickoutside="close" ref="selectCom">
+  <div class="select" @click="open" v-clickoutside="close" ref="selectRef">
     <fh-input
       readonly
       :disabled="selectDisabled"
@@ -9,7 +9,7 @@
       @blur="inputBlurHandler"
       @focus="inputFocusHandler"
     >
-      <template slot="prefix" v-if="slots.prefix()">
+      <template v-slot:prefix v-if="slots.prefix">
         <slot name="prefix"></slot>
       </template>
       <template #suffix>
@@ -46,17 +46,7 @@
 </template>
 
 <script setup>
-import {
-  computed,
-  inject,
-  watch,
-  nextTick,
-  getCurrentInstance,
-  reactive,
-  ref,
-  onMounted,
-  useSlots,
-} from 'vue'
+import { computed, inject, watch, nextTick, reactive, ref, onMounted, useSlots } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { scrollTo } from '@/util/tool'
 
@@ -90,20 +80,15 @@ const emit = defineEmits(['focus', 'blur', 'change', 'input'])
 
 const { t } = useI18n()
 const slots = useSlots()
-const instance = getCurrentInstance()
-const parent = instance.parent
 const selected = reactive({
   value: '',
   text: '',
 })
 const opened = ref(false)
-const selectCom = ref(null)
+const selectRef = ref(null)
 
-const iconClass = computed(() => {
-  return opened.value ? 'is-reverse' : ''
-})
 const currentLabel = computed(() => {
-  return props.label || parent.props.label || ''
+  return props.label || formItem.props.label || ''
 })
 const selectPlaceholder = computed(() => {
   return typeof props.placeholder !== 'undefined' ? props.placeholder : t('trans0001')
@@ -122,7 +107,7 @@ const setSelected = () => {
 }
 const scrollToSelect = () => {
   nextTick(() => {
-    const popupEl = selectCom.value.querySelector('.select__popup')
+    const popupEl = selectRef.value.querySelector('.select__popup')
     const selectEl = popupEl.querySelector('li.is-selected')
     if (selectEl) {
       const popupHeight = popupEl.clientHeight
@@ -179,3 +164,20 @@ onMounted(() => {
   setSelected()
 })
 </script>
+
+<style lang="less">
+.select-enter-active,
+.select-leave-active {
+  opacity: 1;
+  transform: scaleY(1);
+  transition:
+    transform 300ms cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  transform-origin: center top;
+}
+.select-enter,
+.select-leave-active {
+  opacity: 0;
+  transform: scaleY(0);
+}
+</style>

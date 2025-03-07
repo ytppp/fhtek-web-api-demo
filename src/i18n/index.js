@@ -25,14 +25,14 @@ const registerComponents = (app) => {
   app.use(i18n)
 }
 
-// export function changeLanguage(lang) {
-//   if (!VITE_CUSTOMER_CONFIG.languages.includes(lang)) {
-//     console.log('language not exist!')
-//   } else {
-//     localStorage.setItem('lang', lang)
-//     window.location.reload()
-//   }
-// }
+export function changeLanguage(lang) {
+  if (!VITE_CUSTOMER_CONFIG.languages.includes(lang)) {
+    console.log('language not exist!')
+  } else {
+    localStorage.setItem('lang', lang)
+    window.location.reload()
+  }
+}
 
 // export function translate(key, locale) {
 //   return i18n.t(key, locale || i18n.locale)
