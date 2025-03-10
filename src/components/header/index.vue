@@ -8,13 +8,7 @@
   >
     <div class="header__center-wrap">
       <div class="logo">
-        <!-- :src="logoSrc" -->
-        <img
-          class="logo__img"
-          v-show="isNoAuthPage || !isMobile"
-          src="@/customer-conf/fhtek/assets/images/logo.png"
-          alt=""
-        />
+        <img class="logo__img" v-show="isNoAuthPage || !isMobile" :src="logoSrc" alt="" />
         <span class="logo__title" v-show="(isNoAuthPage || !isMobile) && title">{{ title }}</span>
         <fh-icon
           class="logo__drawer-toggle"
@@ -81,6 +75,7 @@
 </template>
 
 <script>
+import { getUrl } from '@/util/tool'
 import FhDialog from '@/components/dialog/index.js'
 import { changeLanguage } from '@/i18n'
 
@@ -147,7 +142,7 @@ export default {
       Languages: LanguagesArr.filter((l) => l.show),
       current: null,
       navVisible: true,
-      logoSrc: VITE_CUSTOMER_CONFIG.logo,
+      logoSrc: getUrl(VITE_CUSTOMER_CONFIG.logo),
       activeMenuText: '',
     }
   },

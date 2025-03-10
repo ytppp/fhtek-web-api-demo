@@ -1,3 +1,13 @@
+export const specialChar = '!#$*+-.=?@_~'
+
+String.prototype.format = function (...args) {
+  let _this = this
+  args.forEach((val) => {
+    _this = _this.replace(/%[abcdefghnostx]/, val)
+  })
+  return _this
+}
+
 function formatLang(lang) {
   let langFormated = {
     zh: 'zh-CN',
@@ -98,4 +108,10 @@ export function setFavicon(favicon) {
 }
 export function setDocTitle(title) {
   document.title = title
+}
+
+export function getUrl(url) {
+  const newUrl = new URL(url, import.meta.url).href
+  console.log(newUrl)
+  return newUrl
 }

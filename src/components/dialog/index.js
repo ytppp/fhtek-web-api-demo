@@ -21,7 +21,6 @@ const DefaultOpt = {
 const dialog = (options, type = DialogType.info) => {
   const opt = mergeOptions(DefaultOpt[type], options)
   return new Promise((resolve, reject) => {
-
     const dialogCommInstance = h(DialogComm, {
       ...opt,
       onOk: () => {

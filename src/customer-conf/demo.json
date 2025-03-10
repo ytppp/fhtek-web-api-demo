@@ -1,0 +1,8 @@
+{
+  "name": "demo",
+  "title": "Demo",
+  "languages": ["zh-CN", "en-US"],
+  "defaultLanguage": "en-US",
+  "favicon": "@/assets/customer-conf/demo/images/favicon.png",
+  "logo": "@/assets/customer-conf/demo/images/logo.png"
+}

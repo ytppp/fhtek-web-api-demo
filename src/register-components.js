@@ -11,6 +11,8 @@ import FhHeader from './components/header/index.vue'
 import FhFooter from './components/footer/index.vue'
 import FhMenu from './components/menu/index.vue'
 import FhDrawer from './components/drawer/index.vue'
+import FhAlert from './components/alert/index.vue'
+
 import clickoutside from './components/directives/clickoutside.js'
 
 // Dialog 等组件需要手动导入
@@ -28,6 +30,7 @@ const registerComponents = (app) => {
   app.component('FhFooter', FhFooter)
   app.component('FhDrawer', FhDrawer)
   app.component('FhMenu', FhMenu)
+  app.component('FhAlert', FhAlert)
   app.directive('clickoutside', clickoutside)
 }
 

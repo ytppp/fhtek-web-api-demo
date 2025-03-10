@@ -1,5 +1,5 @@
 <template>
-  <fh-wrap v-model:visible="model">
+  <fh-wrap v-model:visible="visible">
     <div class="dialog">
       <div v-if="title" class="dialog__title">{{ title }}</div>
       <div class="dialog__message">{{ message }}</div>
@@ -45,14 +45,14 @@ const props = defineProps({
   },
 })
 const emits = defineEmits(['ok', 'cancel'])
-const model = ref(true)
+const visible = ref(true)
 
 const ok = () => {
-  model.value = false
+  visible.value = false
   emits('ok')
 }
 const cancel = () => {
-  model.value = false
+  visible.value = false
   emits('cancel')
 }
 </script>

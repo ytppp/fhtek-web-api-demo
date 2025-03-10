@@ -7,19 +7,20 @@ fhtek web pages, each router is in a directory.
 ### for dev
 
 - install dependencies manually in each folder
-- make dev CUSTOMER_ID=xxxx MODEL_ID=xxxx
-  - CUSTOMER_ID should be oneof (0001 0002 0003 0004 0005 0006 0007 0014)
-  - MODEL_ID should be oneof (M2R2 M6R0 M7R0 M8R0)
+- make dev CUSTOMER_ID=xxxx
+  - CUSTOMER_ID should be oneof (demo fhtek)
 
 ### for prd
 
 - make CUSTOMER_ID=xxxx MODEL_ID=xxxx
-  - CUSTOMER_ID should be oneof (0001 0002 0003 0004 0005 0006 0007 0014)
-  - MODEL_ID should be oneof (M2R2 M6R0 M7R0 M8R0)
+  - CUSTOMER_ID should be oneof (demo fhtek)
 
 ### for test
 
 todo
+
+
+
 
 ## Recommended IDE Setup
 

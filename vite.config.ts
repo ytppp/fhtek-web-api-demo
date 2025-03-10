@@ -15,7 +15,8 @@ if (process.env.CUSTOMER_ID) {
 
 // https://vite.dev/config/
 export default defineConfig(async () => {
-  const module = await import(`./src/customer-conf/${CUSTOMER_ID}/conf.json`)
+  const module = await import(`./src/customer-conf/${CUSTOMER_ID}.json`)
+  console.log(module.default.favicon)
   return {
     plugins: [vue(), vueJsx, vueDevTools()],
     resolve: {
@@ -31,7 +32,7 @@ export default defineConfig(async () => {
         less: {
           math: 'always',
           javascriptEnabled: true,
-          additionalData: `@import "${path.resolve(__dirname, `src/customer-conf/${CUSTOMER_ID}/assets/style/variables.less`)}";`,
+          additionalData: `@import "${path.resolve(__dirname, `src/assets/customer-conf/${CUSTOMER_ID}/style/variables.less`)}";`,
         },
       },
     },
