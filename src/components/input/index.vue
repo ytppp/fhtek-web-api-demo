@@ -64,6 +64,7 @@
             v-if="showPwdVisible"
             class="input__icon input__clear"
             :name="passwordVisible ? 'icon-eye' : 'icon-eye-close'"
+            @mousedown.prevent
             @click="handlePasswordVisible"
           ></fh-icon>
           <span v-if="isWordLimitVisible" class="input__count">
@@ -156,7 +157,7 @@ const passwordVisible = ref(false)
 const emit = defineEmits(['focus', 'blur', 'change', 'input', 'clear'])
 
 const inputDisabled = computed(() => {
-  return props.disabled || form.props.disabled
+  return props.disabled || form.disabled
 })
 
 const isWordLimitVisible = computed(() => {
@@ -210,17 +211,17 @@ const handleInput = (event) => {
 const handleFocus = (event) => {
   focused.value = true
   emit('focus', event)
-  formItem.exposed.clearValidate()
+  formItem.clearValidate()
 }
 const handleBlur = (event) => {
   focused.value = false
   emit('blur', event)
-  formItem.exposed.validate()
+  formItem.validate()
 }
 const handleChange = (event) => {
   model.value = event.target.value
   emit('change', model.value)
-  formItem.exposed.clearValidate()
+  formItem.clearValidate()
 }
 const clear = (event) => {
   model.value = ''

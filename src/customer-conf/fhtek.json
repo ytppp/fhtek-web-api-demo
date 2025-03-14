@@ -3,6 +3,6 @@
   "title": "Fhtek",
   "languages": ["zh-CN", "en-US"],
   "defaultLanguage": "en-US",
-  "favicon": "../assets/customer-conf/fhtek/images/favicon.ico",
-  "logo": "../assets/customer-conf/fhtek/images/logo.png"
+  "favicon": "/images/customer-conf/fhtek/favicon.ico",
+  "logo": "/images/customer-conf/fhtek/logo.png"
 }

@@ -9,7 +9,7 @@
     <div class="header__center-wrap">
       <div class="logo">
         <img class="logo__img" v-show="isNoAuthPage || !isMobile" :src="logoSrc" alt="" />
-        <span class="logo__title" v-show="(isNoAuthPage || !isMobile) && title">{{ title }}</span>
+        <!-- <span class="logo__title" v-show="(isNoAuthPage || !isMobile) && title">{{ title }}</span> -->
         <fh-icon
           class="logo__drawer-toggle"
           :name="`icon-${drawer ? 'close' : 'menu'}`"
@@ -75,9 +75,10 @@
 </template>
 
 <script>
-import { getUrl } from '@/util/tool'
+import { getPublicFile } from '@/util/tool'
 import FhDialog from '@/components/dialog/index.js'
 import { changeLanguage } from '@/i18n'
+import { logout } from '@/http/api'
 
 const LanguagesArr = [
   {
@@ -142,7 +143,7 @@ export default {
       Languages: LanguagesArr.filter((l) => l.show),
       current: null,
       navVisible: true,
-      logoSrc: getUrl(VITE_CUSTOMER_CONFIG.logo),
+      logoSrc: getPublicFile(VITE_CUSTOMER_CONFIG.logo),
       activeMenuText: '',
     }
   },
@@ -207,9 +208,14 @@ export default {
         message: this.$t('trans0021'),
       })
         .then(() => {
-          // localStorage.removeItem('username')
-          // window.location.href = '/cgi-bin/logout.cgi'
-          console.log('111')
+          logout()
+            .then(() => {
+              sessionStorage.removeItem('token')
+              this.$router.push('/login')
+            })
+            .catch((error) => {
+              console.log('POST 请求失败:', error)
+            })
         })
         .catch(() => {
           console.log('222')
@@ -220,7 +226,7 @@ export default {
     },
   },
   mounted() {
-    if (this.$refs.headerMenu) {
+    if (this.$refs.headerMenu?.activeMenu) {
       this.activeMenuText = this.$refs.headerMenu.activeMenu.text
     }
     this.$i18n.locale = this.language.value
@@ -231,3 +237,4 @@ export default {
   },
 }
 </script>
+@/http/v1.index.js

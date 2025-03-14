@@ -6,11 +6,7 @@
     <div class="page__content">
       <fh-form :model="form" :rules="rules" class="form">
         <fh-form-item :label="$t('trans0415')" prop="ip">
-          <fh-input v-model="form.ip" clearable>
-            <template #prefix>
-              <fh-icon name="icon-user" class="input__icon"></fh-icon>
-            </template>
-          </fh-input>
+          <fh-input v-model="form.ip" clearable> </fh-input>
           <template #extra>
             {{ $t('trans0644') }}
           </template>
@@ -46,8 +42,8 @@
 <script setup>
 import { reactive, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import axios from 'axios'
 import { getIpBefore, getIpAfter } from '@/util/tool'
+import { getLan, setLan } from '@/http/api'
 
 const { t } = useI18n()
 const Leases = {
@@ -110,46 +106,43 @@ const isEnable = computed(() => {
 })
 
 async function fetchData() {
-  // try {
-  //   const response = await axios.get('/action/GetLanIp')
-  //   console.log(response.data.data)
-  //   const { enable, ip, mask, ip_start, ip_offset, lease } = response.data.data
-  //   Object.assign(form, {
-  //     enable,
-  //     ip,
-  //     mask,
-  //     ip_start,
-  //     ip_end: `${getIpBefore(ip_start)}${Number(getIpAfter(ip_start)) + Number(ip_offset) - 1}`,
-  //     lease: Number(lease),
-  //   })
-  // } catch (error) {
-  //   console.log('获取数据失败:', error)
-  // }
+  getLan()
+    .then(({ data }) => {
+      const { enable, ip, mask, ip_start, ip_offset, lease } = data
+      Object.assign(form, {
+        enable,
+        ip,
+        mask,
+        ip_start,
+        ip_end: `${getIpBefore(ip_start)}${Number(getIpAfter(ip_start)) + Number(ip_offset) - 1}`,
+        lease: Number(lease),
+      })
+    })
+    .catch(() => {
+      console.log('获取数据失败:', error)
+    })
 }
 
 const ipStartChange = () => {}
 const save = () => {
-  // const data = {
-  //   enable: form.enable,
-  //   ip: form.ip,
-  //   mask: form.mask,
-  //   ip_start: form.ip_start,
-  //   ip_offset: ipOffset.value,
-  //   lease: form.lease,
-  // }
-  // axios
-  //   .post('/action/SetLanIp', {
-  //     data,
-  //   })
-  //   .then((response) => {
-  //     console.log(response.data)
-  //   })
-  //   .catch((error) => {
-  //     console.log('POST 请求失败:', error)
-  //   })
+  setLan({
+    enable: form.enable,
+    ip: form.ip,
+    mask: form.mask,
+    ip_start: form.ip_start,
+    ip_offset: ipOffset.value,
+    lease: form.lease,
+  })
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((error) => {
+      console.log('POST 请求失败:', error)
+    })
 }
 
 fetchData()
 </script>
 
 <style lang="less"></style>
+@/http/v1.index.js

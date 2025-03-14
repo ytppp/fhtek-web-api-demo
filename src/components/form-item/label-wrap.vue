@@ -1,25 +1,4 @@
 <script>
-// setup
-// import { ref, watch, inject } from 'vue'
-
-// const props = defineProps({
-//   isAutoWidth: Boolean,
-//   updateAll: Boolean,
-// })
-
-// const computedWidth = ref(0)
-// const form = inject('form')
-// const formItem = inject('formItem')
-
-// watch(computedWidth, (val, oldVal) => {
-//   if (props.updateAll) {
-//     form.value.registerLabelWidth(val, oldVal)
-//     formItem.value.updateComputedLabelWidth(val)
-//   }
-// })
-
-// return
-
 import { h } from 'vue'
 
 export default {
@@ -39,8 +18,8 @@ export default {
   watch: {
     computedWidth(val, oldVal) {
       if (this.updateAll) {
-        this.form.exposed.registerLabelWidth(val, oldVal)
-        this.formItem.exposed.updateComputedLabelWidth(val)
+        this.form.registerLabelWidth(val, oldVal)
+        this.formItem.updateComputedLabelWidth(val)
       }
     },
   },
@@ -58,7 +37,7 @@ export default {
         if (action === 'update') {
           this.computedWidth = this.getLabelWidth()
         } else if (action === 'remove') {
-          this.form.exposed.deregisterLabelWidth(this.computedWidth)
+          this.form.deregisterLabelWidth(this.computedWidth)
         }
       }
     },
@@ -67,7 +46,7 @@ export default {
     const slots = this.$slots.default()
     if (!slots) return null
     if (this.isAutoWidth) {
-      const autoLabelWidth = this.form.exposed.autoLabelWidth.value
+      const autoLabelWidth = this.form.autoLabelWidth.value
       const style = {}
       if (autoLabelWidth && autoLabelWidth !== 'auto') {
         const margin = parseInt(autoLabelWidth, 10) - this.computedWidth
@@ -99,7 +78,7 @@ export default {
   updated() {
     this.updateLabelWidth('update')
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.updateLabelWidth('remove')
   },
 }

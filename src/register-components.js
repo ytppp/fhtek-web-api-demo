@@ -12,6 +12,7 @@ import FhFooter from './components/footer/index.vue'
 import FhMenu from './components/menu/index.vue'
 import FhDrawer from './components/drawer/index.vue'
 import FhAlert from './components/alert/index.vue'
+import FhUpload from './components/upload/index.vue'
 
 import clickoutside from './components/directives/clickoutside.js'
 
@@ -31,6 +32,7 @@ const registerComponents = (app) => {
   app.component('FhDrawer', FhDrawer)
   app.component('FhMenu', FhMenu)
   app.component('FhAlert', FhAlert)
+  app.component('FhUpload', FhUpload)
   app.directive('clickoutside', clickoutside)
 }
 

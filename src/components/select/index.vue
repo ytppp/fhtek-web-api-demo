@@ -88,13 +88,13 @@ const opened = ref(false)
 const selectRef = ref(null)
 
 const currentLabel = computed(() => {
-  return props.label || formItem.props.label || ''
+  return props.label || formItem.label || ''
 })
 const selectPlaceholder = computed(() => {
   return typeof props.placeholder !== 'undefined' ? props.placeholder : t('trans0001')
 })
 const selectDisabled = computed(() => {
-  return props.disabled || form.props.disabled
+  return props.disabled || form.disabled
 })
 
 const setSelected = () => {

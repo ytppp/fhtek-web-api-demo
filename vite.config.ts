@@ -32,7 +32,7 @@ export default defineConfig(async () => {
         less: {
           math: 'always',
           javascriptEnabled: true,
-          additionalData: `@import "${path.resolve(__dirname, `src/assets/customer-conf/${CUSTOMER_ID}/style/variables.less`)}";`,
+          additionalData: `@import "${path.resolve(__dirname, `src/assets/style/customer-conf/${CUSTOMER_ID}/variables.less`)}";`,
         },
       },
     },
@@ -42,6 +42,23 @@ export default defineConfig(async () => {
           target: 'http://192.168.1.1',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/action/, '/action'),
+          followRedirects: true
+          // configure: (proxy, options) => {
+          //   proxy.on('proxyRes', (proxyRes, req, res) => {
+          //     console.log('123123')
+          //     // console.log('res', res)
+          //     // if (req.headers.cookie) {
+          //     //   proxyReq.setHeader('Cookie', req.headers.cookie)
+          //     // }
+          //     proxyRes.headers['Connection'] = 'keep-alive'
+          //   })
+          // },
+
+          // onProxyRes: (proxyRes, req, res) => {
+          //   // 在这里可以修改响应头
+          //   console.log('123')
+          //   proxyRes.headers['Connection'] = 'keep-alive'
+          // },
         },
       },
     },
