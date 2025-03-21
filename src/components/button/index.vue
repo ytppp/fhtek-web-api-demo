@@ -6,7 +6,7 @@
   </button>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, useSlots, inject } from 'vue'
 const rxTwoCNChar = /^[\u4e00-\u9fa5]{2}$/
 const isTwoCNChar = rxTwoCNChar.test.bind(rxTwoCNChar)
@@ -52,18 +52,22 @@ const props = defineProps({
 })
 const emit = defineEmits(['click'])
 const slots = useSlots()
-const form = inject('form', {})
+const form = inject('form', null)
 const classes = computed(() => [
   'btn',
   `btn--${props.type}`,
   `btn--${props.size}`,
   {
-    'is-disabled': props.btnDisabled,
+    'is-disabled': btnDisabled.value,
     'is-block': props.block,
     'is-plain': props.type !== 'text' && props.plain,
   },
 ])
-const btnDisabled = computed(() => props.disabled || form.props.disabled)
+
+const btnDisabled = computed(() => {
+  return props.disabled || form?.disabled.value
+})
+
 const processedSlots = computed(() => {
   const defaultSlots = slots.default?.() || []
   return defaultSlots.map((node) => insertSpace(node))

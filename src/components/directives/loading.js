@@ -1,0 +1,51 @@
+import { h } from 'vue'
+import FhLoading from '@/components/loading/index.vue'
+import { usePopup } from '@/hooks/popup'
+import Popup from '@/components/popup/index.vue'
+
+let position = ''
+let instance = null
+function appendNode(el) {
+  if (instance) {
+    instance.show()
+  }
+  position = el.style.position
+  el.style.position = 'relative'
+}
+function removeNode(el) {
+  if (instance) {
+    instance.close()
+    // instance = null
+  }
+  el.style.position = position
+}
+
+export default {
+  created(el, bing) {
+    const tip = el.getAttribute('loading-tip')
+    const title = el.getAttribute('loading-title')
+    instance = usePopup(
+      h(
+        Popup,
+        {
+          isAppendBody: false,
+          isManual: true,
+        },
+        () =>
+          h(FhLoading, {
+            tip: tip || '',
+            title: title || '',
+          }),
+      ),
+      el,
+    )
+    if (bing.value) {
+      appendNode(el)
+    }
+  },
+  updated(el, bing) {
+    if (bing.value !== bing.oldValue) {
+      bing.value ? appendNode(el) : removeNode(el)
+    }
+  },
+}

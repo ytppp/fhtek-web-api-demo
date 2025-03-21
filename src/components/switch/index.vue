@@ -59,7 +59,7 @@ const checked = computed(() => {
   return model.value === props.activeValue
 })
 const switchDisabled = computed(() => {
-  return props.disabled || form.props.disabled
+  return props.disabled || form?.disabled.value
 })
 
 const handleChange = () => {

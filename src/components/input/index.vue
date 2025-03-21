@@ -31,7 +31,7 @@
         :autocomplete="autocomplete"
         :placeholder="placeholder"
         :name="name"
-        :aria-label="inputDisabled"
+        :aria-label="currentLabel"
         ref="input"
         @compositionstart="handleCompositionStart"
         @compositionupdate="handleCompositionUpdate"
@@ -64,6 +64,7 @@
             v-if="showPwdVisible"
             class="input__icon input__clear"
             :name="passwordVisible ? 'icon-eye' : 'icon-eye-close'"
+            @mousedown.prevent
             @click="handlePasswordVisible"
           ></fh-icon>
           <span v-if="isWordLimitVisible" class="input__count">
@@ -153,12 +154,14 @@ const hovering = ref(false)
 const focused = ref(false)
 const isComposing = ref(false)
 const passwordVisible = ref(false)
-const emit = defineEmits(['focus', 'blur', 'change', 'input', 'clear'])
+const emits = defineEmits(['focus', 'blur', 'change', 'input', 'clear'])
 
 const inputDisabled = computed(() => {
-  return props.disabled || form.props.disabled
+  return props.disabled || form?.disabled.value
 })
-
+const currentLabel = computed(() => {
+  return props.label || formItem.label.value || ''
+})
 const isWordLimitVisible = computed(() => {
   return (
     props.showWordLimit &&
@@ -205,26 +208,26 @@ const handleCompositionEnd = (event) => {
 const handleInput = (event) => {
   if (isComposing.value) return
   model.value = event.target.value
-  emit('input', model.value)
+  emits('input', model.value)
 }
 const handleFocus = (event) => {
   focused.value = true
-  emit('focus', event)
-  formItem.exposed.clearValidate()
+  emits('focus', event)
+  formItem.clearValidate()
 }
 const handleBlur = (event) => {
   focused.value = false
-  emit('blur', event)
-  formItem.exposed.validate()
+  emits('blur', event)
+  formItem.validate()
 }
 const handleChange = (event) => {
   model.value = event.target.value
-  emit('change', model.value)
-  formItem.exposed.clearValidate()
+  emits('change', model.value)
+  formItem.clearValidate()
 }
 const clear = (event) => {
   model.value = ''
-  emit('clear', event)
+  emits('clear', event)
 }
 const handlePasswordVisible = () => {
   passwordVisible.value = !passwordVisible.value

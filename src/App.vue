@@ -1,3 +1,5 @@
 <template>
-  <RouterView />
+  <fh-layout>
+    <RouterView />
+  </fh-layout>
 </template>

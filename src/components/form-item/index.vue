@@ -17,7 +17,7 @@
         :for="labelFor"
         :class="`form-item__label--${labelPositionCom}`"
         :style="labelStyle"
-        v-if="label || $slots.label"
+        v-if="label || slots.label"
       >
         <slot name="label">{{ label }}</slot>
       </label>
@@ -25,17 +25,17 @@
     <div class="form-item__content" :style="contentStyle">
       <slot></slot>
     </div>
-    <transition name="el-zoom-in-top">
+    <transition name="form-item-error">
       <div v-if="error" class="form-item__error">{{ validateMessage }}</div>
     </transition>
-    <div class="form-item__extra" :style="contentStyle" v-if="$slots.extra">
+    <div class="form-item__extra" :style="contentStyle" v-if="slots.extra">
       <slot name="extra"></slot>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, getCurrentInstance, provide } from 'vue'
+import { ref, computed, provide, inject, useSlots } from 'vue'
 import LabelWrap from './label-wrap.vue'
 
 defineOptions({
@@ -67,23 +67,22 @@ const props = defineProps({
     type: String,
   },
 })
+const slots = useSlots()
 const validateMessage = ref('')
 const computedLabelWidth = ref('')
 const validators = ref([])
 const result = ref(null) // null表示没有进行校验，true通过，false未通过
-const instance = getCurrentInstance()
-const parent = instance.parent
-
-provide('formItem', instance)
+const parent = inject('form', {})
+const registerFormItem = inject('registerFormItem')
 
 const labelWidthCom = computed(() => {
-  return props.labelWidth || parent.props.labelWidth
+  return props.labelWidth || parent.labelWidth.value
 })
 const labelPositionCom = computed(() => {
-  return props.labelPosition || parent.props.labelPosition
+  return props.labelPosition || parent.labelPosition.value
 })
 const labelStyle = computed(() => {
-  let ret = {}
+  const ret = {}
   if (labelPositionCom.value === 'top') return ret
   if (labelWidthCom.value) {
     ret.width = labelWidthCom.value
@@ -91,15 +90,15 @@ const labelStyle = computed(() => {
   return ret
 })
 const contentStyle = computed(() => {
-  let ret = {}
+  const ret = {}
   if (labelPositionCom.value === 'top') return ret
   if (!props.label && !props.labelWidth) return ret
   if (labelWidthCom.value === 'auto') {
     // don't konw how to do
     if (props.labelWidth === 'auto') {
       ret.marginLeft = computedLabelWidth.value
-    } else if (parent.props.labelWidth === 'auto') {
-      ret.marginLeft = parent.exposed.autoLabelWidth.value
+    } else if (parent.labelWidth.value === 'auto') {
+      ret.marginLeft = parent.autoLabelWidth.value
     }
   } else {
     ret.marginLeft = labelWidthCom.value
@@ -143,13 +142,12 @@ const getValueByPath = (obj, path) => {
 }
 const validate = () => {
   if (props.prop) {
-    const rules = parent.props.rules || {}
+    const rules = parent.rules.value || {}
     const prop = props.prop || ''
     const this_validators = rules[prop] || []
     validators.value = this_validators.concat(props.rules)
-    const value = getValueByPath(parent.props.model, props.prop)
+    const value = getValueByPath(parent.model.value, props.prop)
     let this_result = true
-    // 检验
     if (validators.value && validators.value.length) {
       for (let j = 0; j < validators.value.length; j++) {
         const validator = validators.value[j]
@@ -165,6 +163,9 @@ const validate = () => {
   }
   return true
 }
+const clearValidate = () => {
+  result.value = null
+}
 const extraValidate = (validator, msg, ...arg) => {
   let this_result = true
   if (!validator(...arg)) {
@@ -174,13 +175,21 @@ const extraValidate = (validator, msg, ...arg) => {
   result.value = this_result
   return result
 }
-const clearValidate = () => {
-  result.value = null
-}
-defineExpose({
+
+registerFormItem({
   validate,
   clearValidate,
-  extraValidate,
+})
+
+provide('formItem', {
+  clearValidate,
+  validate,
   updateComputedLabelWidth,
+  label: computed(() => props.label),
+})
+defineExpose({
+  extraValidate,
+  clearValidate,
+  validate,
 })
 </script>

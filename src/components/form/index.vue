@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref, useSlots, provide, getCurrentInstance, computed } from 'vue'
+import { ref, provide, computed } from 'vue'
 
 defineOptions({
   name: 'FhForm',
@@ -25,7 +25,7 @@ const props = defineProps({
   },
   labelPosition: {
     type: String,
-    default: 'top', // 如果值为 left 或者 right 时，则需要设置 label-width
+    default: 'top', // when set to left or right, label-width must be set
   },
   labelWidth: {
     type: String,
@@ -33,12 +33,11 @@ const props = defineProps({
 })
 
 const potentialLabelWidthArr = ref([])
+const formItems = ref([])
 
-const slots = useSlots()
-
-const instance = getCurrentInstance()
-provide('form', instance)
-
+const registerFormItem = (validates) => {
+  formItems.value.push(validates)
+}
 const autoLabelWidth = computed(() => {
   if (!potentialLabelWidthArr.value.length) return 0
   const max = Math.max(...potentialLabelWidthArr.value)
@@ -47,21 +46,14 @@ const autoLabelWidth = computed(() => {
 
 const validate = () => {
   let result = true
-  const defaultSlots = slots.default?.() || []
-  defaultSlots.forEach((child) => {
-    if (child.validate) {
-      if (!child.validate()) {
-        result = false
-      }
-    }
-    return true
+  formItems.value.forEach((validates) => {
+    result = result && validates.validate()
   })
   return result
 }
 const clearValidate = () => {
-  const defaultSlots = slots.default?.() || []
-  defaultSlots.forEach((child) => {
-    child.exposed.clearValidate()
+  formItems.value.forEach((validates) => {
+    validates.clearValidate()
   })
 }
 const getLabelWidthIndex = (width) => {
@@ -84,11 +76,20 @@ const deregisterLabelWidth = (val) => {
   potentialLabelWidthArr.value.splice(index, 1)
 }
 
-defineExpose({
+provide('form', {
   autoLabelWidth,
-  validate,
-  clearValidate,
   registerLabelWidth,
   deregisterLabelWidth,
+  labelWidth: computed(() => props.labelWidth),
+  labelPosition: computed(() => props.labelPosition),
+  rules: computed(() => props.rules),
+  model: computed(() => props.model),
+  disabled: computed(() => props.disabled),
+})
+provide('registerFormItem', registerFormItem)
+
+defineExpose({
+  validate,
+  clearValidate,
 })
 </script>

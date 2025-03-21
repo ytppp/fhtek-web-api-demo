@@ -10,12 +10,12 @@ let CUSTOMER_ID = ''
 if (process.env.CUSTOMER_ID) {
   CUSTOMER_ID = `${process.env.CUSTOMER_ID}`
 } else {
-  CUSTOMER_ID = 'demo'
+  CUSTOMER_ID = 'fhtek'
 }
 
 // https://vite.dev/config/
 export default defineConfig(async () => {
-  const module = await import(`./src/customer-conf/${CUSTOMER_ID}/conf.json`)
+  const module = await import(`./src/customer-conf/${CUSTOMER_ID}.json`)
   return {
     plugins: [vue(), vueJsx, vueDevTools()],
     resolve: {
@@ -31,7 +31,7 @@ export default defineConfig(async () => {
         less: {
           math: 'always',
           javascriptEnabled: true,
-          additionalData: `@import "${path.resolve(__dirname, `src/customer-conf/${CUSTOMER_ID}/assets/style/variables.less`)}";`,
+          additionalData: `@import "${path.resolve(__dirname, `src/assets/style/customer-conf/${CUSTOMER_ID}/variables.less`)}";`,
         },
       },
     },
@@ -41,6 +41,15 @@ export default defineConfig(async () => {
           target: 'http://192.168.1.1',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/action/, '/action'),
+          configure: (proxy, options) => {
+            proxy.on('proxyRes', (proxyRes, req, res) => {
+              let setcookies = proxyRes.headers['set-cookie']
+              if (setcookies) {
+                setcookies = setcookies[0].replace(/domain=[^;]+;\s+/, '') // remove 'domain=*; ', * means all domain
+                proxyRes.headers['set-cookie'] = [setcookies]
+              }
+            })
+          },
         },
       },
     },

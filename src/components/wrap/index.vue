@@ -1,7 +1,7 @@
 <template>
   <transition name="wrap">
-    <teleport :to="body">
-      <div class="wrap" v-show="open">
+    <teleport to="body" :disabled="!isAppendBody">
+      <div v-bind="attrs" ref="wrapRef" class="wrap" v-show="model">
         <div class="wrap__mask" :style="wrapStyleObj" @click="close" @touchstart="close"></div>
         <slot></slot>
       </div>
@@ -10,13 +10,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref, watch, useAttrs, onMounted } from 'vue'
+
+defineOptions({
+  name: 'FhWrap',
+})
 
 const props = defineProps({
-  visible: {
-    type: Boolean,
-    default: false,
-  },
   closeOnClickWrap: {
     type: Boolean,
     default: false,
@@ -30,7 +30,63 @@ const props = defineProps({
     default: true,
   },
 })
-
-const open = ref(false)
+const model = defineModel('visible', {
+  type: Boolean,
+  default: false,
+})
+const attrs = useAttrs()
 const overflow = ref('')
+const wrapRef = ref(null)
+
+const wrapStyleObj = computed(() => {
+  return {
+    backgroundColor: props.wrapBgColor,
+  }
+})
+const parentNode = computed(() => {
+  if (props.isAppendBody) {
+    return document.body
+  } else {
+    return wrapRef.value.parentNode
+  }
+})
+
+watch(
+  () => model.value,
+  (val) => {
+    model.value = val
+    if (model.value) {
+      wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
+      // desktop prevent scroll
+      overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
+      parentNode.value.style.overflow = 'hidden'
+      // mobile prevent scroll
+      parentNode.value && parentNode.value.addEventListener('touchmove', preventDefault, false)
+    } else {
+      parentNode.value.style.overflow = overflow.value
+      parentNode.value && parentNode.value.removeEventListener('touchmove', preventDefault, false)
+    }
+  },
+)
+
+onMounted(() => {
+  if (model.value) {
+    wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
+  }
+})
+
+const preventDefault = (e) => {
+  e.preventDefault()
+}
+const close = () => {
+  if (!props.closeOnClickWrap) {
+    return
+  }
+  model.value = false
+}
+
+defineExpose({
+  parentNode,
+  wrapRef,
+})
 </script>
