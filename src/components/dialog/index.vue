@@ -11,9 +11,9 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import FhButton from '@/components/button/index.vue'
-import { DialogType } from './constant'
+import { DialogType } from './config'
 
 defineOptions({
   name: 'FhDialog',
@@ -49,3 +49,4 @@ const cancel = () => {
   emits('cancel')
 }
 </script>
+./config

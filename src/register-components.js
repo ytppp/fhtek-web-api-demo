@@ -18,7 +18,7 @@ import clickoutside from './components/directives/clickoutside.js'
 import vloading from './components/directives/loading.js'
 
 import toast from '@/components/toast/index.js'
-import dialog from '@/components/dialog/index.js'
+import dialog from '@/components/dialog/index.ts'
 import loading from '@/components/loading/index.js'
 import upgrade from '@/components/upgrade/index.js'
 
