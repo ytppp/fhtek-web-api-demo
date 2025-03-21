@@ -9,7 +9,7 @@
   </transition>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref, watch, useAttrs, onMounted, onUnmounted } from 'vue'
 
 defineOptions({

@@ -33,13 +33,14 @@
   </transition>
 </template>
 
-<script>
-const TYPE_CLASSES_MAP = {
-  success: 'icon-success',
-  warning: 'icon-warning',
-  error: 'icon-error',
+<script lang="ts">
+enum TypeClassesMap {
+  success = 'icon-success',
+  warning = 'icon-warning',
+  error = 'icon-error',
 }
 export default {
+  name: 'FhAlert',
   props: {
     title: {
       type: String,
@@ -82,25 +83,25 @@ export default {
       visible: true,
     }
   },
-  methods: {
-    close() {
-      this.visible = false
-      this.$emit('close')
-    },
-  },
-
   computed: {
     typeClass() {
       return `alert--${this.type}`
     },
     iconClass() {
-      return TYPE_CLASSES_MAP[this.type] || 'icon-info'
+      return TypeClassesMap[this.type] || 'icon-info'
     },
     isBigIcon() {
       return this.description || this.$slots.default ? 'is-big' : ''
     },
     isBoldTitle() {
       return this.description || this.$slots.default ? 'is-bold' : ''
+    },
+  },
+  emits: ['close'],
+  methods: {
+    close() {
+      this.visible = false
+      this.$emit('close')
     },
   },
 }

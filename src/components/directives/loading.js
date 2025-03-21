@@ -15,7 +15,7 @@ function appendNode(el) {
 function removeNode(el) {
   if (instance) {
     instance.close()
-    // instance = null
+    instance = null
   }
   el.style.position = position
 }
@@ -45,7 +45,11 @@ export default {
   },
   updated(el, bing) {
     if (bing.value !== bing.oldValue) {
-      bing.value ? appendNode(el) : removeNode(el)
+      if (bing.value) {
+        appendNode(el)
+      } else {
+        removeNode(el)
+      }
     }
   },
 }
