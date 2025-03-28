@@ -30,6 +30,12 @@ let menus = [
     config,
   },
   {
+    url: '/internet',
+    text: 'trans0014',
+    icon: 'icon-earth',
+    config: strategyB,
+  },
+  {
     url: '/more',
     text: 'trans0016',
     icon: 'icon-ellipsis',

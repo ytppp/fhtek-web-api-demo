@@ -208,17 +208,11 @@ export default {
           message: this.$t('trans0021'),
         })
         .then(() => {
-          logout()
-            .then(() => {
-              this.$router.push('/login')
-            })
-            .catch((error) => {
-              console.log('POST 请求失败:', error)
-            })
+          logout().then(() => {
+            this.$router.push('/login')
+          })
         })
-        .catch(() => {
-          console.log('222')
-        })
+        .catch(() => {})
     },
     close() {
       this.showPopup = false
@@ -236,4 +230,3 @@ export default {
   },
 }
 </script>
-@/http/v1.index.js

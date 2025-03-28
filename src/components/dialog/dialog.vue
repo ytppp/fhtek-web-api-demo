@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import FhButton from '@/components/button/index.vue'
+import FhButton from '@/components/button/button.vue'
 import { DialogType } from './config'
 
 defineOptions({
@@ -49,4 +49,3 @@ const cancel = () => {
   emits('cancel')
 }
 </script>
-./config

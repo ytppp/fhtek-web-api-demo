@@ -73,7 +73,7 @@ const processedSlots = computed(() => {
   return defaultSlots.map((node) => insertSpace(node))
 })
 const handleClick = (event) => {
-  if (!props.disabled) {
+  if (!btnDisabled.value) {
     emit('click', event)
   }
 }

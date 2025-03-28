@@ -14,7 +14,6 @@ export function getToken(): string {
 export function addTokenToHeader(config: TAxiosRequestConfig): void {
   const token = getToken()
   if (token) {
-    console.log(config.headers)
     config.headers = config.headers || {}
     config.headers['Cookie'] = `-goahead-session-=${token}`
   }
@@ -62,10 +61,10 @@ const startLoading = () => {
 
 //结束loading
 const endLoading = () => {
-  // loading.close()
-  setTimeout(() => {
-    loading.close()
-  }, 500)
+  loading.close()
+  // setTimeout(() => {
+  //   loading.close()
+  // }, 500)
 }
 
 // 处理HTTP状态码

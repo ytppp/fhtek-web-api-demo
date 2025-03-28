@@ -54,8 +54,10 @@ const wrapStyleObj = computed(() => {
 const parentNode = computed(() => {
   if (props.isAppendBody) {
     return document.body
+  } else if (props.isManual) {
+    return wrapRef.value.parentNode.parentNode  // mount-node's parent node
   } else {
-    return wrapRef.value.parentNode.parentNode // mount node's parent node
+    return wrapRef.value.parentNode
   }
 })
 
@@ -64,19 +66,18 @@ watch(
   (val) => {
     if (val) {
       wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
-      // desktop prevent scroll
       overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
       parentNode.value.style.overflow = 'hidden'
-      // mobile prevent scroll
-      parentNode.value && parentNode.value.addEventListener('touchmove', preventDefault, false)
+      parentNode.value.addEventListener('touchmove', preventDefault, false)
     } else {
       parentNode.value.style.overflow = overflow.value
-      parentNode.value && parentNode.value.removeEventListener('touchmove', preventDefault, false)
+      parentNode.value.removeEventListener('touchmove', preventDefault, false)
     }
   },
 )
 
 onMounted(() => {
+  // prevent auto open
   if (props.isManual) {
     model.value = true
   }

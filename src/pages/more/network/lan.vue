@@ -79,15 +79,15 @@ interface ILease {
 const leases: ILease[] = [
   {
     value: Leases.oneHour,
-    text: t('trans0462', 1, { val: 1 }),
+    text: t('trans0462', 1, { named: { val: 1 } }),
   },
   {
     value: Leases.oneDay,
-    text: t('trans0463', 1, { val: 1 }),
+    text: t('trans0463', 1, { named: { val: 1 } }),
   },
   {
     value: Leases.oneWeek,
-    text: t('trans0464', 1, { val: 1 }),
+    text: t('trans0464', 1, { named: { val: 1 } }),
   },
 ]
 const ipRef = ref(null)
@@ -95,7 +95,7 @@ const ipStartRef = ref(null)
 const ipEndRef = ref(null)
 const formRef = ref(null)
 const ipOrigin = ref('')
-const wanIp = ref('')
+const lanIp = ref('')
 const form = reactive({
   enable: EnableStatus.yes,
   ip: '',
@@ -128,12 +128,12 @@ const rules = reactive({
     },
     {
       rule: (value) => {
-        if (!wanIp.value) {
+        if (!lanIp.value) {
           return true
         }
-        const wanIpBefore = getIpBefore(wanIp.value)
+        const lanIpBefore = getIpBefore(lanIp.value)
         const ipBefore = getIpBefore(value)
-        if (ipBefore === wanIpBefore || wanIp.value === value) {
+        if (ipBefore === lanIpBefore || lanIp.value === value) {
           return false
         }
         return true
@@ -214,7 +214,7 @@ const isSameSubNetwork = (ip, lanip, mask) => {
   }
   return true
 }
-async function getLanData() {
+function getLanData() {
   getLan().then(({ data }) => {
     const { enable, ip, mask, ip_start, ip_offset, lease } = data
     Object.assign(form, {
@@ -277,7 +277,9 @@ const save = () => {
       setTimeout(() => {
         if (isIpChanged.value) {
           console.log('isIpChanged')
-          // window.location.href = `http://${this.form.ip}/index.html#/login`
+          if (!import.meta.env.DEV) {
+            window.location.href = `http://${form.ip}/index.html#/login`
+          }
         }
       }, freq)
     })

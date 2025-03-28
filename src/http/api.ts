@@ -26,3 +26,19 @@ export const upload = (params, onprogressCallback): Promise<ApiResponse<any>> =>
 export const getUpgradeStatus = (): Promise<ApiResponse<any>> => {
   return http.get('ChkUpgradeStatus', {}, { loading: false, toast: false })
 }
+
+export const getWan = (): Promise<ApiResponse<any>> => {
+  return http.get('GetWan')
+}
+
+export const setWan = (params): Promise<ApiResponse<any>> => {
+  return http.post('SetWan', createData(params))
+}
+
+export const getIpv6Wan = (): Promise<ApiResponse<any>> => {
+  return http.get('GetWan6')
+}
+
+export const setIpv6Wan = (params): Promise<ApiResponse<any>> => {
+  return http.post('SetWan6', createData(params))
+}

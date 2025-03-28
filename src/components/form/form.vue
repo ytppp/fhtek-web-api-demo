@@ -47,7 +47,7 @@ const autoLabelWidth = computed(() => {
 const validate = () => {
   let result = true
   formItems.value.forEach((validates) => {
-    result = result && validates.validate()
+    result = validates.validate() && result
   })
   return result
 }

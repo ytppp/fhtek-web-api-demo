@@ -1,5 +1,5 @@
 import { h } from 'vue'
-import FhToast from './index.vue'
+import FhToast from './toast.vue'
 import { usePopup } from '@/hooks/popup'
 import { mergeOptions } from '@/util/tool'
 
@@ -23,7 +23,7 @@ const toast = (options) => {
       ...opt,
       onHide: () => {
         toastInstance.close()
-      }
+      },
     }),
   )
   toastInstance.show()

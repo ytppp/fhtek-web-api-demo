@@ -1,7 +1,7 @@
 import { h } from 'vue'
-import FhLoading from '@/components/loading/index.vue'
+import FhLoading from '@/components/loading/loading.vue'
 import { usePopup } from '@/hooks/popup'
-import Popup from '@/components/popup/index.vue'
+import Popup from '@/components/popup/popup.vue'
 
 let position = ''
 let instance = null
@@ -15,7 +15,6 @@ function appendNode(el) {
 function removeNode(el) {
   if (instance) {
     instance.close()
-    instance = null
   }
   el.style.position = position
 }
