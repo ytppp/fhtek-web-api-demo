@@ -52,7 +52,6 @@ import {
   isNetworkIP,
   isBoardcastIP,
   isValidGatewayIP,
-  isSameSubNetwork,
   getSubNetwork,
 } from '@/util/tool'
 import { getLan, setLan } from '@/http/api'
@@ -60,6 +59,18 @@ import { getLan, setLan } from '@/http/api'
 defineOptions({
   name: 'LanPage',
 })
+
+const isSameSubNetwork = (ip, ip2, mask) => {
+  const subnetwork = getSubNetwork(ip, mask)
+  const subnetwork2 = getSubNetwork(ip2, mask)
+  if (subnetwork !== subnetwork2) {
+    return false
+  }
+  if (ip2int(ip) === ip2int(ip2)) {
+    return false
+  }
+  return true
+}
 
 const { t } = useI18n()
 const dialog = inject('dialog')
@@ -79,15 +90,15 @@ interface ILease {
 const leases: ILease[] = [
   {
     value: Leases.oneHour,
-    text: t('trans0462', 1, { val: 1 }),
+    text: t('trans0462', 1, { named: { val: 1 } }),
   },
   {
     value: Leases.oneDay,
-    text: t('trans0463', 1, { val: 1 }),
+    text: t('trans0463', 1, { named: { val: 1 } }),
   },
   {
     value: Leases.oneWeek,
-    text: t('trans0464', 1, { val: 1 }),
+    text: t('trans0464', 1, { named: { val: 1 } }),
   },
 ]
 const ipRef = ref(null)
@@ -203,18 +214,7 @@ const isEnable = computed(() => {
 })
 const isIpChanged = computed(() => ipOrigin.value !== form.ip)
 
-const isSameSubNetwork = (ip, lanip, mask) => {
-  const subnetwork = getSubNetwork(lanip, mask)
-  const subnetwork1 = getSubNetwork(ip, mask)
-  if (subnetwork !== subnetwork1) {
-    return false
-  }
-  if (ip2int(ip) === ip2int(lanip)) {
-    return false
-  }
-  return true
-}
-async function getLanData() {
+function getLanData() {
   getLan().then(({ data }) => {
     const { enable, ip, mask, ip_start, ip_offset, lease } = data
     Object.assign(form, {
@@ -277,11 +277,16 @@ const save = () => {
       setTimeout(() => {
         if (isIpChanged.value) {
           console.log('isIpChanged')
-          // window.location.href = `http://${this.form.ip}/index.html#/login`
+          if (!import.meta.env.DEV) {
+            window.location.href = `http://${form.ip}/index.html#/login`
+          }
         }
       }, freq)
     })
   }
+}
+function getWanIp() {
+  // todo
 }
 onMounted(() => {
   getLanData()

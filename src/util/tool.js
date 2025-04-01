@@ -238,3 +238,146 @@ export const isValidGatewayIP = (ip, mask) => {
 export function getSubNetwork(hostIP, mask) {
   return ip2int(hostIP) & ip2int(mask)
 }
+
+export const format = function (str, args) {
+  args.forEach((val) => {
+    str = str.replace(/%[abcdefghnostx]/, val)
+  })
+  return str
+}
+
+export function isValidDns(value) {
+  return isIP(value) && !isMulticast(value) && !isLoopback(value) && ip2int(value) != 0
+}
+
+export function isValidMask(ip) {
+  const i = ip2int(ip).toString(2).padStart(32, '0')
+  const result = i.split('10')
+  if (result.length !== 2) {
+    return false
+  }
+  // 有效mask
+  if (result[0].includes('0') || result[1].includes('1')) {
+    return false
+  }
+  return true
+}
+
+function isNameUnsafeEx(compareChar) {
+  if (compareChar.charCodeAt(0) > 32 && compareChar.charCodeAt(0) < 127)
+    return false // found no unsafe chars, return false
+  else return true
+}
+
+export function isValidNameEx(name) {
+  var i = 0
+  for (i = 0; i < name.length; i++) {
+    if (isNameUnsafeEx(name.charAt(i)) == true) return false
+  }
+  return true
+}
+
+export function validationCharacterRange(val, minLen, maxLen) {
+  let len = val.trim().length
+  if (!len) {
+    return false
+  }
+  if (minLen && len < minLen) {
+    return false
+  }
+  if (maxLen && len > maxLen) {
+    return false
+  }
+  return true
+}
+
+// 简化 ipv6 地址转化完整 ipv6 地址
+function tranSimIpv6ToFullIpv6(simpeIpv6) {
+  simpeIpv6 = simpeIpv6.toUpperCase()
+  // ipv6地址有8段，每段4个字符
+  const Ipv6Len = 8,
+    Ipv6SectionLen = 4,
+    zero = '0'
+  const zero4 = ''.padStart(Ipv6SectionLen, zero) // 0000
+  let defaultIpv6 = new Array(Ipv6Len).fill(zero4)
+  const symbol1 = '::',
+    symbol2 = ':'
+  const symbol1Len = symbol1.length
+  if (simpeIpv6 == symbol1) {
+    return defaultIpv6.join(symbol2)
+  }
+  if (simpeIpv6.startsWith(symbol1)) {
+    let tmpArr = simpeIpv6.substring(symbol1Len).split(symbol2)
+    for (let i = 0; i < tmpArr.length; i++) {
+      defaultIpv6[i + Ipv6Len - tmpArr.length] = (zero4 + tmpArr[i]).slice(-Ipv6SectionLen)
+    }
+  } else if (simpeIpv6.endsWith(symbol1)) {
+    let tmpArr = simpeIpv6.substring(0, simpeIpv6.length - symbol1Len).split(symbol2)
+    for (let i = 0; i < tmpArr.length; i++) {
+      defaultIpv6[i] = (zero4 + tmpArr[i]).slice(-Ipv6SectionLen)
+    }
+  } else if (simpeIpv6.indexOf(symbol1) >= 0) {
+    let tmpArr = simpeIpv6.split(symbol1)
+    let tmpArr0 = tmpArr[0].split(symbol2)
+    for (let i = 0; i < tmpArr0.length; i++) {
+      defaultIpv6[i] = (zero4 + tmpArr0[i]).slice(-Ipv6SectionLen)
+    }
+    let tmpArr1 = tmpArr[1].split(symbol2)
+    for (let i = 0; i < tmpArr1.length; i++) {
+      defaultIpv6[i + Ipv6Len - tmpArr1.length] = (zero4 + tmpArr1[i]).slice(-Ipv6SectionLen)
+    }
+  } else {
+    let tmpArr = simpeIpv6.split(symbol2)
+    for (let i = 0; i < tmpArr.length; i++) {
+      defaultIpv6[i + Ipv6Len - tmpArr.length] = (zero4 + tmpArr[i]).slice(-Ipv6SectionLen)
+    }
+  }
+  return defaultIpv6.join(symbol2)
+}
+export function isValidIpv6AddrExtra(value) {
+  let flag = true
+  let fullAddr = tranSimIpv6ToFullIpv6(value)
+  let ipv6OfAll0 = new Array(8).fill(''.padStart(4, '0')).join(':') // Ipv6 address of all '0'
+  let ipv6OfAllF = new Array(8).fill(''.padStart(4, 'F')).join(':') // Ipv6 address of all 'F'
+  let ipv6End1 = `${new Array(7).fill(''.padStart(4, '0')).join(':')}:0001` // ::1
+  if (
+    fullAddr.startsWith('FF') ||
+    fullAddr.startsWith('FE80') ||
+    fullAddr.startsWith('FE90') ||
+    fullAddr.startsWith('FEA0') ||
+    fullAddr.startsWith('FEB0') ||
+    fullAddr.startsWith('FEC0') ||
+    fullAddr.startsWith('FECC') ||
+    fullAddr.startsWith('FC00') ||
+    fullAddr === ipv6OfAll0 ||
+    fullAddr === ipv6OfAllF ||
+    fullAddr === ipv6End1
+  ) {
+    flag = false
+  }
+  return flag
+}
+export function isValidIpv6Dns(value) {
+  let flag = true
+  let fullAddr = tranSimIpv6ToFullIpv6(value)
+  let ipv6Ofall0 = new Array(8).fill(''.padStart(4, '0')).join(':') // Ipv6 address of all '0'
+  let ipv6OfallF = new Array(8).fill(''.padStart(4, 'F')).join(':') // Ipv6 address of all 'F'
+  let ipv6End1 = `${new Array(7).fill(''.padStart(4, '0')).join(':')}:0001` // ::1
+  if (
+    fullAddr.startsWith('FF') ||
+    fullAddr.startsWith('FE90') ||
+    fullAddr.startsWith('FEA0') ||
+    fullAddr.startsWith('FEB0') ||
+    fullAddr.startsWith('FEC0') ||
+    fullAddr.startsWith('FECC') ||
+    fullAddr.startsWith('FC00') ||
+    fullAddr.startsWith('FD00') ||
+    fullAddr === ipv6Ofall0 ||
+    fullAddr === ipv6OfallF ||
+    fullAddr === ipv6End1 ||
+    fullAddr === 'FD00::2222'
+  ) {
+    flag = false
+  }
+  return flag
+}

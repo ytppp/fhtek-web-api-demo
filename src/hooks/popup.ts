@@ -10,12 +10,14 @@ export const usePopup = (content: Component, appendedEl = document.body) => {
 
   const createPopupApp = () => createApp(h(content))
   let app: App<Element> | null = null
+  let oldOverflow = ''
 
   // mount popup
   const show = () => {
     app = createPopupApp()
     app.mount(el)
     appendedEl.appendChild(el)
+    oldOverflow = appendedEl.style.overflow
   }
   // destroy popup
   const destroy = () => {
@@ -24,6 +26,10 @@ export const usePopup = (content: Component, appendedEl = document.body) => {
       app = null
     }
     appendedEl.removeChild(el)
+    // popup's parentNode doesn't update overflow status after appendedEl remove popup commponent,
+    // so we need to handle it manually
+    appendedEl.style.overflow = oldOverflow
+    appendedEl.removeEventListener('touchmove', (e) => e.preventDefault(), false)
   }
   // close popup
   const close = () => {

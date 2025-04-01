@@ -5,6 +5,7 @@
       'is-success': success,
       'is-error': error,
     }"
+    ref="formItemRef"
   >
     <label-wrap
       :is-auto-width="labelStyle && labelStyle.width === 'auto'"
@@ -68,9 +69,9 @@ const props = defineProps({
   },
 })
 const slots = useSlots()
+const formItemRef = ref(null)
 const validateMessage = ref('')
 const computedLabelWidth = ref('')
-const validators = ref([])
 const result = ref(null) // null表示没有进行校验，true通过，false未通过
 const parent = inject('form', {})
 const registerFormItem = inject('registerFormItem')
@@ -141,16 +142,18 @@ const getValueByPath = (obj, path) => {
   return tempObj ? tempObj[keyArr[i]] : null
 }
 const validate = () => {
-  if (props.prop) {
+  if (props.prop && formItemRef.value) {
     const rules = parent.rules.value || {}
-    const prop = props.prop || ''
-    const this_validators = rules[prop] || []
-    validators.value = this_validators.concat(props.rules)
+    const prop = props.prop
+    let validators = rules[prop] || []
+    if (props.rules) {
+      validators = validators.concat(props.rules)
+    }
     const value = getValueByPath(parent.model.value, props.prop)
     let this_result = true
-    if (validators.value && validators.value.length) {
-      for (let j = 0; j < validators.value.length; j++) {
-        const validator = validators.value[j]
+    if (validators && validators.length) {
+      for (let j = 0; j < validators.length; j++) {
+        const validator = validators[j]
         if (!validator.rule(value)) {
           this_result = false
           validateMessage.value = validator.message
@@ -159,7 +162,7 @@ const validate = () => {
       }
     }
     result.value = this_result
-    return this_result
+    return result.value
   }
   return true
 }

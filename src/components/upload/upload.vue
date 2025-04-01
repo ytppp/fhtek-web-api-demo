@@ -87,14 +87,19 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import FhUploadDragger from './upload-dragger.vue'
 import { toLocaleNumber } from '@/i18n/index'
 import { getFileExtendName } from '@/util/tool'
-import { UploadStatus } from '@/util/constant'
 import IcFolderError from '@/assets/images/ic_folder_error.png'
 import IcFolder from '@/assets/images/ic_folder.png'
 
+export enum UploadStatus {
+  ready = 'ready',
+  success = 'success',
+  fail = 'fail',
+  uploading = 'uploading',
+}
 export default {
   components: {
     FhUploadDragger,
@@ -152,6 +157,7 @@ export default {
       uploadPercentage: 0,
       status: UploadStatus.ready,
       err: '',
+      UploadStatus,
     }
   },
   computed: {

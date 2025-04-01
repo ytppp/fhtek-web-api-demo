@@ -1,8 +1,8 @@
 import { h } from 'vue'
-import FhUpgrade from './index.vue'
+import FhUpgrade from './upgrade.vue'
 import { mergeOptions } from '@/util/tool'
 import { usePopup } from '@/hooks/popup'
-import Popup from '@/components/popup/index.vue'
+import Popup from '@/components/popup/popup.vue'
 
 const defaultOptions = {
   url: '',

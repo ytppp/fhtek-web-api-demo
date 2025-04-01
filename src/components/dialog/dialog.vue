@@ -11,9 +11,9 @@
   </div>
 </template>
 
-<script setup>
-import FhButton from '@/components/button/index.vue'
-import { DialogType } from './constant'
+<script lang="ts" setup>
+import FhButton from '@/components/button/button.vue'
+import { DialogType } from './config'
 
 defineOptions({
   name: 'FhDialog',

@@ -1,8 +1,8 @@
 import { h } from 'vue'
-import FhLoading from './index.vue'
+import FhLoading from './loading.vue'
 import { mergeOptions } from '@/util/tool'
 import { usePopup } from '@/hooks/popup'
-import Popup from '@/components/popup/index.vue'
+import Popup from '@/components/popup/popup.vue'
 
 const defaultOptions = {
   tip: '',

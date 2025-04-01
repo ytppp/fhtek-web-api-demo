@@ -9,11 +9,11 @@
   </transition>
 </template>
 
-<script setup>
-import { computed, ref, watch, useAttrs, onMounted } from 'vue'
+<script lang="ts" setup>
+import { computed, ref, watch, useAttrs, onMounted, onUnmounted } from 'vue'
 
 defineOptions({
-  name: 'FhWrap',
+  name: 'FhPopup',
 })
 
 const props = defineProps({
@@ -25,10 +25,18 @@ const props = defineProps({
     type: String,
     default: 'rgba(0, 0, 0, 0.4)',
   },
+  beforeClose: {
+    type: Function,
+    default: () => ({}),
+  },
   isAppendBody: {
     type: Boolean,
     default: true,
-  },
+  }, // When set to false, perent node must set position
+  isManual: {
+    type: Boolean,
+    default: false,
+  }, // functional component must be set true
 })
 const model = defineModel('visible', {
   type: Boolean,
@@ -46,6 +54,8 @@ const wrapStyleObj = computed(() => {
 const parentNode = computed(() => {
   if (props.isAppendBody) {
     return document.body
+  } else if (props.isManual) {
+    return wrapRef.value.parentNode.parentNode  // mount-node's parent node
   } else {
     return wrapRef.value.parentNode
   }
@@ -54,25 +64,27 @@ const parentNode = computed(() => {
 watch(
   () => model.value,
   (val) => {
-    model.value = val
-    if (model.value) {
+    if (val) {
       wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
-      // desktop prevent scroll
       overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
       parentNode.value.style.overflow = 'hidden'
-      // mobile prevent scroll
-      parentNode.value && parentNode.value.addEventListener('touchmove', preventDefault, false)
+      parentNode.value.addEventListener('touchmove', preventDefault, false)
     } else {
       parentNode.value.style.overflow = overflow.value
-      parentNode.value && parentNode.value.removeEventListener('touchmove', preventDefault, false)
+      parentNode.value.removeEventListener('touchmove', preventDefault, false)
     }
   },
 )
 
 onMounted(() => {
-  if (model.value) {
-    wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
+  // prevent auto open
+  if (props.isManual) {
+    model.value = true
   }
+})
+
+onUnmounted(() => {
+  model.value = false
 })
 
 const preventDefault = (e) => {
@@ -82,11 +94,13 @@ const close = () => {
   if (!props.closeOnClickWrap) {
     return
   }
+  if (props.beforeClose) {
+    props.beforeClose()
+  }
   model.value = false
 }
 
 defineExpose({
-  parentNode,
-  wrapRef,
+  close,
 })
 </script>

@@ -27,8 +27,7 @@
 </template>
 
 <script>
-import { upload } from '@/http/api'
-import { UploadStatus } from '@/util/constant'
+import { upload, getUpgradeStatus } from '@/http/api'
 
 export default {
   data() {
@@ -62,14 +61,13 @@ export default {
       const fd = new FormData()
       fd.append('file', this.file[0])
       upload(fd, (progressEvent) => {
-        console.log(progressEvent)
         const { loaded, total, lengthComputable } = progressEvent
         if (lengthComputable) {
           this.$refs.uploader.percentage = Math.floor((loaded / total) * 100)
           if (loaded >= total) {
-            this.$refs.uploader.status = UploadStatus.success
+            this.$refs.uploader.status = this.$refs.uploader.UploadStatus.success
           } else {
-            this.$refs.uploader.status = UploadStatus.uploading
+            this.$refs.uploader.status = this.$refs.uploader.UploadStatus.uploading
           }
         }
       })
@@ -77,7 +75,7 @@ export default {
           this.upgrading()
         })
         .catch(() => {
-          this.$refs.uploader.status = UploadStatus.fail
+          this.$refs.uploader.status = this.$refs.uploader.UploadStatus.fail
         })
     },
     upgrading() {
@@ -97,6 +95,14 @@ export default {
       }
       return isValidFileName
     },
+  },
+  mounted() {
+    getUpgradeStatus().then(({ data }) => {
+      const { upgradestatus } = data
+      if (upgradestatus === 1) {
+        this.upgrading()
+      }
+    })
   },
 }
 </script>

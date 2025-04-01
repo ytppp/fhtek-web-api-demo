@@ -2,6 +2,7 @@ import { createWebHashHistory, createRouter } from 'vue-router'
 
 import login from '../pages/login/index.vue'
 import home from '../pages/home/index.vue'
+import internet from '../pages/internet/index.vue'
 import status from '../pages/more/status/index.vue'
 import lan from '../pages/more/network/lan.vue'
 import upgrade from '../pages/more/management/upgrade.vue'
@@ -22,6 +23,11 @@ export const router = createRouter({
       path: '/home',
       name: 'home',
       component: home,
+    },
+    {
+      path: '/internet',
+      name: 'internet',
+      component: internet,
     },
     {
       path: '/more/status',

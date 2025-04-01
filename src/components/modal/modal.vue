@@ -34,7 +34,7 @@
 
 <script setup>
 import { ref, useSlots } from 'vue'
-import FhPopup from '@/components/popup/index.vue'
+import FhPopup from '@/components/popup/popup.vue'
 
 defineOptions({
   name: 'FhModal',

@@ -59,7 +59,6 @@ export default {
           }
         }
       }
-      console.log(style)
       return h(
         'div',
         {

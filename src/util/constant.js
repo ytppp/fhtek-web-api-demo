@@ -15,12 +15,6 @@ export const MeshRole = {
   controller: '1',
   agent: '2',
 }
-export const UploadStatus = {
-  ready: 'ready',
-  success: 'success',
-  fail: 'fail',
-  uploading: 'uploading',
-}
 export const FileType = {
   config: '1',
   firmware: '4',
