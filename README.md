@@ -6,21 +6,23 @@ fhtek web pages, each router is in a directory.
 
 ### for dev
 
-- install dependencies manually in each folder
-- make dev CUSTOMER_ID=xxxx
-  - CUSTOMER_ID should be oneof (demo fhtek)
+```sh
+make dev CUSTOMER_ID=xxxx // CUSTOMER_ID should be oneof (demo fhtek)
+```
 
-### for prd
+### for build
 
-- make CUSTOMER_ID=xxxx MODEL_ID=xxxx
-  - CUSTOMER_ID should be oneof (demo fhtek)
+```sh
+make build CUSTOMER_ID=xxxx // CUSTOMER_ID should be oneof (demo fhtek)
+```
 
-### for test
+## how to get i18n data
 
-todo
+[FHTEK-DOCS repository](https://codehub.devcloud.cn-east-3.huaweicloud.com/FHTEK-DOCS00002/FHTEK-DOCS.git)
 
-
-
+```sh
+./i18n.sh main // main is the branch name of FHTEK-DOCS repository
+```
 
 ## Recommended IDE Setup
 

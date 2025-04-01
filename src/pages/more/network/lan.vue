@@ -52,7 +52,6 @@ import {
   isNetworkIP,
   isBoardcastIP,
   isValidGatewayIP,
-  isSameSubNetwork,
   getSubNetwork,
 } from '@/util/tool'
 import { getLan, setLan } from '@/http/api'
@@ -60,6 +59,18 @@ import { getLan, setLan } from '@/http/api'
 defineOptions({
   name: 'LanPage',
 })
+
+const isSameSubNetwork = (ip, ip2, mask) => {
+  const subnetwork = getSubNetwork(ip, mask)
+  const subnetwork2 = getSubNetwork(ip2, mask)
+  if (subnetwork !== subnetwork2) {
+    return false
+  }
+  if (ip2int(ip) === ip2int(ip2)) {
+    return false
+  }
+  return true
+}
 
 const { t } = useI18n()
 const dialog = inject('dialog')
@@ -95,7 +106,7 @@ const ipStartRef = ref(null)
 const ipEndRef = ref(null)
 const formRef = ref(null)
 const ipOrigin = ref('')
-const lanIp = ref('')
+const wanIp = ref('')
 const form = reactive({
   enable: EnableStatus.yes,
   ip: '',
@@ -128,12 +139,12 @@ const rules = reactive({
     },
     {
       rule: (value) => {
-        if (!lanIp.value) {
+        if (!wanIp.value) {
           return true
         }
-        const lanIpBefore = getIpBefore(lanIp.value)
+        const wanIpBefore = getIpBefore(wanIp.value)
         const ipBefore = getIpBefore(value)
-        if (ipBefore === lanIpBefore || lanIp.value === value) {
+        if (ipBefore === wanIpBefore || wanIp.value === value) {
           return false
         }
         return true
@@ -203,17 +214,6 @@ const isEnable = computed(() => {
 })
 const isIpChanged = computed(() => ipOrigin.value !== form.ip)
 
-const isSameSubNetwork = (ip, lanip, mask) => {
-  const subnetwork = getSubNetwork(lanip, mask)
-  const subnetwork1 = getSubNetwork(ip, mask)
-  if (subnetwork !== subnetwork1) {
-    return false
-  }
-  if (ip2int(ip) === ip2int(lanip)) {
-    return false
-  }
-  return true
-}
 function getLanData() {
   getLan().then(({ data }) => {
     const { enable, ip, mask, ip_start, ip_offset, lease } = data
@@ -284,6 +284,9 @@ const save = () => {
       }, freq)
     })
   }
+}
+function getWanIp() {
+  // todo
 }
 onMounted(() => {
   getLanData()
