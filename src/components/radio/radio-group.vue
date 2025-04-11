@@ -46,3 +46,26 @@ provide('radioGroup', {
   updateModel,
 })
 </script>
+
+<style lang="less">
+.radio-group {
+  display: flex;
+  &.is-vertical {
+    flex-direction: column;
+    .radio {
+      margin-top: 20px;
+      align-items: start;
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+  &.is-horizontal {
+    flex-wrap: wrap;
+    .radio {
+      margin-right: 30px;
+      margin-top: 6px;
+    }
+  }
+}
+</style>

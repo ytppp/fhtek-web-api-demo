@@ -58,3 +58,25 @@ provide('checkboxGroup', {
   handleInput,
 })
 </script>
+
+<style lang="less">
+.checkbox-group {
+  display: flex;
+  &.is-vertical {
+    flex-direction: column;
+    .checkbox {
+      margin-top: 20px;
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+  &.is-horizontal {
+    flex-wrap: wrap;
+    .checkbox {
+      margin-right: 10px;
+      margin-top: 10px;
+    }
+  }
+}
+</style>

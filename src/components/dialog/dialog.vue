@@ -49,3 +49,58 @@ const cancel = () => {
   emits('cancel')
 }
 </script>
+
+<style lang="less">
+.dialog {
+  text-align: center;
+  background: #fff;
+  padding: 20px 20px 30px 20px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 12px 0 @dialog-box-shadow-color;
+  .dialog__buttons {
+    display: flex;
+    justify-content: center;
+    button {
+      width: auto;
+      height: 38px;
+      margin-left: 30px;
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+  .dialog__title {
+    font-size: 16px;
+    line-height: 1;
+    color: @dialog-title-color;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .dialog__message {
+    color: @dialog-content-color;
+    margin-bottom: 45px;
+    text-align: center;
+    font-size: 14px;
+  }
+  @media screen and (min-width: 769px) {
+    width: 430px;
+  }
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    .dialog__buttons {
+      flex-direction: column;
+      button {
+        width: 100%;
+        display: block;
+        margin: 0;
+        margin-top: 20px;
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+    }
+  }
+}
+</style>

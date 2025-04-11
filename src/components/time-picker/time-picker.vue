@@ -194,3 +194,98 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="less">
+.time-picker {
+  position: relative;
+  width: 100%;
+  max-width: @form-item-max-width;
+  .time-picker__caret {
+    transition: transform 0.2s linear;
+    &.is-reverse {
+      transform: rotate(180deg);
+    }
+  }
+  .input {
+    width: 100% !important;
+    max-width: 100% !important;
+    .input__inner {
+      cursor: pointer;
+    }
+  }
+  .time-picker__popup {
+    position: absolute;
+    z-index: 2000;
+    background: @time-picker-combox-background-color;
+    left: -1px;
+    width: 100%;
+    box-shadow: 0 2px 8px @time-picker-combox-shadow-color;
+    background-clip: padding-box;
+    overflow: hidden;
+    .time-picker__popup-wrap {
+      display: flex;
+    }
+    .time-picker__popup-list {
+      position: relative;
+      padding-bottom: 156px;
+      flex: 1;
+      height: 100px;
+      overflow-y: scroll;
+      border-right: 1px solid @time-picker-popup-border-color;
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+      &::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: @time-picker-popup-scrollbar-color;
+      }
+      &:last-child {
+        border-right: none;
+      }
+    }
+    .time-picker__popup-item {
+      margin: 0;
+      padding: 0;
+      text-decoration: none;
+      list-style: none;
+      text-align: left;
+      padding-left: 10px;
+      height: 36px;
+      line-height: 36px;
+      cursor: pointer;
+      &:hover {
+        background: @time-picker-popup-item-hover-background-color;
+        color: @time-picker-popup-item-hover-color;
+      }
+      &:active {
+        background: @time-picker-popup-item-active-background-color;
+        color: @time-picker-popup-item-active-color;
+      }
+      &.selected {
+        color: @time-picker-popup-item-selected-color;
+      }
+    }
+    .time-picker__button-wrap {
+      border-top: 1px solid @time-picker-buttons-border-color;
+      display: flex;
+      button {
+        height: 38px;
+        width: 50%;
+        border: none;
+        background: @time-picker-button-background-color;
+        &:hover {
+          opacity: 0.8;
+        }
+        &:first-child {
+          color: @time-picker-button-cancel-color;
+        }
+        &:last-child {
+          color: @time-picker-button-confirm-color;
+        }
+      }
+    }
+  }
+}
+</style>

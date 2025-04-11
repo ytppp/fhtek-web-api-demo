@@ -106,10 +106,10 @@ export default {
   },
   inject: {
     form: {
-      default: '',
+      default: null,
     },
     formItem: {
-      default: '',
+      default: null,
     },
   },
   props: {

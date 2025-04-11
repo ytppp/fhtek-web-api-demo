@@ -53,3 +53,26 @@ const close = () => {
   show.value = false
 }
 </script>
+
+<style lang="less">
+.footer {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  padding: 15px;
+  text-align: center;
+  font-size: 18px;
+  background: @footer-background-color;
+  @media screen and (max-width: 768px) {
+    padding: 10px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+    .copy {
+      display: block;
+      padding: 5px;
+      margin-left: 0;
+    }
+  }
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <form ref="form" class="fh-form">
+  <form ref="form">
     <slot></slot>
   </form>
 </template>
@@ -93,3 +93,5 @@ defineExpose({
   clearValidate,
 })
 </script>
+
+<style lang="less"></style>

@@ -209,3 +209,70 @@ export default {
   },
 }
 </script>
+
+<style lang="less">
+.layout {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: #f5f6f8;
+  .layout__main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-bottom: 70px;
+    }
+  }
+  .layout__toolbar-wrap {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    display: none;
+    width: 100%;
+    height: 70px;
+    z-index: 1001;
+    background-color: #fff;
+    @media screen and (max-width: 768px) {
+      display: block;
+    }
+  }
+  .layout__toolbar {
+    height: 100%;
+  }
+  .toolbar {
+    display: flex;
+    justify-content: space-around;
+    .toolbar__item {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      &.toolbar-item--active {
+        color: @primaryColor;
+      }
+    }
+    .toolbar__icon {
+      font-size: 22px;
+    }
+    .toolbar__text {
+      margin-top: 5px;
+    }
+  }
+  .layout__aside {
+    width: 280px;
+    position: sticky;
+    @media screen and (max-width: 768px) {
+      display: none;
+    }
+    .aside {
+      height: 100%;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+      overflow: auto;
+    }
+  }
+}
+</style>

@@ -106,3 +106,136 @@ export default {
   },
 }
 </script>
+
+<style lang="less">
+.alert {
+  width: 100%;
+  padding: 8px 16px;
+  margin: 0;
+  box-sizing: border-box;
+  border-radius: 4px;
+  position: relative;
+  background-color: #fff;
+  overflow: hidden;
+  opacity: 1;
+  display: flex;
+  align-items: flex-start;
+  transition: opacity 0.2s;
+  &.is-light {
+    .alert__closebtn {
+      color: #c0c4cc;
+    }
+  }
+  &.is-dark {
+    .alert__closebtn {
+      color: #fff;
+    }
+    .alert__description {
+      color: #fff;
+    }
+  }
+  &.is-center {
+    justify-content: center;
+  }
+  &.alert--success {
+    &.is-light {
+      background-color: #f0f9eb;
+      .alert__icon {
+        color: #67c23a;
+      }
+      .alert__title,
+      .alert__description {
+        color: #909399;
+      }
+    }
+    &.is-dark {
+      background-color: #67c23a;
+      color: #fff;
+    }
+  }
+  &.alert--info {
+    &.is-light {
+      background-color: #f4f4f5;
+      color: #909399;
+    }
+    &.is-dark {
+      background-color: #909399;
+      color: #fff;
+    }
+  }
+  &.alert--warning {
+    &.is-light {
+      background-color: #fdf6ec;
+      .alert__icon {
+        color: #e6a23c;
+      }
+      .alert__title,
+      .alert__description {
+        color: #909399;
+      }
+    }
+    &.is-dark {
+      background-color: #e6a23c;
+      color: #fff;
+    }
+  }
+  &.alert--error {
+    &.is-light {
+      background-color: #fef0f0;
+      .alert__icon {
+        color: #f56c6c;
+      }
+      .alert__title,
+      .alert__description {
+        color: #909399;
+      }
+    }
+    &.is-dark {
+      background-color: #f56c6c;
+      color: #fff;
+    }
+  }
+  .alert__content {
+    display: table-cell;
+    padding: 0 8px;
+  }
+  .alert__icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    &.is-big {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  .alert__title {
+    display: inline-block;
+    font-size: 13px;
+    line-height: 18px;
+    .is-bold {
+      font-weight: bold;
+    }
+  }
+  .alert__description {
+    font-size: 12px;
+    margin: 0;
+  }
+  .alert__closebtn {
+    font-size: 12px;
+    opacity: 1;
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    cursor: pointer;
+    &.is-customed {
+      font-style: normal;
+      font-size: 13px;
+      top: 9px;
+    }
+  }
+  &.alert-fade-enter,
+  &.alert-fade-leave-active {
+    opacity: 0;
+  }
+}
+</style>

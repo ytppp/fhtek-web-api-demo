@@ -84,3 +84,114 @@ export default {
   },
 }
 </script>
+
+<style lang="less">
+.steps {
+  height: 36px;
+  position: relative;
+  .steps__line {
+    height: 2px;
+    background: @step-line-color;
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 0;
+    .steps__line--steped {
+      background: @step-item-steped-background-color;
+      height: 2px;
+    }
+  }
+  .steps__main {
+    width: 100%;
+    display: flex;
+    position: relative;
+    z-index: 1;
+    .step {
+      position: absolute;
+      display: flex;
+      top: 0;
+      position: relative;
+      justify-content: center;
+      align-items: center;
+      &:first-child {
+        justify-content: flex-start;
+        .step-text {
+          text-align: center;
+        }
+      }
+      &:last-child {
+        justify-content: flex-end;
+        .step-text {
+          text-align: center;
+        }
+      }
+      .step__main {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+      }
+      .step__number {
+        border-radius: 50%;
+        border: 1px solid @step-item-border-color;
+        text-align: center;
+        width: 36px;
+        height: 36px;
+        line-height: 36px;
+        font-weight: bold;
+        font-size: 24px;
+        color: @step-item-color;
+        background: @step-background-color;
+      }
+      .step__text {
+        text-align: center;
+        font-size: 12px;
+        color: @step-item-text-color;
+        position: absolute;
+        left: 50%;
+        top: 46px;
+        min-width: 50px;
+        transform: translateX(-50%);
+      }
+      &.is-fail {
+        .step__number {
+          background: @step-item-failed-background-color;
+          border-color: @step-item-failed-border-color;
+          color: @step-item-failed-color;
+          position: relative;
+          &::before {
+            content: 'x';
+            display: block;
+            color: @step-item-failed-icon-color;
+            font-style: normal;
+            font-size: 24px;
+          }
+        }
+      }
+      &.is-success {
+        .step__number {
+          background: @step-item-success-background-color;
+          border-color: @step-item-success-border-color;
+          color: @step-item-success-color;
+        }
+      }
+    }
+  }
+  @media screen and(max-width: 768px) {
+    .steps__line {
+      width: auto;
+      left: 20px;
+      right: 20px;
+    }
+    .steps__main {
+      .step {
+        .step__text {
+          font-size: 12px;
+          width: 80px;
+        }
+      }
+    }
+  }
+}
+</style>

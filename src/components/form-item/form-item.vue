@@ -196,3 +196,81 @@ defineExpose({
   validate,
 })
 </script>
+
+<style lang="less">
+.form-item {
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+  .form-item__label {
+    display: inline-block;
+    box-sizing: border-box;
+    font-size: 16px;
+    color: #000;
+    font-weight: 500;
+    height: 30px;
+    line-height: 30px;
+    &.form-item__label--top {
+      float: none;
+      width: 100%;
+    }
+    &.form-item__label--left,
+    &.form-item__label--right {
+      float: left;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding-right: 10px;
+      &.form-item__label {
+        height: 40px;
+        line-height: 40px;
+      }
+    }
+    &.form-item__label--left {
+      text-align: left;
+    }
+    &.form-item__label--right {
+      text-align: right;
+    }
+  }
+  .form-item__content {
+    position: relative;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+  }
+  .form-item__error {
+    color: @form-item-error-color;
+    font-size: 12px;
+    margin-top: 4px;
+    line-height: 1;
+    opacity: 1;
+    transform: scaleY(1);
+    &.form-item-error-enter-active,
+    &.form-item-error-leave-active {
+      transition: @fade-transition;
+      transform-origin: center top;
+    }
+    &.form-item-error-enter-from,
+    &.form-item-error-leave-to {
+      opacity: 0;
+      transform: scaleY(0);
+    }
+  }
+  .form-item__extra {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6e6e6e;
+  }
+  &.is-error {
+    .input {
+      .input__inner {
+        border-color: @form-item-error-color !important;
+        transition: border 0.3 linear;
+      }
+    }
+  }
+}
+</style>

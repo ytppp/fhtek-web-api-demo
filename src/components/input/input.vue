@@ -384,4 +384,81 @@ const getSuffixVisible = () => {
     }
   }
 }
+.input-group {
+  line-height: normal;
+  display: inline-table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  > .input__inner {
+    vertical-align: middle;
+    display: table-cell;
+  }
+  .input-group__append,
+  .input-group__prepend {
+    background-color: @input-group-background-color;
+    color: @color-info;
+    vertical-align: middle;
+    display: table-cell;
+    position: relative;
+    border: @input-border;
+    border-radius: @input-border-radius;
+    padding: 0 20px;
+    width: 1px;
+    white-space: nowrap;
+
+    &:focus {
+      outline: none;
+    }
+
+    .select,
+    .button {
+      display: inline-block;
+      margin: -10px -20px;
+    }
+
+    button.button,
+    div.select .input__inner,
+    div.select:hover .input__inner {
+      border-color: transparent;
+      background-color: transparent;
+      color: inherit;
+      border-top: 0;
+      border-bottom: 0;
+    }
+
+    .button,
+    .input {
+      font-size: inherit;
+    }
+  }
+  .input-group__prepend {
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .input-group__append {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  &.input-group--prepend {
+    .input__inner {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    .select .input.is-focus .input__inner {
+      border-color: transparent;
+    }
+  }
+  &.input-group--append {
+    .input__inner {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .select .input.is-focus .input__inner {
+      border-color: transparent;
+    }
+  }
+}
 </style>

@@ -55,7 +55,7 @@ const parentNode = computed(() => {
   if (props.isAppendBody) {
     return document.body
   } else if (props.isManual) {
-    return wrapRef.value.parentNode.parentNode  // mount-node's parent node
+    return wrapRef.value.parentNode.parentNode // mount-node's parent node
   } else {
     return wrapRef.value.parentNode
   }
@@ -104,3 +104,35 @@ defineExpose({
   close,
 })
 </script>
+
+<style lang="less">
+.wrap {
+  z-index: 1003;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  &.wrap-enter-active {
+    transition: all 0.3s ease-in;
+  }
+  &.wrap-leave-active {
+    transition: all 0.3s ease-out;
+  }
+  &.wrap-enter-from,
+  &.wrap-leave-to {
+    opacity: 0;
+  }
+  .wrap__mask {
+    z-index: -1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+</style>

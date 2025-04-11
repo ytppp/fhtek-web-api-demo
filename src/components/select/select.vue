@@ -166,6 +166,68 @@ onMounted(() => {
 </script>
 
 <style lang="less">
+.select {
+  position: relative;
+  width: 100%;
+  max-width: @form-item-max-width;
+  .select__caret {
+    transition: transform 0.2s linear;
+    &.is-reverse {
+      transform: rotate(180deg);
+    }
+  }
+  .input {
+    width: 100% !important;
+    max-width: 100% !important;
+    .input__inner {
+      cursor: pointer;
+    }
+  }
+  .select__popup {
+    position: absolute;
+    z-index: 2000;
+    left: -1px;
+    right: -1px;
+    top: 52px;
+    font-size: 14px;
+    max-height: 200px;
+    background: @select-popup-background-color;
+    border-radius: 5px;
+    border: 1px solid @select-popup-border-color;
+    overflow: auto;
+  }
+  .select__popup-item {
+    list-style: none;
+    padding: 17px 10px;
+    line-height: 1;
+    cursor: pointer;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+    &:active {
+      background: @select-item-active-background-color;
+      color: @select-item-active-color;
+    }
+    &:hover {
+      background: @select-item-hover-background-color;
+      color: @select-item-hover-color;
+    }
+    &.is-selected {
+      color: @select-item-selected-color;
+    }
+  }
+  .select__popup-item--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 84px;
+    font-size: 14px;
+    background-color: #fff;
+    color: #999;
+  }
+}
 .select-enter-active,
 .select-leave-active {
   opacity: 1;

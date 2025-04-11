@@ -85,3 +85,67 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="less">
+.upgrade {
+  box-sizing: border-box;
+  text-align: center;
+  background: #fff;
+  padding: 20px 20px 30px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+  .upgrade__img {
+    width: 120px;
+  }
+  .upgrade__title {
+    font-size: 24px;
+    // margin-top: 10px;
+    color: #333;
+  }
+  .upgrade__tip {
+    color: #333;
+    display: block;
+    margin-top: 10px;
+    max-width: 400px;
+    font-size: 16px;
+  }
+}
+
+.progress {
+  margin-top: 20px;
+  width: 300px;
+  display: inline-block;
+  .progress__main {
+    height: 14px;
+    background: @progress-background-color;
+    border-radius: 50px;
+    overflow: hidden;
+  }
+  .progress__bar {
+    float: left;
+    width: 0;
+    height: 100%;
+    border-radius: 50px;
+    font-size: 12px;
+    max-width: 100%;
+    line-height: 20px;
+    overflow: hidden;
+    color: @progress-bar-color;
+    text-align: center;
+    background-color: @primaryColor;
+    transition: width 1s ease;
+    position: relative;
+  }
+  .progress__text {
+    color: #fff;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 8px;
+  }
+}
+</style>

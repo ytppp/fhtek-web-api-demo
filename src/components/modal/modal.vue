@@ -80,3 +80,37 @@ const close = () => {
   popupRef.value.close()
 }
 </script>
+
+<style lang="less">
+.modal {
+  background: @modal-content-background;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 12px 0 @modal-shadow-color;
+  box-sizing: border-box;
+  .modal__header {
+    font-size: 16px;
+    font-weight: bold;
+    padding-bottom: 20px;
+    position: relative;
+  }
+  .modal__close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+  }
+  .modal__body {
+  }
+  .modal__footer {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+    padding-top: 30px;
+  }
+  @media screen and (max-width: 768px) {
+    width: 90% !important;
+    padding: 20px;
+  }
+}
+</style>
