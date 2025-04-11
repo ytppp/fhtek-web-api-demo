@@ -24,6 +24,7 @@ export default defineConfigWithVueTs(
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      'vue/return-in-computed-property': 'off',
     },
   },
 )

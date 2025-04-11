@@ -1,31 +1,80 @@
 <template>
-  <div style="height: 200px; width: 200px; border: solid 1px red" v-loading="uploading">
-    loading
-  </div>
-  <fh-button @click="toggleLoading">切换loading</fh-button>
-  <fh-button @click="openDialog">消息弹框</fh-button>
-  <fh-button @click="openDialog2">提示弹框2</fh-button>
-  <fh-button @click="() => toggleVisible(true)">打开Modal</fh-button>
-  <div style="height: 400px; width: 400px; position: relative; border: solid 1px red">
-    <fh-modal v-model="visible" width="25%" :is-append-body="false">
-      <template #body>
-        <h2 class="signin-modal__title">{{ $t('trans0624') }}</h2>
-        <p class="signin-modal__content">{{ $t('trans0625') }}</p>
-      </template>
-      <template #footer>
-        <div class="signin-modal__action">
-          <fh-button type="text" @click="() => toggleVisible(false)">
-            {{ $t('trans0626') }}
-          </fh-button>
+  <div>
+    <fh-form :model="form">
+      <fh-radio-group v-model="form.onlineWay" @change="changeOnlineWay">
+        <fh-radio name="Mode" v-for="mode in onlineWays" :key="mode.value" :label="mode.value">
+          {{ mode.text }}
+        </fh-radio>
+      </fh-radio-group>
+      <fh-form-item :label="$t('trans0555')">
+        <div>
+          <div>
+            <fh-checkbox style="width: 70px" v-model="checkAll" @change="selectAll">{{
+              $t('trans0514')
+            }}</fh-checkbox>
+          </div>
+          <fh-checkbox-group v-model="form.weekdays">
+            <fh-checkbox
+              style="width: 70px"
+              v-for="schedule in schedulesList"
+              :key="schedule.value"
+              :label="schedule.value"
+            >
+              {{ schedule.label }}
+            </fh-checkbox>
+          </fh-checkbox-group>
         </div>
+      </fh-form-item>
+      <fh-form-item label="时间选择">
+        <fh-time-picker v-model="form.time_begin" />
+      </fh-form-item>
+    </fh-form>
+    <fh-popover title="popover弹框内容" trigger="click">click popover弹框</fh-popover>
+    <fh-button @click="toggleLoading">切换loading</fh-button>
+    <div style="height: 200px; width: 200px; border: solid 1px red" v-loading="uploading">
+      loading
+    </div>
+    <fh-step :option="stepOption"></fh-step>
+    <fh-button @click="openDialog">消息弹框</fh-button>
+    <fh-button @click="openDialog2">提示弹框2</fh-button>
+    <fh-button @click="() => toggleVisible(true)">打开Modal</fh-button>
+    <div style="height: 400px; width: 400px; position: relative; border: solid 1px red">
+      <fh-modal v-model="visible" width="25%" :is-append-body="false">
+        <template #body>
+          <h2 class="signin-modal__title">{{ $t('trans0624') }}</h2>
+          <p class="signin-modal__content">{{ $t('trans0625') }}</p>
+        </template>
+        <template #footer>
+          <div class="signin-modal__action">
+            <fh-button type="text" @click="() => toggleVisible(false)">
+              {{ $t('trans0626') }}
+            </fh-button>
+          </div>
+        </template>
+      </fh-modal>
+    </div>
+    <fh-table :columns="columns" :data-source="tableData">
+      <template #title> 标题 </template>
+      <template #operationgroup>
+        <fh-button size="small">新增</fh-button>
+        <fh-button size="small" @click="del">删除</fh-button>
       </template>
-    </fh-modal>
+      <template #operation="scope">
+        <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
+        <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
+        <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
+        <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
+      </template>
+      <template #footer> footer </template>
+    </fh-table>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, inject } from 'vue'
+import { ref, inject, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
+import FhPopover from '@/components/popover/popover.vue'
+import FhSwitch from '@/components/switch/switch.vue'
 
 defineOptions({
   name: 'HomePage',
@@ -35,6 +84,147 @@ const { t } = useI18n()
 const dialog = inject('dialog')
 const uploading = ref(false)
 const visible = ref(false)
+const checkAll = ref(false)
+const switchVisible = ref(false)
+const Weeks = {
+  mon: '1',
+  tue: '2',
+  wed: '3',
+  thu: '4',
+  fri: '5',
+  sat: '6',
+  sun: '7',
+}
+const OnlineWay = {
+  pppoe: '2',
+  dhcp: '0',
+  static: '1',
+  bridge: '3',
+}
+const form = reactive({
+  weekdays: [],
+  onlineWay: OnlineWay.dhcp,
+  time_begin: '00:00',
+})
+const onlineWays = [
+  {
+    value: OnlineWay.pppoe,
+    text: t('trans0081'),
+  },
+  {
+    value: OnlineWay.dhcp,
+    text: t('trans0082'),
+  },
+  {
+    value: OnlineWay.static,
+    text: t('trans0084'),
+  },
+]
+const stepOption = {
+  current: 0,
+  steps: [
+    {
+      text: t('trans0577'),
+      success: true,
+    },
+    {
+      text: t('trans0578'),
+      success: true,
+    },
+    {
+      text: t('trans0579'),
+      success: true,
+    },
+    {
+      text: t('trans0580'),
+      success: true,
+    },
+  ],
+}
+const schedulesList = [
+  {
+    value: Weeks.sun,
+    label: t('trans0663'),
+  },
+  {
+    value: Weeks.mon,
+    label: t('trans0515'),
+  },
+  {
+    value: Weeks.tue,
+    label: t('trans0525'),
+  },
+  {
+    value: Weeks.wed,
+    label: t('trans0526'),
+  },
+  {
+    value: Weeks.thu,
+    label: t('trans0527'),
+  },
+  {
+    value: Weeks.fri,
+    label: t('trans0600'),
+  },
+  {
+    value: Weeks.sat,
+    label: t('trans0601'),
+  },
+]
+const tableData = [
+  {
+    url: 'www.baidu.com',
+    title: '百度一下',
+  },
+  {
+    url: 'www.baidu.com',
+    title: '百度',
+  },
+  {
+    url: 'www.baidu.com',
+    title: '百度',
+  },
+]
+const columns = [
+  {
+    key: 'url',
+    title: 'url',
+    width: 200,
+    render: (h, params) => {
+      return h(FhPopover, null, {
+        default: () => params.row.url,
+        content: () => h('div', '内容内容内容内容1231'),
+      })
+    },
+  },
+  {
+    key: 'title',
+    title: 'title',
+    width: 200,
+    render: (h, params) => {
+      return h(FhSwitch, {
+        value: switchVisible.value,
+        onChange: () => {
+          switchVisible.value = !switchVisible.value
+        },
+      })
+    },
+  },
+]
+const selectAll = (val) => {
+  if (val) {
+    Object.assign(form, {
+      weekdays: [Weeks.sun, Weeks.mon, Weeks.tue, Weeks.wed, Weeks.thu, Weeks.fri, Weeks.sat],
+    })
+  } else {
+    Object.assign(form, {
+      weekdays: [],
+    })
+  }
+}
+const changeOnlineWay = (val) => {
+  console.log(val)
+}
 
 const toggleLoading = () => {
   uploading.value = !uploading.value
@@ -67,5 +257,9 @@ const openDialog2 = () => {
     .catch(() => {
       console.log('confirm catch')
     })
+}
+const del = () => {}
+const operation = (scope) => {
+  console.log(scope)
 }
 </script>

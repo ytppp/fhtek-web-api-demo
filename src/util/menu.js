@@ -36,6 +36,12 @@ let menus = [
     config: strategyB,
   },
   {
+    url: '/wifi',
+    text: 'trans0017',
+    icon: 'icon-wifi',
+    config,
+  },
+  {
     url: '/more',
     text: 'trans0016',
     icon: 'icon-ellipsis',
@@ -51,7 +57,18 @@ let menus = [
         children: [
           {
             url: '/more/network/lan',
-            text: 'trans0456',
+            text: 'trans0156',
+            config,
+          },
+        ],
+      },
+      {
+        url: '/safety',
+        text: 'trans0031',
+        children: [
+          {
+            url: '/more/safety/firewall',
+            text: 'trans0060',
             config,
           },
         ],

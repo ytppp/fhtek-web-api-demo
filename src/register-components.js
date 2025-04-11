@@ -13,6 +13,14 @@ import FhMenu from './components/menu/menu.vue'
 import FhDrawer from './components/drawer/drawer.vue'
 import FhAlert from './components/alert/alert.vue'
 import FhUpload from './components/upload/upload.vue'
+import FhCheckbox from './components/checkbox/checkbox.vue'
+import FhCheckboxGroup from './components/checkbox/checkbox-group.vue'
+import FhRadio from './components/radio/radio.vue'
+import FhRadioGroup from './components/radio/radio-group.vue'
+import FhPopover from './components/popover/popover.vue'
+import FhTimePicker from './components/time-picker/time-picker.vue'
+import FhStep from './components/step/step.vue'
+import FhTable from './components/table/table.vue'
 
 import clickoutside from './components/directives/clickoutside.js'
 import vloading from './components/directives/loading.js'
@@ -39,6 +47,14 @@ const registerComponents = (app) => {
   app.component('FhMenu', FhMenu)
   app.component('FhAlert', FhAlert)
   app.component('FhUpload', FhUpload)
+  app.component('FhCheckbox', FhCheckbox)
+  app.component('FhCheckboxGroup', FhCheckboxGroup)
+  app.component('FhRadio', FhRadio)
+  app.component('FhRadioGroup', FhRadioGroup)
+  app.component('FhPopover', FhPopover)
+  app.component('FhTimePicker', FhTimePicker)
+  app.component('FhStep', FhStep)
+  app.component('FhTable', FhTable)
 
   app.directive('clickoutside', clickoutside)
   app.directive('loading', vloading)

@@ -42,3 +42,27 @@ export const getIpv6Wan = (): Promise<ApiResponse<any>> => {
 export const setIpv6Wan = (params): Promise<ApiResponse<any>> => {
   return http.post('SetWan6', createData(params))
 }
+
+export const getWifi2g = (): Promise<ApiResponse<any>> => {
+  return http.get('GetWifi2g')
+}
+
+export const setWifi2g = (params): Promise<ApiResponse<any>> => {
+  return http.post('SetWifi2g', createData(params))
+}
+
+export const getWifi5g = (): Promise<ApiResponse<any>> => {
+  return http.get('GetWifi5g')
+}
+
+export const setWifi5g = (params): Promise<ApiResponse<any>> => {
+  return http.post('SetWifi5g', createData(params))
+}
+
+export const getIpv6Lan = (): Promise<ApiResponse<any>> => {
+  return http.get('GetLan6')
+}
+
+export const setIpv6Lan = (params): Promise<ApiResponse<any>> => {
+  return http.post('SetLan6', createData(params), { loading: false, toast: false })
+}

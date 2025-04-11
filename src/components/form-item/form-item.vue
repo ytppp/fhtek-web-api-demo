@@ -40,7 +40,7 @@ import { ref, computed, provide, inject, useSlots } from 'vue'
 import LabelWrap from './label-wrap.vue'
 
 defineOptions({
-  name: 'FhButton',
+  name: 'FormItem',
   componentName: 'FormItem',
 })
 
@@ -73,14 +73,14 @@ const formItemRef = ref(null)
 const validateMessage = ref('')
 const computedLabelWidth = ref('')
 const result = ref(null) // null表示没有进行校验，true通过，false未通过
-const parent = inject('form', {})
+const form = inject('form', {})
 const registerFormItem = inject('registerFormItem')
 
 const labelWidthCom = computed(() => {
-  return props.labelWidth || parent.labelWidth.value
+  return props.labelWidth || form.labelWidth.value
 })
 const labelPositionCom = computed(() => {
-  return props.labelPosition || parent.labelPosition.value
+  return props.labelPosition || form.labelPosition.value
 })
 const labelStyle = computed(() => {
   const ret = {}
@@ -98,8 +98,8 @@ const contentStyle = computed(() => {
     // don't konw how to do
     if (props.labelWidth === 'auto') {
       ret.marginLeft = computedLabelWidth.value
-    } else if (parent.labelWidth.value === 'auto') {
-      ret.marginLeft = parent.autoLabelWidth.value
+    } else if (form.labelWidth.value === 'auto') {
+      ret.marginLeft = form.autoLabelWidth.value
     }
   } else {
     ret.marginLeft = labelWidthCom.value
@@ -143,13 +143,13 @@ const getValueByPath = (obj, path) => {
 }
 const validate = () => {
   if (props.prop && formItemRef.value) {
-    const rules = parent.rules.value || {}
+    const rules = form.rules.value || {}
     const prop = props.prop
     let validators = rules[prop] || []
     if (props.rules) {
       validators = validators.concat(props.rules)
     }
-    const value = getValueByPath(parent.model.value, props.prop)
+    const value = getValueByPath(form.model.value, props.prop)
     let this_result = true
     if (validators && validators.length) {
       for (let j = 0; j < validators.length; j++) {

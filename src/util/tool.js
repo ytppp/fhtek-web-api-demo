@@ -381,3 +381,22 @@ export function isValidIpv6Dns(value) {
   }
   return flag
 }
+export const isReal = (value) => {
+  value = Number(value)
+  return value === 0 ? true : !!value
+}
+export function isValidInteger(value, min, max) {
+  let flag = true
+  const reg = /^(\+|-)?[0-9]\d*$/
+  const val = Number(value)
+  if (!reg.test(value)) {
+    flag = false
+  }
+  if (isReal(min) && val < min) {
+    flag = false
+  }
+  if (isReal(max) && val > max) {
+    flag = false
+  }
+  return flag
+}

@@ -25,8 +25,8 @@ defineOptions({
   name: 'FhButton',
 })
 
-const form = inject('form', {})
-const formItem = inject('formItem', {})
+const form = inject('form', null)
+const formItem = inject('formItem', null)
 
 const props = defineProps({
   disabled: {
@@ -50,7 +50,7 @@ const props = defineProps({
   id: String,
 })
 const model = defineModel({
-  type: [String, Number],
+  type: [Boolean, String, Number],
   default: '',
 })
 const emit = defineEmits(['change', 'input'])
@@ -63,7 +63,7 @@ const switchDisabled = computed(() => {
 })
 
 const handleChange = () => {
-  model.value = checked.value ? props.inactiveValue : props.activeValue
+  model.value = model.value === props.activeValue ? props.inactiveValue : props.activeValue
   emit('input', model.value)
   emit('change', model.value)
 }
