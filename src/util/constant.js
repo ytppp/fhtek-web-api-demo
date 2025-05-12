@@ -28,3 +28,15 @@ export const IP = {
   IPv6: 'IPv6',
   mix: 'IPv4/IPv6',
 }
+
+export const ProtocolType = {
+  ALL: 'TCP/UDP',
+  TCP: 'TCP',
+  UDP: 'UDP',
+  ICMP: 'ICMP',
+}
+
+export const EnableStatus = {
+  yes: '1',
+  no: '0',
+}

@@ -1,6 +1,7 @@
 import { http } from './index'
 import type { ApiResponse } from './type'
 
+const api = 'api'
 const createData = (data: any) => ({ data })
 
 export const login = (params): Promise<ApiResponse<any>> => {
@@ -12,11 +13,20 @@ export const logout = (): Promise<ApiResponse<any>> => {
 }
 
 export const getLan = (): Promise<ApiResponse<any>> => {
-  return http.get('GetLanIp')
+  return http.post(api, {
+    method: 'dhcp:get',
+  })
 }
 
 export const setLan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetLanIp', createData(params))
+  return http.post(
+    api,
+    {
+      method: 'dhcp:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const upload = (params, onprogressCallback): Promise<ApiResponse<any>> => {
@@ -28,35 +38,55 @@ export const getUpgradeStatus = (): Promise<ApiResponse<any>> => {
 }
 
 export const getWan = (): Promise<ApiResponse<any>> => {
-  return http.get('GetWan')
+  return http.post(api, {
+    method: 'wanv4:get',
+  })
 }
 
 export const setWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWan', createData(params))
+  return http.post(api, {
+    method: 'wanv4:edit',
+    data: params,
+  })
 }
 
 export const getIpv6Wan = (): Promise<ApiResponse<any>> => {
-  return http.get('GetWan6')
+  return http.post(api, {
+    method: 'wanv6:get',
+  })
 }
 
 export const setIpv6Wan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWan6', createData(params))
+  return http.post(api, {
+    method: 'wanv6:edit',
+    data: params,
+  })
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
-  return http.get('GetWifi2g')
+  return http.post(api, {
+    method: 'wifi2g:get',
+  })
 }
 
 export const setWifi2g = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWifi2g', createData(params))
+  return http.post(api, {
+    method: 'wifi2g:edit',
+    data: params,
+  })
 }
 
 export const getWifi5g = (): Promise<ApiResponse<any>> => {
-  return http.get('GetWifi5g')
+  return http.post(api, {
+    method: 'wifi5g:get',
+  })
 }
 
 export const setWifi5g = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWifi5g', createData(params))
+  return http.post(api, {
+    method: 'wifi5g:edit',
+    data: params,
+  })
 }
 
 export const getIpv6Lan = (): Promise<ApiResponse<any>> => {
@@ -64,5 +94,65 @@ export const getIpv6Lan = (): Promise<ApiResponse<any>> => {
 }
 
 export const setIpv6Lan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetLan6', createData(params), { loading: false, toast: false })
+  return http.post('SetLan6', createData(params), { loading: false })
+}
+
+export const getPortMapping = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.port_mapping:get',
+  })
+}
+
+export const setPortMapping = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.port_mapping:add',
+    data: params,
+  })
+}
+
+export const editPortMapping = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.port_mapping:edit',
+    data: params,
+  })
+}
+
+export const delPortMapping = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.port_mapping:delete',
+    data: params,
+  })
+}
+
+export const getDmz = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.dmz:get',
+  })
+}
+
+export const setDmz = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.dmz:edit',
+    data: params,
+  })
+}
+
+export const getWanList = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wan.info:get',
+    data: params,
+  })
+}
+
+export const setFirewall = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall:edit',
+    data: params,
+  })
+}
+
+export const getFirewall = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall:get',
+  })
 }

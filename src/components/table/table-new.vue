@@ -23,15 +23,25 @@
             <th
               class="table-main__cell table-main__checkbox"
               :class="{
-                'table-main__cell--fixed table-main__cell--fixed-left table-main__cell--fixed-left-last':
-                  isFixedLeft,
+                'table-main__cell--fixed': isFixedRowCheckboxLeft,
+                'table-main__cell--fixed-left-last': isFixedRowCheckboxLeftLast,
               }"
+              :style="`${isFixedRowCheckboxLeft ? 'position: sticky; left: 0' : ''}`"
               ref="checkboxCol"
               v-if="isShowRowCheckbox"
             >
               <div class="com-cell" :style="cellStyle"></div>
             </th>
-            <th class="table-main__cell table-main__index" v-if="isShowIndex">
+            <th
+              class="table-main__cell table-main__index"
+              :class="{
+                'table-main__cell--fixed': isFixedRowIndexLeft,
+                'table-main__cell--fixed-left-last': isFixedRowIndexLeftLast,
+              }"
+              :style="`${isFixedRowIndexLeft ? `position: sticky; left: ${isShowRowCheckbox && isShowIndex ? '50px' : '0'}` : ''}`"
+              ref="indexCol"
+              v-if="isShowIndex"
+            >
               <div class="com-cell" :style="cellStyle">{{ $t('trans0454') }}</div>
             </th>
             <th
@@ -70,16 +80,25 @@
               <td
                 class="table-main__cell table-main__checkbox"
                 :class="{
-                  'table-main__cell--fixed table-main__cell--fixed-left table-main__cell--fixed-left-last':
-                    isFixedLeft,
+                  'table-main__cell--fixed': isFixedRowCheckboxLeft,
+                  'table-main__cell--fixed-left-last': isFixedRowCheckboxLeftLast,
                 }"
+                :style="`${isFixedRowCheckboxLeft ? 'position: sticky; left: 0' : ''}`"
                 v-if="isShowRowCheckbox"
               >
                 <div class="com-cell" :style="cellStyle">
                   <fh-checkbox @change="(val) => select(val, item)" />
                 </div>
               </td>
-              <td class="table-main__cell table-main__index" v-if="isShowIndex">
+              <td
+                class="table-main__cell table-main__index"
+                :class="{
+                  'table-main__cell--fixed': isFixedRowIndexLeft,
+                  'table-main__cell--fixed-left-last': isFixedRowIndexLeftLast,
+                }"
+                :style="`${isFixedRowIndexLeft ? `position: sticky; left: ${isShowRowCheckbox && isShowIndex ? '50px' : '0'}` : ''}`"
+                v-if="isShowIndex"
+              >
                 <div class="com-cell" :style="cellStyle">{{ index + 1 }}</div>
               </td>
               <td
@@ -126,7 +145,7 @@
 
 <script>
 export default {
-  name: 'FhTable',
+  name: 'FhTableNew',
   props: {
     columns: {
       type: Array,
@@ -138,6 +157,10 @@ export default {
     },
     title: String,
     footer: String,
+    showRowCheckbox: {
+      type: Boolean,
+      default: true,
+    },
     showIndex: {
       type: Boolean,
       default: true,
@@ -159,10 +182,6 @@ export default {
       default: true,
     },
     showHeader: {
-      type: Boolean,
-      default: true,
-    },
-    showRowCheckbox: {
       type: Boolean,
       default: true,
     },
@@ -188,7 +207,19 @@ export default {
   },
   computed: {
     isFixedLeft() {
-      return this.fixed && this.isShowScroll && this.showRowCheckbox && this.isScrollRight
+      return this.isShowScroll && this.isScrollRight
+    },
+    isFixedRowCheckboxLeft() {
+      return this.isFixedLeft && this.isShowRowCheckbox
+    },
+    isFixedRowCheckboxLeftLast() {
+      return this.isShowIndex === false && this.isShowRowCheckbox
+    },
+    isFixedRowIndexLeft() {
+      return this.isFixedLeft && this.isShowIndex
+    },
+    isFixedRowIndexLeftLast() {
+      return this.isShowIndex
     },
     isFixedRight() {
       return this.fixed && this.isShowScroll && this.$slots.operation && this.isScrollLeft
@@ -222,6 +253,9 @@ export default {
       total += this.columns.length
       return total
     },
+    hasGroupHeaders() {
+      return this.columns.some((col) => Array.isArray(col.children) && col.children.length > 0)
+    },
   },
   watch: {
     dataSource(val, oldVal) {
@@ -245,12 +279,15 @@ export default {
         return
       }
       const offset = 20
-      let offsetLeft = 0
       let offsetRight = 0
+      let fixedElClientWidth = 0
       if (this.$refs.checkboxCol) {
-        const checkboxColClientWidth = this.$refs.checkboxCol.clientWidth
-        offsetLeft = Math.min(checkboxColClientWidth, offset)
+        fixedElClientWidth += this.$refs.checkboxCol.clientWidth
       }
+      if (this.$refs.indexCol) {
+        fixedElClientWidth += this.$refs.indexCol.clientWidth
+      }
+      const offsetLeft = Math.min(fixedElClientWidth, offset)
       if (this.$refs.headerOperationCol) {
         const operationColClientWidth = this.$refs.headerOperationCol.clientWidth
         offsetRight = Math.min(operationColClientWidth, offset)
@@ -382,24 +419,20 @@ export default {
       color: #262626;
       border-bottom: 1px solid #c9c9c9;
       &.table-main__cell--fixed {
-        position: sticky;
         z-index: 2;
         background-color: @table-background-color;
-        &.table-main__cell--fixed-left {
-          left: -1px;
-          &.table-main__cell--fixed-left-last {
-            &::after {
-              position: absolute;
-              top: 0;
-              right: 0;
-              bottom: -1px;
-              width: 30px;
-              transform: translate(100%);
-              transition: box-shadow 0.3s;
-              content: '';
-              pointer-events: none;
-              box-shadow: inset 10px 0 8px -8px #ccc;
-            }
+        &.table-main__cell--fixed-left-last {
+          &::after {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: -1px;
+            width: 30px;
+            transform: translate(100%);
+            transition: box-shadow 0.3s;
+            content: '';
+            pointer-events: none;
+            box-shadow: inset 10px 0 8px -8px #ccc;
           }
         }
         &.table-main__cell--fixed-right {

@@ -14,7 +14,10 @@
       checked
       @keydown.enter="switchValue"
     />
-    <span class="switch__inner" :class="{ 'is-checked': checked, 'is-disabled': disabled }"></span>
+    <span
+      class="switch__inner"
+      :class="{ 'is-checked': checked, 'is-disabled': switchDisabled }"
+    ></span>
   </div>
 </template>
 
@@ -63,9 +66,10 @@ const switchDisabled = computed(() => {
 })
 
 const handleChange = () => {
-  model.value = model.value === props.activeValue ? props.inactiveValue : props.activeValue
-  emit('input', model.value)
-  emit('change', model.value)
+  const newValue = model.value === props.activeValue ? props.inactiveValue : props.activeValue
+  model.value = newValue
+  emit('input', newValue)
+  emit('change', newValue)
 }
 const switchValue = () => {
   !switchDisabled.value && handleChange()

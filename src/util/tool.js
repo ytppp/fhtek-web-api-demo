@@ -400,3 +400,43 @@ export function isValidInteger(value, min, max) {
   }
   return flag
 }
+
+export function isValidVal(val, minLen, maxLen) {
+  let len = val.trim().length
+  if (!len) {
+    return false
+  }
+  if (minLen && len < minLen) {
+    return false
+  }
+  if (maxLen && len > maxLen) {
+    return false
+  }
+  return isValidName(val)
+}
+
+function isValidName(name) {
+  for (let i = 0; i < name.length; i++) {
+    if (isNameUnsafe(name.charAt(i)) == true) {
+      return false
+    }
+  }
+  return true
+}
+function isNameUnsafe(compareChar) {
+  // include space
+  let unsafeString = '"<>%\\^[]`+$,=\'#&:\t'
+  if (
+    unsafeString.indexOf(compareChar) == -1 &&
+    compareChar.charCodeAt(0) >= 32 &&
+    compareChar.charCodeAt(0) < 123
+  ) {
+    return false // no found unsafe chars, return false
+  } else {
+    return true
+  }
+}
+
+export function isObjExistVal(obj, val) {
+  return Object.keys(obj).some(key => obj[key] === val);
+}

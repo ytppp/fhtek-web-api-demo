@@ -77,6 +77,7 @@ import {
   isValidGatewayIP,
   getSubNetwork,
 } from '@/util/tool'
+import { EnableStatus } from '@/util/constant'
 import { getLan, setLan, getIpv6Lan, setIpv6Lan } from '@/http/api'
 
 defineOptions({
@@ -99,13 +100,9 @@ const { t } = useI18n()
 const dialog = inject('dialog')
 const loading = inject('loading')
 enum Leases {
-  oneHour = 1,
-  oneDay = 24,
-  oneWeek = 24 * 7,
-}
-enum EnableStatus {
-  yes = 1,
-  no = 0,
+  oneHour = 1 * 60,
+  oneDay = 24 * 60,
+  oneWeek = 7 * 24 * 60,
 }
 enum Mode {
   slaac = 'slaac',
@@ -254,9 +251,6 @@ const rules = reactive({
     },
   ],
 })
-const ipOffset = computed(() => {
-  return Number(getIpAfter(form.ip_end)) - Number(getIpAfter(form.ip_start)) + 1
-})
 const isEnable = computed(() => {
   return form.enable === EnableStatus.yes
 })
@@ -264,13 +258,15 @@ const isIpChanged = computed(() => ipOrigin.value !== form.ip)
 
 function getLanData() {
   getLan().then(({ data }) => {
-    const { enable, ip, mask, ip_start, ip_offset, lease } = data
+    const { lan, dhcp } = data
+    const { ip, mask } = lan
+    const { enable, ip_start, ip_offset, lease } = dhcp
     Object.assign(form, {
       enable,
       ip,
       mask,
-      ip_start,
-      ip_end: `${getIpBefore(ip_start)}${Number(getIpAfter(ip_start)) + Number(ip_offset) - 1}`,
+      ip_start: `${getIpBefore(ip)}${ip_start}`,
+      ip_end: `${getIpBefore(ip)}${Number(ip_start) + Number(ip_offset)}`,
       lease: Number(lease),
     })
     ipOrigin.value = form.ip
@@ -319,24 +315,31 @@ const ipStartChange = () => {
 }
 const save = () => {
   if (formRef.value.validate()) {
-    const freq = isIpChanged.value ? 20 * 1000 : 2000
+    loading.open()
     setLan({
-      enable: form.enable,
-      ip: form.ip,
-      mask: form.mask,
-      ip_start: form.ip_start,
-      ip_offset: ipOffset.value,
-      lease: form.lease,
-    }).then(() => {
-      setTimeout(() => {
-        if (isIpChanged.value) {
-          console.log('isIpChanged')
-          if (!import.meta.env.DEV) {
-            window.location.href = `http://${form.ip}/index.html#/login`
-          }
-        }
-      }, freq)
+      lan: {
+        ip: form.ip,
+        mask: form.mask,
+      },
+      dhcp: {
+        enable: form.enable,
+        ip_start: getIpAfter(form.ip_start),
+        ip_offset: `${Number(getIpAfter(form.ip_end)) - Number(getIpAfter(form.ip_start))}`,
+        lease: form.lease,
+      },
     })
+      .then(() => {})
+      .catch(() => {})
+      .finally(() => {
+        setTimeout(() => {
+          loading.close()
+          if (isIpChanged.value) {
+            if (!import.meta.env.DEV) {
+              window.location.href = `http://${form.ip}/index.html#/login`
+            }
+          }
+        }, 5000)
+      })
   }
 }
 const saveIpv6 = () => {

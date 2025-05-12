@@ -19,7 +19,6 @@
         class="radio__original"
         :value="label"
         type="radio"
-        aria-hidden="true"
         v-model="model"
         @change="handleChange"
         :name="name"

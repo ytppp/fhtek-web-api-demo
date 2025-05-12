@@ -112,4 +112,3 @@ export default {
   width: 350px;
 }
 </style>
-@/http/v1.index.js

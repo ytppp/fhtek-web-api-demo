@@ -503,6 +503,7 @@ const wifi = reactive({
   channel: Channels24G.auto,
   bandWidth: BandWidths.hT20,
 })
+const wifiEnable = ref(false)
 const b5gWifi = reactive({
   enable: EnableStatus.no,
   hide: EnableStatus.no,
@@ -513,6 +514,7 @@ const b5gWifi = reactive({
   channel: Channels24G.auto,
   bandWidth: BandWidths.hT20,
 })
+const b5gWifiEnable = ref(false)
 const rules = reactive({
   ssid: [
     {
@@ -655,28 +657,20 @@ const b5gChannels = computed(() => {
 })
 
 const switchEnable = (band, val) => {
-  if (val === EnableStatus.no) {
-    if (band == Bands.b24g) {
-      wifi.enable = EnableStatus.yes
-    }
-    if (band == Bands.b5g) {
-      b5gWifi.enable = EnableStatus.yes
-    }
-  } else {
+  let flag = true
+  if (band == Bands.b24g) {
+    flag = wifiEnable.value
+  } else if (band == Bands.b5g) {
+    flag = b5gWifiEnable.value
+  }
+  if (flag && !val) {
     dialog
       .confirm({
         okText: t('trans0019'),
         cancelText: t('trans0020'),
         message: t('trans0025'),
       })
-      .then(() => {
-        if (band == Bands.b24g) {
-          wifi.enable = EnableStatus.no
-        }
-        if (band == Bands.b5g) {
-          b5gWifi.enable = EnableStatus.no
-        }
-      })
+      .then(() => {})
       .catch(() => {
         if (band == Bands.b24g) {
           wifi.enable = EnableStatus.yes
@@ -705,6 +699,7 @@ const getWifi2gData = () => {
     if (Channels24G.auto === data.wl_channel_2g) {
       getB24CurrentChannel.value = data.wl_channel_2g_current
     }
+    wifiEnable.value = wifi.enable === EnableStatus.yes
   })
 }
 const getWifi5gData = () => {
@@ -720,6 +715,7 @@ const getWifi5gData = () => {
     if (Channels5G.auto === data.wl_channel_5g) {
       getB5CurrentChannel.value = data.wl_channel_5g_current
     }
+    b5gWifiEnable.value = wifi.enable === EnableStatus.yes
   })
 }
 const saveb24g = () => {

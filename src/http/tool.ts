@@ -4,6 +4,7 @@ import { router } from '@/router/index'
 import { translate } from '@/i18n/index'
 import loading from '@/components/loading/index.js'
 import toast from '@/components/toast/index.js'
+import { format } from '@/util/tool'
 
 // 获取token
 export function getToken(): string {
@@ -61,53 +62,53 @@ const startLoading = () => {
 
 //结束loading
 const endLoading = () => {
-  loading.close()
-  // setTimeout(() => {
-  //   loading.close()
-  // }, 500)
+  // loading.close()
+  setTimeout(() => {
+    loading.close()
+  }, 500)
 }
 
 // 处理HTTP状态码
 export function checkStatus(error: TAxiosError): void {
   const status = error.response?.status
-  let message = '未知错误'
+  let message = translate('trans0681')
   switch (status) {
     case 400:
-      message = '请求错误(400)'
+      message = translate('trans0682')
       break
     case 401:
-      message = '未授权，请重新登录(401)'
+      message = translate('trans0683')
       // 这里可以处理登出逻辑
       break
     case 403:
-      message = '拒绝访问(403)'
+      message = translate('trans0684')
       break
     case 404:
-      message = '请求出错(404)'
+      message = translate('trans0685')
       break
     case 408:
-      message = '请求超时(408)'
+      message = translate('trans0686')
       break
     case 500:
-      message = '服务器错误(500)'
+      message = translate('trans0687')
       break
     case 501:
-      message = '服务未实现(501)'
+      message = translate('trans0688')
       break
     case 502:
-      message = '网络错误(502)'
+      message = translate('trans0689')
       break
     case 503:
-      message = '服务不可用(503)'
+      message = translate('trans0690')
       break
     case 504:
-      message = '网络超时(504)'
+      message = translate('trans0691')
       break
     case 505:
-      message = 'HTTP版本不受支持(505)'
+      message = translate('trans0692')
       break
     default:
-      message = `连接出错(${status})!`
+      message = translate(format('trans0693', [status]))
   }
   if (error.config.toast) {
     toast(message)
@@ -116,12 +117,12 @@ export function checkStatus(error: TAxiosError): void {
 
 // 处理错误信息
 export function handleNetworkError(error: TAxiosError): void {
-  let message = '未知错误'
+  let message = translate('trans0681')
   if (error.message) {
     if (error.message.includes('timeout')) {
-      message = '网络请求超时'
+      message = translate('trans0694')
     } else if (error.message.includes('Network Error')) {
-      message = '网络连接错误'
+      message = translate('trans0695')
     } else {
       message = error.message
     }
@@ -147,27 +148,27 @@ export function handleBusinessError(response: any): boolean {
       flag = false
       break
     case ResultEnum.NOAUTH:
-      message = data.msg || '用户名或密码错误'
+      message = data.msg || translate('trans0696')
       break
     case ResultEnum.OVERDUE:
-      message = data.msg || '登录已过期，请重新登录'
+      message = data.msg || translate('trans0697')
       router.push('/login')
       break
     case ResultEnum.INVALIDSESSION:
-      message = data.msg || '用户未登录'
+      message = data.msg || translate('trans0698')
       router.push('/login')
       break
     case ResultEnum.INVALIDJSON:
-      message = data.msg || '无效的JSON格式'
+      message = data.msg || translate('trans0699')
       break
     case ResultEnum.HASLOGIN:
-      message = data.msg || '用户已登录'
+      message = data.msg || translate('trans0012')
       break
     case ResultEnum.INVALIDFILE:
-      message = data.msg || '无效的文件格式'
+      message = data.msg || translate('trans0700')
       break
     default:
-      message = data.msg || '请求失败'
+      message = data.msg || translate('trans0701')
   }
   if (config.toast && message.length) {
     toast(message)

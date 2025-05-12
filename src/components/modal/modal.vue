@@ -2,6 +2,7 @@
   <fh-popup
     :close-on-click-wrap="closeOnClickWrap"
     :is-append-body="isAppendBody"
+    :before-close="beforeClose"
     v-model:visible="model"
     ref="popupRef"
   >

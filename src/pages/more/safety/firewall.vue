@@ -6,7 +6,16 @@
     <div class="page__content">
       <fh-form class="form" ref="formRef" :model="form">
         <fh-form-item :label="$t('trans0060')" label-position="left">
-          <fh-switch v-model="form.enable" @change="switchEnable"> </fh-switch>
+          <fh-switch
+            v-model="form.enable"
+            @change="switchEnable"
+            :active-value="EnableStatus.yes"
+            :inactive-value="EnableStatus.no"
+          >
+          </fh-switch>
+        </fh-form-item>
+        <fh-form-item :label="$t('trans0703')" label-position="left">
+          <div>{{ currentLevel }}</div>
         </fh-form-item>
         <fh-form-item :label="$t('trans0037')" v-if="form.enable">
           <fh-select v-model="form.level" :options="securityLevels"> </fh-select>
@@ -24,6 +33,8 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { setFirewall, getFirewall } from '@/http/api'
+import { EnableStatus } from '@/util/constant'
 
 enum SecurityLevels {
   disable = 'disable',
@@ -59,12 +70,13 @@ const securityLevels = [
 ]
 const formRef = ref(null)
 const form = reactive({
-  enable: false,
+  enable: EnableStatus.yes,
   level: SecurityLevels.disable,
 })
 const formEnable = ref(false)
+const currentLevel = ref(SecurityLevels.disable)
 const switchEnable = (val) => {
-  const message = val ? t('trans0066') : t('trans0067')
+  const message = val === EnableStatus.yes ? t('trans0066') : t('trans0067')
   if (formEnable.value) {
     dialog
       .confirm({
@@ -73,19 +85,29 @@ const switchEnable = (val) => {
         message,
       })
       .then(() => {
-        // todo
+        save()
       })
       .catch(() => {
-        form.enable = !form.enable
+        form.enable = EnableStatus.yes
       })
-  } else {
-    // todo
   }
 }
 const save = () => {
-  // todo
+  setFirewall({
+    enable: form.enable,
+    level: form.level,
+  })
+}
+const getFirewallData = () => {
+  getFirewall().then(({ data }) => {
+    const { enable, level } = data
+    form.enable = enable
+    form.level = level
+    currentLevel.value = level
+    formEnable.value = enable === EnableStatus.yes
+  })
 }
 onMounted(() => {
-  // todo
+  getFirewallData()
 })
 </script>

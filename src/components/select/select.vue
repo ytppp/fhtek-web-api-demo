@@ -97,6 +97,15 @@ const selectDisabled = computed(() => {
   return props.disabled || form?.disabled.value
 })
 
+watch(
+  () => model.value,
+  () => setSelected(),
+)
+watch(
+  () => props.options,
+  () => setSelected(),
+)
+
 const setSelected = () => {
   const option = props.options.filter((o) => o.value === model.value)[0] || {
     text: model.value,
@@ -129,7 +138,7 @@ const select = (option) => {
 }
 const change = () => {
   model.value = selected.value
-  emit('change', model.value)
+  emit('change', selected.value)
 }
 const open = () => {
   if (!props.disabled) {
@@ -150,15 +159,6 @@ const inputBlurHandler = () => {
 const inputFocusHandler = () => {
   emit('focus')
 }
-
-watch(
-  () => model.value,
-  () => setSelected(),
-)
-watch(
-  () => props.options,
-  () => setSelected(),
-)
 
 onMounted(() => {
   setSelected()

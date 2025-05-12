@@ -78,7 +78,7 @@ export default defineComponent({
       display: block;
       width: 14px;
       height: 14px;
-      background: url(../images/ic_default_error.png) center no-repeat;
+      background: url(@/assets/images/ic_default_error.png) center no-repeat;
       background-size: 100%;
     }
   }
@@ -92,7 +92,7 @@ export default defineComponent({
       display: block;
       width: 14px;
       height: 14px;
-      background: url(../images/ic_default_success.png) center no-repeat;
+      background: url(@/assets/images/ic_default_success.png) center no-repeat;
       background-size: 100%;
     }
   }

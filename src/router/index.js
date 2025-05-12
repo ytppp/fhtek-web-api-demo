@@ -6,6 +6,8 @@ import internet from '../pages/internet/index.vue'
 import wifi from '../pages/wifi/index.vue'
 import status from '../pages/more/status/index.vue'
 import lan from '../pages/more/network/lan.vue'
+import portMapping from '../pages/more/app/port-mapping.vue'
+import dmz from '../pages/more/app/dmz.vue'
 import firewall from '../pages/more/safety/firewall.vue'
 import upgrade from '../pages/more/management/upgrade.vue'
 
@@ -47,6 +49,16 @@ export const router = createRouter({
       component: lan,
     },
     {
+      path: '/more/app/port-mapping',
+      name: 'port-mapping',
+      component: portMapping,
+    },
+    {
+      path: '/more/app/dmz',
+      name: 'dmz',
+      component: dmz,
+    },
+    {
       path: '/more/safety/firewall',
       name: 'firewall',
       component: firewall,
@@ -58,6 +70,10 @@ export const router = createRouter({
     },
   ],
 })
+
+// router.beforeEach(async (to, from, next) => {
+//   // todo
+// })
 
 function registerRouter(app) {
   app.use(router)

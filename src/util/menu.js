@@ -63,12 +63,33 @@ let menus = [
         ],
       },
       {
-        url: '/safety',
+        url: '/more/app',
+        text: 'trans0244',
+        children: [
+          {
+            url: '/more/app/port-mapping',
+            text: 'trans0422',
+            config,
+          },
+          {
+            url: '/more/app/dmz',
+            text: 'trans0254',
+            config,
+          },
+        ],
+      },
+      {
+        url: '/more/safety',
         text: 'trans0031',
         children: [
           {
             url: '/more/safety/firewall',
             text: 'trans0060',
+            config,
+          },
+          {
+            url: '/more/safety/url-filter',
+            text: 'trans0058',
             config,
           },
         ],

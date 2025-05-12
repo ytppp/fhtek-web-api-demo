@@ -1,5 +1,32 @@
 <template>
   <div>
+    <div style="width: 300px">
+      <fh-table-new :columns="columns" :data-source="tableData">
+        <template #title> 标题 </template>
+        <template #operationgroup>
+          <fh-button size="small">新增</fh-button>
+          <fh-button size="small" @click="del">删除</fh-button>
+        </template>
+        <template #url="scope">
+          <fh-popover title="popover弹框内容" trigger="click">{{ scope.row.url }}</fh-popover>
+        </template>
+        <template #enable="scope">
+          <!-- @change="toggleStatus(scope.row)" -->
+          <fh-switch
+            :active-value="EnableStatus.yes"
+            :inactive-value="EnableStatus.no"
+            v-model="scope.row.enable"
+          />
+        </template>
+        <template #operation="scope">
+          <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
+          <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
+          <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
+          <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
+        </template>
+        <template #footer> footer </template>
+      </fh-table-new>
+    </div>
     <fh-form :model="form">
       <fh-radio-group v-model="form.onlineWay" @change="changeOnlineWay">
         <fh-radio name="Mode" v-for="mode in onlineWays" :key="mode.value" :label="mode.value">
@@ -53,28 +80,13 @@
         </template>
       </fh-modal>
     </div>
-    <fh-table :columns="columns" :data-source="tableData">
-      <template #title> 标题 </template>
-      <template #operationgroup>
-        <fh-button size="small">新增</fh-button>
-        <fh-button size="small" @click="del">删除</fh-button>
-      </template>
-      <template #operation="scope">
-        <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
-        <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
-        <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
-        <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
-      </template>
-      <template #footer> footer </template>
-    </fh-table>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { EnableStatus } from '@/util/constant'
 import { ref, inject, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
-import FhPopover from '@/components/popover/popover.vue'
-import FhSwitch from '@/components/switch/switch.vue'
 
 defineOptions({
   name: 'HomePage',
@@ -85,7 +97,6 @@ const dialog = inject('dialog')
 const uploading = ref(false)
 const visible = ref(false)
 const checkAll = ref(false)
-const switchVisible = ref(false)
 const Weeks = {
   mon: '1',
   tue: '2',
@@ -175,40 +186,31 @@ const tableData = [
   {
     url: 'www.baidu.com',
     title: '百度一下',
+    enable: EnableStatus.yes,
   },
   {
     url: 'www.baidu.com',
     title: '百度',
+    enable: EnableStatus.no,
   },
   {
     url: 'www.baidu.com',
     title: '百度',
+    enable: EnableStatus.yes,
   },
 ]
 const columns = [
   {
     key: 'url',
     title: 'url',
-    width: 200,
-    render: (h, params) => {
-      return h(FhPopover, null, {
-        default: () => params.row.url,
-        content: () => h('div', '内容内容内容内容1231'),
-      })
-    },
   },
   {
     key: 'title',
     title: 'title',
-    width: 200,
-    render: (h, params) => {
-      return h(FhSwitch, {
-        value: switchVisible.value,
-        onChange: () => {
-          switchVisible.value = !switchVisible.value
-        },
-      })
-    },
+  },
+  {
+    key: 'enable',
+    title: t('trans0166'),
   },
 ]
 const selectAll = (val) => {
@@ -260,6 +262,9 @@ const openDialog2 = () => {
 }
 const del = () => {}
 const operation = (scope) => {
+  console.log(scope)
+}
+const toggleStatus = (scope) => {
   console.log(scope)
 }
 </script>

@@ -29,11 +29,11 @@
           </fh-form-item>
         </template>
         <template v-if="isPppoe">
-          <fh-form-item :label="$t('trans0086')" prop="pppoe.username">
-            <fh-input v-model="ipv4.pppoe.username" maxlength="64"> </fh-input>
+          <fh-form-item :label="$t('trans0086')" prop="pppoe.ppp_user">
+            <fh-input v-model="ipv4.pppoe.ppp_user" maxlength="64"> </fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0087')" prop="pppoe.password">
-            <fh-input type="password" v-model="ipv4.pppoe.password" show-password> </fh-input>
+          <fh-form-item :label="$t('trans0087')" prop="pppoe.ppp_pwd">
+            <fh-input type="password" v-model="ipv4.pppoe.ppp_pwd" show-password> </fh-input>
           </fh-form-item>
         </template>
         <fh-form-item class="form__submit-btn">
@@ -49,8 +49,8 @@
         <fh-form-item :label="$t('trans0457')" label-position="left">
           <fh-switch
             v-model="ipv6.enable"
-            :active-value="EnableStatusIpv6.yes"
-            :inactive-value="EnableStatusIpv6.no"
+            :active-value="EnableStatus.yes"
+            :inactive-value="EnableStatus.no"
           ></fh-switch>
         </fh-form-item>
         <template v-if="isIpv6Enable">
@@ -75,19 +75,19 @@
             </fh-form-item>
           </template>
           <template v-if="isIpv6Pppoe">
-            <fh-form-item :label="$t('trans0086')" prop="pppoe.username">
-              <fh-input v-model="ipv6.pppoe.username" maxlength="64"> </fh-input>
+            <fh-form-item :label="$t('trans0086')" prop="pppoe.ppp_user">
+              <fh-input v-model="ipv6.pppoe.ppp_user" maxlength="64"> </fh-input>
             </fh-form-item>
-            <fh-form-item :label="$t('trans0087')" prop="pppoe.password">
-              <fh-input type="password" v-model="ipv6.pppoe.password" show-password> </fh-input>
+            <fh-form-item :label="$t('trans0087')" prop="pppoe.ppp_pwd">
+              <fh-input type="password" v-model="ipv6.pppoe.ppp_pwd" show-password> </fh-input>
             </fh-form-item>
           </template>
           <template v-if="isIpv6dhcp">
-            <fh-form-item label="地址请求模式">
-              <fh-select v-model="ipv6.dhcp.reqAddress" :options="reqAddressTypes"></fh-select>
+            <fh-form-item :label="$t('trans0679')">
+              <fh-select v-model="ipv6.dhcp.req_address" :options="reqAddressTypes"></fh-select>
             </fh-form-item>
-            <fh-form-item label="前缀请求模式">
-              <fh-select v-model="ipv6.dhcp.reqPrefix" :options="reqPrefixTypes"></fh-select>
+            <fh-form-item :label="$t('trans0680')">
+              <fh-select v-model="ipv6.dhcp.req_prefix" :options="reqPrefixTypes"></fh-select>
             </fh-form-item>
           </template>
         </template>
@@ -133,10 +133,6 @@ defineOptions({
 enum EnableStatus {
   yes = '1',
   no = '0',
-}
-enum EnableStatusIpv6 {
-  yes = 1,
-  no = 0,
 }
 enum NetType {
   pppoe = 'pppoe',
@@ -195,25 +191,25 @@ const ipv6NetTypes = [
 const reqAddressTypes = [
   {
     value: ReqAddress.try,
-    text: 'try',
+    text: 'Try',
   },
   {
     value: ReqAddress.auto,
-    text: 'auto',
+    text: 'Auto',
   },
   {
     value: ReqAddress.none,
-    text: 'none',
+    text: 'None',
   },
 ]
 const reqPrefixTypes = [
   {
     value: ReqPrefix.auto,
-    text: 'auto',
+    text: 'Auto',
   },
   {
     value: ReqPrefix.none,
-    text: 'none',
+    text: 'Aone',
   },
 ]
 const ipv4 = reactive({
@@ -227,12 +223,12 @@ const ipv4 = reactive({
     dns2: '',
   },
   pppoe: {
-    username: '',
-    password: '',
+    ppp_user: '',
+    ppp_pwd: '',
   },
 })
 const ipv6 = reactive({
-  enable: EnableStatusIpv6.yes,
+  enable: EnableStatus.yes,
   netType: NetType.static,
   static: {
     ip: '',
@@ -242,12 +238,12 @@ const ipv6 = reactive({
     dns2: '',
   },
   pppoe: {
-    username: '',
-    password: '',
+    ppp_user: '',
+    ppp_pwd: '',
   },
   dhcp: {
-    reqAddress: ReqAddress.try,
-    reqPrefix: ReqPrefix.auto,
+    req_address: ReqAddress.try,
+    req_prefix: ReqPrefix.auto,
   },
 })
 const ipv4Rules = reactive({
@@ -355,7 +351,7 @@ const ipv4Rules = reactive({
       message: t('trans0637'),
     },
   ],
-  'pppoe.username': [
+  'pppoe.ppp_user': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
@@ -369,7 +365,7 @@ const ipv4Rules = reactive({
       message: format(t('trans0003'), [t('trans0086'), 1, 64]),
     },
   ],
-  'pppoe.password': [
+  'pppoe.ppp_pwd': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
@@ -419,11 +415,18 @@ const ipv6Rules = reactive({
       message: t('trans0004'),
     },
     {
-      rule: (value) => isIP(value, IP.IPv6),
-      message: t('trans0397'),
-    },
-    {
-      rule: (value) => isValidIpv6AddrExtra(value),
+      rule: (value) => {
+        // isIP(value, IP.IPv6)
+        const parts = value.split('/')
+        if (parts.length === 2) {
+          const ip = parts[0]
+          const prefix = parseInt(parts[1])
+          if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && prefix >= 0 && prefix <= 128) {
+            return true
+          }
+        }
+        return false
+      },
       message: t('trans0397'),
     },
   ],
@@ -455,7 +458,7 @@ const ipv6Rules = reactive({
       message: t('trans0637'),
     },
   ],
-  'pppoe.username': [
+  'pppoe.ppp_user': [
     {
       rule: (value) => value || value.trim().length,
       message: t('trans0004'),
@@ -469,7 +472,7 @@ const ipv6Rules = reactive({
       message: format(t('trans0003'), [t('trans0086'), 1, 64]),
     },
   ],
-  'pppoe.password': [
+  'pppoe.ppp_pwd': [
     {
       rule: (value) => value,
       message: t('trans0004'),
@@ -487,7 +490,7 @@ const ipv6Rules = reactive({
 
 const isStatic = computed(() => ipv4.netType === NetType.static)
 const isPppoe = computed(() => ipv4.netType === NetType.pppoe)
-const isIpv6Enable = computed(() => ipv6.enable === EnableStatusIpv6.yes)
+const isIpv6Enable = computed(() => ipv6.enable === EnableStatus.yes)
 const isIpv6Static = computed(() => ipv6.netType === NetType.static)
 const isIpv6Pppoe = computed(() => ipv6.netType === NetType.pppoe)
 const isIpv6dhcp = computed(() => ipv6.netType === NetType.dhcpv6)
@@ -541,68 +544,66 @@ const changeIpv6Dns1 = () => {
 }
 function getLanData() {
   getLan().then(({ data }) => {
-    const { ip } = data
-    lanIp.value = ip
+    lanIp.value = data.lan.ip
   })
 }
 function getWanData() {
   getWan().then(({ data }) => {
-    const { disabled, wan_proto } = data
-    ipv4.enable = disabled
+    const { enable, wan_proto } = data
+    ipv4.enable = enable
     ipv4.netType = wan_proto
     if (isStatic.value && data.hasOwnProperty(NetType.static)) {
       ipv4.static.ip = data.static.wan_ip || ''
       ipv4.static.mask = data.static.wan_netmask || ''
       ipv4.static.gateway = data.static.wan_gateway || ''
-      ipv4.static.dns1 = data.static.wan_dns1 || ''
-      ipv4.static.dns2 = data.static.wan_dns2 || ''
+      ipv4.static.dns1 = data.static.wan_dns[0] || ''
+      ipv4.static.dns2 = data.static.wan_dns[1] || ''
     }
     if (isPppoe.value && data.hasOwnProperty(NetType.pppoe)) {
-      ipv4.pppoe.username = data.pppoe.username || ''
-      ipv4.pppoe.password = data.pppoe.password || ''
+      ipv4.pppoe.ppp_user = data.pppoe.ppp_user || ''
+      ipv4.pppoe.ppp_pwd = data.pppoe.ppp_pwd || ''
     }
   })
 }
 function getIpv6WanData() {
   getIpv6Wan().then(({ data }) => {
-    const { enabled, proto } = data
-    ipv6.enable = enabled
+    const { enable, proto } = data
+    ipv6.enable = enable
     ipv6.netType = proto
     if (isIpv6Static.value && data.hasOwnProperty(NetType.static)) {
       ipv6.static.ip = data.static.address || ''
       ipv6.static.gateway = data.static.gateway || ''
       ipv6.static.prefix = data.static.prefix || ''
-      ipv6.static.dns1 = data.static.dns1 || ''
-      ipv6.static.dns2 = data.static.dns2 || ''
+      ipv6.static.dns1 = data.static.dns1[0] || ''
+      ipv6.static.dns2 = data.static.dns2[1] || ''
     }
     if (isIpv6Pppoe.value && data.hasOwnProperty(NetType.pppoe)) {
-      ipv6.pppoe.username = data.pppoe.username || ''
-      ipv6.pppoe.password = data.pppoe.password || ''
+      ipv6.pppoe.ppp_user = data.pppoe.ppp_user || ''
+      ipv6.pppoe.ppp_pwd = data.pppoe.ppp_pwd || ''
     }
     if (isIpv6dhcp.value && data.hasOwnProperty(NetType.dhcpv6)) {
-      ipv6.dhcp.reqAddress = data.dhcpv6.reqAddress
-      ipv6.dhcp.reqPrefix = data.dhcpv6.reqPrefix
+      ipv6.dhcp.req_address = data.dhcpv6.req_address
+      ipv6.dhcp.req_prefix = data.dhcpv6.req_prefix
     }
   })
 }
 const saveIpv4 = () => {
   if (ipv4FormRef.value?.validate()) {
     const data: {
-      disabled: EnableStatus
+      enable: EnableStatus
       wan_proto: NetType
       static?: {
         wan_ip: string
         wan_netmask: string
         wan_gateway: string
-        wan_dns1: string
-        wan_dns2: string
+        wan_dns: string[]
       }
       pppoe?: {
-        username: string
-        password: string
+        ppp_user: string
+        ppp_pwd: string
       }
     } = {
-      disabled: ipv4.enable,
+      enable: ipv4.enable,
       wan_proto: ipv4.netType,
     }
     if (isStatic.value) {
@@ -610,14 +611,13 @@ const saveIpv4 = () => {
         wan_ip: ipv4.static.ip,
         wan_netmask: ipv4.static.mask,
         wan_gateway: ipv4.static.gateway,
-        wan_dns1: ipv4.static.dns1,
-        wan_dns2: ipv4.static.dns2,
+        wan_dns: [ipv4.static.dns1, ipv4.static.dns2],
       }
     }
     if (isPppoe.value) {
       data.pppoe = {
-        username: ipv4.pppoe.username,
-        password: ipv4.pppoe.password,
+        ppp_user: ipv4.pppoe.ppp_user,
+        ppp_pwd: ipv4.pppoe.ppp_pwd,
       }
     }
     setWan(data)
@@ -626,25 +626,24 @@ const saveIpv4 = () => {
 const saveIpv6 = () => {
   if (ipv6FormRef.value?.validate()) {
     const data: {
-      enabled: EnableStatusIpv6
+      enable: EnableStatus
       proto: NetType
       static?: {
         address: string
         gateway: string
         prefix: string
-        dns1: string
-        dns2: string
+        dns: string[]
       }
       pppoe?: {
-        username: string
-        password: string
+        ppp_user: string
+        ppp_pwd: string
       }
       dhcpv6?: {
-        reqAddress: ReqAddress
-        reqPrefix: ReqPrefix
+        req_address: ReqAddress
+        req_prefix: ReqPrefix
       }
     } = {
-      enabled: ipv6.enable,
+      enable: ipv6.enable,
       proto: ipv6.netType,
     }
     if (isIpv6Static.value) {
@@ -652,20 +651,19 @@ const saveIpv6 = () => {
         address: ipv6.static.ip,
         gateway: ipv6.static.gateway,
         prefix: ipv6.static.prefix,
-        dns1: ipv6.static.dns1,
-        dns2: ipv6.static.dns2,
+        dns: [ipv6.static.dns1, ipv6.static.dns2],
       }
     }
     if (isIpv6Pppoe.value) {
       data.pppoe = {
-        username: ipv6.pppoe.username,
-        password: ipv6.pppoe.password,
+        ppp_user: ipv6.pppoe.ppp_user,
+        ppp_pwd: ipv6.pppoe.ppp_pwd,
       }
     }
     if (isIpv6dhcp.value) {
       data.dhcpv6 = {
-        reqAddress: ipv6.dhcp.reqAddress,
-        reqPrefix: ipv6.dhcp.reqPrefix,
+        req_address: ipv6.dhcp.req_address,
+        req_prefix: ipv6.dhcp.req_prefix,
       }
     }
     setIpv6Wan(data)
