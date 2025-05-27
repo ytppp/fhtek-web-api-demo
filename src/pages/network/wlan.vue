@@ -9,33 +9,25 @@
       </div>
       <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
         <fh-form-item :label="b24gWifiText" label-position="left" :label-width="labelWidth">
-          <fh-switch
-            v-model="wifi.enable"
-            :active-value="EnableStatus.yes"
-            :inactive-value="EnableStatus.no"
-            @change="(val) => switchEnable(Bands.b24g, val)"
-          >
-          </fh-switch>
+          <fh-switch v-model="wifi.isB5gFirst"> </fh-switch>
+        </fh-form-item>
+        <fh-form-item :label="b24gWifiText" label-position="left" :label-width="labelWidth">
+          <fh-switch v-model="wifi.b24g.enable"> </fh-switch>
         </fh-form-item>
         <template v-if="isB24gEnable">
           <fh-form-item label="Hide Wifi" label-position="left" :label-width="labelWidth">
-            <fh-switch
-              :active-value="EnableStatus.yes"
-              :inactive-value="EnableStatus.no"
-              v-model="wifi.hide"
-            >
-            </fh-switch>
+            <fh-switch v-model="wifi.b24g.hide"> </fh-switch>
           </fh-form-item>
           <fh-form-item :label="$t('trans0029')" prop="ssid">
-            <fh-input v-model="wifi.ssid" maxlength="64"> </fh-input>
+            <fh-input v-model="wifi.b24g.ssid" maxlength="64"> </fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0031')">
-            <fh-select v-model="wifi.encrypt" :options="encrypts"> </fh-select>
+            <fh-select v-model="wifi.b24g.encrypt" :options="encrypts"> </fh-select>
           </fh-form-item>
           <fh-alert v-if="b24gEncryptTip" :title="b24gEncryptTip" type="info" show-icon> </fh-alert>
           <fh-form-item :label="$t('trans0030')" v-if="!isb24gEncryptNone" prop="password">
             <fh-input
-              v-model="wifi.password"
+              v-model="wifi.b24g.password"
               type="password"
               minlength="8"
               maxlength="64"
@@ -44,59 +36,34 @@
             </fh-input>
           </fh-form-item>
           <fh-form-item label="Max Sta Total" prop="sta">
-            <fh-input name="b24gPassword" v-model="wifi.sta"> </fh-input>
+            <fh-input name="b24gPassword" v-model="wifi.b24g.sta"> </fh-input>
             <template #extra> 0 meas no limit </template>
           </fh-form-item>
           <fh-form-item :label="$t('trans0509')">
-            <fh-select v-model="wifi.bandWidth" :options="b24gBandWidths"> </fh-select>
+            <fh-select v-model="wifi.b24g.bandWidth" :options="b24gBandWidths"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0507')">
-            <fh-select v-model="wifi.channel" :options="b24gChannels"> </fh-select>
+            <fh-select v-model="wifi.b24g.channel" :options="b24gChannels"> </fh-select>
           </fh-form-item>
         </template>
-        <fh-form-item class="form__submit-btn">
-          <fh-button @click="saveb24g" block>
-            {{ $t('trans0002') }}
-          </fh-button>
-        </fh-form-item>
-      </fh-form>
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0050') }}</h2>
-      </div>
-      <fh-form
-        class="form form--padding wifi-form"
-        ref="b5gWifiFormRef"
-        :model="b5gWifi"
-        :rules="b5gRules"
-      >
         <fh-form-item :label="b5gWifiText" label-position="left" :label-width="labelWidth">
-          <fh-switch
-            v-model="b5gWifi.enable"
-            :active-value="EnableStatus.yes"
-            :inactive-value="EnableStatus.no"
-            @change="(val) => switchEnable(Bands.b5g, val)"
-          >
+          <fh-switch v-model="wifi.b5g.enable" @change="(val) => switchEnable(Bands.b5g, val)">
           </fh-switch>
         </fh-form-item>
         <template v-if="isB5gEnable">
           <fh-form-item label="Hide Wifi" label-position="left" :label-width="labelWidth">
-            <fh-switch
-              :active-value="EnableStatus.yes"
-              :inactive-value="EnableStatus.no"
-              v-model="b5gWifi.hide"
-            >
-            </fh-switch>
+            <fh-switch v-model="wifi.b5g.hide"> </fh-switch>
           </fh-form-item>
           <fh-form-item :label="$t('trans0029')" prop="ssid">
-            <fh-input v-model="b5gWifi.ssid" maxlength="64"> </fh-input>
+            <fh-input v-model="wifi.b5g.ssid" maxlength="64"> </fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0031')">
-            <fh-select v-model="b5gWifi.encrypt" :options="encrypts"> </fh-select>
+            <fh-select v-model="wifi.b5g.encrypt" :options="encrypts"> </fh-select>
           </fh-form-item>
           <fh-alert v-if="b5gEncryptTip" :title="b5gEncryptTip" type="info" show-icon> </fh-alert>
           <fh-form-item :label="$t('trans0030')" v-if="!isb5gEncryptNone" prop="password">
             <fh-input
-              v-model="b5gWifi.password"
+              v-model="wifi.b5g.password"
               type="password"
               minlength="8"
               maxlength="64"
@@ -105,23 +72,23 @@
             </fh-input>
           </fh-form-item>
           <fh-form-item label="Max Sta Total" prop="sta">
-            <fh-input name="b24gPassword" v-model="b5gWifi.sta"> </fh-input>
+            <fh-input name="b24gPassword" v-model="wifi.b5g.sta"> </fh-input>
             <template #extra> 0 meas no limit </template>
           </fh-form-item>
           <fh-form-item :label="$t('trans0509')">
             <fh-select
-              v-model="b5gWifi.bandWidth"
+              v-model="wifi.b5g.bandWidth"
               :options="b5gBandWidths"
               @change="change5gBandwidth"
             >
             </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0507')">
-            <fh-select v-model="b5gWifi.channel" :options="b5gChannels"> </fh-select>
+            <fh-select v-model="wifi.b5g.channel" :options="b5gChannels"> </fh-select>
           </fh-form-item>
         </template>
         <fh-form-item class="form__submit-btn">
-          <fh-button @click="saveb5g" block>
+          <fh-button @click="save" block>
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
@@ -492,31 +459,31 @@ const b5gBandWidths = [
     text: 'HE160',
   },
 ]
-const isB5gFirst = ref(false)
 const wifi = reactive({
-  enable: EnableStatus.no,
-  hide: EnableStatus.no,
-  ssid: '',
-  encrypt: Encrypts.none,
-  password: '',
-  sta: 0,
-  channel: Channels24G.auto,
-  bandWidth: BandWidths.hT20,
+  isB5gFirst: false,
+  b24g: {
+    enable: EnableStatus.no,
+    hide: EnableStatus.no,
+    ssid: '',
+    encrypt: Encrypts.none,
+    password: '',
+    sta: 0,
+    channel: Channels24G.auto,
+    bandWidth: BandWidths.hT20,
+  },
+  b5g: {
+    enable: EnableStatus.no,
+    hide: EnableStatus.no,
+    ssid: '',
+    encrypt: Encrypts.none,
+    password: '',
+    sta: 0,
+    channel: Channels24G.auto,
+    bandWidth: BandWidths.hT20,
+  },
 })
-const wifiEnable = ref(false)
-const b5gWifi = reactive({
-  enable: EnableStatus.no,
-  hide: EnableStatus.no,
-  ssid: '',
-  encrypt: Encrypts.none,
-  password: '',
-  sta: 0,
-  channel: Channels24G.auto,
-  bandWidth: BandWidths.hT20,
-})
-const b5gWifiEnable = ref(false)
 const rules = reactive({
-  ssid: [
+  'b24g.ssid': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
@@ -530,7 +497,7 @@ const rules = reactive({
       message: format(t('trans0013'), [t('trans0051'), format(t('trans0042'), [specialChar])]),
     },
   ],
-  password: [
+  'b24g.password': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
@@ -544,7 +511,7 @@ const rules = reactive({
       message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
     },
   ],
-  sta: [
+  'b24g.sta': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
@@ -554,9 +521,7 @@ const rules = reactive({
       message: format(t('trans0567'), [0, 64]),
     },
   ],
-})
-const b5gRules = reactive({
-  ssid: [
+  'b5g.ssid': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
@@ -570,7 +535,7 @@ const b5gRules = reactive({
       message: format(t('trans0013'), [t('trans0051'), format(t('trans0042'), [specialChar])]),
     },
   ],
-  password: [
+  'b5g.password': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
@@ -584,7 +549,7 @@ const b5gRules = reactive({
       message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
     },
   ],
-  sta: [
+  'b5g.sta': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
@@ -603,27 +568,27 @@ const specialBandwidths = [BandWidths.hT20, BandWidths.vHT20, BandWidths.hE20]
 const specialChannels = [Channels5G.ch116, Channels5G.ch165]
 
 const b24gWifiText = computed(() => {
-  if (isB5gFirst.value) {
+  if (wifi.isB5gFirst) {
     return format(t('trans0027'), [''])
   } else {
     return format(t('trans0027'), [t('trans0049')])
   }
 })
 const b5gWifiText = computed(() => {
-  if (isB5gFirst.value) {
+  if (wifi.isB5gFirst) {
     return format(t('trans0027'), [''])
   } else {
     return format(t('trans0027'), [t('trans0050')])
   }
 })
 const isB24gEnable = computed(() => {
-  return wifi.enable === EnableStatus.yes
+  return wifi.b24g.enable === EnableStatus.yes
 })
 const isB5gEnable = computed(() => {
-  return b5gWifi.enable === EnableStatus.yes
+  return wifi.b5g.enable === EnableStatus.yes
 })
 const isb24gEncryptNone = computed(() => {
-  return wifi.encrypt === Encrypts.none
+  return wifi.b24g.encrypt === Encrypts.none
 })
 const b24gEncryptTip = computed(() => {
   if (isb24gEncryptNone.value) {
@@ -632,7 +597,7 @@ const b24gEncryptTip = computed(() => {
   return ''
 })
 const isb5gEncryptNone = computed(() => {
-  return b5gWifi.encrypt === Encrypts.none
+  return wifi.b5g.encrypt === Encrypts.none
 })
 const b5gEncryptTip = computed(() => {
   if (isb5gEncryptNone.value) {
@@ -642,7 +607,7 @@ const b5gEncryptTip = computed(() => {
 })
 const b5gChannels = computed(() => {
   return b5gChannelsInit.filter((item) => {
-    if (specialBandwidths.includes(b5gWifi.bandWidth)) {
+    if (specialBandwidths.includes(wifi.b5g.bandWidth)) {
       if (specialChannels.includes(item.value)) {
         item.show = true
       }
@@ -659,9 +624,9 @@ const b5gChannels = computed(() => {
 const switchEnable = (band, val) => {
   let flag = true
   if (band == Bands.b24g) {
-    flag = wifiEnable.value
+    flag = wifi.b24g.enable
   } else if (band == Bands.b5g) {
-    flag = b5gWifiEnable.value
+    flag = wifi.b5g.enable
   }
   if (flag && !val) {
     dialog
@@ -673,84 +638,74 @@ const switchEnable = (band, val) => {
       .then(() => {})
       .catch(() => {
         if (band == Bands.b24g) {
-          wifi.enable = EnableStatus.yes
+          wifi.b24g.enable = true
         }
         if (band == Bands.b5g) {
-          b5gWifi.enable = EnableStatus.yes
+          wifi.b5g.enable = true
         }
       })
   }
 }
 const change5gBandwidth = () => {
   if (!specialBandwidths.includes(b5gWifi.bandWidth) && specialChannels.includes(b5gWifi.channel)) {
-    b5gWifi.channel = Channels5G.auto
+    wifi.b5g.channel = Channels5G.auto
   }
 }
 const getWifi2gData = () => {
-  getWifi2g().then(({ data }) => {
-    wifi.enable = data.wl_enable_2g
-    wifi.hide = data.wl_hide_2g
-    wifi.ssid = data.wl_ssid_2g
-    wifi.encrypt = data.wl_safe_2g
-    wifi.password = data.wl_passwd_2g
-    wifi.sta = data.wl_maxassoc_2g
-    wifi.channel = data.wl_channel_2g
-    wifi.bandWidth = data.wl_bw_2g
-    if (Channels24G.auto === data.wl_channel_2g) {
-      getB24CurrentChannel.value = data.wl_channel_2g_current
-    }
-    wifiEnable.value = wifi.enable === EnableStatus.yes
-  })
+  // getWifi2g().then(({ data }) => {
+  //   wifi.enable = data.wl_enable_2g
+  //   wifi.hide = data.wl_hide_2g
+  //   wifi.ssid = data.wl_ssid_2g
+  //   wifi.encrypt = data.wl_safe_2g
+  //   wifi.password = data.wl_passwd_2g
+  //   wifi.sta = data.wl_maxassoc_2g
+  //   wifi.channel = data.wl_channel_2g
+  //   wifi.bandWidth = data.wl_bw_2g
+  //   if (Channels24G.auto === data.wl_channel_2g) {
+  //     getB24CurrentChannel.value = data.wl_channel_2g_current
+  //   }
+  //   wifiEnable.value = wifi.enable === EnableStatus.yes
+  // })
+  // getWifi5g().then(({ data }) => {
+  //   b5gWifi.enable = data.wl_enable_5g
+  //   b5gWifi.hide = data.wl_hide_5g
+  //   b5gWifi.ssid = data.wl_ssid_5g
+  //   b5gWifi.encrypt = data.wl_safe_5g
+  //   b5gWifi.password = data.wl_passwd_5g
+  //   b5gWifi.sta = data.wl_maxassoc_5g
+  //   b5gWifi.channel = data.wl_channel_5g
+  //   b5gWifi.bandWidth = data.wl_bw_5g
+  //   if (Channels5G.auto === data.wl_channel_5g) {
+  //     getB5CurrentChannel.value = data.wl_channel_5g_current
+  //   }
+  //   b5gWifiEnable.value = wifi.enable === EnableStatus.yes
+  // })
 }
-const getWifi5gData = () => {
-  getWifi5g().then(({ data }) => {
-    b5gWifi.enable = data.wl_enable_5g
-    b5gWifi.hide = data.wl_hide_5g
-    b5gWifi.ssid = data.wl_ssid_5g
-    b5gWifi.encrypt = data.wl_safe_5g
-    b5gWifi.password = data.wl_passwd_5g
-    b5gWifi.sta = data.wl_maxassoc_5g
-    b5gWifi.channel = data.wl_channel_5g
-    b5gWifi.bandWidth = data.wl_bw_5g
-    if (Channels5G.auto === data.wl_channel_5g) {
-      getB5CurrentChannel.value = data.wl_channel_5g_current
-    }
-    b5gWifiEnable.value = wifi.enable === EnableStatus.yes
-  })
-}
-const saveb24g = () => {
-  if (wifiFormRef.value?.validate()) {
-    const data = {
-      wl_enable_2g: wifi.enable,
-      wl_hide_2g: wifi.hide,
-      wl_ssid_2g: wifi.ssid,
-      wl_safe_2g: wifi.encrypt,
-      wl_passwd_2g: wifi.password,
-      wl_maxassoc_2g: wifi.sta,
-      wl_channel_2g: wifi.channel,
-      wl_bw_2g: wifi.bandWidth,
-    }
-    setWifi2g(data)
-  }
-}
-const saveb5g = () => {
-  if (b5gWifiFormRef.value?.validate()) {
-    const data = {
-      wl_enable_5g: b5gWifi.enable,
-      wl_hide_5g: b5gWifi.hide,
-      wl_ssid_5g: b5gWifi.ssid,
-      wl_safe_5g: b5gWifi.encrypt,
-      wl_passwd_5g: b5gWifi.password,
-      wl_maxassoc_5g: b5gWifi.sta,
-      wl_channel_5g: b5gWifi.channel,
-      wl_bw_5g: b5gWifi.bandWidth,
-    }
-    setWifi5g(data)
-  }
+const save = () => {
+  // if (b5gWifiFormRef.value?.validate()) {
+  //   const data = {wl_enable_2g: wifi.enable,
+  //     wl_hide_2g: wifi.hide,
+  //     wl_ssid_2g: wifi.ssid,
+  //     wl_safe_2g: wifi.encrypt,
+  //     wl_passwd_2g: wifi.password,
+  //     wl_maxassoc_2g: wifi.sta,
+  //     wl_channel_2g: wifi.channel,
+  //     wl_bw_2g: wifi.bandWidth,
+  //     wl_enable_5g: b5gWifi.enable,
+  //     wl_hide_5g: b5gWifi.hide,
+  //     wl_ssid_5g: b5gWifi.ssid,
+  //     wl_safe_5g: b5gWifi.encrypt,
+  //     wl_passwd_5g: b5gWifi.password,
+  //     wl_maxassoc_5g: b5gWifi.sta,
+  //     wl_channel_5g: b5gWifi.channel,
+  //     wl_bw_5g: b5gWifi.bandWidth,
+  //   }
+  //   setWifi5g(data)
+  // }
 }
 onMounted(() => {
-  getWifi2gData()
-  getWifi5gData()
+  // getWifi2gData()
+  // getWifi5gData()
 })
 </script>
 

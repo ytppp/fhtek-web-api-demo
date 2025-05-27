@@ -22,9 +22,6 @@ import FhTimePicker from './components/time-picker/time-picker.vue'
 import FhStep from './components/step/step.vue'
 import FhTable from './components/table/table.vue'
 
-// 新的表格组件
-import FhTableNew from './components/table/table-new.vue'
-
 import clickoutside from './components/directives/clickoutside.js'
 import vloading from './components/directives/loading.js'
 
@@ -58,8 +55,6 @@ const registerComponents = (app) => {
   app.component('FhTimePicker', FhTimePicker)
   app.component('FhStep', FhStep)
   app.component('FhTable', FhTable)
-
-  app.component('FhTableNew', FhTableNew)
 
   app.directive('clickoutside', clickoutside)
   app.directive('loading', vloading)

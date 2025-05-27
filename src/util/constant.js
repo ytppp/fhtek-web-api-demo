@@ -29,6 +29,12 @@ export const IP = {
   mix: 'IPv4/IPv6',
 }
 
+export const VlanMode = {
+  Tag: 'TAG',
+  Untag: 'UNTAG',
+  Transparent: 'TRANSPARENT',
+}
+
 export const ProtocolType = {
   ALL: 'TCP/UDP',
   TCP: 'TCP',

@@ -14,7 +14,7 @@
           />
         </fh-form-item>
         <template v-if="isEnabled">
-          <fh-form-item :label="$t('trans0702')">
+          <fh-form-item :label="$t('trans0155')">
             <fh-select v-model="form.wan" :options="wanList"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0642')" prop="ip">

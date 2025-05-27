@@ -438,5 +438,5 @@ function isNameUnsafe(compareChar) {
 }
 
 export function isObjExistVal(obj, val) {
-  return Object.keys(obj).some(key => obj[key] === val);
+  return Object.keys(obj).some((key) => obj[key] === val)
 }

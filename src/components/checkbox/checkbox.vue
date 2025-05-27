@@ -112,9 +112,9 @@ export default {
       get() {
         return this.isGroup
           ? this.checkboxGroup.model.value
-          : this.value !== undefined
-            ? this.value
-            : this.selfModel
+          : this.value === undefined
+            ? this.selfModel
+            : this.value
       },
       set(val) {
         if (this.isGroup) {
@@ -126,7 +126,7 @@ export default {
       },
     },
   },
-  emits: ['change', 'input'],
+  emits: ['change', 'input', 'update:modelValue'],
   methods: {
     addToStore() {
       if (Array.isArray(this.model) && this.model.indexOf(this.label) === -1) {
@@ -147,6 +147,7 @@ export default {
           this.checkboxGroup.updateModel(value)
         } else {
           this.$emit('change', value)
+          this.$emit('update:modelValue', this.selfModel)
         }
       })
     },

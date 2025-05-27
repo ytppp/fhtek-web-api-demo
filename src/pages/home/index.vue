@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="width: 300px">
-      <fh-table-new :columns="columns" :data-source="tableData">
+      <fh-table :columns="columns" :data-source="tableData">
         <template #title> 标题 </template>
         <template #operationgroup>
           <fh-button size="small">新增</fh-button>
@@ -25,7 +25,7 @@
           <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
         </template>
         <template #footer> footer </template>
-      </fh-table-new>
+      </fh-table>
     </div>
     <fh-form :model="form">
       <fh-radio-group v-model="form.onlineWay" @change="changeOnlineWay">
@@ -185,17 +185,17 @@ const schedulesList = [
 const tableData = [
   {
     url: 'www.baidu.com',
-    title: '百度一下',
+    name: '百度一下',
     enable: EnableStatus.yes,
   },
   {
     url: 'www.baidu.com',
-    title: '百度',
+    name: '百度',
     enable: EnableStatus.no,
   },
   {
     url: 'www.baidu.com',
-    title: '百度',
+    name: '百度',
     enable: EnableStatus.yes,
   },
 ]
@@ -205,8 +205,8 @@ const columns = [
     title: 'url',
   },
   {
-    key: 'title',
-    title: 'title',
+    key: 'name',
+    title: 'name',
   },
   {
     key: 'enable',

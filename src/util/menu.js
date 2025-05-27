@@ -24,21 +24,93 @@ const strategyB = {
 }
 let menus = [
   {
+    url: '/status',
+    text: 'trans0537',
+    icon: 'icon-ellipsis',
+    children: [
+      {
+        url: '/status/device',
+        text: 'trans0070',
+        config,
+      },
+      {
+        url: '/status/wan',
+        text: 'trans0155',
+        config,
+      },
+      {
+        url: '/status/wlan',
+        text: 'trans0628',
+        config,
+      },
+      {
+        url: '/status/lan',
+        text: 'trans0715',
+        config,
+      },
+      {
+        url: '/status/optical',
+        text: 'trans0718',
+        config,
+      },
+      {
+        url: '/status/voip',
+        text: 'trans0718',
+        config,
+      },
+      {
+        url: '/status/cwmp',
+        text: 'trans0249',
+        config,
+      },
+      {
+        url: '/status/sta',
+        text: 'trans0747',
+        config,
+      },
+      {
+        url: '/status/usb',
+        text: 'trans0748',
+        config,
+      },
+    ],
+  },
+  {
+    url: '/network',
+    text: 'trans0014',
+    icon: 'icon-earth',
+    children: [
+      {
+        url: '/network/wan',
+        text: 'trans0155',
+        config,
+      },
+      {
+        url: '/network/wan-binding',
+        text: 'trans0751',
+        config,
+      },
+      {
+        url: '/network/lan',
+        text: 'trans0156',
+        config,
+      },
+      {
+        url: '/network/port-setting',
+        text: 'trans0757',
+        config,
+      },
+      {
+        url: '/network/wlan',
+        text: 'trans0017',
+        config,
+      },
+    ],
+  },
+  {
     url: '/home',
     text: 'trans0006',
     icon: 'icon-home',
-    config,
-  },
-  {
-    url: '/internet',
-    text: 'trans0014',
-    icon: 'icon-earth',
-    config: strategyB,
-  },
-  {
-    url: '/wifi',
-    text: 'trans0017',
-    icon: 'icon-wifi',
     config,
   },
   {
@@ -46,22 +118,11 @@ let menus = [
     text: 'trans0016',
     icon: 'icon-ellipsis',
     children: [
-      {
-        url: '/more/status',
-        text: 'trans0537',
-        config,
-      },
-      {
-        url: '/more/network',
-        text: 'trans0455',
-        children: [
-          {
-            url: '/more/network/lan',
-            text: 'trans0156',
-            config,
-          },
-        ],
-      },
+      // {
+      //   url: '/more/status',
+      //   text: 'trans0537',
+      //   config,
+      // },
       {
         url: '/more/app',
         text: 'trans0244',
