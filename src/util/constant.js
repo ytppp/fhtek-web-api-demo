@@ -46,3 +46,8 @@ export const EnableStatus = {
   yes: '1',
   no: '0',
 }
+
+export  const ModalType = {
+  add: 'add',
+  edit: 'edit',
+}

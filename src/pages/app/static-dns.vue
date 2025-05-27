@@ -26,13 +26,13 @@
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0256')" prop="domain">
-            <fh-input name="domainName" v-model="modalForm.domain"></fh-input>
+            <fh-input v-model="modalForm.domain"></fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0179')" prop="ip">
-            <fh-input name="ip" v-model="modalForm.ip"></fh-input>
+            <fh-input v-model="modalForm.ip"></fh-input>
           </fh-form-item>
           <fh-form-item class="form__submit-btn">
-            <fh-button id="submitbutton" @click="save" block>
+            <fh-button @click="save" block>
               {{ $t('trans0002') }}
             </fh-button>
           </fh-form-item>
@@ -52,11 +52,8 @@ import {
   isBoardcastIP,
 } from '@/util/tool'
 import { getStaticDnsList, addStaticDns, editStaticDns, delStaticDns } from '@/http/api'
+import { ModalType } from '@/util/constant'
 
-const ModalType = {
-  add: 'add',
-  edit: 'edit',
-}
 const maxRuleNum = 16
 export default {
   data() {
@@ -185,7 +182,7 @@ export default {
         if (this.isAdd) {
           data.domain = this.modalForm.domain
           data.ip = this.modalForm.ip
-          addStaticDns(data).then((res) => {
+          addStaticDns([data]).then((res) => {
             this.visible = false
             this.getStaticDnsListData()
           })
@@ -194,7 +191,7 @@ export default {
           data.id = this.modalForm.id
           data.domain = this.modalForm.domain
           data.ip = this.modalForm.ip
-          editStaticDns(data).then((res) => {
+          editStaticDns([data]).then((res) => {
             this.visible = false
             this.getStaticDnsListData()
           })
@@ -202,7 +199,7 @@ export default {
       }
     },
     del(row) {
-      delStaticDns(row.id).then((res) => {
+      delStaticDns([{ id: row.id }]).then((res) => {
         this.getStaticDnsListData()
       })
     },

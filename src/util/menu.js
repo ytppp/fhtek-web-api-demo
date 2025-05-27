@@ -150,6 +150,11 @@ let menus = [
         text: 'trans0099',
         config,
       },
+      {
+        url: '/app/ddns',
+        text: 'trans0245',
+        config,
+      },
     ],
   },
   {

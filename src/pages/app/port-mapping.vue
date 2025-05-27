@@ -74,7 +74,7 @@
             <fh-input name="InternalPort" v-model="modalForm.intPort"></fh-input>
           </fh-form-item>
           <fh-form-item class="form__submit-btn">
-            <fh-button id="submitbutton" @click="save" block>
+            <fh-button @click="save" block>
               {{ $t('trans0002') }}
             </fh-button>
           </fh-form-item>

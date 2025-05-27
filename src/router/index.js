@@ -20,6 +20,7 @@ import firewall from '../pages/safety/firewall.vue'
 import portMapping from '../pages/app/port-mapping.vue'
 import dmz from '../pages/app/dmz.vue'
 import staticDns from '../pages/app/static-dns.vue'
+import ddns from '../pages/app/ddns.vue'
 import upgrade from '../pages/management/upgrade.vue'
 
 export const router = createRouter({
@@ -118,6 +119,11 @@ export const router = createRouter({
       path: '/app/static-dns',
       name: 'static-dns',
       component: staticDns,
+    },
+    {
+      path: '/app/ddns',
+      name: 'ddns',
+      component: ddns,
     },
     {
       path: '/app/port-mapping',
