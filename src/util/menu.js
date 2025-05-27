@@ -24,8 +24,14 @@ const strategyB = {
 }
 let menus = [
   {
+    url: '/home',
+    text: 'trans0006',
+    icon: 'icon-home',
+    config,
+  },
+  {
     url: '/status',
-    text: 'trans0537',
+    text: 'trans0166',
     icon: 'icon-ellipsis',
     children: [
       {
@@ -108,63 +114,53 @@ let menus = [
     ],
   },
   {
-    url: '/home',
-    text: 'trans0006',
-    icon: 'icon-home',
-    config,
+    url: '/safety',
+    text: 'trans0031',
+    icon: 'icon-earth',
+    children: [
+      {
+        url: '/safety/firewall',
+        text: 'trans0060',
+        config,
+      },
+      {
+        url: '/safety/url-filter',
+        text: 'trans0058',
+        config,
+      },
+    ],
   },
   {
-    url: '/more',
-    text: 'trans0016',
+    url: '/app',
+    text: 'trans0244',
+    icon: 'icon-earth',
+    children: [
+      {
+        url: '/app/port-mapping',
+        text: 'trans0422',
+        config,
+      },
+      {
+        url: '/app/dmz',
+        text: 'trans0254',
+        config,
+      },
+      {
+        url: '/app/static-dns',
+        text: 'trans0099',
+        config,
+      },
+    ],
+  },
+  {
+    url: '/management',
+    text: 'trans0183',
     icon: 'icon-ellipsis',
     children: [
-      // {
-      //   url: '/more/status',
-      //   text: 'trans0537',
-      //   config,
-      // },
       {
-        url: '/more/app',
-        text: 'trans0244',
-        children: [
-          {
-            url: '/more/app/port-mapping',
-            text: 'trans0422',
-            config,
-          },
-          {
-            url: '/more/app/dmz',
-            text: 'trans0254',
-            config,
-          },
-        ],
-      },
-      {
-        url: '/more/safety',
-        text: 'trans0031',
-        children: [
-          {
-            url: '/more/safety/firewall',
-            text: 'trans0060',
-            config,
-          },
-          {
-            url: '/more/safety/url-filter',
-            text: 'trans0058',
-            config,
-          },
-        ],
-      },
-      {
-        url: '/more/management',
-        text: 'trans0183',
-        children: [
-          {
-            url: '/more/management/upgrade',
-            text: 'trans0187',
-            config,
-          },
-        ],
+        url: '/management/upgrade',
+        text: 'trans0187',
+        config,
       },
     ],
   },

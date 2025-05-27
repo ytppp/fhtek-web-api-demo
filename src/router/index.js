@@ -16,10 +16,11 @@ import wanBinding from '../pages/network/wan-binding.vue'
 import lan from '../pages/network/lan.vue'
 import wlanNetwork from '../pages/network/wlan.vue'
 import portSetting from '../pages/network/port-setting.vue'
-import portMapping from '../pages/more/app/port-mapping.vue'
-import dmz from '../pages/more/app/dmz.vue'
-import firewall from '../pages/more/safety/firewall.vue'
-import upgrade from '../pages/more/management/upgrade.vue'
+import firewall from '../pages/safety/firewall.vue'
+import portMapping from '../pages/app/port-mapping.vue'
+import dmz from '../pages/app/dmz.vue'
+import staticDns from '../pages/app/static-dns.vue'
+import upgrade from '../pages/management/upgrade.vue'
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -109,22 +110,27 @@ export const router = createRouter({
       component: portSetting,
     },
     {
-      path: '/more/app/port-mapping',
-      name: 'port-mapping',
-      component: portMapping,
-    },
-    {
-      path: '/more/app/dmz',
-      name: 'dmz',
-      component: dmz,
-    },
-    {
-      path: '/more/safety/firewall',
+      path: '/safety/firewall',
       name: 'firewall',
       component: firewall,
     },
     {
-      path: '/more/management/upgrade',
+      path: '/app/static-dns',
+      name: 'static-dns',
+      component: staticDns,
+    },
+    {
+      path: '/app/port-mapping',
+      name: 'port-mapping',
+      component: portMapping,
+    },
+    {
+      path: '/app/dmz',
+      name: 'dmz',
+      component: dmz,
+    },
+    {
+      path: '/management/upgrade',
       name: 'upgrade',
       component: upgrade,
     },

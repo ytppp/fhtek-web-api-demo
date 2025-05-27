@@ -440,3 +440,10 @@ function isNameUnsafe(compareChar) {
 export function isObjExistVal(obj, val) {
   return Object.keys(obj).some((key) => obj[key] === val)
 }
+
+export function isValidDomain(value, flag = true) {
+  const domainReg = flag
+    ? /^(https?:\/\/)?([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
+    : /^([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
+  return domainReg.test(value)
+}

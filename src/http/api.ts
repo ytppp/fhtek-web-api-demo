@@ -156,3 +156,30 @@ export const getFirewall = (): Promise<ApiResponse<any>> => {
     method: 'firewall:get',
   })
 }
+
+export const getStaticDnsList = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.static_dns:get',
+  })
+}
+
+export const addStaticDns = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.static_dns:add',
+    data: params,
+  })
+}
+
+export const editStaticDns = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.static_dns:edit',
+    data: params,
+  })
+}
+
+export const delStaticDns = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.static_dns:delete',
+    data: params,
+  })
+}

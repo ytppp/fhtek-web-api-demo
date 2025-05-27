@@ -54,6 +54,13 @@
           </fh-form-item>
         </template>
         <template v-if="isRouter">
+          <fh-form-item :label="t('trans0770')">
+            <fh-radio-group v-model="wan.protocol">
+              <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
+                {{ item.text }}
+              </fh-radio>
+            </fh-radio-group>
+          </fh-form-item>
           <template v-if="isPppoe">
             <fh-form-item :label="$t('trans0086')">
               <fh-input v-model="wan.ppp.user" maxlength="64"> </fh-input>
@@ -65,13 +72,6 @@
               <fh-checkbox v-model="wan.ppp.enableRouterBridge" />
             </fh-form-item>
           </template>
-          <fh-form-item :label="t('trans0770')">
-            <fh-radio-group v-model="wan.protocol">
-              <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
-                {{ item.text }}
-              </fh-radio>
-            </fh-radio-group>
-          </fh-form-item>
           <template v-if="isIpv4">
             <template v-if="isStatic">
               <fh-form-item :label="format($t('trans0598'), [$t('trans0456')])">
@@ -92,10 +92,10 @@
             </template>
           </template>
           <template v-if="isIpv6">
-            <fh-form-item :label="t('trans0779')" label-position="left">
+            <fh-form-item :label="t('trans0779')" label-position="left" v-if="!isStatic">
               <fh-checkbox v-model="wan.ipv6.isSlaac" />
             </fh-form-item>
-            <template v-if="isStatic && !isSlaac">
+            <template v-if="isStatic">
               <fh-form-item :label="format($t('trans0598'), [$t('trans0457')])">
                 <fh-input v-model="wan.ipv6.static.ip"></fh-input>
               </fh-form-item>
@@ -404,7 +404,6 @@ const isPppoe = computed(() => wan.netType === NetType.pppoe)
 const isIpv6PdEnable = computed(() => wan.ipv6.pd.enable)
 const isVlanModeTag = computed(() => wan.vlan.mode === VlanMode.Tag)
 const isIpv6PdModeManually = computed(() => wan.ipv6.pd.mode === PrefixMode.manually)
-const isSlaac = computed(() => isIpv6.value && wan.ipv6.isSlaac)
 const isShowMultiVlanId = computed(
   () => wan.serviceType === ServiceType.IPTV || wan.serviceType === ServiceType.OTHER,
 )
