@@ -171,7 +171,7 @@
           </fh-form-item>
         </template>
         <fh-form-item class="form__submit-btn">
-          <fh-button @clicl="save" block>
+          <fh-button @click="save" block>
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
@@ -378,7 +378,7 @@ const wanInitial = {
   },
   protocol: IP.IPv4,
   multiVlanId: '',
-  mtu: 1500,
+  mtu: '1500',
   enableNat: false,
   wanMode: WanMode.router,
   netType: NetType.dhcp,

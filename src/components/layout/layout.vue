@@ -165,7 +165,7 @@ export default {
         menu = menuObj
       }
       if (this.drawer) this.drawer = false
-      this.$router.push(menu.url)
+      this.$router.push(`${menu.url}?t=${Date.now()}`)
     },
     setHeight() {
       const contentMinHeight = 600 // 定义内容区域最小高度

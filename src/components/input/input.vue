@@ -144,8 +144,8 @@ const props = defineProps({
 
 const slots = useSlots()
 const attrs = useAttrs()
-const form = inject('form', {})
-const formItem = inject('formItem', {})
+const form = inject('form', null)
+const formItem = inject('formItem', null)
 const model = defineModel({
   type: [String, Number],
   default: '',
@@ -160,7 +160,7 @@ const inputDisabled = computed(() => {
   return props.disabled || form?.disabled.value
 })
 const currentLabel = computed(() => {
-  return props.label || formItem.label.value || ''
+  return props.label || formItem?.label.value || ''
 })
 const isWordLimitVisible = computed(() => {
   return (

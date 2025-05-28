@@ -167,6 +167,26 @@ let menus = [
         text: 'trans0187',
         config,
       },
+      {
+        url: '/management/user',
+        text: 'trans0184',
+        config,
+      },
+      {
+        url: '/management/device',
+        text: 'trans0227',
+        config,
+      },
+      {
+        url: '/management/log',
+        text: 'trans0188',
+        config,
+      },
+      {
+        url: '/management/terminal',
+        text: 'trans0401',
+        config,
+      },
     ],
   },
 ]

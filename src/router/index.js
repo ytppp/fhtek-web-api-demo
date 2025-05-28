@@ -2,7 +2,7 @@ import { createWebHashHistory, createRouter } from 'vue-router'
 
 import login from '../pages/login/index.vue'
 import home from '../pages/home/index.vue'
-import device from '../pages/status/device.vue'
+import deviceStatus from '../pages/status/device.vue'
 import wan from '../pages/status/wan.vue'
 import wlan from '../pages/status/wlan.vue'
 import lanStatus from '../pages/status/lan.vue'
@@ -22,6 +22,10 @@ import dmz from '../pages/app/dmz.vue'
 import staticDns from '../pages/app/static-dns.vue'
 import ddns from '../pages/app/ddns.vue'
 import upgrade from '../pages/management/upgrade.vue'
+import user from '../pages/management/user.vue'
+import device from '../pages/management/device.vue'
+import log from '../pages/management/log.vue'
+import terminal from '../pages/management/terminal.vue'
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -42,8 +46,8 @@ export const router = createRouter({
     },
     {
       path: '/status/device',
-      name: 'device',
-      component: device,
+      name: 'deviceStatus',
+      component: deviceStatus,
     },
     {
       path: '/status/wan',
@@ -140,6 +144,26 @@ export const router = createRouter({
       name: 'upgrade',
       component: upgrade,
     },
+    {
+      path: '/management/user',
+      name: 'user',
+      component: user,
+    },
+    {
+      path: '/management/device',
+      name: 'device',
+      component: device,
+    },
+    {
+      path: '/management/log',
+      name: 'log',
+      component: log,
+    },
+    {
+      path: '/management/terminal',
+      name: 'terminal',
+      component: terminal,
+    }
   ],
 })
 

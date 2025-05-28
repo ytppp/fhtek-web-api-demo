@@ -54,8 +54,8 @@ defineOptions({
   name: 'FhSelect',
 })
 
-const form = inject('form', {})
-const formItem = inject('formItem', {})
+const form = inject('form', null)
+const formItem = inject('formItem', null)
 
 const props = defineProps({
   options: {
@@ -88,7 +88,7 @@ const opened = ref(false)
 const selectRef = ref(null)
 
 const currentLabel = computed(() => {
-  return props.label || formItem.label.value || ''
+  return props.label || formItem?.label.value || ''
 })
 const selectPlaceholder = computed(() => {
   return typeof props.placeholder !== 'undefined' ? props.placeholder : t('trans0001')
