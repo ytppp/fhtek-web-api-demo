@@ -6,14 +6,17 @@
     <div class="page__content">
       <fh-form class="form" ref="wanRef" :model="wan" :rules="wanRules">
         <fh-form-item>
-          <fh-button size="small">
+          <fh-button size="small" @click="addWanConn" v-if="isEdit">
             {{ $t('trans0760') }}
           </fh-button>
+          <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd">
+            {{ $t('trans0020') }}
+          </fh-button>
         </fh-form-item>
-        <fh-form-item :label="t('trans0080')">
-          <fh-select v-model="wan.id" :options="wanOptions"></fh-select>
+        <fh-form-item :label="t('trans0140')" v-if="isEdit">
+          <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
           <template #extra>
-            <fh-button size="small">
+            <fh-button v-if="isShowWanDel" @click="delWanConn" size="small">
               {{ $t('trans0759') }}
             </fh-button>
           </template>
@@ -161,7 +164,7 @@
           </fh-form-item>
         </template>
         <fh-form-item class="form__submit-btn">
-          <fh-button block>
+          <fh-button @clicl="save" block>
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
@@ -173,7 +176,7 @@
 <script lang="ts" setup>
 import { ref, computed, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IP, VlanMode } from '@/util/constant'
+import { IP, VlanMode, ModalType, EnableStatus } from '@/util/constant'
 import {
   format,
   isIP,
@@ -193,7 +196,8 @@ import {
   isValidSymbol,
   specialChar,
 } from '@/util/tool'
-import { getLan, getWan, setWan, getIpv6Wan, setIpv6Wan } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
+import { getLan, getWan, addWan, editWan, deleteWan } from '@/http/api'
 
 defineOptions({
   name: 'WanPage',
@@ -221,9 +225,10 @@ enum WanMode {
   bridge = 'bridge',
 }
 
+const { convertBool } = useDataClean()
 const { t } = useI18n()
 const wanRef = ref(null)
-const wanOptions = []
+const modalType = ref(ModalType.add)
 const lanOptions = [
   {
     value: 'LAN1',
@@ -316,7 +321,6 @@ const netTypesOptions = [
     text: t('trans0081'),
   },
 ]
-
 const vlanModeOptions = [
   {
     value: VlanMode.Tag,
@@ -341,7 +345,7 @@ const prefixModeOptions = [
     text: t('trans0486'),
   },
 ]
-const wan = reactive({
+const wanInitial = {
   id: '',
   enable: false,
   serviceType: ServiceType.INTERNET,
@@ -390,8 +394,10 @@ const wan = reactive({
       dns2: '',
     },
   },
-})
+}
+const wan = reactive(wanInitial)
 const wanRules = reactive({})
+const wanOptions = reactive([])
 const wanList = reactive([])
 
 const isRouter = computed(() => wan.wanMode === WanMode.router)
@@ -482,6 +488,14 @@ const mtuTips = computed(() => {
     return rangeTips(MtuRange.pppAndMix[0], MtuRange.pppAndMix[1])
   }
 })
+const isAdd = computed(() => {
+  return modalType.value === ModalType.add
+})
+const isEdit = computed(() => {
+  return modalType.value === ModalType.edit
+})
+const isShowWanDel = computed(() => wanList.length > 1)
+
 const p8021Options = (max: number) => {
   const arr = []
   for (let i = 1; i <= max; i++) {
@@ -492,4 +506,137 @@ const p8021Options = (max: number) => {
 const rangeTips = (min: number, max: number) => {
   return format(t('trans0611'), [min, max])
 }
+const getWanList = () => {
+  getWan().then(({ data }) => {
+    const { items } = data
+    if (iems.length === 0) {
+      return
+    }
+    const wanOptionsList = items.map((item) => ({
+      value: item.id,
+      text: item.id,
+    }))
+    Object.assign(wanList, items)
+    Object.assign(wanOptions, wanOptionsList)
+    wan.id = wanOptions.value[0].id
+    modalType.value = ModalType.edit
+    changeWan()
+  })
+}
+const changeWan = () => {
+  const thisWan = wanList.find((item) => item.id === wan.id)
+  wan.id = thisWan.id
+  wan.enable = convertBool(thisWan.enable)
+  wan.serviceType = thisWan.serviceType
+  wan.lan = thisWan.lan
+  wan.wlan24g = thisWan.wlan24g
+  wan.wlan5g = thisWan.wlan5g
+  wan.vlan.mode = thisWan.vlan.mode
+  wan.vlan.id = thisWan.vlan.id
+  wan.vlan.p8021 = thisWan.vlan.p8021
+  wan.protocol = thisWan.protocol
+  wan.multiVlanId = thisWan.multiVlanId
+  wan.mtu = thisWan.mtu
+  wan.enableNat = convertBool(thisWan.enableNat)
+  wan.wanMode = thisWan.wanMode
+  wan.netType = thisWan.netType
+  wan.ppp.user = thisWan.ppp.user
+  wan.ppp.pwd = thisWan.ppp.pwd
+  wan.ppp.enableRouterBridge = convertBool(thisWan.ppp.enableRouterBridge)
+  wan.ipv4.static.ip = thisWan.ipv4.static.ip
+  wan.ipv4.static.mask = thisWan.ipv4.static.mask
+  wan.ipv4.static.gateway = thisWan.ipv4.static.gateway
+  wan.ipv4.static.dns1 = thisWan.ipv4.static.dns1
+  wan.ipv4.static.dns2 = thisWan.ipv4.static.dns2
+  wan.ipv6.isSlaac = convertBool(thisWan.ipv6.isSlaac)
+  wan.ipv6.pd.enable = convertBool(thisWan.ipv6.pd.enable)
+  wan.ipv6.pd.mode = thisWan.ipv6.pd.mode
+  wan.ipv6.pd.address = thisWan.ipv6.pd.address
+  wan.ipv6.pd.primaryTime = thisWan.ipv6.pd.primaryTime
+  wan.ipv6.pd.leaseTime = thisWan.ipv6.pd.leaseTime
+  wan.ipv6.static.ip = thisWan.ipv6.static.ip
+  wan.ipv6.static.gateway = thisWan.ipv6.static.gateway
+  wan.ipv6.static.prefix = thisWan.ipv6.static.prefix
+  wan.ipv6.static.dns1 = thisWan.ipv6.static.dns1
+  wan.ipv6.static.dns2 = thisWan.ipv6.static.dns2
+}
+const addWanConn = () => {
+  modalType.value = ModalType.add
+  Object.assign(wan, wanInitial)
+}
+const cancelWanConnAdd = () => {
+  wan.id = wanOptions.value[0].id
+  modalType.value = ModalType.edit
+  changeWan()
+}
+const save = () => {
+  if (wanRef.value.validate()) {
+    const newWan = {
+      enable: convertBool(wan.enable),
+      serviceType: wan.serviceType,
+      lan: wan.lan,
+      wlan24g: wan.wlan24g,
+      wlan5g: wan.wlan5g,
+      vlan: {
+        mode: wan.vlan.mode,
+        id: wan.vlan.id,
+        p8021: wan.vlan.p8021,
+      },
+      protocol: wan.protocol,
+      multiVlanId: wan.multiVlanId,
+      mtu: wan.mtu,
+      enableNat: convertBool(wan.enableNat),
+      wanMode: wan.wanMode,
+      netType: wan.netType,
+      ppp: {
+        user: wan.ppp.user,
+        pwd: wan.ppp.pwd,
+        enableRouterBridge: convertBool(wan.ppp.enableRouterBridge),
+      },
+      ipv4: {
+        static: {
+          ip: wan.ipv4.static.ip,
+          mask: wan.ipv4.static.mask,
+          gateway: wan.ipv4.static.gateway,
+          dns1: wan.ipv4.static.dns1,
+          dns2: wan.ipv4.static.dns2,
+        },
+      },
+      ipv6: {
+        isSlaac: convertBool(wan.ipv6.isSlaac),
+        pd: {
+          enable: convertBool(wan.ipv6.pd.enable),
+          mode: wan.ipv6.pd.mode,
+          address: wan.ipv6.pd.address,
+          primaryTime: wan.ipv6.pd.primaryTime,
+          leaseTime: wan.ipv6.pd.leaseTime,
+        },
+        static: {
+          ip: wan.ipv6.static.ip,
+          gateway: wan.ipv6.static.gateway,
+          prefix: wan.ipv6.static.prefix,
+          dns1: wan.ipv6.static.dns1,
+          dns2: wan.ipv6.static.dns2,
+        },
+      },
+    }
+    if (isAdd.value) {
+      addWan(newWan).then((res) => {
+        getWanList()
+      })
+    }
+    if (isEdit.value) {
+      newWan.id = wan.id
+      editWan(newWan).then((res) => {
+        getWanList()
+      })
+    }
+  }
+}
+const delWanConn = () => {
+  deleteWan(wan.id)
+}
+onMounted(() => {
+  getWanList()
+})
 </script>

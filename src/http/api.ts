@@ -38,29 +38,19 @@ export const getUpgradeStatus = (): Promise<ApiResponse<any>> => {
 }
 
 export const getWan = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wanv4:get',
-  })
+  return http.get(`GetWan`)
 }
 
-export const setWan = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wanv4:edit',
-    data: params,
-  })
+export const addWan = (params): Promise<ApiResponse<any>> => {
+  return http.post(`AddWan`, createData(params))
 }
 
-export const getIpv6Wan = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wanv6:get',
-  })
+export const editWan = (params): Promise<ApiResponse<any>> => {
+  return http.post('SetWan', createData(params))
 }
 
-export const setIpv6Wan = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wanv6:edit',
-    data: params,
-  })
+export const deleteWan = (params): Promise<ApiResponse<any>> => {
+  return http.post('DeleteWan', createData(params))
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
