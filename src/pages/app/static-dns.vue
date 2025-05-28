@@ -213,7 +213,7 @@ export default {
         const tableData = []
         const { items } = data
         items.forEach((item, i) => {
-          data.push({
+          tableData.push({
             ...item,
             index: i,
           })
