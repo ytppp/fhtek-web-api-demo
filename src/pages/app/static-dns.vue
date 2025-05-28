@@ -135,7 +135,6 @@ export default {
         {
           key: 'domain',
           title: this.$t('trans0256'),
-          width: '250',
         },
         {
           key: 'ip',

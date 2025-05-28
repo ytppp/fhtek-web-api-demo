@@ -378,7 +378,7 @@ const wanInitial = {
   },
   protocol: IP.IPv4,
   multiVlanId: '',
-  mtu: '',
+  mtu: 1500,
   enableNat: false,
   wanMode: WanMode.router,
   netType: NetType.dhcp,
@@ -568,7 +568,7 @@ const getMtuTips = () => {
 }
 const p8021Options = (max: number) => {
   const arr = []
-  for (let i = 1; i <= max; i++) {
+  for (let i = 0; i <= max; i++) {
     arr.push({ value: i, text: i })
   }
   return arr
@@ -579,7 +579,7 @@ const rangeTips = (text, min: number, max: number) => {
 const getWanList = () => {
   getWan().then(({ data }) => {
     const { items } = data
-    if (iems.length === 0) {
+    if (items.length === 0) {
       return
     }
     const wanOptionsList = items.map((item) => ({
