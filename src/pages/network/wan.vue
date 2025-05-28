@@ -65,10 +65,10 @@
             </fh-radio-group>
           </fh-form-item>
           <template v-if="isPppoe">
-            <fh-form-item :label="$t('trans0086')">
+            <fh-form-item :label="$t('trans0086')" prop="ppp.user">
               <fh-input v-model="wan.ppp.user" maxlength="64"> </fh-input>
             </fh-form-item>
-            <fh-form-item :label="$t('trans0087')">
+            <fh-form-item :label="$t('trans0087')" prop="ppp.pwd">
               <fh-input type="password" v-model="wan.ppp.pwd" show-password> </fh-input>
             </fh-form-item>
             <fh-form-item :label="t('trans0790')" label-position="left">
@@ -77,19 +77,23 @@
           </template>
           <template v-if="isIpv4">
             <template v-if="isStatic">
-              <fh-form-item :label="format($t('trans0598'), [$t('trans0456')])">
-                <fh-input v-model="wan.ipv4.static.ip"></fh-input>
+              <fh-form-item
+                :label="format($t('trans0598'), [$t('trans0456')])"
+                prop="ipv4.static.ip"
+                ref="ipRef"
+              >
+                <fh-input v-model="wan.ipv4.static.ip" @blur="ipChange"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0459')">
-                <fh-input v-model="wan.ipv4.static.mask"></fh-input>
+              <fh-form-item :label="$t('trans0459')" prop="ipv4.static.mask" ref="maskRef">
+                <fh-input v-model="wan.ipv4.static.mask" @blur="maskChange"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0548')">
+              <fh-form-item :label="$t('trans0548')" prop="ipv4.static.gateway" ref="gatewayRef">
                 <fh-input v-model="wan.ipv4.static.gateway"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0496')">
-                <fh-input v-model="wan.ipv4.static.dns1"></fh-input>
+              <fh-form-item :label="$t('trans0496')" prop="ipv4.static.dns1">
+                <fh-input v-model="wan.ipv4.static.dns1" @change="changeDns1"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0497')">
+              <fh-form-item :label="$t('trans0497')" prop="ipv4.static.dns2" ref="dns2Ref">
                 <fh-input v-model="wan.ipv4.static.dns2"></fh-input>
               </fh-form-item>
             </template>
@@ -99,19 +103,22 @@
               <fh-checkbox v-model="wan.ipv6.isSlaac" />
             </fh-form-item>
             <template v-if="isStatic">
-              <fh-form-item :label="format($t('trans0598'), [$t('trans0457')])">
+              <fh-form-item
+                :label="format($t('trans0598'), [$t('trans0457')])"
+                prop="ipv6.static.ip"
+              >
                 <fh-input v-model="wan.ipv6.static.ip"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0599')">
+              <fh-form-item :label="$t('trans0599')" prop="ipv6.static.gateway">
                 <fh-input v-model="wan.ipv6.static.gateway"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0596')">
+              <fh-form-item :label="$t('trans0596')" prop="ipv6.static.prefix">
                 <fh-input v-model="wan.ipv6.static.prefix"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0496')">
-                <fh-input v-model="wan.ipv6.static.dns1"></fh-input>
+              <fh-form-item :label="$t('trans0496')" prop="ipv6.static.dns1">
+                <fh-input v-model="wan.ipv6.static.dns1" @change="changeIpv6Dns1"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0497')">
+              <fh-form-item :label="$t('trans0497')" prop="ipv6.static.dns2" ref="ipv6Dns2Ref">
                 <fh-input v-model="wan.ipv6.static.dns2"></fh-input>
               </fh-form-item>
             </template>
@@ -127,37 +134,37 @@
                 </fh-radio-group>
               </fh-form-item>
               <template v-if="isIpv6PdModeManually">
-                <fh-form-item :label="$t('trans0784')">
+                <fh-form-item :label="$t('trans0784')" prop="ipv6.pd.address">
                   <fh-input v-model="wan.ipv6.pd.address"></fh-input>
                 </fh-form-item>
-                <fh-form-item :label="$t('trans0785')">
+                <fh-form-item :label="$t('trans0785')" prop="ipv6.pd.primaryTime">
                   <fh-input v-model="wan.ipv6.pd.primaryTime"></fh-input>
                 </fh-form-item>
-                <fh-form-item :label="$t('trans0461')">
+                <fh-form-item :label="$t('trans0461')" prop="ipv6.pd.leaseTime">
                   <fh-input v-model="wan.ipv6.pd.leaseTime"></fh-input>
                 </fh-form-item>
               </template>
             </template>
           </template>
-          <fh-form-item :label="t('trans0482')">
+          <fh-form-item :label="t('trans0482')" prop="mtu">
             <fh-input v-model="wan.mtu"></fh-input>
-            <template #extra>{{ mtuTips }}</template>
+            <template #extra>{{ getMtuTips().tips }}</template>
           </fh-form-item>
           <fh-form-item :label="t('trans0778')" label-position="left" v-if="isHideEnableNat">
             <fh-checkbox v-model="wan.enableNat" />
           </fh-form-item>
         </template>
-        <fh-form-item :label="t('trans0777')" v-if="isShowMultiVlanId">
+        <fh-form-item :label="t('trans0777')" v-if="isShowMultiVlanId" prop="multiVlanId">
           <fh-input v-model="wan.multiVlanId"></fh-input>
-          <template #extra>{{ rangeTips(1, 4094) }}</template>
+          <template #extra>{{ rangeTips(t('trans0777'), 1, 4094) }}</template>
         </fh-form-item>
         <fh-form-item :label="t('trans0771')">
           <fh-select v-model="wan.vlan.mode" :options="vlanModeOptions"></fh-select>
         </fh-form-item>
         <template v-if="isVlanModeTag">
-          <fh-form-item :label="t('trans0775')">
+          <fh-form-item :label="t('trans0775')" prop="vlan.id">
             <fh-input v-model="wan.vlan.id"></fh-input>
-            <template #extra>{{ rangeTips(1, 4094) }}</template>
+            <template #extra>{{ rangeTips(t('trans0775'), 1, 4094) }}</template>
           </fh-form-item>
           <fh-form-item :label="t('trans0776')">
             <fh-select v-model="wan.vlan.p8021" :options="p8021Options(7)"></fh-select>
@@ -176,7 +183,7 @@
 <script lang="ts" setup>
 import { ref, computed, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IP, VlanMode, ModalType, EnableStatus } from '@/util/constant'
+import { IP, VlanMode, ModalType } from '@/util/constant'
 import {
   format,
   isIP,
@@ -195,6 +202,7 @@ import {
   isValidLength,
   isValidSymbol,
   specialChar,
+  isValidInteger,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { getLan, getWan, addWan, editWan, deleteWan } from '@/http/api'
@@ -225,8 +233,13 @@ enum WanMode {
   bridge = 'bridge',
 }
 
-const { convertBool } = useDataClean()
+const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
+const ipRef = ref(null)
+const maskRef = ref(null)
+const gatewayRef = ref(null)
+const dns2Ref = ref(null)
+const ipv6Dns2Ref = ref(null)
 const wanRef = ref(null)
 const modalType = ref(ModalType.add)
 const lanOptions = [
@@ -345,6 +358,12 @@ const prefixModeOptions = [
     text: t('trans0486'),
   },
 ]
+const MtuRange = {
+  ipAndIpv4: [576, 1500],
+  ipAndMix: [1280, 1500],
+  pppAndIpv4: [576, 1492],
+  pppAndMix: [1280, 1492],
+}
 const wanInitial = {
   id: '',
   enable: false,
@@ -396,7 +415,6 @@ const wanInitial = {
   },
 }
 const wan = reactive(wanInitial)
-const wanRules = reactive({})
 const wanOptions = reactive([])
 const wanList = reactive([])
 
@@ -468,26 +486,6 @@ const serviceTypeOptions = computed(() => {
     ]
   }
 })
-const mtuTips = computed(() => {
-  const MtuRange = {
-    ipAndIpv4: [576, 1500],
-    ipAndMix: [1280, 1500],
-    pppAndIpv4: [576, 1492],
-    pppAndMix: [1280, 1492],
-  }
-  if (isRouter.value && wan.protocol === IP.IPv4) {
-    return rangeTips(MtuRange.ipAndIpv4[0], MtuRange.ipAndIpv4[1])
-  }
-  if (isRouter.value && isIpv6.value) {
-    return rangeTips(MtuRange.ipAndMix[0], MtuRange.ipAndMix[1])
-  }
-  if (isBridge.value && wan.protocol === IP.IPv4) {
-    return rangeTips(MtuRange.pppAndIpv4[0], MtuRange.pppAndIpv4[1])
-  }
-  if (isBridge.value && isIpv6.value) {
-    return rangeTips(MtuRange.pppAndMix[0], MtuRange.pppAndMix[1])
-  }
-})
 const isAdd = computed(() => {
   return modalType.value === ModalType.add
 })
@@ -496,6 +494,78 @@ const isEdit = computed(() => {
 })
 const isShowWanDel = computed(() => wanList.length > 1)
 
+const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
+const isGatewaySameSegmentWithIp = (gateway, ip) =>
+  !gateway || !ip || getIpBefore(gateway) === getIpBefore(ip)
+const validateSameDns = (dns1, dns2) => !(dns1 && dns2 && dns1 === dns2)
+const ipChange = () => {
+  if (!ipRef.value?.validate()) {
+    return
+  }
+  if (wan.ipv4.static.gateway) {
+    gatewayRef.value?.validate()
+  }
+}
+const maskChange = () => {
+  if (!maskRef.value?.validate()) {
+    return
+  }
+  if (wan.ipv4.static.ip) {
+    ipRef.value?.validate()
+  }
+  if (wan.ipv4.static.gateway) {
+    gatewayRef.value?.validate()
+  }
+}
+const changeDns1 = () => {
+  dns2Ref.value?.extraValidate(
+    () => validateSameDns(wan.ipv4.static.dns1, wan.ipv4.static.dns2),
+    t('trans0637'),
+  )
+}
+const changeIpv6Dns1 = () => {
+  ipv6Dns2Ref.value?.extraValidate(
+    () => validateSameDns(wan.ipv6.static.dns1, wan.ipv6.static.dns2),
+    t('trans0637'),
+  )
+}
+const getMtuTips = () => {
+  if (!isPppoe.value && wan.protocol === IP.IPv4) {
+    return {
+      tips: rangeTips(t('trans0482'), MtuRange.ipAndIpv4[0], MtuRange.ipAndIpv4[1]),
+      rule: isValidInteger(wan.mtu, MtuRange.ipAndIpv4[0], MtuRange.ipAndIpv4[1]),
+      ruleMsg: format(t('trans0388'), [
+        t('trans0482'),
+        MtuRange.ipAndIpv4[0],
+        MtuRange.ipAndIpv4[1],
+      ]),
+    }
+  }
+  if (!isPppoe.value && isIpv6.value) {
+    return {
+      tips: rangeTips(t('trans0482'), MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]),
+      rule: isValidInteger(wan.mtu, MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]),
+      ruleMsg: format(t('trans0388'), [t('trans0482'), MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]]),
+    }
+  }
+  if (isPppoe.value && wan.protocol === IP.IPv4) {
+    return {
+      tips: rangeTips(t('trans0482'), MtuRange.pppAndIpv4[0], MtuRange.pppAndIpv4[1]),
+      rule: isValidInteger(wan.mtu, MtuRange.pppAndIpv4[0], MtuRange.pppAndIpv4[1]),
+      ruleMsg: format(t('trans0388'), [
+        t('trans0482'),
+        MtuRange.pppAndIpv4[0],
+        MtuRange.pppAndIpv4[1],
+      ]),
+    }
+  }
+  if (isPppoe.value && isIpv6.value) {
+    return {
+      tips: rangeTips(t('trans0482'), MtuRange.pppAndMix[0], MtuRange.pppAndMix[1]),
+      rule: isValidInteger(wan.mtu, MtuRange.pppAndMix[0], MtuRange.pppAndMix[1]),
+    }
+  }
+}
 const p8021Options = (max: number) => {
   const arr = []
   for (let i = 1; i <= max; i++) {
@@ -503,8 +573,8 @@ const p8021Options = (max: number) => {
   }
   return arr
 }
-const rangeTips = (min: number, max: number) => {
-  return format(t('trans0611'), [min, max])
+const rangeTips = (text, min: number, max: number) => {
+  return format(t('trans0373'), [text, min, max])
 }
 const getWanList = () => {
   getWan().then(({ data }) => {
@@ -526,7 +596,7 @@ const getWanList = () => {
 const changeWan = () => {
   const thisWan = wanList.find((item) => item.id === wan.id)
   wan.id = thisWan.id
-  wan.enable = convertBool(thisWan.enable)
+  wan.enable = convertBooleanStatus(thisWan.enable)
   wan.serviceType = thisWan.serviceType
   wan.lan = thisWan.lan
   wan.wlan24g = thisWan.wlan24g
@@ -537,19 +607,19 @@ const changeWan = () => {
   wan.protocol = thisWan.protocol
   wan.multiVlanId = thisWan.multiVlanId
   wan.mtu = thisWan.mtu
-  wan.enableNat = convertBool(thisWan.enableNat)
+  wan.enableNat = convertBooleanStatus(thisWan.enableNat)
   wan.wanMode = thisWan.wanMode
   wan.netType = thisWan.netType
   wan.ppp.user = thisWan.ppp.user
   wan.ppp.pwd = thisWan.ppp.pwd
-  wan.ppp.enableRouterBridge = convertBool(thisWan.ppp.enableRouterBridge)
+  wan.ppp.enableRouterBridge = convertBooleanStatus(thisWan.ppp.enableRouterBridge)
   wan.ipv4.static.ip = thisWan.ipv4.static.ip
   wan.ipv4.static.mask = thisWan.ipv4.static.mask
   wan.ipv4.static.gateway = thisWan.ipv4.static.gateway
   wan.ipv4.static.dns1 = thisWan.ipv4.static.dns1
   wan.ipv4.static.dns2 = thisWan.ipv4.static.dns2
-  wan.ipv6.isSlaac = convertBool(thisWan.ipv6.isSlaac)
-  wan.ipv6.pd.enable = convertBool(thisWan.ipv6.pd.enable)
+  wan.ipv6.isSlaac = convertBooleanStatus(thisWan.ipv6.isSlaac)
+  wan.ipv6.pd.enable = convertBooleanStatus(thisWan.ipv6.pd.enable)
   wan.ipv6.pd.mode = thisWan.ipv6.pd.mode
   wan.ipv6.pd.address = thisWan.ipv6.pd.address
   wan.ipv6.pd.primaryTime = thisWan.ipv6.pd.primaryTime
@@ -572,7 +642,7 @@ const cancelWanConnAdd = () => {
 const save = () => {
   if (wanRef.value.validate()) {
     const newWan = {
-      enable: convertBool(wan.enable),
+      enable: convertBooleanStatus(wan.enable),
       serviceType: wan.serviceType,
       lan: wan.lan,
       wlan24g: wan.wlan24g,
@@ -585,13 +655,13 @@ const save = () => {
       protocol: wan.protocol,
       multiVlanId: wan.multiVlanId,
       mtu: wan.mtu,
-      enableNat: convertBool(wan.enableNat),
+      enableNat: convertBooleanStatus(wan.enableNat),
       wanMode: wan.wanMode,
       netType: wan.netType,
       ppp: {
         user: wan.ppp.user,
         pwd: wan.ppp.pwd,
-        enableRouterBridge: convertBool(wan.ppp.enableRouterBridge),
+        enableRouterBridge: convertBooleanStatus(wan.ppp.enableRouterBridge),
       },
       ipv4: {
         static: {
@@ -603,9 +673,9 @@ const save = () => {
         },
       },
       ipv6: {
-        isSlaac: convertBool(wan.ipv6.isSlaac),
+        isSlaac: convertBooleanStatus(wan.ipv6.isSlaac),
         pd: {
-          enable: convertBool(wan.ipv6.pd.enable),
+          enable: convertBooleanStatus(wan.ipv6.pd.enable),
           mode: wan.ipv6.pd.mode,
           address: wan.ipv6.pd.address,
           primaryTime: wan.ipv6.pd.primaryTime,
@@ -636,6 +706,265 @@ const save = () => {
 const delWanConn = () => {
   deleteWan(wan.id)
 }
+
+const wanRules = reactive({
+  'ipv4.static.ip': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isIP(value) && !isMulticast(value) && !isLoopback(value),
+      message: format(t('trans0566'), [t('trans0393')]),
+    },
+    {
+      rule: (value) => !isNetworkIP(value, wan.ipv4.static.mask),
+      message: format(t('trans0566'), [t('trans0393')]),
+    },
+    {
+      rule: (value) => !isBoardcastIP(value, wan.ipv4.static.mask),
+      message: format(t('trans0566'), [t('trans0393')]),
+    },
+    {
+      rule: (value) => isValidGatewayIP(value, wan.ipv4.static.mask),
+      message: format(t('trans0566'), [t('trans0393')]),
+    },
+    // {
+    //   rule: (value) => {
+    //     if (!lanIp.value) {
+    //       return true
+    //     }
+    //     const lanIpBefore = getIpBefore(lanIp.value)
+    //     const ipBefore = getIpBefore(value)
+    //     if (ipBefore === lanIpBefore || lanIp.value === value) {
+    //       return false
+    //     }
+    //     return true
+    //   },
+    //   message: t('trans0615'),
+    // },
+  ],
+  'ipv4.static.mask': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isIP(value),
+      message: format(t('trans0566'), [t('trans0459')]),
+    },
+    {
+      rule: (value) => isValidMask(value),
+      message: format(t('trans0566'), [t('trans0459')]),
+    },
+  ],
+  'ipv4.static.gateway': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isIP(value) && !isMulticast(value) && !isLoopback(value),
+      message: format(t('trans0566'), [t('trans0548')]),
+    },
+    {
+      rule: (value) => !isNetworkIP(value, wan.ipv4.static.mask),
+      message: t('trans0397'),
+    },
+    {
+      rule: (value) => !isBoardcastIP(value, wan.ipv4.static.mask),
+      message: t('trans0397'),
+    },
+    {
+      rule: (value) => isGatewaySameSegmentWithIp(value, wan.ipv4.static.ip),
+      message: t('trans0662'),
+    },
+    {
+      rule: (value) => isGatewaySameWithIp(value, wan.ipv4.static.ip),
+      message: t('trans0633'),
+    },
+  ],
+  'ipv4.static.dns1': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isIP(value),
+      message: format(t('trans0566'), [t('trans0496')]),
+    },
+    {
+      rule: (value) => isValidDns(value),
+      message: format(t('trans0566'), [t('trans0496')]),
+    },
+  ],
+  'ipv4.static.dns2': [
+    {
+      rule: (value) => !value.trim().length || isIP(value),
+      message: format(t('trans0566'), [t('trans0497')]),
+    },
+    {
+      rule: (value) => !value.trim().length || isValidDns(value),
+      message: format(t('trans0566'), [t('trans0497')]),
+    },
+    {
+      rule: (value) => !value.trim().length || validateSameDns(wan.ipv4.static.dns1, value),
+      message: t('trans0637'),
+    },
+  ],
+  'ppp.user': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidNameEx(value),
+      message: format(t('trans0566'), [t('trans0086')]),
+    },
+    {
+      rule: (value) => validationCharacterRange(value, 1, 64),
+      message: format(t('trans0003'), [t('trans0086'), 1, 64]),
+    },
+  ],
+  'ppp.pwd': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidLength(value, 1, 64),
+      message: format(t('trans0003'), [t('trans0087'), 1, 64]),
+    },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: format(t('trans0013'), [t('trans0087'), format(t('trans0042'), [specialChar])]),
+    },
+  ],
+  'ipv6.static.ip': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isIP(value, IP.IPv6),
+      message: t('trans0397'),
+    },
+    {
+      rule: (value) => isValidIpv6AddrExtra(value),
+      message: t('trans0397'),
+    },
+  ],
+  'ipv6.static.gateway': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isIP(value, IP.IPv6),
+      message: t('trans0397'),
+    },
+    {
+      rule: (value) => isValidIpv6Dns(value),
+      message: t('trans0397'),
+    },
+  ],
+  'ipv6.static.prefix': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => {
+        const parts = value.split('/')
+        if (parts.length === 2) {
+          const ip = parts[0]
+          const prefix = parseInt(parts[1])
+          if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && prefix >= 0 && prefix <= 128) {
+            return true
+          }
+        }
+        return false
+      },
+      message: t('trans0397'),
+    },
+  ],
+  'ipv6.static.dns1': [
+    {
+      rule: (value) => value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isIP(value, IP.IPv6),
+      message: t('trans0397'),
+    },
+    {
+      rule: (value) => isValidIpv6Dns(value),
+      message: t('trans0397'),
+    },
+  ],
+  'ipv6.static.dns2': [
+    {
+      rule: (value) => !value.trim().length || isIP(value, IP.IPv6),
+      message: t('trans0397'),
+    },
+    {
+      rule: (value) => !value.trim().length || isValidIpv6Dns(value),
+      message: format(t('trans0566'), [t('trans0497')]),
+    },
+    {
+      rule: (value) => !value.trim().length || validateSameDns(wan.ipv6.static.dns1, value),
+      message: t('trans0637'),
+    },
+  ],
+  'vlan.id': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidInteger(value, 1, 4094),
+      message: format(t('trans0388'), [t('trans0775'), 1, 4094]),
+    },
+  ],
+  multiVlanId: [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidInteger(value, 1, 4094),
+      message: format(t('trans0388'), [t('trans0777'), 1, 4094]),
+    },
+  ],
+  mtu: [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+    {
+      rule: () => getMtuTips().rule,
+      message: format(t('trans0398'), [t('trans0482')]),
+    },
+  ],
+  'ipv6.pd.address': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
+  'ipv6.pd.primaryTime': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
+  'ipv6.pd.leaseTime': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
+})
 onMounted(() => {
   getWanList()
 })

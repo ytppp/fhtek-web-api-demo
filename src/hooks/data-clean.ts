@@ -11,7 +11,7 @@ export const useDataClean = () => {
       }
     })
   }
-  const convertBool = (flag: any) => {
+  const convertBooleanStatus = (flag: any) => {
     if (flag === EnableStatus.yes || flag === EnableStatus.no) {
       return flag === EnableStatus.yes
     }
@@ -22,6 +22,6 @@ export const useDataClean = () => {
     undefinedFlag,
     defaultVal,
     cleanData,
-    convertBool,
+    convertBooleanStatus,
   }
 }
