@@ -198,7 +198,7 @@ export default {
       }
     },
     del(row) {
-      delStaticDns([{ id: row.id }]).then((res) => {
+      delStaticDns({ id: row.id }).then((res) => {
         this.getStaticDnsListData()
       })
     },
