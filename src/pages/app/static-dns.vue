@@ -209,15 +209,16 @@ export default {
       // todo
     },
     getStaticDnsListData() {
-      getStaticDnsList().then((res) => {
-        const data = []
-        res.data.forEach((item, i) => {
+      getStaticDnsList().then(({ data }) => {
+        const tableData = []
+        const { items } = data
+        items.forEach((item, i) => {
           data.push({
             ...item,
             index: i,
           })
         })
-        this.data = data
+        this.data = tableData
       })
     },
   },

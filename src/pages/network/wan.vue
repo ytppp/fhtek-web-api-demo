@@ -24,7 +24,7 @@
         <fh-form-item :label="t('trans0762')">
           <fh-select v-model="wan.wanMode" :options="wanModeOptions"></fh-select>
         </fh-form-item>
-        <fh-form-item :label="t('trans0780')" v-if="isRouter">
+        <fh-form-item :label="t('trans0080')" v-if="isRouter">
           <fh-select v-model="wan.netType" :options="netTypesOptions"></fh-select>
         </fh-form-item>
         <fh-form-item :label="t('trans0763')">
