@@ -38,7 +38,7 @@ export default defineConfig(async () => {
     server: {
       proxy: {
         '/action': {
-          target: 'http://192.168.29.2',
+          target: 'http://192.168.29.1',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/action/, '/action'),
           configure: (proxy, options) => {

@@ -364,7 +364,7 @@ const MtuRange = {
   pppAndIpv4: [576, 1492],
   pppAndMix: [1280, 1492],
 }
-const wanInitial = {
+const wanInitial = () => ({
   id: '',
   enable: true,
   serviceType: ServiceType.INTERNET,
@@ -413,8 +413,8 @@ const wanInitial = {
       dns2: '',
     },
   },
-}
-const wan = reactive(wanInitial)
+})
+const wan = reactive(wanInitial())
 const wanOptions = reactive([])
 const wanList = reactive([])
 
@@ -589,7 +589,7 @@ const getWanList = () => {
     }))
     Object.assign(wanList, items)
     Object.assign(wanOptions, wanOptionsList)
-    wan.id = wanOptions.value[0].id
+    wan.id = items[0].id
     modalType.value = ModalType.edit
     changeWan()
   })
@@ -633,10 +633,11 @@ const changeWan = () => {
 }
 const addWanConn = () => {
   modalType.value = ModalType.add
-  Object.assign(wan, wanInitial)
+  Object.assign(wan, wanInitial())
+  console.log(wan)
 }
 const cancelWanConnAdd = () => {
-  wan.id = wanOptions.value[0].id
+  wan.id = wanOptions[0].value
   modalType.value = ModalType.edit
   changeWan()
 }

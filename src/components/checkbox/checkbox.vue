@@ -95,7 +95,6 @@ export default {
       if ({}.toString.call(this.model) === '[object Boolean]') {
         return this.model
       } else if (Array.isArray(this.model)) {
-        console.log(this.model)
         return this.model.indexOf(this.label) > -1
       } else if (this.model !== null && this.model !== undefined) {
         return this.model === this.trueLabel

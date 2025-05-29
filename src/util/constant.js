@@ -26,7 +26,7 @@ export const UploadAccept = {
 export const IP = {
   IPv4: 'IPv4',
   IPv6: 'IPv6',
-  mix: 'IPv4/IPv6',
+  mix: 'mix',
 }
 
 export const VlanMode = {
@@ -47,7 +47,7 @@ export const EnableStatus = {
   no: '0',
 }
 
-export  const ModalType = {
+export const ModalType = {
   add: 'add',
   edit: 'edit',
 }
