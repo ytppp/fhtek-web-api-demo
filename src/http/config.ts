@@ -15,7 +15,7 @@ const defaultUrl = '/action'
 
 export const defaultConfig: TAxiosRequestConfig = {
   baseURL: defaultUrl, // import.meta.env.VITE_API_URL || '',
-  timeout: 1000, // 10000
+  timeout: 10000, // 1000
   headers: {
     Accept: 'application/json, text/plain, */*',
     'Content-Type': 'application/json',
