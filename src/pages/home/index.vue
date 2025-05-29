@@ -96,7 +96,7 @@ const { t } = useI18n()
 const dialog = inject('dialog')
 const uploading = ref(false)
 const visible = ref(false)
-const checkAll = ref(false)
+const checkAll = ref(true)
 const Weeks = {
   mon: '1',
   tue: '2',

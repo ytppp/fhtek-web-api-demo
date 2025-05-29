@@ -66,7 +66,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    value: {},
+    modelValue: {},
     label: {},
     disabled: Boolean,
     checked: Boolean,
@@ -95,6 +95,7 @@ export default {
       if ({}.toString.call(this.model) === '[object Boolean]') {
         return this.model
       } else if (Array.isArray(this.model)) {
+        console.log(this.model)
         return this.model.indexOf(this.label) > -1
       } else if (this.model !== null && this.model !== undefined) {
         return this.model === this.trueLabel
@@ -112,9 +113,9 @@ export default {
       get() {
         return this.isGroup
           ? this.checkboxGroup.model.value
-          : this.value === undefined
+          : this.modelValue === undefined
             ? this.selfModel
-            : this.value
+            : this.modelValue
       },
       set(val) {
         if (this.isGroup) {
