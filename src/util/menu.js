@@ -155,6 +155,16 @@ let menus = [
         text: 'trans0245',
         config,
       },
+      {
+        url: '/app/upnp',
+        text: 'trans0246',
+        config,
+      },
+      {
+        url: '/app/cwmp',
+        text: 'trans0271',
+        config,
+      },
     ],
   },
   {
@@ -185,6 +195,11 @@ let menus = [
       {
         url: '/management/terminal',
         text: 'trans0401',
+        config,
+      },
+      {
+        url: '/management/ont-auth',
+        text: 'trans0780',
         config,
       },
     ],

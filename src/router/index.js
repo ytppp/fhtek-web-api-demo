@@ -8,7 +8,7 @@ import wlan from '../pages/status/wlan.vue'
 import lanStatus from '../pages/status/lan.vue'
 import optical from '../pages/status/optical.vue'
 import voip from '../pages/status/voip.vue'
-import cwmp from '../pages/status/cwmp.vue'
+import cwmpStatus from '../pages/status/cwmp.vue'
 import sta from '../pages/status/sta.vue'
 import usb from '../pages/status/usb.vue'
 import wanNetwork from '../pages/network/wan.vue'
@@ -21,11 +21,14 @@ import portMapping from '../pages/app/port-mapping.vue'
 import dmz from '../pages/app/dmz.vue'
 import staticDns from '../pages/app/static-dns.vue'
 import ddns from '../pages/app/ddns.vue'
+import upnp from '../pages/app/upnp.vue'
+import cwmp from '../pages/app/cwmp.vue'
 import upgrade from '../pages/management/upgrade.vue'
 import user from '../pages/management/user.vue'
 import device from '../pages/management/device.vue'
 import log from '../pages/management/log.vue'
 import terminal from '../pages/management/terminal.vue'
+import ontAuth from '../pages/management/ont-auth.vue'
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -76,8 +79,8 @@ export const router = createRouter({
     },
     {
       path: '/status/cwmp',
-      name: 'cwmp',
-      component: cwmp,
+      name: 'cwmpStatus',
+      component: cwmpStatus,
     },
     {
       path: '/status/sta',
@@ -140,6 +143,16 @@ export const router = createRouter({
       component: dmz,
     },
     {
+      path: '/app/upnp',
+      name: 'upnp',
+      component: upnp,
+    },
+    {
+      path: '/app/cwmp',
+      name: 'cwmp',
+      component: cwmp,
+    },
+    {
       path: '/management/upgrade',
       name: 'upgrade',
       component: upgrade,
@@ -163,6 +176,11 @@ export const router = createRouter({
       path: '/management/terminal',
       name: 'terminal',
       component: terminal,
+    },
+    {
+      path: '/management/ont-auth',
+      name: 'ont-auth',
+      component: ontAuth,
     }
   ],
 })

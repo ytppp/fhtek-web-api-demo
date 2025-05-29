@@ -366,19 +366,19 @@ const MtuRange = {
 }
 const wanInitial = {
   id: '',
-  enable: false,
+  enable: true,
   serviceType: ServiceType.INTERNET,
   lan: [],
   wlan24g: [],
   wlan5g: [],
   vlan: {
-    mode: VlanMode.Untag,
+    mode: VlanMode.TAG,
     id: '',
-    p8021: '',
+    p8021: 0,
   },
   protocol: IP.IPv4,
   multiVlanId: '',
-  mtu: '1500',
+  mtu: 1500,
   enableNat: false,
   wanMode: WanMode.router,
   netType: NetType.dhcp,
@@ -580,6 +580,7 @@ const getWanList = () => {
   getWan().then(({ data }) => {
     const { items } = data
     if (items.length === 0) {
+      modalType.value = ModalType.add
       return
     }
     const wanOptionsList = items.map((item) => ({
