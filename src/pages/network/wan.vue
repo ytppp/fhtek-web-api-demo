@@ -1,70 +1,100 @@
 <template>
-  <div class="page">
+  <div class="page wan-page">
     <div class="page__header">
       <h1 class="page__title">{{ $t('trans0014') }}</h1>
     </div>
     <div class="page__content">
+      <fh-button size="small" @click="addWanConn" v-if="isEdit">
+        {{ $t('trans0760') }}
+      </fh-button>
+      <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd">
+        {{ $t('trans0020') }}
+      </fh-button>
       <fh-form class="form" ref="wanRef" :model="wan" :rules="wanRules">
-        <fh-form-item>
-          <fh-button size="small" @click="addWanConn" v-if="isEdit">
-            {{ $t('trans0760') }}
-          </fh-button>
-          <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd">
-            {{ $t('trans0020') }}
-          </fh-button>
-        </fh-form-item>
-        <fh-form-item :label="t('trans0140')" v-if="isEdit">
-          <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
-          <template #extra>
-            <fh-button v-if="isShowWanDel" @click="delWanConn" size="small">
-              {{ $t('trans0759') }}
-            </fh-button>
+        <div class="form__col">
+          <fh-form-item :label="t('trans0140')" v-if="isEdit">
+            <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
+            <template #extra>
+              <fh-button v-if="isShowWanDel" @click="delWanConn" size="small">
+                {{ $t('trans0759') }}
+              </fh-button>
+            </template>
+          </fh-form-item>
+          <fh-form-item :label="t('trans0761')" label-position="left">
+            <fh-checkbox v-model="wan.enable" />
+          </fh-form-item>
+          <fh-form-item :label="t('trans0762')">
+            <fh-select v-model="wan.wanMode" :options="wanModeOptions"></fh-select>
+          </fh-form-item>
+          <fh-form-item :label="t('trans0080')" v-if="isRouter">
+            <fh-select v-model="wan.netType" :options="netTypesOptions"></fh-select>
+          </fh-form-item>
+          <fh-form-item :label="t('trans0763')">
+            <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
+          </fh-form-item>
+          <template v-if="isHidePortBinding">
+            <fh-form-item :label="t('trans0764')">
+              <fh-checkbox-group v-model="wan.lan">
+                <fh-checkbox v-for="item in lanOptions" :key="item.value" :label="item.value">
+                  {{ item.text }}
+                </fh-checkbox>
+              </fh-checkbox-group>
+            </fh-form-item>
+            <fh-form-item :label="t('trans0765')">
+              <fh-checkbox-group v-model="wan.wlan24g">
+                <fh-checkbox v-for="item in wlan24gOptions" :key="item.value" :label="item.value">
+                  {{ item.text }}
+                </fh-checkbox>
+              </fh-checkbox-group>
+            </fh-form-item>
+            <fh-form-item :label="t('trans0766')">
+              <fh-checkbox-group v-model="wan.wlan5g">
+                <fh-checkbox v-for="item in wlan5gOptions" :key="item.value" :label="item.value">
+                  {{ item.text }}
+                </fh-checkbox>
+              </fh-checkbox-group>
+            </fh-form-item>
           </template>
-        </fh-form-item>
-        <fh-form-item :label="t('trans0761')" label-position="left">
-          <fh-checkbox v-model="wan.enable" />
-        </fh-form-item>
-        <fh-form-item :label="t('trans0762')">
-          <fh-select v-model="wan.wanMode" :options="wanModeOptions"></fh-select>
-        </fh-form-item>
-        <fh-form-item :label="t('trans0080')" v-if="isRouter">
-          <fh-select v-model="wan.netType" :options="netTypesOptions"></fh-select>
-        </fh-form-item>
-        <fh-form-item :label="t('trans0763')">
-          <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
-        </fh-form-item>
-        <template v-if="isHidePortBinding">
-          <fh-form-item :label="t('trans0764')">
-            <fh-checkbox-group v-model="wan.lan">
-              <fh-checkbox v-for="item in lanOptions" :key="item.value" :label="item.value">
-                {{ item.text }}
-              </fh-checkbox>
-            </fh-checkbox-group>
+          <template v-if="isRouter">
+            <fh-form-item :label="t('trans0770')">
+              <fh-radio-group v-model="wan.protocol">
+                <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
+                  {{ item.text }}
+                </fh-radio>
+              </fh-radio-group>
+            </fh-form-item>
+            <fh-form-item :label="t('trans0482')" prop="mtu">
+              <fh-input v-model="wan.mtu"></fh-input>
+              <template #extra>{{ getMtuTips().tips }}</template>
+            </fh-form-item>
+            <fh-form-item :label="t('trans0778')" label-position="left" v-if="isHideEnableNat">
+              <fh-checkbox v-model="wan.enableNat" />
+            </fh-form-item>
+          </template>
+          <fh-form-item :label="t('trans0777')" v-if="isShowMultiVlanId" prop="multiVlanId">
+            <fh-input v-model="wan.multiVlanId"></fh-input>
+            <template #extra>{{ rangeTips(t('trans0777'), 1, 4094) }}</template>
           </fh-form-item>
-          <fh-form-item :label="t('trans0765')">
-            <fh-checkbox-group v-model="wan.wlan24g">
-              <fh-checkbox v-for="item in wlan24gOptions" :key="item.value" :label="item.value">
-                {{ item.text }}
-              </fh-checkbox>
-            </fh-checkbox-group>
+          <fh-form-item :label="t('trans0771')">
+            <fh-select v-model="wan.vlan.mode" :options="vlanModeOptions"></fh-select>
           </fh-form-item>
-          <fh-form-item :label="t('trans0766')">
-            <fh-checkbox-group v-model="wan.wlan5g">
-              <fh-checkbox v-for="item in wlan5gOptions" :key="item.value" :label="item.value">
-                {{ item.text }}
-              </fh-checkbox>
-            </fh-checkbox-group>
+          <template v-if="isVlanModeTag">
+            <fh-form-item :label="t('trans0775')" prop="vlan.id">
+              <fh-input v-model="wan.vlan.id"></fh-input>
+              <template #extra>{{ rangeTips(t('trans0775'), 1, 4094) }}</template>
+            </fh-form-item>
+            <fh-form-item :label="t('trans0776')">
+              <fh-select v-model="wan.vlan.p8021" :options="p8021Options(7)"></fh-select>
+            </fh-form-item>
+          </template>
+          <fh-form-item class="form__submit-btn">
+            <fh-button @click="save" block>
+              {{ $t('trans0002') }}
+            </fh-button>
           </fh-form-item>
-        </template>
-        <template v-if="isRouter">
-          <fh-form-item :label="t('trans0770')">
-            <fh-radio-group v-model="wan.protocol">
-              <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
-                {{ item.text }}
-              </fh-radio>
-            </fh-radio-group>
-          </fh-form-item>
-          <template v-if="isPppoe">
+        </div>
+        <div class="form__col">
+          <div v-if="isPppoe">
             <fh-form-item :label="$t('trans0086')" prop="ppp.user">
               <fh-input v-model="wan.ppp.user" maxlength="64"> </fh-input>
             </fh-form-item>
@@ -74,8 +104,8 @@
             <fh-form-item :label="t('trans0790')" label-position="left">
               <fh-checkbox v-model="wan.ppp.enableRouterBridge" />
             </fh-form-item>
-          </template>
-          <template v-if="isIpv4">
+          </div>
+          <div v-if="isIpv4">
             <template v-if="isStatic">
               <fh-form-item
                 :label="format($t('trans0598'), [$t('trans0456')])"
@@ -97,8 +127,8 @@
                 <fh-input v-model="wan.ipv4.static.dns2"></fh-input>
               </fh-form-item>
             </template>
-          </template>
-          <template v-if="isIpv6">
+          </div>
+          <div v-if="isIpv6">
             <fh-form-item :label="t('trans0779')" label-position="left" v-if="!isStatic">
               <fh-checkbox v-model="wan.ipv6.isSlaac" />
             </fh-form-item>
@@ -145,36 +175,8 @@
                 </fh-form-item>
               </template>
             </template>
-          </template>
-          <fh-form-item :label="t('trans0482')" prop="mtu">
-            <fh-input v-model="wan.mtu"></fh-input>
-            <template #extra>{{ getMtuTips().tips }}</template>
-          </fh-form-item>
-          <fh-form-item :label="t('trans0778')" label-position="left" v-if="isHideEnableNat">
-            <fh-checkbox v-model="wan.enableNat" />
-          </fh-form-item>
-        </template>
-        <fh-form-item :label="t('trans0777')" v-if="isShowMultiVlanId" prop="multiVlanId">
-          <fh-input v-model="wan.multiVlanId"></fh-input>
-          <template #extra>{{ rangeTips(t('trans0777'), 1, 4094) }}</template>
-        </fh-form-item>
-        <fh-form-item :label="t('trans0771')">
-          <fh-select v-model="wan.vlan.mode" :options="vlanModeOptions"></fh-select>
-        </fh-form-item>
-        <template v-if="isVlanModeTag">
-          <fh-form-item :label="t('trans0775')" prop="vlan.id">
-            <fh-input v-model="wan.vlan.id"></fh-input>
-            <template #extra>{{ rangeTips(t('trans0775'), 1, 4094) }}</template>
-          </fh-form-item>
-          <fh-form-item :label="t('trans0776')">
-            <fh-select v-model="wan.vlan.p8021" :options="p8021Options(7)"></fh-select>
-          </fh-form-item>
-        </template>
-        <fh-form-item class="form__submit-btn">
-          <fh-button @click="save" block>
-            {{ $t('trans0002') }}
-          </fh-button>
-        </fh-form-item>
+          </div>
+        </div>
       </fh-form>
     </div>
   </div>
@@ -979,3 +981,16 @@ onMounted(() => {
   getWanList()
 })
 </script>
+
+<style lang="less">
+.wan-page {
+  .form {
+    width: 100%;
+    display: flex;
+  }
+  .form__col {
+    width: 350px;
+    margin-right: 20px;
+  }
+}
+</style>
