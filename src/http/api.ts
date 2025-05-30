@@ -173,3 +173,43 @@ export const delStaticDns = (params): Promise<ApiResponse<any>> => {
     data: params,
   })
 }
+
+export const getStaticRoute = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.static_route:get',
+  })
+}
+
+export const addStaticRoute = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.static_route:add',
+    data: params,
+  })
+}
+
+export const editStaticRoute = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.static_route:edit',
+    data: params,
+  })
+}
+
+export const delStaticRoute = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.static_route:delete',
+    data: params,
+  })
+}
+
+export const getOntAuth = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'management.ont_auth:get'
+  })
+}
+
+export const editOntAuth = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'management.ont_auth:edit',
+    data: params,
+  })
+}

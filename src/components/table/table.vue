@@ -1,6 +1,9 @@
 <template>
   <div class="table">
     <div class="table__header" v-if="showHeader">
+      <div class="table__filter-group" v-if="$slots.operationgroup">
+        <slot name="filtergroup"></slot>
+      </div>
       <div class="table__title" v-if="title || $slots.title">
         <template v-if="title"> {{ title }} </template>
         <slot name="title" v-else></slot>
@@ -481,9 +484,20 @@ export default {
       justify-content: flex-start;
     }
   }
+  .table__filter-group,
   .table__operation-group {
     position: absolute;
     top: 20px;
+    display: flex;
+    align-items: center;
+    > * {
+      margin: 0 4px;
+    }
+  }
+  .table__filter-group {
+    left: 0;
+  }
+  .table__operation-group {
     right: 0;
   }
   .table__main {

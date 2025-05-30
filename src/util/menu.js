@@ -111,6 +111,16 @@ let menus = [
         text: 'trans0017',
         config,
       },
+      {
+        url: '/network/static-route',
+        text: 'trans0793',
+        config,
+      },
+      {
+        url: '/network/default-route',
+        text: 'trans0795',
+        config,
+      },
     ],
   },
   {

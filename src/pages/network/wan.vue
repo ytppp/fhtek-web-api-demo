@@ -706,7 +706,9 @@ const save = () => {
   }
 }
 const delWanConn = () => {
-  deleteWan({id: wan.id})
+  deleteWan({ id: wan.id }).then((res) => {
+    getWanList()
+  })
 }
 
 const wanRules = reactive({
@@ -848,11 +850,17 @@ const wanRules = reactive({
       message: t('trans0004'),
     },
     {
-      rule: (value) => isIP(value, IP.IPv6),
-      message: t('trans0397'),
-    },
-    {
-      rule: (value) => isValidIpv6AddrExtra(value),
+      rule: (value) => {
+        const parts = value.split('/')
+        if (parts.length === 2) {
+          const ip = parts[0]
+          const prefix = parseInt(parts[1])
+          if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && prefix >= 0 && prefix <= 128) {
+            return true
+          }
+        }
+        return false
+      },
       message: t('trans0397'),
     },
   ],

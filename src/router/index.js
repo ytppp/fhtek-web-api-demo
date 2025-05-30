@@ -16,6 +16,8 @@ import wanBinding from '../pages/network/wan-binding.vue'
 import lan from '../pages/network/lan.vue'
 import wlanNetwork from '../pages/network/wlan.vue'
 import portSetting from '../pages/network/port-setting.vue'
+import staticRoute from '../pages/network/static-route.vue'
+import defaultRoute from '../pages/network/default-route.vue'
 import firewall from '../pages/safety/firewall.vue'
 import portMapping from '../pages/app/port-mapping.vue'
 import dmz from '../pages/app/dmz.vue'
@@ -118,6 +120,16 @@ export const router = createRouter({
       component: portSetting,
     },
     {
+      path: '/network/static-route',
+      name: 'staticRoute',
+      component: staticRoute,
+    },
+    {
+      path: '/network/default-route',
+      name: 'defaultRoute',
+      component: defaultRoute,
+    },
+    {
       path: '/safety/firewall',
       name: 'firewall',
       component: firewall,
@@ -181,7 +193,7 @@ export const router = createRouter({
       path: '/management/ont-auth',
       name: 'ont-auth',
       component: ontAuth,
-    }
+    },
   ],
 })
 

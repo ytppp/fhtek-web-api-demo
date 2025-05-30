@@ -213,17 +213,17 @@ const handleInput = (event) => {
 const handleFocus = (event) => {
   focused.value = true
   emits('focus', event)
-  formItem.clearValidate()
+  formItem?.clearValidate()
 }
 const handleBlur = (event) => {
   focused.value = false
   emits('blur', event)
-  formItem.validate()
+  formItem?.validate()
 }
 const handleChange = (event) => {
   model.value = event.target.value
   emits('change', model.value)
-  formItem.clearValidate()
+  formItem?.clearValidate()
 }
 const clear = (event) => {
   model.value = ''

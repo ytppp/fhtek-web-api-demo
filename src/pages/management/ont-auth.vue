@@ -17,11 +17,11 @@
           </fh-form-item>
         </template>
         <template v-if="isPassword">
-          <fh-form-item :label="$t('trans0196')" prop="password.password">
-            <fh-input v-model="form.password.password"> </fh-input>
-          </fh-form-item>
           <fh-form-item :label="$t('trans0541')" prop="password.sn">
             <fh-input v-model="form.password.sn"> </fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0196')" prop="password.password">
+            <fh-input v-model="form.password.password"> </fh-input>
           </fh-form-item>
         </template>
         <fh-form-item class="form__submit-btn">
@@ -35,12 +35,14 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { isValidLength, format, isValidSymbol, specialChar } from '@/util/tool'
+import { getOntAuth, editOntAuth } from '@/http/api'
 
 enum AuthMode {
-  loid = 'loid',
-  password = 'password',
+  loid = 'LOID',
+  password = 'sn',
 }
 
 const { t } = useI18n()
@@ -51,7 +53,7 @@ const authModeOpts = [
   },
   {
     value: AuthMode.password,
-    text: t('trans0196'),
+    text: t('trans0541'),
   },
 ]
 const formRef = ref(null)
@@ -69,20 +71,37 @@ const form = reactive({
 const rules = {
   'loid.loid': [
     {
-      rule: (value) => value,
+      rule: (value) => !!value.trim(),
       message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidLength(value, 1, 24),
+      message: format(t('trans0003'), [t('trans0781'), 1, 64]),
     },
   ],
   'loid.checkCode': [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value) return true
+        return isValidLength(value, 1, 12)
+      },
+      message: format(t('trans0003'), [t('trans0768'), 1, 12]),
     },
   ],
   'password.password': [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value) return true
+        return isValidLength(value, 1, 10)
+      },
+      message: format(t('trans0003'), [t('trans0196'), 1, 10]),
+    },
+    {
+      rule: (value) => {
+        if (!value) return true
+        return isValidSymbol(value)
+      },
+      message: format(t('trans0013'), [t('trans0541'), format(t('trans0042'), [specialChar])]),
     },
   ],
   'password.sn': [
@@ -90,10 +109,44 @@ const rules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => value.length === 12,
+      message: format(t('trans0769'), [t('trans0541'), 12]),
+    },
   ],
 }
 const isLoid = computed(() => form.authType === AuthMode.loid)
 const isPassword = computed(() => form.authType === AuthMode.password)
 
-const save = () => {}
+const getOntAuthData = () => {
+  getOntAuth().then((res) => {
+    const { data } = res
+    form.authType = data.auth_type
+    form.loid.loid = data.loid.loid
+    form.loid.checkCode = data.loid.checkcode
+    form.password.password = data.sn.password
+    form.password.sn = data.sn.sn
+  })
+}
+
+const save = () => {
+  if (formRef.value.validate()) {
+    const data = {
+      auth_type: form.authType,
+      loid: {
+        loid: form.loid.loid,
+        checkcode: form.loid.checkCode,
+      },
+      sn: {
+        password: form.password.password,
+        sn: form.password.sn,
+      },
+    }
+    editOntAuth(data)
+  }
+}
+
+onMounted(() => {
+  getOntAuthData()
+})
 </script>
