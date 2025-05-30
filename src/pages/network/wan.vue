@@ -706,7 +706,7 @@ const save = () => {
   }
 }
 const delWanConn = () => {
-  deleteWan(wan.id)
+  deleteWan({: wan.id})
 }
 
 const wanRules = reactive({
