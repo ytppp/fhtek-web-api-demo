@@ -17,7 +17,7 @@
           <fh-form-item :label="t('trans0140')" v-if="isEdit">
             <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
             <template #extra>
-              <fh-button v-if="isShowWanDel" @click="delWanConn" size="small">
+              <fh-button @click="delWanConn" size="small">
                 {{ $t('trans0759') }}
               </fh-button>
             </template>
@@ -32,7 +32,11 @@
             <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
           </fh-form-item>
           <fh-form-item :label="t('trans0080')" v-if="isRouter">
-            <fh-select v-model="wan.netType" :options="netTypesOptions"></fh-select>
+            <fh-select
+              @change="changeNetType"
+              v-model="wan.netType"
+              :options="netTypesOptions"
+            ></fh-select>
           </fh-form-item>
           <template v-if="isHidePortBinding">
             <fh-form-item :label="t('trans0764')">
@@ -171,12 +175,6 @@
                 <fh-form-item :label="$t('trans0784')" prop="ipv6.pd.address">
                   <fh-input v-model="wan.ipv6.pd.address"></fh-input>
                 </fh-form-item>
-                <fh-form-item :label="$t('trans0785')" prop="ipv6.pd.primaryTime">
-                  <fh-input v-model="wan.ipv6.pd.primaryTime"></fh-input>
-                </fh-form-item>
-                <fh-form-item :label="$t('trans0461')" prop="ipv6.pd.leaseTime">
-                  <fh-input v-model="wan.ipv6.pd.leaseTime"></fh-input>
-                </fh-form-item>
               </template>
             </template>
           </div>
@@ -223,7 +221,6 @@ enum ServiceType {
   IPTV = 'IPTV',
   VOICE = 'VOICE',
   VOICE_INTERNET = 'VOICE_INTERNET',
-  OTHER = 'OTHER',
 }
 enum NetType {
   dhcp = 'dhcp',
@@ -408,8 +405,6 @@ const wanInitial = () => ({
       enable: false,
       mode: PrefixMode.auto,
       address: '',
-      primaryTime: '',
-      leaseTime: '',
     },
     static: {
       ip: '',
@@ -433,9 +428,7 @@ const isPppoe = computed(() => wan.netType === NetType.pppoe)
 const isIpv6PdEnable = computed(() => wan.ipv6.pd.enable)
 const isVlanModeTag = computed(() => wan.vlan.mode === VlanMode.Tag)
 const isIpv6PdModeManually = computed(() => wan.ipv6.pd.mode === PrefixMode.manually)
-const isShowMultiVlanId = computed(
-  () => wan.serviceType === ServiceType.IPTV || wan.serviceType === ServiceType.OTHER,
-)
+const isShowMultiVlanId = computed(() => wan.serviceType === ServiceType.IPTV)
 const isHidePortBinding = computed(
   () => !(wan.serviceType === ServiceType.TR069 || wan.serviceType === ServiceType.VOICE),
 )
@@ -469,10 +462,6 @@ const serviceTypeOptions = computed(() => {
         value: ServiceType.VOICE_INTERNET,
         text: 'VOICE_INTERNET',
       },
-      {
-        value: ServiceType.OTHER,
-        text: 'OTHER',
-      },
     ]
   } else {
     return [
@@ -484,20 +473,15 @@ const serviceTypeOptions = computed(() => {
         value: ServiceType.IPTV,
         text: 'IPTV',
       },
-      {
-        value: ServiceType.OTHER,
-        text: 'OTHER',
-      },
     ]
   }
 })
 const isAdd = computed(() => {
-  return modalType.value === ModalType.add
+  return modalType.value === ModalType.add && wanList.length
 })
 const isEdit = computed(() => {
   return modalType.value === ModalType.edit
 })
-const isShowWanDel = computed(() => wanList.length > 1)
 
 const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
 const isGatewaySameSegmentWithIp = (gateway, ip) =>
@@ -628,8 +612,6 @@ const changeWan = () => {
   wan.ipv6.pd.enable = convertBooleanStatus(thisWan.ipv6.pd.enable)
   wan.ipv6.pd.mode = thisWan.ipv6.pd.mode
   wan.ipv6.pd.address = thisWan.ipv6.pd.address
-  wan.ipv6.pd.primaryTime = thisWan.ipv6.pd.primaryTime
-  wan.ipv6.pd.leaseTime = thisWan.ipv6.pd.leaseTime
   wan.ipv6.static.ip = thisWan.ipv6.static.ip
   wan.ipv6.static.gateway = thisWan.ipv6.static.gateway
   wan.ipv6.static.dns1 = thisWan.ipv6.static.dns1
@@ -684,8 +666,6 @@ const save = () => {
           enable: convertBooleanStatus(wan.ipv6.pd.enable),
           mode: wan.ipv6.pd.mode,
           address: wan.ipv6.pd.address,
-          primaryTime: wan.ipv6.pd.primaryTime,
-          leaseTime: wan.ipv6.pd.leaseTime,
         },
         static: {
           ip: wan.ipv6.static.ip,
@@ -712,6 +692,11 @@ const delWanConn = () => {
   deleteWan({ id: wan.id }).then((res) => {
     getWanList()
   })
+}
+const changeNetType = () => {
+  if (isStatic.value) {
+    wan.ipv6.pd.mode = PrefixMode.manually
+  }
 }
 
 const wanRules = reactive({
@@ -940,18 +925,6 @@ const wanRules = reactive({
     },
   ],
   'ipv6.pd.address': [
-    {
-      rule: (value) => !!value.trim(),
-      message: t('trans0004'),
-    },
-  ],
-  'ipv6.pd.primaryTime': [
-    {
-      rule: (value) => !!value.trim(),
-      message: t('trans0004'),
-    },
-  ],
-  'ipv6.pd.leaseTime': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),

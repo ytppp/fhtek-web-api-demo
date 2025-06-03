@@ -66,6 +66,32 @@ export const setWifi2g = (params): Promise<ApiResponse<any>> => {
   })
 }
 
+export const getWifi2gAdv = (): Promise<ApiResponse<any>> => {
+  return http.get(api, {
+    method: 'wifi.b24g.advanced:get',
+  })
+}
+
+export const setWifi2gAdv = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wifi.b24g.advanced:edit',
+    data: params,
+  })
+}
+
+export const getWifi5gAdv = (): Promise<ApiResponse<any>> => {
+  return http.get(api, {
+    method: 'wifi.b5g.advanced:get',
+  })
+}
+
+export const setWifi5gAdv = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wifi.b5g.advanced:edit',
+    data: params,
+  })
+}
+
 export const getWps = (): Promise<ApiResponse<any>> => {
   return http.get(api, {
     method: 'wifi.wps:get',

@@ -15,7 +15,7 @@
           <fh-input v-model="wifi.ssid"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0796')" label-position="left" :label-width="labelWidth">
-          <fh-switch @change="switchEnable" v-model="wifi.enable"> </fh-switch>
+          <fh-switch v-model="wifi.enable"> </fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0797')" label-position="left" :label-width="labelWidth">
           <fh-switch v-model="wifi.hide"> </fh-switch>
@@ -74,7 +74,7 @@ import { useDataClean } from '@/hooks/data-clean'
 import { getWifi5g, setWifi5g, getWps, setWps } from '@/http/api'
 
 defineOptions({
-  name: 'b24gBasicPage',
+  name: 'b5gBasicPage',
 })
 enum Encrypts {
   none = 'none',
@@ -198,29 +198,15 @@ const encryptTip = computed(() => {
   return ''
 })
 
-const switchEnable = (val) => {
-  if (!val) {
-    dialog
-      .confirm({
-        okText: t('trans0019'),
-        cancelText: t('trans0020'),
-        message: t('trans0025'),
-      })
-      .then(() => {})
-      .catch(() => {
-        wifi.enable = true
-      })
-  }
-}
 const getWifiData = () => {
   getWifi5g().then(({ data }) => {
     const { items } = data
     if (items.length === 0) {
       return
     }
-    const ssidOptsList = items.map((item, index) => ({
+    const ssidOptsList = items.map((item) => ({
       value: item.id,
-      text: `SSIDAC${index}`,
+      text: `SSIDAC${item.id}`,
     }))
     Object.assign(ssidList, items)
     Object.assign(ssidOpts, ssidOptsList)
