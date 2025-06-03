@@ -110,6 +110,28 @@ let menus = [
         url: '/network/wlan',
         text: 'trans0017',
         config,
+        children: [
+          {
+            url: '/network/wlan/wlan-24g-basic',
+            text: 'trans0628',
+            config,
+          },
+          {
+            url: '/network/wlan/wlan-24g-advanced',
+            text: 'trans0628',
+            config,
+          },
+          {
+            url: '/network/wlan/wlan-5g-basic',
+            text: 'trans0628',
+            config,
+          },
+          {
+            url: '/network/wlan/wlan-5g-advanced',
+            text: 'trans0628',
+            config,
+          },
+        ],
       },
       {
         url: '/network/static-route',

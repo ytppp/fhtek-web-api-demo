@@ -4,14 +4,16 @@
       <h1 class="page__title">{{ $t('trans0014') }}</h1>
     </div>
     <div class="page__content">
-      <fh-button size="small" @click="addWanConn" v-if="isEdit">
-        {{ $t('trans0760') }}
-      </fh-button>
-      <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd">
-        {{ $t('trans0020') }}
-      </fh-button>
-      <fh-form class="form" ref="wanRef" :model="wan" :rules="wanRules">
-        <div class="form__col">
+      <div class="page__operation">
+        <fh-button size="small" @click="addWanConn" v-if="isEdit">
+          {{ $t('trans0760') }}
+        </fh-button>
+        <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd">
+          {{ $t('trans0020') }}
+        </fh-button>
+      </div>
+      <fh-form class="form wan-form" ref="wanRef" :model="wan" :rules="wanRules">
+        <div class="wan-form__col">
           <fh-form-item :label="t('trans0140')" v-if="isEdit">
             <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
             <template #extra>
@@ -26,11 +28,11 @@
           <fh-form-item :label="t('trans0762')">
             <fh-select v-model="wan.wanMode" :options="wanModeOptions"></fh-select>
           </fh-form-item>
-          <fh-form-item :label="t('trans0080')" v-if="isRouter">
-            <fh-select v-model="wan.netType" :options="netTypesOptions"></fh-select>
-          </fh-form-item>
           <fh-form-item :label="t('trans0763')">
             <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
+          </fh-form-item>
+          <fh-form-item :label="t('trans0080')" v-if="isRouter">
+            <fh-select v-model="wan.netType" :options="netTypesOptions"></fh-select>
           </fh-form-item>
           <template v-if="isHidePortBinding">
             <fh-form-item :label="t('trans0764')">
@@ -93,8 +95,8 @@
             </fh-button>
           </fh-form-item>
         </div>
-        <div class="form__col">
-          <div v-if="isPppoe">
+        <div class="wan-form__col">
+          <template v-if="isPppoe">
             <fh-form-item :label="$t('trans0086')" prop="ppp.user">
               <fh-input v-model="wan.ppp.user" maxlength="64"> </fh-input>
             </fh-form-item>
@@ -104,9 +106,10 @@
             <fh-form-item :label="t('trans0790')" label-position="left">
               <fh-checkbox v-model="wan.ppp.enableRouterBridge" />
             </fh-form-item>
-          </div>
-          <div v-if="isIpv4">
-            <template v-if="isStatic">
+          </template>
+          <template v-if="isIpv4">
+            <div class="wan-form__box" v-if="isStatic">
+              <span class="wan-form__titile">{{ $t('trans0456') }}</span>
               <fh-form-item
                 :label="format($t('trans0598'), [$t('trans0456')])"
                 prop="ipv4.static.ip"
@@ -126,9 +129,10 @@
               <fh-form-item :label="$t('trans0497')" prop="ipv4.static.dns2" ref="dns2Ref">
                 <fh-input v-model="wan.ipv4.static.dns2"></fh-input>
               </fh-form-item>
-            </template>
-          </div>
-          <div v-if="isIpv6">
+            </div>
+          </template>
+          <div class="wan-form__box" v-if="isIpv6">
+            <span class="wan-form__titile">{{ $t('trans0457') }}</span>
             <fh-form-item :label="t('trans0779')" label-position="left" v-if="!isStatic">
               <fh-checkbox v-model="wan.ipv6.isSlaac" />
             </fh-form-item>
@@ -984,13 +988,25 @@ onMounted(() => {
 
 <style lang="less">
 .wan-page {
-  .form {
+  .wan-form {
     width: 100%;
     display: flex;
   }
-  .form__col {
+  .wan-form__col {
     width: 350px;
     margin-right: 20px;
+  }
+  .wan-form__box {
+    margin-top: 20px;
+    border: 1px dashed #e1e1e1;
+    padding: 8px;
+    position: relative;
+  }
+  .wan-form__titile {
+    position: absolute;
+    top: -6px;
+    left: 0px;
+    color: #e1e1e1;
   }
 }
 </style>
