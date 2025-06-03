@@ -55,13 +55,26 @@ export const deleteWan = (params): Promise<ApiResponse<any>> => {
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'wifi2g:get',
+    method: 'wifi.b24g.basic:get',
   })
 }
 
 export const setWifi2g = (params): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'wifi2g:edit',
+    method: 'wifi.b24g.basic:edit',
+    data: params,
+  })
+}
+
+export const getWps2g = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wifi.b24g.wps:get',
+  })
+}
+
+export const setWps2g = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wifi.b24g.wps:edit',
     data: params,
   })
 }

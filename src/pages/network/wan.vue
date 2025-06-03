@@ -65,7 +65,7 @@
                 </fh-radio>
               </fh-radio-group>
             </fh-form-item>
-            <fh-form-item :label="t('trans0482')" prop="mtu">
+            <fh-form-item :label="t('trans0092')" prop="mtu">
               <fh-input v-model="wan.mtu"></fh-input>
               <template #extra>{{ getMtuTips().tips }}</template>
             </fh-form-item>
@@ -537,10 +537,10 @@ const changeIpv6Dns1 = () => {
 const getMtuTips = () => {
   if (!isPppoe.value && wan.protocol === IP.IPv4) {
     return {
-      tips: rangeTips(t('trans0482'), MtuRange.ipAndIpv4[0], MtuRange.ipAndIpv4[1]),
+      tips: rangeTips(t('trans0092'), MtuRange.ipAndIpv4[0], MtuRange.ipAndIpv4[1]),
       rule: isValidInteger(wan.mtu, MtuRange.ipAndIpv4[0], MtuRange.ipAndIpv4[1]),
       ruleMsg: format(t('trans0388'), [
-        t('trans0482'),
+        t('trans0092'),
         MtuRange.ipAndIpv4[0],
         MtuRange.ipAndIpv4[1],
       ]),
@@ -548,17 +548,17 @@ const getMtuTips = () => {
   }
   if (!isPppoe.value && isIpv6.value) {
     return {
-      tips: rangeTips(t('trans0482'), MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]),
+      tips: rangeTips(t('trans0092'), MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]),
       rule: isValidInteger(wan.mtu, MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]),
-      ruleMsg: format(t('trans0388'), [t('trans0482'), MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]]),
+      ruleMsg: format(t('trans0388'), [t('trans0092'), MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]]),
     }
   }
   if (isPppoe.value && wan.protocol === IP.IPv4) {
     return {
-      tips: rangeTips(t('trans0482'), MtuRange.pppAndIpv4[0], MtuRange.pppAndIpv4[1]),
+      tips: rangeTips(t('trans0092'), MtuRange.pppAndIpv4[0], MtuRange.pppAndIpv4[1]),
       rule: isValidInteger(wan.mtu, MtuRange.pppAndIpv4[0], MtuRange.pppAndIpv4[1]),
       ruleMsg: format(t('trans0388'), [
-        t('trans0482'),
+        t('trans0092'),
         MtuRange.pppAndIpv4[0],
         MtuRange.pppAndIpv4[1],
       ]),
@@ -566,7 +566,7 @@ const getMtuTips = () => {
   }
   if (isPppoe.value && isIpv6.value) {
     return {
-      tips: rangeTips(t('trans0482'), MtuRange.pppAndMix[0], MtuRange.pppAndMix[1]),
+      tips: rangeTips(t('trans0092'), MtuRange.pppAndMix[0], MtuRange.pppAndMix[1]),
       rule: isValidInteger(wan.mtu, MtuRange.pppAndMix[0], MtuRange.pppAndMix[1]),
     }
   }
@@ -862,7 +862,7 @@ const wanRules = reactive({
             return true
           }
         }
-        return false
+        return isIP(ip, IP.IPv6)
       },
       message: t('trans0397'),
     },
@@ -936,7 +936,7 @@ const wanRules = reactive({
     },
     {
       rule: () => getMtuTips().rule,
-      message: format(t('trans0398'), [t('trans0482')]),
+      message: format(t('trans0398'), [t('trans0092')]),
     },
   ],
   'ipv6.pd.address': [
