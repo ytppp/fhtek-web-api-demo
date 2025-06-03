@@ -237,6 +237,23 @@ let menus = [
         text: 'trans0780',
         config,
       },
+      {
+        url: '/management/diagnose',
+        text: 'trans0802',
+        config,
+        children: [
+          {
+            url: '/management/diagnose/internet',
+            text: 'trans0553',
+            config,
+          },
+          {
+            url: '/management/diagnose/remote',
+            text: 'trans0803',
+            config,
+          },
+        ],
+      },
     ],
   },
 ]

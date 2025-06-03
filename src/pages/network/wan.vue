@@ -8,7 +8,7 @@
         <fh-button size="small" @click="addWanConn" v-if="isEdit">
           {{ $t('trans0760') }}
         </fh-button>
-        <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd">
+        <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd && wanList.length">
           {{ $t('trans0020') }}
         </fh-button>
       </div>
@@ -361,6 +361,38 @@ const prefixModeOptions = [
     text: t('trans0486'),
   },
 ]
+const serviceTypesInit = [
+  {
+    value: ServiceType.TR069,
+    text: 'TR069',
+    show: true,
+  },
+  {
+    value: ServiceType.INTERNET,
+    text: 'INTERNET',
+    show: true,
+  },
+  {
+    value: ServiceType.TR069_INTERNET,
+    text: 'TR069_INTERNET',
+    show: true,
+  },
+  {
+    value: ServiceType.IPTV,
+    text: 'IPTV',
+    show: true,
+  },
+  {
+    value: ServiceType.VOICE,
+    text: 'VOICE',
+    show: true,
+  },
+  {
+    value: ServiceType.VOICE_INTERNET,
+    text: 'VOICE_INTERNET',
+    show: true,
+  },
+]
 const MtuRange = {
   ipAndIpv4: [576, 1500],
   ipAndMix: [1280, 1500],
@@ -436,48 +468,23 @@ const isHideEnableNat = computed(
   () => !(wan.serviceType === ServiceType.TR069 || wan.serviceType === ServiceType.VOICE),
 )
 const serviceTypeOptions = computed(() => {
-  if (isRouter.value) {
-    return [
-      {
-        value: ServiceType.TR069,
-        text: 'TR069',
-      },
-      {
-        value: ServiceType.INTERNET,
-        text: 'INTERNET',
-      },
-      {
-        value: ServiceType.TR069_INTERNET,
-        text: 'TR069_INTERNET',
-      },
-      {
-        value: ServiceType.IPTV,
-        text: 'IPTV',
-      },
-      {
-        value: ServiceType.VOICE,
-        text: 'VOICE',
-      },
-      {
-        value: ServiceType.VOICE_INTERNET,
-        text: 'VOICE_INTERNET',
-      },
-    ]
-  } else {
-    return [
-      {
-        value: ServiceType.INTERNET,
-        text: 'INTERNET',
-      },
-      {
-        value: ServiceType.IPTV,
-        text: 'IPTV',
-      },
-    ]
+  if (isBridge.value) {
+    serviceTypesInit.forEach((item) => {
+      item.show = false
+      if (item.value === ServiceType.INTERNET || item.value === ServiceType.IPTV) {
+        item.show = true
+      }
+    })
   }
+  if (isRouter.value) {
+    serviceTypesInit.forEach((item) => {
+      item.show = true
+    })
+  }
+  return serviceTypesInit.filter((item) => item.show === true)
 })
 const isAdd = computed(() => {
-  return modalType.value === ModalType.add && wanList.length
+  return modalType.value === ModalType.add
 })
 const isEdit = computed(() => {
   return modalType.value === ModalType.edit
@@ -847,7 +854,7 @@ const wanRules = reactive({
             return true
           }
         }
-        return isIP(ip, IP.IPv6)
+        return isIP(value, IP.IPv6)
       },
       message: t('trans0397'),
     },

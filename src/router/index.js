@@ -34,6 +34,8 @@ import device from '../pages/management/device.vue'
 import log from '../pages/management/log.vue'
 import terminal from '../pages/management/terminal.vue'
 import ontAuth from '../pages/management/ont-auth.vue'
+import internetDiagnose from '../pages/management/diagnose-internet.vue'
+import remoteDiagnose from '../pages/management/diagnose-remote.vue'
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -211,6 +213,16 @@ export const router = createRouter({
       path: '/management/ont-auth',
       name: 'ont-auth',
       component: ontAuth,
+    },
+    {
+      path: '/management/diagnose/internet',
+      name: 'internet-diagnose',
+      component: internetDiagnose,
+    },
+    {
+      path: '/management/diagnose/remote',
+      name: 'oremote-diagnose',
+      component: remoteDiagnose,
     },
   ],
 })
