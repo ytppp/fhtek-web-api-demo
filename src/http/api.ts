@@ -54,7 +54,7 @@ export const deleteWan = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
+  return http.get(api, {
     method: 'wifi.b24g.basic:get',
   })
 }
@@ -66,28 +66,28 @@ export const setWifi2g = (params): Promise<ApiResponse<any>> => {
   })
 }
 
-export const getWps2g = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.b24g.wps:get',
+export const getWps = (): Promise<ApiResponse<any>> => {
+  return http.get(api, {
+    method: 'wifi.wps:get',
   })
 }
 
-export const setWps2g = (params): Promise<ApiResponse<any>> => {
+export const setWps = (params): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'wifi.b24g.wps:edit',
+    method: 'wifi.wps:edit',
     data: params,
   })
 }
 
 export const getWifi5g = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi5g:get',
+  return http.get(api, {
+    method: 'wifi.b5g.basic:get',
   })
 }
 
 export const setWifi5g = (params): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'wifi5g:edit',
+    method: 'wifi.b5g.basic:edit',
     data: params,
   })
 }
@@ -216,7 +216,7 @@ export const delStaticRoute = (params): Promise<ApiResponse<any>> => {
 
 export const getOntAuth = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'management.ont_auth:get'
+    method: 'management.ont_auth:get',
   })
 }
 

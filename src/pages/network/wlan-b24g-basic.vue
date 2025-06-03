@@ -5,7 +5,7 @@
     </div>
     <div class="page__content page__content--padding-small">
       <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0049') }}</h2>
+        <h2 class="page__title">{{ $t('trans0118') }}</h2>
       </div>
       <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
         <fh-form-item :label="$t('trans0711')">
@@ -26,8 +26,8 @@
         <fh-form-item :label="$t('trans0031')">
           <fh-select v-model="wifi.encrypt" :options="encrypts"> </fh-select>
         </fh-form-item>
-        <fh-alert v-if="b24gEncryptTip" :title="b24gEncryptTip" type="info" show-icon> </fh-alert>
-        <fh-form-item :label="$t('trans0030')" v-if="!isb24gEncryptNone" prop="password">
+        <fh-alert v-if="encryptTip" :title="encryptTip" type="info" show-icon> </fh-alert>
+        <fh-form-item :label="$t('trans0030')" v-if="!isEncryptNone" prop="password">
           <fh-input
             v-model="wifi.password"
             type="password"
@@ -50,7 +50,12 @@
         <h2 class="page__title">{{ $t('trans0799') }}</h2>
       </div>
       <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
-        <fh-form-item :label="$t('trans0800')" label-position="left"> {{ wpsStatus }} </fh-form-item>
+        <fh-form-item :label="$t('trans0711')">
+          <fh-select v-model="wps.id" :options="ssidOpts"> </fh-select>
+        </fh-form-item>
+        <fh-form-item :label="$t('trans0800')" label-position="left">
+          {{ wps.status }}
+        </fh-form-item>
         <fh-form-item class="form__submit-btn">
           <fh-button block>
             {{ $t('trans0557') }}
@@ -66,7 +71,7 @@ import { computed, reactive, ref, inject, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
-import { getWifi2g, setWifi2g, getWps2g, setWps2g } from '@/http/api'
+import { getWifi2g, setWifi2g, getWps, setWps } from '@/http/api'
 
 defineOptions({
   name: 'b24gBasicPage',
@@ -82,9 +87,7 @@ enum Encrypts {
   wpa2PskTkip = 'psk2+tkip',
   wpa3SaeCcmp = 'sae',
 }
-enum WpsStatus {
-  
-}
+enum WpsStatus {}
 const dialog = inject('dialog')
 const { t } = useI18n()
 const { convertBooleanStatus } = useDataClean()
@@ -140,7 +143,10 @@ const wifi = reactive({
   password: '',
   enableWps: false,
 })
-const wpsStatus = ref('')
+const wps = reactive({
+  id: '',
+  status: '',
+})
 const rules = reactive({
   ssid: [
     {
@@ -182,11 +188,11 @@ const rules = reactive({
   ],
 })
 
-const isb24gEncryptNone = computed(() => {
+const isEncryptNone = computed(() => {
   return wifi.encrypt === Encrypts.none
 })
-const b24gEncryptTip = computed(() => {
-  if (isb24gEncryptNone.value) {
+const encryptTip = computed(() => {
+  if (isEncryptNone.value) {
     return t('trans0032')
   }
   return ''
