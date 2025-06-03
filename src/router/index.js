@@ -14,7 +14,10 @@ import usb from '../pages/status/usb.vue'
 import wanNetwork from '../pages/network/wan.vue'
 import wanBinding from '../pages/network/wan-binding.vue'
 import lan from '../pages/network/lan.vue'
-import wlanNetwork from '../pages/network/wlan.vue'
+import basicB24g from '../pages/network/wlan-b24g-basic.vue'
+import advancedB24g from '../pages/network/wlan-b24g-advanced.vue'
+import basicB5g from '../pages/network/wlan-b5g-basic.vue'
+import advancedB5g from '../pages/network/wlan-b5g-advanced.vue'
 import portSetting from '../pages/network/port-setting.vue'
 import staticRoute from '../pages/network/static-route.vue'
 import defaultRoute from '../pages/network/default-route.vue'
@@ -110,9 +113,24 @@ export const router = createRouter({
       component: lan,
     },
     {
-      path: '/network/wlan',
-      name: 'wlanNetwork',
-      component: wlanNetwork,
+      path: '/network/wlan/basic-24g',
+      name: 'basicB24g',
+      component: basicB24g,
+    },
+    {
+      path: '/network/wlan/advanced-24g',
+      name: 'advancedB24g',
+      component: advancedB24g,
+    },
+    {
+      path: '/network/wlan/basic-5g',
+      name: 'basicB5g',
+      component: basicB5g,
+    },
+    {
+      path: '/network/wlan/advanced-5g',
+      name: 'advancedB5g',
+      component: advancedB5g,
     },
     {
       path: '/network/port-setting',

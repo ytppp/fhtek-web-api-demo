@@ -141,13 +141,13 @@
                 :label="format($t('trans0598'), [$t('trans0457')])"
                 prop="ipv6.static.ip"
               >
-                <fh-input v-model="wan.ipv6.static.ip"></fh-input>
+                <fh-input
+                  :placeholder="`${format($t('trans0598'), [$t('trans0457')])}/${$t('trans0477')}`"
+                  v-model="wan.ipv6.static.ip"
+                ></fh-input>
               </fh-form-item>
               <fh-form-item :label="$t('trans0599')" prop="ipv6.static.gateway">
                 <fh-input v-model="wan.ipv6.static.gateway"></fh-input>
-              </fh-form-item>
-              <fh-form-item :label="$t('trans0596')" prop="ipv6.static.prefix">
-                <fh-input v-model="wan.ipv6.static.prefix"></fh-input>
               </fh-form-item>
               <fh-form-item :label="$t('trans0496')" prop="ipv6.static.dns1">
                 <fh-input v-model="wan.ipv6.static.dns1" @change="changeIpv6Dns1"></fh-input>
@@ -414,7 +414,6 @@ const wanInitial = () => ({
     static: {
       ip: '',
       gateway: '',
-      prefix: '',
       dns1: '',
       dns2: '',
     },
@@ -633,7 +632,6 @@ const changeWan = () => {
   wan.ipv6.pd.leaseTime = thisWan.ipv6.pd.leaseTime
   wan.ipv6.static.ip = thisWan.ipv6.static.ip
   wan.ipv6.static.gateway = thisWan.ipv6.static.gateway
-  wan.ipv6.static.prefix = thisWan.ipv6.static.prefix
   wan.ipv6.static.dns1 = thisWan.ipv6.static.dns1
   wan.ipv6.static.dns2 = thisWan.ipv6.static.dns2
 }
@@ -692,7 +690,6 @@ const save = () => {
         static: {
           ip: wan.ipv6.static.ip,
           gateway: wan.ipv6.static.gateway,
-          prefix: wan.ipv6.static.prefix,
           dns1: wan.ipv6.static.dns1,
           dns2: wan.ipv6.static.dns2,
         },
@@ -881,26 +878,6 @@ const wanRules = reactive({
     },
     {
       rule: (value) => isValidIpv6Dns(value),
-      message: t('trans0397'),
-    },
-  ],
-  'ipv6.static.prefix': [
-    {
-      rule: (value) => !!value.trim(),
-      message: t('trans0004'),
-    },
-    {
-      rule: (value) => {
-        const parts = value.split('/')
-        if (parts.length === 2) {
-          const ip = parts[0]
-          const prefix = parseInt(parts[1])
-          if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && prefix >= 0 && prefix <= 128) {
-            return true
-          }
-        }
-        return false
-      },
       message: t('trans0397'),
     },
   ],

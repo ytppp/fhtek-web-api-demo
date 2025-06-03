@@ -1,4 +1,7 @@
 import { RouterMode, Role, customers, MeshRole } from './constant'
+import { format } from './tool'
+import { translate } from '@/i18n/index'
+
 const name = VITE_CUSTOMER_CONFIG.name
 const role = Role.super // sessionStorage.getItem('role')
 const mode = RouterMode.router // sessionStorage.getItem('mode')
@@ -112,23 +115,23 @@ let menus = [
         config,
         children: [
           {
-            url: '/network/wlan/wlan-24g-basic',
-            text: 'trans0628',
+            url: '/network/wlan/basic-24g',
+            text: format(translate('trans0544'), [translate('trans0049')]),
             config,
           },
           {
-            url: '/network/wlan/wlan-24g-advanced',
-            text: 'trans0628',
+            url: '/network/wlan/advanced-24g',
+            text: format(translate('trans0611'), [translate('trans0049')]),
             config,
           },
           {
-            url: '/network/wlan/wlan-5g-basic',
-            text: 'trans0628',
+            url: '/network/wlan/basic-5g',
+            text: format(translate('trans0544'), [translate('trans0050')]),
             config,
           },
           {
-            url: '/network/wlan/wlan-5g-advanced',
-            text: 'trans0628',
+            url: '/network/wlan/advanced-5g',
+            text: format(translate('trans0611'), [translate('trans0050')]),
             config,
           },
         ],
