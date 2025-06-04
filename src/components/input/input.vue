@@ -218,7 +218,9 @@ const handleFocus = (event) => {
 const handleBlur = (event) => {
   focused.value = false
   emits('blur', event)
-  formItem?.validate()
+  setTimeout(() => {
+    formItem?.validate()
+  }, 100)
 }
 const handleChange = (event) => {
   model.value = event.target.value

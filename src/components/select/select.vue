@@ -152,9 +152,7 @@ const close = () => {
   opened.value = false
 }
 const inputBlurHandler = () => {
-  setTimeout(() => {
-    emit('blur')
-  }, 100)
+  emit('blur')
 }
 const inputFocusHandler = () => {
   emit('focus')
