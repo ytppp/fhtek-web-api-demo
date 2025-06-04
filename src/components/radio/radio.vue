@@ -60,7 +60,7 @@ export default {
   computed: {
     isDisabled() {
       return this.isGroup
-        ? this.radioGroup.disabled || this.disabled || this.form?.disabled.value
+        ? this.radioGroup.disabled.value || this.disabled || this.form?.disabled.value
         : this.disabled || this.form?.disabled.value
     },
     isGroup() {

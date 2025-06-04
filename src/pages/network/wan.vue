@@ -14,7 +14,7 @@
       </div>
       <fh-form class="form wan-form" ref="wanRef" :model="wan" :rules="wanRules">
         <div class="wan-form__col">
-          <fh-form-item :label="t('trans0140')" v-if="isEdit" prop="id">
+          <fh-form-item :label="t('trans0140')" v-if="isEdit">
             <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
             <template #extra>
               <fh-button @click="delWanConn" size="small">
@@ -31,7 +31,7 @@
           <fh-form-item :label="t('trans0763')" prop="serviceType">
             <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
           </fh-form-item>
-          <fh-form-item :label="t('trans0080')" v-if="isRouter">
+          <fh-form-item :label="t('trans0080')" v-if="isRouter" prop="netType">
             <fh-select
               @change="changeNetType"
               v-model="wan.netType"
@@ -166,7 +166,7 @@
             </fh-form-item>
             <template v-if="isIpv6PdEnable">
               <fh-form-item :label="t('trans0783')">
-                <fh-radio-group v-model="wan.ipv6.pd.mode">
+                <fh-radio-group v-model="wan.ipv6.pd.mode" :disabled="isStatic">
                   <fh-radio v-for="item in prefixModeOptions" :key="item.value" :label="item.value">
                     {{ item.text }}
                   </fh-radio>
@@ -237,7 +237,6 @@ enum WanMode {
   bridge = 'bridge',
 }
 
-const toast = inject('toast')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const ipRef = ref(null)
@@ -643,7 +642,7 @@ const changeWan = () => {
 const addWanConn = () => {
   modalType.value = ModalType.add
   Object.assign(wan, wanInitial())
-  console.log(wan)
+  wanRef.value.clearValidate()
 }
 const cancelWanConnAdd = () => {
   wan.id = wanOptions[0].value
@@ -730,12 +729,6 @@ const getLanData = () => {
 }
 
 const wanRules = reactive({
-  id: [
-    {
-      rule: (value) => value,
-      message: t('trans0677').format(t('trans0140')),
-    },
-  ],
   serviceType: [
     {
       rule: (value) => value,
@@ -744,7 +737,9 @@ const wanRules = reactive({
     {
       rule: (value) => {
         if (isAdd.value) {
-          return !wanList.some((item) => wanOnlyCreateOne.includes(value) && item.serviceType === value)
+          return !wanList.some(
+            (item) => wanOnlyCreateOne.includes(value) && item.serviceType === value,
+          )
         }
         if (isEdit.value) {
           return !wanList.some(
@@ -754,6 +749,12 @@ const wanRules = reactive({
         }
       },
       message: format(t('trans0678'), [t('trans0763')]),
+    },
+  ],
+  netType: [
+    {
+      rule: (value) => value,
+      message: format(t('trans0677'), [t('trans0080')]),
     },
   ],
   'ipv4.static.ip': [

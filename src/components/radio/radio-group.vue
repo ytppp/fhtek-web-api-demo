@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { provide } from 'vue'
+import { provide, computed } from 'vue'
 
 defineOptions({
   name: 'FhRadioGroup',
@@ -39,8 +39,8 @@ const updateModel = (value) => {
 
 provide('radioGroup', {
   model,
-  direction: props.direction,
-  disabled: props.disabled,
+  direction: computed(() => props.direction),
+  disabled: computed(() => props.disabled),
   handleInput,
   handleChange,
   updateModel,
