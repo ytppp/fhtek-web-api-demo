@@ -100,7 +100,8 @@
           </fh-form-item>
         </div>
         <div class="wan-form__col">
-          <template v-if="isPppoe">
+          <div class="wan-form__box" v-if="isPppoe">
+            <span class="wan-form__titile">{{ $t('trans0081') }}</span>
             <fh-form-item :label="$t('trans0086')" prop="ppp.user">
               <fh-input v-model="wan.ppp.user" maxlength="64"> </fh-input>
             </fh-form-item>
@@ -110,7 +111,7 @@
             <fh-form-item :label="t('trans0790')" label-position="left">
               <fh-checkbox v-model="wan.ppp.enableRouterBridge" />
             </fh-form-item>
-          </template>
+          </div>
           <template v-if="isIpv4">
             <div class="wan-form__box" v-if="isStatic">
               <span class="wan-form__titile">{{ $t('trans0456') }}</span>
@@ -185,7 +186,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, computed, reactive, onMounted, watch, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { IP, VlanMode, ModalType } from '@/util/constant'
 import {
@@ -236,6 +237,7 @@ enum WanMode {
   bridge = 'bridge',
 }
 
+const toast = inject('toast')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const ipRef = ref(null)
@@ -245,6 +247,7 @@ const dns2Ref = ref(null)
 const ipv6Dns2Ref = ref(null)
 const wanRef = ref(null)
 const modalType = ref(ModalType.add)
+const lanIp = ref('')
 const lanOptions = [
   {
     value: 'LAN1',
@@ -329,12 +332,12 @@ const netTypesOptions = [
     text: t('trans0082'),
   },
   {
-    value: NetType.static,
-    text: t('trans0084'),
-  },
-  {
     value: NetType.pppoe,
     text: t('trans0081'),
+  },
+  {
+    value: NetType.static,
+    text: t('trans0084'),
   },
 ]
 const vlanModeOptions = [
@@ -447,7 +450,7 @@ const wanInitial = () => ({
   },
 })
 const wan = reactive(wanInitial())
-const wanOptions = reactive([])
+let wanOptions: any[] = []
 const wanList = reactive([])
 
 const isRouter = computed(() => wan.wanMode === WanMode.router)
@@ -489,6 +492,12 @@ const isAdd = computed(() => {
 const isEdit = computed(() => {
   return modalType.value === ModalType.edit
 })
+watch(
+  () => wan.wanMode,
+  () => {
+    wan.serviceType = serviceTypeOptions.value[0].value
+  },
+)
 
 const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
 const isGatewaySameSegmentWithIp = (gateway, ip) =>
@@ -569,23 +578,22 @@ const p8021Options = (max: number) => {
   }
   return arr
 }
-const rangeTips = (text, min: number, max: number) => {
+const rangeTips = (text: string, min: number, max: number) => {
   return format(t('trans0373'), [text, min, max])
 }
-const getWanList = () => {
+const getWanList = (id?: string) => {
   getWan().then(({ data }) => {
     const { items } = data
     if (items.length === 0) {
       modalType.value = ModalType.add
       return
     }
-    const wanOptionsList = items.map((item) => ({
+    wanOptions = items.map((item) => ({
       value: item.id,
       text: item.id,
     }))
     Object.assign(wanList, items)
-    Object.assign(wanOptions, wanOptionsList)
-    wan.id = items[0].id
+    wan.id = id ? id : items[items.length - 1].id
     modalType.value = ModalType.edit
     changeWan()
   })
@@ -636,6 +644,13 @@ const cancelWanConnAdd = () => {
 }
 const save = () => {
   if (wanRef.value.validate()) {
+    const oneOnlyWan = [
+      ServiceType.TR069,
+      ServiceType.TR069_INTERNET,
+      ServiceType.IPTV,
+      ServiceType.VOICE,
+      ServiceType.VOICE_INTERNET,
+    ]
     const newWan = {
       enable: convertBooleanStatus(wan.enable),
       serviceType: wan.serviceType,
@@ -683,20 +698,48 @@ const save = () => {
       },
     }
     if (isAdd.value) {
-      addWan(newWan).then((res) => {
+      if (
+        wanList.some(
+          (item) =>
+            oneOnlyWan.includes(newWan.serviceType) && item.serviceType === newWan.serviceType,
+        )
+      ) {
+        toast(format(t('trans0412'), [newWan.serviceType]))
+        return
+      }
+      if (wanList.some((item) => item.vlan.id === newWan.vlan.id)) {
+        toast(format(t('trans0678'), [t('trans0775')]))
+        return
+      }
+      addWan(newWan).then(() => {
         getWanList()
       })
     }
     if (isEdit.value) {
       newWan.id = wan.id
-      editWan(newWan).then((res) => {
-        getWanList()
+      if (
+        wanList.some(
+          (item) =>
+            item.id !== newWan.id &&
+            oneOnlyWan.includes(newWan.serviceType) &&
+            item.serviceType === newWan.serviceType,
+        )
+      ) {
+        toast(format(t('trans0412'), [newWan.serviceType]))
+        return
+      }
+      if (wanList.some((item) => item.id !== newWan.id && item.vlan.id === newWan.vlan.id)) {
+        toast(format(t('trans0678'), [t('trans0775')]))
+        return
+      }
+      editWan(newWan).then(() => {
+        getWanList(newWan.id)
       })
     }
   }
 }
 const delWanConn = () => {
-  deleteWan({ id: wan.id }).then((res) => {
+  deleteWan({ id: wan.id }).then(() => {
     getWanList()
   })
 }
@@ -704,6 +747,13 @@ const changeNetType = () => {
   if (isStatic.value) {
     wan.ipv6.pd.mode = PrefixMode.manually
   }
+}
+const getLanData = () => {
+  getLan().then(({ data }) => {
+    const { lan } = data
+    const { ip } = lan
+    lanIp.value = ip
+  })
 }
 
 const wanRules = reactive({
@@ -728,20 +778,20 @@ const wanRules = reactive({
       rule: (value) => isValidGatewayIP(value, wan.ipv4.static.mask),
       message: format(t('trans0566'), [t('trans0393')]),
     },
-    // {
-    //   rule: (value) => {
-    //     if (!lanIp.value) {
-    //       return true
-    //     }
-    //     const lanIpBefore = getIpBefore(lanIp.value)
-    //     const ipBefore = getIpBefore(value)
-    //     if (ipBefore === lanIpBefore || lanIp.value === value) {
-    //       return false
-    //     }
-    //     return true
-    //   },
-    //   message: t('trans0615'),
-    // },
+    {
+      rule: (value) => {
+        if (!lanIp.value) {
+          return true
+        }
+        const lanIpBefore = getIpBefore(lanIp.value)
+        const ipBefore = getIpBefore(value)
+        if (ipBefore === lanIpBefore || lanIp.value === value) {
+          return false
+        }
+        return true
+      },
+      message: t('trans0615'),
+    },
   ],
   'ipv4.static.mask': [
     {
@@ -939,6 +989,7 @@ const wanRules = reactive({
   ],
 })
 onMounted(() => {
+  getLanData()
   getWanList()
 })
 </script>
