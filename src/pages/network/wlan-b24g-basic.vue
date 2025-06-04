@@ -218,8 +218,8 @@ const changeSsid = () => {
   const thisSsid = ssidList.find((item) => item.id === wifi.id)
   wifi.ssid = thisSsid.name
   wifi.sta = thisSsid.max_sta
-  wifi.enable = convertBooleanStatus(thisWan.enable)
-  wifi.hide = convertBooleanStatus(thisWan.enable_hide)
+  wifi.enable = convertBooleanStatus(thisSsid.enable)
+  wifi.hide = convertBooleanStatus(thisSsid.enable_hide)
   wifi.encrypt = thisSsid.auth_mode
   wifi.password = thisSsid.pre_shared_key
   wifi.enableWps = convertBooleanStatus(thisWan.enable_wps)
