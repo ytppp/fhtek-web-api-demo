@@ -9,11 +9,14 @@
           <fh-select v-model="remote.interface" :options="interfaceOpts"> </fh-select>
         </fh-form-item>
         <fh-form-item :label="$t('trans0166')" label-position="left">
-          {{ remote.status }}
+          {{ statusText }}
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
-          <fh-button block>
+          <fh-button @click="start" block v-if="isStop">
             {{ $t('trans0557') }}
+          </fh-button>
+          <fh-button @click="stop" block v-if="isStart">
+            {{ $t('trans0804') }}
           </fh-button>
         </fh-form-item>
       </fh-form>
@@ -23,7 +26,9 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed, onMounted } from 'vue'
+import { getPortMirr, setPortMirr } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
 
 enum Interface {
   all = 'All',
@@ -37,7 +42,9 @@ enum Status {
   stop = 'stop',
 }
 
+const { defaultVal } = useDataClean()
 const { t } = useI18n()
+const loading = ref(false)
 const interfaceOpts = [
   {
     value: Interface.all,
@@ -63,5 +70,41 @@ const interfaceOpts = [
 const remote = reactive({
   interface: 'All',
   status: Status.stop,
+})
+
+const isStart = computed(() => remote.status === Status.start)
+const isStop = computed(() => remote.status === Status.stop)
+const statusText = computed(() => {
+  if (loading.value) return defaultVal
+  if (remote.status === Status.start) {
+    return t('trans0557')
+  }
+  return t('trans0804')
+})
+const start = () => {
+  remote.status = Status.start
+  save()
+}
+const stop = () => {
+  remote.status = Status.start
+  save()
+}
+const getPortMirrData = () => {
+  loading.value = true
+  getPortMirr().then(({ data }) => {
+    loading.value = false
+    remote.interface = data.interface
+    remote.status = data.status
+  })
+}
+
+const save = () => {
+  setPortMirr(remote).then(() => {
+    getPortMirrData()
+  })
+}
+
+onMounted(() => {
+  getPortMirrData()
 })
 </script>

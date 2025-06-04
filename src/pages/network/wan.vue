@@ -423,7 +423,7 @@ const wanInitial = () => ({
   },
   protocol: IP.IPv4,
   multiVlanId: '',
-  mtu: '1500',
+  mtu: '',
   enableNat: false,
   wanMode: WanMode.router,
   netType: NetType.dhcp,

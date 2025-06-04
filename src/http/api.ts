@@ -54,68 +54,47 @@ export const deleteWan = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.b24g.basic:get',
-  })
+  return http.get('wifi.b24g.basic:get')
 }
 
 export const setWifi2g = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.b24g.basic:edit',
-    data: params,
-  })
+  // return http.post(api, {
+  //   method: 'wifi.b24g.basic:edit',
+  //   data: params,
+  // })
+  return http.post('wifi.b24g.basic:edit', createData(params))
 }
 
 export const getWifi2gAdv = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.b24g.advanced:get',
-  })
+  return http.get('wifi.b24g.advanced:get')
 }
 
 export const setWifi2gAdv = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.b24g.advanced:edit',
-    data: params,
-  })
+  return http.post('wifi.b24g.advanced:edit', createData(params))
 }
 
 export const getWifi5gAdv = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.b5g.advanced:get',
-  })
+  return http.get('wifi.b5g.advanced:get')
 }
 
 export const setWifi5gAdv = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.b5g.advanced:edit',
-    data: params,
-  })
+  return http.post('wifi.b5g.advanced:edit', createData(params))
 }
 
 export const getWps = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.wps:get',
-  })
+  return http.get('wifi.wps:get')
 }
 
 export const setWps = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.wps:edit',
-    data: params,
-  })
+  return http.post('wifi.wps:edit', createData(params))
 }
 
 export const getWifi5g = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.b5g.basic:get',
-  })
+  return http.get('wifi.b5g.basic:get')
 }
 
 export const setWifi5g = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.b5g.basic:edit',
-    data: params,
-  })
+  return http.post('wifi.b5g.basic:edit', createData(params))
 }
 
 export const getIpv6Lan = (): Promise<ApiResponse<any>> => {
@@ -251,4 +230,12 @@ export const editOntAuth = (params): Promise<ApiResponse<any>> => {
     method: 'management.ont_auth:edit',
     data: params,
   })
+}
+
+export const getPortMirr = (): Promise<ApiResponse<any>> => {
+  return http.get('GetPortMirr')
+}
+
+export const setPortMirr = (params): Promise<ApiResponse<any>> => {
+  return http.post('SetPortMirr', createData(params))
 }
