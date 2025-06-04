@@ -248,13 +248,7 @@ const wanRef = ref(null)
 const modalType = ref(ModalType.add)
 const lanIp = ref('')
 
-const wanOnlyCreateOne = [
-  ServiceType.TR069,
-  ServiceType.TR069_INTERNET,
-  ServiceType.IPTV,
-  ServiceType.VOICE,
-  ServiceType.VOICE_INTERNET,
-]
+const wanOnlyCreateOne = [ServiceType.TR069, ServiceType.IPTV, ServiceType.VOICE]
 const lanOptions = [
   {
     value: 'LAN1',
