@@ -14,7 +14,7 @@
       </div>
       <fh-form class="form wan-form" ref="wanRef" :model="wan" :rules="wanRules">
         <div class="wan-form__col">
-          <fh-form-item :label="t('trans0140')" v-if="isEdit">
+          <fh-form-item :label="t('trans0140')" v-if="isEdit" prop="id">
             <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
             <template #extra>
               <fh-button @click="delWanConn" size="small">
@@ -28,7 +28,7 @@
           <fh-form-item :label="t('trans0762')">
             <fh-select v-model="wan.wanMode" :options="wanModeOptions"></fh-select>
           </fh-form-item>
-          <fh-form-item :label="t('trans0763')">
+          <fh-form-item :label="t('trans0763')" prop="serviceType">
             <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
           </fh-form-item>
           <fh-form-item :label="t('trans0080')" v-if="isRouter">
@@ -248,6 +248,14 @@ const ipv6Dns2Ref = ref(null)
 const wanRef = ref(null)
 const modalType = ref(ModalType.add)
 const lanIp = ref('')
+
+const wanOnlyCreateOne = [
+  ServiceType.TR069,
+  ServiceType.TR069_INTERNET,
+  ServiceType.IPTV,
+  ServiceType.VOICE,
+  ServiceType.VOICE_INTERNET,
+]
 const lanOptions = [
   {
     value: 'LAN1',
@@ -644,13 +652,6 @@ const cancelWanConnAdd = () => {
 }
 const save = () => {
   if (wanRef.value.validate()) {
-    const oneOnlyWan = [
-      ServiceType.TR069,
-      ServiceType.TR069_INTERNET,
-      ServiceType.IPTV,
-      ServiceType.VOICE,
-      ServiceType.VOICE_INTERNET,
-    ]
     const newWan = {
       enable: convertBooleanStatus(wan.enable),
       serviceType: wan.serviceType,
@@ -698,40 +699,12 @@ const save = () => {
       },
     }
     if (isAdd.value) {
-      if (
-        wanList.some(
-          (item) =>
-            oneOnlyWan.includes(newWan.serviceType) && item.serviceType === newWan.serviceType,
-        )
-      ) {
-        toast(format(t('trans0412'), [newWan.serviceType]))
-        return
-      }
-      if (wanList.some((item) => item.vlan.id === newWan.vlan.id)) {
-        toast(format(t('trans0678'), [t('trans0775')]))
-        return
-      }
       addWan(newWan).then(() => {
         getWanList()
       })
     }
     if (isEdit.value) {
       newWan.id = wan.id
-      if (
-        wanList.some(
-          (item) =>
-            item.id !== newWan.id &&
-            oneOnlyWan.includes(newWan.serviceType) &&
-            item.serviceType === newWan.serviceType,
-        )
-      ) {
-        toast(format(t('trans0412'), [newWan.serviceType]))
-        return
-      }
-      if (wanList.some((item) => item.id !== newWan.id && item.vlan.id === newWan.vlan.id)) {
-        toast(format(t('trans0678'), [t('trans0775')]))
-        return
-      }
       editWan(newWan).then(() => {
         getWanList(newWan.id)
       })
@@ -757,6 +730,32 @@ const getLanData = () => {
 }
 
 const wanRules = reactive({
+  id: [
+    {
+      rule: (value) => value,
+      message: t('trans0677').format(t('trans0140')),
+    },
+  ],
+  serviceType: [
+    {
+      rule: (value) => value,
+      message: format(t('trans0677'), [t('trans0763')]),
+    },
+    {
+      rule: (value) => {
+        if (isAdd.value) {
+          return !wanList.some((item) => wanOnlyCreateOne.includes(value) && item.serviceType === value)
+        }
+        if (isEdit.value) {
+          return !wanList.some(
+            (item) =>
+              item.id !== wan.id && wanOnlyCreateOne.includes(value) && item.serviceType === value,
+          )
+        }
+      },
+      message: format(t('trans0678'), [t('trans0763')]),
+    },
+  ],
   'ipv4.static.ip': [
     {
       rule: (value) => !!value.trim(),
@@ -959,6 +958,17 @@ const wanRules = reactive({
     {
       rule: (value) => isValidInteger(value, 1, 4094),
       message: format(t('trans0388'), [t('trans0775'), 1, 4094]),
+    },
+    {
+      rule: (value) => {
+        if (isAdd.value) {
+          return !wanList.some((item) => item.vlan.id === value)
+        }
+        if (isEdit.value) {
+          return !wanList.some((item) => item.id !== wan.id && item.vlan.id === value)
+        }
+      },
+      message: format(t('trans0678'), [t('trans0775')]),
     },
   ],
   multiVlanId: [
