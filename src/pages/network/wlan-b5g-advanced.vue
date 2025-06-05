@@ -25,7 +25,7 @@
           <fh-form-item :label="$t('trans0044')">
             <fh-select v-model="wifi.power" :options="powerOpts"> </fh-select>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0747')" prop="beacon">
+          <fh-form-item :label="$t('trans0801')" prop="beacon">
             <fh-input v-model="wifi.beacon"> </fh-input>
           </fh-form-item>
         </template>
