@@ -150,7 +150,6 @@ const validate = () => {
       validators = validators.concat(props.rules)
     }
     const value = getValueByPath(form.model.value, props.prop)
-    console.log(form.model.value)
     let this_result = true
     if (validators && validators.length) {
       for (let j = 0; j < validators.length; j++) {

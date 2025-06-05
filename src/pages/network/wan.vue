@@ -248,13 +248,6 @@ const wanRef = ref(null)
 const modalType = ref(ModalType.add)
 const lanIp = ref('')
 
-const wanOnlyCreateOne = [
-  ServiceType.TR069,
-  ServiceType.TR069_INTERNET,
-  ServiceType.IPTV,
-  ServiceType.VOICE,
-  ServiceType.VOICE_INTERNET,
-]
 const lanOptions = [
   {
     value: 'LAN1',
@@ -606,6 +599,7 @@ const getWanList = (id?: string) => {
   })
 }
 const changeWan = () => {
+  wanRef.value.clearValidate()
   const thisWan = wanList.find((item) => item.id === wan.id)
   wan.id = thisWan.id
   wan.enable = convertBooleanStatus(thisWan.enable)
@@ -647,6 +641,7 @@ const addWanConn = () => {
 const cancelWanConnAdd = () => {
   wan.id = wanOptions[0].value
   modalType.value = ModalType.edit
+  wanRef.value.clearValidate()
   changeWan()
 }
 const save = () => {
@@ -736,17 +731,43 @@ const wanRules = reactive({
     },
     {
       rule: (value) => {
-        if (isAdd.value) {
-          return !wanList.some(
-            (item) => wanOnlyCreateOne.includes(value) && item.serviceType === value,
-          )
+        if (value === ServiceType.TR069 || value === ServiceType.TR069_INTERNET) {
+          if (isAdd.value) {
+            return !wanList.some(
+              (item) =>
+                item.serviceType === ServiceType.TR069 ||
+                item.serviceType === ServiceType.TR069_INTERNET,
+            )
+          }
+          if (isEdit.value) {
+            return !wanList
+              .filter((item) => item.id !== wan.id)
+              .some(
+                (item) =>
+                  item.serviceType === ServiceType.TR069 ||
+                  item.serviceType === ServiceType.TR069_INTERNET,
+              )
+          }
         }
-        if (isEdit.value) {
-          return !wanList.some(
-            (item) =>
-              item.id !== wan.id && wanOnlyCreateOne.includes(value) && item.serviceType === value,
-          )
+        if (value === ServiceType.VOICE || value === ServiceType.VOICE_INTERNET) {
+          if (isAdd.value) {
+            return !wanList.some(
+              (item) =>
+                item.serviceType === ServiceType.VOICE ||
+                item.serviceType === ServiceType.VOICE_INTERNET,
+            )
+          }
+          if (isEdit.value) {
+            return !wanList
+              .filter((item) => item.id !== wan.id)
+              .some(
+                (item) =>
+                  item.serviceType === ServiceType.VOICE ||
+                  item.serviceType === ServiceType.VOICE_INTERNET,
+              )
+          }
         }
+        return true
       },
       message: format(t('trans0678'), [t('trans0763')]),
     },
