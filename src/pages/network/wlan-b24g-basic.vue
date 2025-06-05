@@ -222,7 +222,7 @@ const changeSsid = () => {
   wifi.hide = convertBooleanStatus(thisSsid.enable_hide)
   wifi.encrypt = thisSsid.auth_mode
   wifi.password = thisSsid.pre_shared_key
-  wifi.enableWps = convertBooleanStatus(thisWan.enable_wps)
+  wifi.enableWps = convertBooleanStatus(.enable_wps)
 }
 const save = () => {
   if (wifiFormRef.value?.validate()) {
