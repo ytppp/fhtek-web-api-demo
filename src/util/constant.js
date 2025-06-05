@@ -51,3 +51,8 @@ export const ModalType = {
   add: 'add',
   edit: 'edit',
 }
+
+export const WanMode = {
+  bridge: 'Bridge',
+  route: 'Route',
+}

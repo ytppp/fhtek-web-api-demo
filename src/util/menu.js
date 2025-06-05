@@ -181,11 +181,6 @@ let menus = [
         config,
       },
       {
-        url: '/app/static-dns',
-        text: 'trans0099',
-        config,
-      },
-      {
         url: '/app/ddns',
         text: 'trans0245',
         config,
@@ -198,6 +193,31 @@ let menus = [
       {
         url: '/app/cwmp',
         text: 'trans0271',
+        config,
+      },
+      {
+        url: '/app/time',
+        text: 'trans0247',
+        config,
+      },
+      {
+        url: '/app/igmp-mld',
+        text: 'trans0248',
+        config,
+      },
+      {
+        url: '/app/static-arp',
+        text: 'trans0805',
+        config,
+      },
+      {
+        url: '/app/static-dns',
+        text: 'trans0099',
+        config,
+      },
+      {
+        url: '/app/dhcp-static-ip',
+        text: 'trans0806',
         config,
       },
     ],
