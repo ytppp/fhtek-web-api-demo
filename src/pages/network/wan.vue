@@ -188,7 +188,7 @@
 <script lang="ts" setup>
 import { ref, computed, reactive, onMounted, watch, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IP, VlanMode, ModalType } from '@/util/constant'
+import { IP, VlanMode, ModalType, WanMode } from '@/util/constant'
 import {
   format,
   isIP,
@@ -231,10 +231,6 @@ enum NetType {
 enum PrefixMode {
   auto = 'auto',
   manually = 'manually',
-}
-enum WanMode {
-  router = 'router',
-  bridge = 'bridge',
 }
 
 const { convertBooleanStatus } = useDataClean()
@@ -586,6 +582,8 @@ const getWanList = (id?: string) => {
     const { items } = data
     if (items.length === 0) {
       modalType.value = ModalType.add
+      // Object.assign(wanList, [])
+      wanList.length = 0
       return
     }
     wanOptions = items.map((item) => ({

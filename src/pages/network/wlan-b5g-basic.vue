@@ -231,7 +231,7 @@ const save = () => {
       name: wifi.ssid,
       max_sta: wifi.sta,
       enable: convertBooleanStatus(wifi.enable),
-      enable_hide: convertBooleanStatus(wifi.enable),
+      enable_hide: convertBooleanStatus(wifi.hide),
       auth_mode: wifi.encrypt,
       pre_shared_key: wifi.password,
       enable_wps: convertBooleanStatus(wifi.enableWps),
