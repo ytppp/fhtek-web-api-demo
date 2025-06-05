@@ -239,3 +239,29 @@ export const getPortMirr = (): Promise<ApiResponse<any>> => {
 export const setPortMirr = (params): Promise<ApiResponse<any>> => {
   return http.post('SetPortMirr', createData(params))
 }
+
+export const getTerminal = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'management.acl_control:get',
+  })
+}
+
+export const setTerminal = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'management.acl_control:edit',
+    data: params,
+  })
+}
+
+export const getDefaultRoute = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.default_route:get',
+  })
+}
+
+export const setDefaultRoute = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'management.acl_control:edit',
+    data: params,
+  })
+}
