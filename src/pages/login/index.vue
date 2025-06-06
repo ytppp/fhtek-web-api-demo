@@ -120,9 +120,11 @@ export default {
       if (this.$refs.form.validate()) {
         this.formDisabled = true
         login(this.userinfo)
-          .then(() => {
+          .then(({ data }) => {
+            // const { role } = data
             const role = Role.super
             sessionStorage.setItem('role', role)
+            sessionStorage.setItem('loginuser', this.userinfo.username)
             this.$router.push('/home')
           })
           .finally(() => {
