@@ -7,7 +7,7 @@ export const RouterMode = {
   bridge: '3',
 }
 export const Role = {
-  super: 'super',
+  super: 'root',
   admin: 'admin',
 }
 export const MeshRole = {

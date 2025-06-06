@@ -261,7 +261,21 @@ export const getDefaultRoute = (): Promise<ApiResponse<any>> => {
 
 export const setDefaultRoute = (params): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'management.acl_control:edit',
+    method: 'network.default_route:edit',
+    data: params,
+  })
+}
+
+export const getAccount = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'account:get',
+    data: params,
+  })
+}
+
+export const setAccount = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'account:edit',
     data: params,
   })
 }
