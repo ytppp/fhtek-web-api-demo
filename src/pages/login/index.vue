@@ -58,6 +58,7 @@ import {
   getStringByte,
   specialChar,
 } from '@/util/tool'
+import { Role } from '@/util/constant'
 import { login } from '@/http/api'
 
 export default {
@@ -120,6 +121,8 @@ export default {
         this.formDisabled = true
         login(this.userinfo)
           .then(() => {
+            const role = Role.super
+            sessionStorage.setItem('role', role)
             this.$router.push('/home')
           })
           .finally(() => {
