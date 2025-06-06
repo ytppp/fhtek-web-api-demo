@@ -50,11 +50,11 @@ defineOptions({
   name: 'b5gAdvancedPage',
 })
 enum BandWidths5G {
-  b20 = 'b20',
-  b40 = 'b40',
-  b80 = 'b80',
-  b20m40 = 'b20m40', // 802.11a/n 才显示
-  b20m40m80m160 = 'b20m40m80m160',
+  b20 = 'bw20',
+  b40 = 'bw40',
+  b80 = 'bw80',
+  b20m40 = 'bw20m40', // 802.11a/n 才显示
+  b20m40m80m160 = 'bw20m40m80m160',
 }
 enum SelectMode5G {
   modeAonly = '2', // 802.11a 不显示频宽
