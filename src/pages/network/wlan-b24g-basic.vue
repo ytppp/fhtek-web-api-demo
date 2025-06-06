@@ -46,7 +46,7 @@
           </fh-button>
         </fh-form-item>
       </fh-form>
-      <template v-if="wifi.enableWpsInitial && wifi.enableInitial">
+      <template v-if="isEnableWps">
         <div class="page__sub-header">
           <h2 class="page__title">{{ $t('trans0799') }}</h2>
         </div>
@@ -75,31 +75,12 @@ import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } fro
 import { useDataClean } from '@/hooks/data-clean'
 import { getWifi2g, setWifi2g, getWps, setWps } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
+import { StartAndStop, Encrypts, WpsStatus } from '@/util/constant'
 
 defineOptions({
   name: 'b24gBasicPage',
 })
-enum Status {
-  start = 'start',
-  stop = 'stop',
-}
-enum Encrypts {
-  none = 'none',
-  wpaWpa2PskTkip = 'psk-mixed+tkip',
-  wpaWpa2PskCcmp = 'psk-mixed+ccmp',
-  wpaWpa2PskTkipCcmp = 'psk-mixed+tkip+ccmp',
-  wpa2Wpa3PskSaeCcmp = 'sae-mixed',
-  wpaPskCcmp = 'psk+ccmp',
-  wpaPskTkip = 'psk+tkip',
-  wpa2PskTkip = 'psk2+tkip',
-  wpa3SaeCcmp = 'sae',
-}
-enum WpsStatus {
-  idle = 'idle',
-  inProgress = 'In progress',
-  configured = 'configured',
-  unkonwn = 'unkonwn', // 当上述WpsStatus都不存在时，取此状态
-}
+
 const loading = ref(false)
 const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
@@ -167,7 +148,7 @@ const WpsText = {
   [WpsStatus.idle]: t('trans0807'),
   [WpsStatus.inProgress]: t('trans0808'),
   [WpsStatus.configured]: t('trans0809'),
-  [WpsStatus.unkonwn]: t('trans0807'),
+  [WpsStatus.unknown]: t('trans0807'),
 }
 const rules = reactive({
   ssid: [
@@ -213,11 +194,8 @@ const wpsStatusText = computed(() => {
   if (loading.value) return defaultVal
   return WpsText[wps.status]
 })
-const isStart = computed(
-  () =>
-    wps.status === WpsStatus.idle ||
-    wps.status === WpsStatus.unkonwn ||
-    wps.status === WpsStatus.configured,
+const isStart = computed(() =>
+  [WpsStatus.idle, WpsStatus.unknown, WpsStatus.configured].includes(wps.status),
 )
 const isStop = computed(() => wps.status === WpsStatus.inProgress)
 const isEncryptNone = computed(() => {
@@ -229,14 +207,17 @@ const encryptTip = computed(() => {
   }
   return ''
 })
+const isEnableWps = computed(() => {
+  return wifi.enableWpsInitial && wifi.enableInitial
+})
 
 const start = () => {
-  saveWps(Status.start)
+  saveWps(StartAndStop.start)
 }
 const stop = () => {
-  saveWps(Status.stop)
+  saveWps(StartAndStop.stop)
 }
-const saveWps = (order: Status) => {
+const saveWps = (order: StartAndStop) => {
   setWps({
     id: `ssid${wps.id}`,
     order,
@@ -268,7 +249,7 @@ const getWpsData = () => {
         wps.status = WpsStatus.configured
         break
       default:
-        wps.status = WpsStatus.unkonwn
+        wps.status = WpsStatus.unknown
         break
     }
     if (wps.status === WpsStatus.inProgress) {
@@ -298,6 +279,7 @@ const getWifiData = (id?: string) => {
 }
 const changeSsid = () => {
   const thisSsid = ssidList.find((item) => item.id === wifi.id)
+  if (!thisSsid) return
   wifi.ssid = thisSsid.name
   wifi.sta = thisSsid.max_sta
   wifi.enableInitial = wifi.enable = convertBooleanStatus(thisSsid.enable)
@@ -305,7 +287,7 @@ const changeSsid = () => {
   wifi.encrypt = thisSsid.auth_mode
   wifi.password = thisSsid.pre_shared_key
   wifi.enableWpsInitial = wifi.enableWps = convertBooleanStatus(thisSsid.enable_wps)
-  if (wifi.enableWpsInitial && wifi.enableInitial) {
+  if (isEnableWps.value) {
     getWpsData()
   }
 }

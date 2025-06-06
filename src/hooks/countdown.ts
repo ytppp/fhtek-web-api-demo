@@ -16,6 +16,7 @@ export const useCountDown = (
         return
       }
       countdown -= interval
+      console.log(countdown)
       if (doingHandle) {
         doingHandle(countdown)
       }

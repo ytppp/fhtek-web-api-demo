@@ -46,53 +46,48 @@
           </fh-button>
         </fh-form-item>
       </fh-form>
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0799') }}</h2>
-      </div>
-      <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
-        <fh-form-item :label="$t('trans0711')">
-          <fh-select v-model="wps.id" :options="ssidOpts"> </fh-select>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0800')" label-position="left">
-          {{ wps.status }}
-        </fh-form-item>
-        <fh-form-item class="form__submit-btn">
-          <fh-button block>
-            {{ $t('trans0557') }}
-          </fh-button>
-        </fh-form-item>
-      </fh-form>
+      <template v-if="isEnableWps">
+        <div class="page__sub-header">
+          <h2 class="page__title">{{ $t('trans0799') }}</h2>
+        </div>
+        <fh-form class="form form--padding wifi-form" :wps="wifi">
+          <fh-form-item :label="$t('trans0800')" label-position="left">
+            {{ wpsStatusText }}
+          </fh-form-item>
+          <fh-form-item class="form__submit-btn">
+            <fh-button @click="start" block v-if="isStart">
+              {{ $t('trans0557') }}
+            </fh-button>
+            <fh-button @click="stop" block v-if="isStop">
+              {{ $t('trans0804') }}
+            </fh-button>
+          </fh-form-item>
+        </fh-form>
+      </template>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, inject, onMounted } from 'vue'
+import { computed, reactive, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { getWifi5g, setWifi5g, getWps, setWps } from '@/http/api'
+import { useCountDown } from '@/hooks/countdown'
+import { StartAndStop, Encrypts, WpsStatus } from '@/util/constant'
 
 defineOptions({
   name: 'b5gBasicPage',
 })
-enum Encrypts {
-  none = 'none',
-  wpaWpa2PskTkip = 'psk-mixed+tkip',
-  wpaWpa2PskCcmp = 'psk-mixed+ccmp',
-  wpaWpa2PskTkipCcmp = 'psk-mixed+tkip+ccmp',
-  wpa2Wpa3PskSaeCcmp = 'sae-mixed',
-  wpaPskCcmp = 'psk+ccmp',
-  wpaPskTkip = 'psk+tkip',
-  wpa2PskTkip = 'psk2+tkip',
-  wpa3SaeCcmp = 'sae',
-}
-enum WpsStatus {}
-const dialog = inject('dialog')
+
+const loading = ref(false)
 const { t } = useI18n()
-const { convertBooleanStatus } = useDataClean()
+const { convertBooleanStatus, defaultVal } = useDataClean()
 const wifiFormRef = ref(null)
 const labelWidth = '110px'
+const timeout = 2 * 60 * 1000
+const interval = 5000
 const encrypts = [
   {
     value: Encrypts.none,
@@ -138,15 +133,23 @@ const wifi = reactive({
   ssid: '',
   sta: 0,
   enable: false,
+  enableInitial: false,
   hide: false,
   encrypt: Encrypts.none,
   password: '',
   enableWps: false,
+  enableWpsInitial: false,
 })
 const wps = reactive({
   id: '',
   status: '',
 })
+const WpsText = {
+  [WpsStatus.idle]: t('trans0807'),
+  [WpsStatus.inProgress]: t('trans0808'),
+  [WpsStatus.configured]: t('trans0809'),
+  [WpsStatus.unknown]: t('trans0807'),
+}
 const rules = reactive({
   ssid: [
     {
@@ -187,7 +190,14 @@ const rules = reactive({
     },
   ],
 })
-
+const wpsStatusText = computed(() => {
+  if (loading.value) return defaultVal
+  return WpsText[wps.status]
+})
+const isStart = computed(() =>
+  [WpsStatus.idle, WpsStatus.unknown, WpsStatus.configured].includes(wps.status),
+)
+const isStop = computed(() => wps.status === WpsStatus.inProgress)
 const isEncryptNone = computed(() => {
   return wifi.encrypt === Encrypts.none
 })
@@ -197,9 +207,62 @@ const encryptTip = computed(() => {
   }
   return ''
 })
+const isEnableWps = computed(() => {
+  return wifi.enableWpsInitial && wifi.enableInitial
+})
 
-const getWifiData = () => {
-  getWifi5g().then(({ data }) => {
+const start = () => {
+  saveWps(StartAndStop.start)
+}
+const stop = () => {
+  saveWps(StartAndStop.stop)
+}
+const saveWps = (order: StartAndStop) => {
+  setWps({
+    id: `ssidac${wps.id}`,
+    order,
+  }).then(() => {
+    getWpsData()
+  })
+}
+const doingHandle = () => {
+  getWpsData()
+}
+const doneHandle = () => {
+  wps.status = WpsStatus.idle
+}
+const getWpsData = () => {
+  wps.id = wifi.id
+  loading.value = true
+  getWps({
+    id: `ssidac${wps.id}`,
+  }).then(({ data }) => {
+    loading.value = false
+    switch (data.status) {
+      case WpsStatus.idle:
+        wps.status = WpsStatus.idle
+        break
+      case WpsStatus.inProgress:
+        wps.status = WpsStatus.inProgress
+        break
+      case WpsStatus.configured:
+        wps.status = WpsStatus.configured
+        break
+      default:
+        wps.status = WpsStatus.unknown
+        break
+    }
+    if (wps.status === WpsStatus.inProgress) {
+      createCountDown()
+    }
+    if (wps.status === WpsStatus.idle || wps.status === WpsStatus.configured) {
+      cleanCountDown()
+    }
+  })
+}
+const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle, doneHandle)
+const getWifiData = (id?: string) => {
+  getWifi2g().then(({ data }) => {
     const { items } = data
     if (items.length === 0) {
       return
@@ -210,19 +273,23 @@ const getWifiData = () => {
     }))
     Object.assign(ssidList, items)
     Object.assign(ssidOpts, ssidOptsList)
-    wifi.id = items[0].id
+    wifi.id = id ? id : items[0].id
     changeSsid()
   })
 }
 const changeSsid = () => {
   const thisSsid = ssidList.find((item) => item.id === wifi.id)
+  if (!thisSsid) return
   wifi.ssid = thisSsid.name
   wifi.sta = thisSsid.max_sta
-  wifi.enable = convertBooleanStatus(thisSsid.enable)
+  wifi.enableInitial = wifi.enable = convertBooleanStatus(thisSsid.enable)
   wifi.hide = convertBooleanStatus(thisSsid.enable_hide)
   wifi.encrypt = thisSsid.auth_mode
   wifi.password = thisSsid.pre_shared_key
-  wifi.enableWps = convertBooleanStatus(thisSsid.enable_wps)
+  wifi.enableWpsInitial = wifi.enableWps = convertBooleanStatus(thisSsid.enable_wps)
+  if (isEnableWps.value) {
+    getWpsData()
+  }
 }
 const save = () => {
   if (wifiFormRef.value?.validate()) {
@@ -236,7 +303,9 @@ const save = () => {
       pre_shared_key: wifi.password,
       enable_wps: convertBooleanStatus(wifi.enableWps),
     }
-    setWifi5g(data)
+    setWifi5g(data).then(() => {
+      getWifiData(wifi.id)
+    })
   }
 }
 onMounted(() => {
