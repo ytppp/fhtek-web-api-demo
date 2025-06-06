@@ -219,7 +219,7 @@ const stop = () => {
 }
 const saveWps = (order: StartAndStop) => {
   setWps({
-    id: `ssidac${wps.id}`,
+    id: wps.id,
     order,
   }).then(() => {
     getWpsData()
@@ -235,7 +235,7 @@ const getWpsData = () => {
   wps.id = wifi.id
   loading.value = true
   getWps({
-    id: `ssidac${wps.id}`,
+    id: wps.id,
   }).then(({ data }) => {
     loading.value = false
     switch (data.status) {
