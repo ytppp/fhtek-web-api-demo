@@ -26,7 +26,11 @@
             <fh-checkbox v-model="wan.enable" />
           </fh-form-item>
           <fh-form-item :label="t('trans0762')">
-            <fh-select v-model="wan.wanMode" :options="wanModeOptions"></fh-select>
+            <fh-select
+              @change="changeWanMode"
+              v-model="wan.wanMode"
+              :options="wanModeOptions"
+            ></fh-select>
           </fh-form-item>
           <fh-form-item :label="t('trans0763')" prop="serviceType">
             <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
@@ -186,7 +190,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted, watch, inject } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { IP, VlanMode, ModalType, WanMode } from '@/util/constant'
 import {
@@ -314,7 +318,7 @@ const ipOptions = [
 ]
 const wanModeOptions = [
   {
-    value: WanMode.router,
+    value: WanMode.route,
     text: t('trans0069'),
   },
   {
@@ -414,7 +418,7 @@ const wanInitial = () => ({
   multiVlanId: '',
   mtu: '',
   enableNat: false,
-  wanMode: WanMode.router,
+  wanMode: WanMode.route,
   netType: NetType.dhcp,
   ppp: {
     user: '',
@@ -449,7 +453,7 @@ const wan = reactive(wanInitial())
 let wanOptions: any[] = []
 const wanList = reactive([])
 
-const isRouter = computed(() => wan.wanMode === WanMode.router)
+const isRouter = computed(() => wan.wanMode === WanMode.route)
 const isBridge = computed(() => wan.wanMode === WanMode.bridge)
 const isIpMix = computed(() => wan.protocol === IP.mix)
 const isIpv4 = computed(() => wan.protocol === IP.IPv4 || isIpMix.value)
@@ -488,13 +492,9 @@ const isAdd = computed(() => {
 const isEdit = computed(() => {
   return modalType.value === ModalType.edit
 })
-watch(
-  () => wan.wanMode,
-  () => {
-    wan.serviceType = serviceTypeOptions.value[0].value
-  },
-)
-
+const changeWanMode = () => {
+  wan.serviceType = serviceTypeOptions.value[0].value
+}
 const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
 const isGatewaySameSegmentWithIp = (gateway, ip) =>
   !gateway || !ip || getIpBefore(gateway) === getIpBefore(ip)
