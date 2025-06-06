@@ -262,7 +262,7 @@ const getWpsData = () => {
 }
 const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle, doneHandle)
 const getWifiData = (id?: string) => {
-  getWifi2g().then(({ data }) => {
+  getWifi5g().then(({ data }) => {
     const { items } = data
     if (items.length === 0) {
       return
