@@ -25,9 +25,13 @@ import firewall from '../pages/safety/firewall.vue'
 import portMapping from '../pages/app/port-mapping.vue'
 import dmz from '../pages/app/dmz.vue'
 import staticDns from '../pages/app/static-dns.vue'
+import staticArp from '../pages/app/static-arp.vue'
 import ddns from '../pages/app/ddns.vue'
 import upnp from '../pages/app/upnp.vue'
 import cwmp from '../pages/app/cwmp.vue'
+import time from '../pages/app/time.vue'
+import igmpMld from '../pages/app/igmp-mld.vue'
+import dhcpStaticIp from '../pages/app/dhcp-static-ip.vue'
 import upgrade from '../pages/management/upgrade.vue'
 import user from '../pages/management/user.vue'
 import device from '../pages/management/device.vue'
@@ -183,6 +187,26 @@ export const router = createRouter({
       path: '/app/cwmp',
       name: 'cwmp',
       component: cwmp,
+    },
+    {
+      path: '/app/time',
+      name: 'time',
+      component: time,
+    },
+    {
+      path: '/app/igmp-mld',
+      name: 'igmp-mld',
+      component: igmpMld,
+    },
+    {
+      path: '/app/static-arp',
+      name: 'static-arp',
+      component: staticArp,
+    },
+    {
+      path: '/app/dhcp-static-ip',
+      name: 'dhcp-static-ip',
+      component: dhcpStaticIp,
     },
     {
       path: '/management/upgrade',

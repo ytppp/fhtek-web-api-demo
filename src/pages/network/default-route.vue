@@ -23,7 +23,7 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive } from 'vue'
-import { getWan } from '@/http/api'
+import { getWan, getDefaultRoute, setDefaultRoute } from '@/http/api'
 import { IP } from '@/util/constant'
 
 const ipv4WanOpts = reactive([])
@@ -35,7 +35,13 @@ const form = reactive({
 })
 
 const save = () => {
-  console.log(form)
+  setDefaultRoute(form)
+}
+const getDefaultRouteData = () => {
+  getDefaultRoute().then(({ data }) => {
+    form.ipv4 = data.ipv4
+    form.ipv6 = data.ipv6
+  })
 }
 
 const getWanData = () => {
@@ -64,5 +70,6 @@ const getWanData = () => {
 
 onMounted(() => {
   getWanData()
+  getDefaultRouteData()
 })
 </script>

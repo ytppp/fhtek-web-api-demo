@@ -25,7 +25,7 @@
           <fh-form-item :label="$t('trans0044')">
             <fh-select v-model="wifi.power" :options="powerOpts"> </fh-select>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0747')" prop="beacon">
+          <fh-form-item :label="$t('trans0801')" prop="beacon">
             <fh-input v-model="wifi.beacon"> </fh-input>
           </fh-form-item>
         </template>
@@ -50,29 +50,22 @@ defineOptions({
   name: 'b24gAdvancedPage',
 })
 enum BandWidths24G {
-  hT20 = 'HT20',
-  hT40 = 'HT40',
-  hE20 = 'HE20',
-  hE40 = 'HE40',
-  hE80 = 'HE80',
-  hE160 = 'HE160',
-  vHT20 = 'VHT20',
-  vHT40 = 'VHT40',
-  vHT80 = 'VHT80',
-  vHT160 = 'VHT160',
+  b20 = 'bw20',
+  b40 = 'bw40',
+  b20m40 = 'bw20m40',
 }
 enum SelectMode24G {
-  modebgnmix = '9',
-  modebgmix = '0',
-  moden = '6',
-  modeg = '4',
-  modeb = '1',
-  modeAx = '16',
+  modebgnmix = '9', // 802.11b/g/n 显示频宽
+  modebgmix = '0', // 802.11b/g
+  moden = '6', // 802.11n 显示频宽
+  modeg = '4', // 802.11g
+  modeb = '1', // 802.11b
+  modeAx = '16', // 802.11b/g/n/ax 显示频宽
 }
 enum Powermodes {
-  low = '2', // 50%
-  middle = '1', // 75%
-  high = '6', // 100%
+  low = '50', // 50%
+  middle = '75', // 75%
+  high = '100', // 100%
 }
 enum Channels24G {
   auto = '0',
@@ -182,20 +175,16 @@ const channelOpts = [
 ]
 const bwOpts = [
   {
-    value: BandWidths24G.hT20,
-    text: 'HT20',
+    value: BandWidths24G.b20,
+    text: '20MHz',
   },
   {
-    value: BandWidths24G.hT40,
-    text: 'HT40',
+    value: BandWidths24G.b40,
+    text: '40MHz',
   },
   {
-    value: BandWidths24G.hE20,
-    text: 'HE20',
-  },
-  {
-    value: BandWidths24G.hE40,
-    text: 'HE40',
+    value: BandWidths24G.b20m40,
+    text: '20/40MHz',
   },
 ]
 const powerOpts = [
@@ -215,9 +204,8 @@ const powerOpts = [
 const wifi = reactive({
   enable: true,
   mode: SelectMode24G.modeb,
-  bw: BandWidths24G.hT20,
+  bw: BandWidths24G.b20,
   channel: Channels24G.auto,
-  bandWidth: BandWidths24G.hT20,
   power: Powermodes.high,
   beacon: '',
 })

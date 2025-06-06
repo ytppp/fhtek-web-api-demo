@@ -26,7 +26,11 @@
             <fh-checkbox v-model="wan.enable" />
           </fh-form-item>
           <fh-form-item :label="t('trans0762')">
-            <fh-select v-model="wan.wanMode" :options="wanModeOptions"></fh-select>
+            <fh-select
+              @change="changeWanMode"
+              v-model="wan.wanMode"
+              :options="wanModeOptions"
+            ></fh-select>
           </fh-form-item>
           <fh-form-item :label="t('trans0763')" prop="serviceType">
             <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
@@ -186,9 +190,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted, watch, inject } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IP, VlanMode, ModalType } from '@/util/constant'
+import { IP, VlanMode, ModalType, WanMode } from '@/util/constant'
 import {
   format,
   isIP,
@@ -232,10 +236,6 @@ enum PrefixMode {
   auto = 'auto',
   manually = 'manually',
 }
-enum WanMode {
-  router = 'router',
-  bridge = 'bridge',
-}
 
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
@@ -248,7 +248,6 @@ const wanRef = ref(null)
 const modalType = ref(ModalType.add)
 const lanIp = ref('')
 
-const wanOnlyCreateOne = [ServiceType.TR069, ServiceType.IPTV, ServiceType.VOICE]
 const lanOptions = [
   {
     value: 'LAN1',
@@ -319,7 +318,7 @@ const ipOptions = [
 ]
 const wanModeOptions = [
   {
-    value: WanMode.router,
+    value: WanMode.route,
     text: t('trans0069'),
   },
   {
@@ -419,7 +418,7 @@ const wanInitial = () => ({
   multiVlanId: '',
   mtu: '',
   enableNat: false,
-  wanMode: WanMode.router,
+  wanMode: WanMode.route,
   netType: NetType.dhcp,
   ppp: {
     user: '',
@@ -454,7 +453,7 @@ const wan = reactive(wanInitial())
 let wanOptions: any[] = []
 const wanList = reactive([])
 
-const isRouter = computed(() => wan.wanMode === WanMode.router)
+const isRouter = computed(() => wan.wanMode === WanMode.route)
 const isBridge = computed(() => wan.wanMode === WanMode.bridge)
 const isIpMix = computed(() => wan.protocol === IP.mix)
 const isIpv4 = computed(() => wan.protocol === IP.IPv4 || isIpMix.value)
@@ -493,13 +492,9 @@ const isAdd = computed(() => {
 const isEdit = computed(() => {
   return modalType.value === ModalType.edit
 })
-watch(
-  () => wan.wanMode,
-  () => {
-    wan.serviceType = serviceTypeOptions.value[0].value
-  },
-)
-
+const changeWanMode = () => {
+  wan.serviceType = serviceTypeOptions.value[0].value
+}
 const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
 const isGatewaySameSegmentWithIp = (gateway, ip) =>
   !gateway || !ip || getIpBefore(gateway) === getIpBefore(ip)
@@ -587,6 +582,8 @@ const getWanList = (id?: string) => {
     const { items } = data
     if (items.length === 0) {
       modalType.value = ModalType.add
+      // Object.assign(wanList, [])
+      wanList.length = 0
       return
     }
     wanOptions = items.map((item) => ({
@@ -600,6 +597,7 @@ const getWanList = (id?: string) => {
   })
 }
 const changeWan = () => {
+  wanRef.value.clearValidate()
   const thisWan = wanList.find((item) => item.id === wan.id)
   wan.id = thisWan.id
   wan.enable = convertBooleanStatus(thisWan.enable)
@@ -641,6 +639,7 @@ const addWanConn = () => {
 const cancelWanConnAdd = () => {
   wan.id = wanOptions[0].value
   modalType.value = ModalType.edit
+  wanRef.value.clearValidate()
   changeWan()
 }
 const save = () => {
@@ -730,17 +729,43 @@ const wanRules = reactive({
     },
     {
       rule: (value) => {
-        if (isAdd.value) {
-          return !wanList.some(
-            (item) => wanOnlyCreateOne.includes(value) && item.serviceType === value,
-          )
+        if (value === ServiceType.TR069 || value === ServiceType.TR069_INTERNET) {
+          if (isAdd.value) {
+            return !wanList.some(
+              (item) =>
+                item.serviceType === ServiceType.TR069 ||
+                item.serviceType === ServiceType.TR069_INTERNET,
+            )
+          }
+          if (isEdit.value) {
+            return !wanList
+              .filter((item) => item.id !== wan.id)
+              .some(
+                (item) =>
+                  item.serviceType === ServiceType.TR069 ||
+                  item.serviceType === ServiceType.TR069_INTERNET,
+              )
+          }
         }
-        if (isEdit.value) {
-          return !wanList.some(
-            (item) =>
-              item.id !== wan.id && wanOnlyCreateOne.includes(value) && item.serviceType === value,
-          )
+        if (value === ServiceType.VOICE || value === ServiceType.VOICE_INTERNET) {
+          if (isAdd.value) {
+            return !wanList.some(
+              (item) =>
+                item.serviceType === ServiceType.VOICE ||
+                item.serviceType === ServiceType.VOICE_INTERNET,
+            )
+          }
+          if (isEdit.value) {
+            return !wanList
+              .filter((item) => item.id !== wan.id)
+              .some(
+                (item) =>
+                  item.serviceType === ServiceType.VOICE ||
+                  item.serviceType === ServiceType.VOICE_INTERNET,
+              )
+          }
         }
+        return true
       },
       message: format(t('trans0678'), [t('trans0763')]),
     },

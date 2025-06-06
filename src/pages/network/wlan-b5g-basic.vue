@@ -218,11 +218,11 @@ const changeSsid = () => {
   const thisSsid = ssidList.find((item) => item.id === wifi.id)
   wifi.ssid = thisSsid.name
   wifi.sta = thisSsid.max_sta
-  wifi.enable = convertBooleanStatus(thisWan.enable)
-  wifi.hide = convertBooleanStatus(thisWan.enable_hide)
+  wifi.enable = convertBooleanStatus(thisSsid.enable)
+  wifi.hide = convertBooleanStatus(thisSsid.enable_hide)
   wifi.encrypt = thisSsid.auth_mode
   wifi.password = thisSsid.pre_shared_key
-  wifi.enableWps = convertBooleanStatus(thisWan.enable_wps)
+  wifi.enableWps = convertBooleanStatus(thisSsid.enable_wps)
 }
 const save = () => {
   if (wifiFormRef.value?.validate()) {
@@ -231,7 +231,7 @@ const save = () => {
       name: wifi.ssid,
       max_sta: wifi.sta,
       enable: convertBooleanStatus(wifi.enable),
-      enable_hide: convertBooleanStatus(wifi.enable),
+      enable_hide: convertBooleanStatus(wifi.hide),
       auth_mode: wifi.encrypt,
       pre_shared_key: wifi.password,
       enable_wps: convertBooleanStatus(wifi.enableWps),

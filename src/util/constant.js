@@ -7,7 +7,7 @@ export const RouterMode = {
   bridge: '3',
 }
 export const Role = {
-  super: 'super',
+  super: 'root',
   admin: 'admin',
 }
 export const MeshRole = {
@@ -50,4 +50,9 @@ export const EnableStatus = {
 export const ModalType = {
   add: 'add',
   edit: 'edit',
+}
+
+export const WanMode = {
+  bridge: 'bridge',
+  route: 'route',
 }

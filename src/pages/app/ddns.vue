@@ -29,7 +29,7 @@
           <fh-form-item :label="$t('trans0166')" label-position="left">
             <fh-switch v-model="modalForm.enable" />
           </fh-form-item>
-          <fh-form-item :label="$t('trans0140')">
+          <fh-form-item :label="$t('trans0140')" prop="interface">
             <fh-select v-model="modalForm.interface" :options="wanList"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0255')">
@@ -57,7 +57,10 @@
 
 <script>
 import { ModalType } from '@/util/constant'
+import { getWan, getDdns, addDdns, editDdns, delDdns } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
 
+const { convertBooleanStatus } = useDataClean()
 const maxRuleNum = 1
 const servers = [
   'www.no-ip.com',
@@ -81,6 +84,7 @@ export default {
       modalType: ModalType.add,
       visible: false,
       modalForm: {
+        id: '',
         enable: true,
         server: servers[0],
         domain: '',
@@ -90,6 +94,12 @@ export default {
       },
       wanList: [],
       modalFormRules: {
+        interface: [
+          {
+            rule: (value) => value,
+            message: this.$t('trans0677').format(this.$t('trans0140')),
+          },
+        ],
         domain: [
           {
             rule: (value) => value,
@@ -146,7 +156,7 @@ export default {
   methods: {
     openAddModal() {
       this.modalForm.enable = true
-      this.modalForm.interface = ''
+      this.modalForm.interface = this.wanList[0].value
       this.modalForm.domain = ''
       this.modalForm.username = ''
       this.modalForm.password = ''
@@ -165,32 +175,72 @@ export default {
       this.visible = true
     },
     toggleStatus(row) {
-      this.modalForm.enable = row.Active === EnableStatus.yes ? EnableStatus.no : EnableStatus.yes
-      // todo
+      this.modalForm.enable = !row.Active
+      const data = {
+        id: this.modalForm.id,
+        enable: convertBooleanStatus(this.modalForm.enable),
+      }
+      editDdns([data]).then(() => {
+        this.visible = false
+        this.getDdnsList()
+      })
     },
     save() {
       if (this.$refs.modalForm.validate()) {
-        // todo
+        const data = {
+          enable: convertBooleanStatus(this.modalForm.enable),
+          server: this.modalForm.server,
+          domain: this.modalForm.domain,
+          username: this.modalForm.username,
+          password: this.modalForm.password,
+          interface: this.modalForm.interface,
+        }
+        if (this.isAdd) {
+          addDdns([data]).then(() => {
+            this.visible = false
+            this.getDdnsList()
+          })
+        }
+        if (this.isEdit) {
+          data.id = this.modalForm.id
+          editDdns([data]).then(() => {
+            this.visible = false
+            this.getDdnsList()
+          })
+        }
       }
     },
     del() {
-      // todo
+      delDdns({ id: row.id }).then((res) => {
+        this.getDdnsList()
+      })
     },
     getDdnsList() {
-      const data = []
-      // res.data.forEach((item) => {
-      //   const flag = this.isObjExistVal(item, this.undefinedFlag)
-      //   if (!flag) {
-      //     data.push(item)
-      //   }
-      // })
-      this.data = data
+      getDdns().then(({ data }) => {
+        const tableData = []
+        const { items } = data
+        items.forEach((item, i) => {
+          tableData.push({
+            ...item,
+            Active: convertBooleanStatus(item.Active),
+            index: i,
+          })
+        })
+        this.data = tableData
+      })
     },
-    getWanList() {
-      // todo
+    getWanData() {
+      getWan().then(({ data }) => {
+        const { items } = data
+        this.wanList = items.map((item) => ({
+          value: item.id,
+          text: item.id,
+        }))
+      })
     },
   },
   created() {
+    this.getWanData()
     this.getDdnsList()
   },
 }

@@ -25,7 +25,7 @@
           <fh-form-item :label="$t('trans0044')">
             <fh-select v-model="wifi.power" :options="powerOpts"> </fh-select>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0747')" prop="beacon">
+          <fh-form-item :label="$t('trans0801')" prop="beacon">
             <fh-input v-model="wifi.beacon"> </fh-input>
           </fh-form-item>
         </template>
@@ -50,28 +50,23 @@ defineOptions({
   name: 'b5gAdvancedPage',
 })
 enum BandWidths5G {
-  hT20 = 'HT20',
-  hT40 = 'HT40',
-  hE20 = 'HE20',
-  hE40 = 'HE40',
-  hE80 = 'HE80',
-  hE160 = 'HE160',
-  vHT20 = 'VHT20',
-  vHT40 = 'VHT40',
-  vHT80 = 'VHT80',
-  vHT160 = 'VHT160',
+  b20 = 'bw20',
+  b40 = 'bw40',
+  b80 = 'bw80',
+  b20m40 = 'bw20m40', // 802.11a/n 才显示
+  b20m40m80m160 = 'bw20m40m80m160',
 }
 enum SelectMode5G {
-  modeAonly = '2',
-  modeANmixed = '8',
-  modeACNA = '14',
-  modeACN = '15',
-  modeAx = '17',
+  modeAonly = '2', // 802.11a 不显示频宽
+  modeANmixed = '8', // 802.11a/n
+  modeACNA = '14', // 802.11a/n/ac
+  modeACN = '15', // 802.11n/ac
+  modeAx = '17', // 802.11a/n/ac/ax
 }
 enum Powermodes {
-  low = '2', // 50%
-  middle = '1', // 75%
-  high = '6', // 100%
+  low = '50', // 50%
+  middle = '75', // 75%
+  high = '100', // 100%
 }
 enum Channels5G {
   auto = '0',
@@ -124,48 +119,6 @@ const modeOpts = [
   {
     value: SelectMode5G.modeAx,
     text: '802.11a/n/ac/ax',
-  },
-]
-const bwOpts = [
-  {
-    value: BandWidths5G.hT20,
-    text: 'HT20',
-  },
-  {
-    value: BandWidths5G.hT40,
-    text: 'HT40',
-  },
-  {
-    value: BandWidths5G.vHT20,
-    text: 'VHT20',
-  },
-  {
-    value: BandWidths5G.vHT40,
-    text: 'VHT40',
-  },
-  {
-    value: BandWidths5G.vHT80,
-    text: 'VHT80',
-  },
-  {
-    value: BandWidths5G.vHT160,
-    text: 'VHT160',
-  },
-  {
-    value: BandWidths5G.hE20,
-    text: 'HE20',
-  },
-  {
-    value: BandWidths5G.hE40,
-    text: 'HE40',
-  },
-  {
-    value: BandWidths5G.hE80,
-    text: 'HE80',
-  },
-  {
-    value: BandWidths5G.hE160,
-    text: 'HE160',
   },
 ]
 const b5gChannelsInit = [
@@ -302,9 +255,8 @@ const powerOpts = [
 const wifi = reactive({
   enable: true,
   mode: SelectMode5G.modeAonly,
-  bw: BandWidths5G.hT20,
+  bw: BandWidths5G.b20,
   channel: Channels5G.auto,
-  bandWidth: BandWidths5G.hT20,
   power: Powermodes.high,
   beacon: '',
 })
@@ -324,9 +276,46 @@ const rules = reactive({
   1). 频宽只有配置为20Mhz，才会显示116和165信道，否则不显示这2个信道;
   2). 116或165信道时，频宽配置为非20Mhz时，信道会自动调整为自动信道，且信道不会再显示116和165信道
 */
-const specialBandwidths = [BandWidths5G.hT20, BandWidths5G.vHT20, BandWidths5G.hE20]
+const specialBandwidths = [BandWidths5G.b20]
 const specialChannels = [Channels5G.ch116, Channels5G.ch165]
 
+const bwOpts = computed(() => {
+  if (wifi.mode === SelectMode5G.modeANmixed) {
+    return [
+      {
+        value: BandWidths5G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths5G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths5G.b20m40,
+        text: '20/40MHz',
+      },
+    ]
+  } else {
+    return [
+      {
+        value: BandWidths5G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths5G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths5G.b80,
+        text: '80MHz',
+      },
+      {
+        value: BandWidths5G.b20m40m80m160,
+        text: '20/40/80/160MHz',
+      },
+    ]
+  }
+})
 const showBandwidth = computed(() => {
   return wifi.mode !== SelectMode5G.modeAonly
 })
