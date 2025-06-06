@@ -56,3 +56,27 @@ export const WanMode = {
   bridge: 'bridge',
   route: 'route',
 }
+
+export enum StartAndStop {
+  start = 'start',
+  stop = 'stop',
+}
+
+export enum Encrypts {
+  none = 'none',
+  wpaWpa2PskTkip = 'psk-mixed+tkip',
+  wpaWpa2PskCcmp = 'psk-mixed+ccmp',
+  wpaWpa2PskTkipCcmp = 'psk-mixed+tkip+ccmp',
+  wpa2Wpa3PskSaeCcmp = 'sae-mixed',
+  wpaPskCcmp = 'psk+ccmp',
+  wpaPskTkip = 'psk+tkip',
+  wpa2PskTkip = 'psk2+tkip',
+  wpa3SaeCcmp = 'sae',
+}
+
+export enum WpsStatus {
+  idle = 'idle',
+  inProgress = 'In progress',
+  configured = 'configured',
+  unknown = 'unknown', // 当上述WpsStatus都不存在时，取此状态
+}

@@ -29,6 +29,7 @@ import { useI18n } from 'vue-i18n'
 import { reactive, ref, computed, onMounted } from 'vue'
 import { getPortMirr, setPortMirr } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { StartAndStop } from '@/util/constant'
 
 enum Interface {
   all = 'All',
@@ -36,10 +37,6 @@ enum Interface {
   lan2 = 'LAN2',
   lan3 = 'LAN3',
   lan4 = 'LAN4',
-}
-enum Status {
-  start = 'start',
-  stop = 'stop',
 }
 
 const { defaultVal } = useDataClean()
@@ -69,24 +66,24 @@ const interfaceOpts = [
 ]
 const remote = reactive({
   interface: 'All',
-  status: Status.stop,
+  status: StartAndStop.stop,
 })
 
-const isStart = computed(() => remote.status === Status.start)
-const isStop = computed(() => remote.status === Status.stop)
+const isStart = computed(() => remote.status === StartAndStop.start)
+const isStop = computed(() => remote.status === StartAndStop.stop)
 const statusText = computed(() => {
   if (loading.value) return defaultVal
-  if (remote.status === Status.start) {
+  if (remote.status === StartAndStop.start) {
     return t('trans0557')
   }
   return t('trans0804')
 })
 const start = () => {
-  remote.status = Status.start
+  remote.status = StartAndStop.start
   save()
 }
 const stop = () => {
-  remote.status = Status.start
+  remote.status = StartAndStop.start
   save()
 }
 const getPortMirrData = () => {

@@ -4,18 +4,19 @@ export const useCountDown = (
   doingHandle?: (countdown: number) => void,
   doneHandle?: () => void,
 ) => {
-  let countdown = timeout
   let timer: number | null = null
   const createCountDown = () => {
     if (timer !== null) {
       return
     }
+    let countdown = timeout
     timer = setInterval(() => {
       if (!countdown) {
         cleanCountDown()
         return
       }
       countdown -= interval
+      console.log(countdown)
       if (doingHandle) {
         doingHandle(countdown)
       }
