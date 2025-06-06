@@ -1,22 +1,25 @@
-// 修改 `handle` 参数的类型为更具体的函数类型，这里假设 `handle` 没有参数且返回值为 `void`
 export const useCountDown = (
   timeout: number,
+  interval: number,
   doingHandle?: (countdown: number) => void,
   doneHandle?: () => void,
 ) => {
   let countdown = timeout
   let timer: number | null = null
   const createCountDown = () => {
+    if (timer !== null) {
+      return
+    }
     timer = setInterval(() => {
       if (!countdown) {
         cleanCountDown()
         return
       }
-      countdown -= 1
+      countdown -= interval
       if (doingHandle) {
         doingHandle(countdown)
       }
-    }, 1000)
+    }, interval)
   }
   const cleanCountDown = () => {
     if (timer !== null) {

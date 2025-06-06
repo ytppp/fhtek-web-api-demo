@@ -81,8 +81,8 @@ export const setWifi5gAdv = (params): Promise<ApiResponse<any>> => {
   return http.post('wifi.b5g.advanced:edit', createData(params))
 }
 
-export const getWps = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.wps:get')
+export const getWps = (params): Promise<ApiResponse<any>> => {
+  return http.post('wifi.wps:get', createData(params), { loading: false })
 }
 
 export const setWps = (params): Promise<ApiResponse<any>> => {
@@ -276,6 +276,33 @@ export const getAccount = (params): Promise<ApiResponse<any>> => {
 export const setAccount = (params): Promise<ApiResponse<any>> => {
   return http.post(api, {
     method: 'account:edit',
+    data: params,
+  })
+}
+
+export const getDdns = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.ddns:get',
+  })
+}
+
+export const addDdns = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.ddns:add',
+    data: params,
+  })
+}
+
+export const editDdns = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.ddns:edit',
+    data: params,
+  })
+}
+
+export const delDdns = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.ddns:delete',
     data: params,
   })
 }

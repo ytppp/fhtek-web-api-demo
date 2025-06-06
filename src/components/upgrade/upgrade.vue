@@ -74,7 +74,7 @@ export default defineComponent({
         props.hideHandle()
       }
     }
-    const { createCountDown, cleanCountDown } = useCountDown(props.timeout, doingHandle, doneHandle)
+    const { createCountDown, cleanCountDown } = useCountDown(props.timeout, 1000, doingHandle, doneHandle)
     onMounted(() => {
       createCountDown()
     })
