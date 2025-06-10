@@ -5,7 +5,7 @@
     </div>
     <div class="page__content">
       <div class="page__operation">
-        <fh-button size="small" @click="addWanConn" v-if="isEdit">
+        <fh-button size="small" @click="addWanConn" v-if="isEdit && wanList.length < maxRuleNum">
           {{ $t('trans0760') }}
         </fh-button>
         <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd && wanList.length">
@@ -183,7 +183,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted, inject, readonly } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { IP, VlanMode, ModalType, WanMode, SsidText } from '@/util/constant'
 import {
@@ -230,7 +230,6 @@ enum PrefixMode {
   manually = 'manually',
 }
 const maxRuleNum = 8
-const toast = inject('toast')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const ipRef = ref(null)
@@ -242,7 +241,7 @@ const wanRef = ref(null)
 const modalType = ref(ModalType.add)
 const lanIp = ref('')
 
-const lanOptions = [
+const lanOptions = reactive([
   {
     value: 'lan1',
     readonly: false,
@@ -291,7 +290,7 @@ const lanOptions = [
     value: 'ssidac4',
     readonly: false,
   },
-]
+])
 const ipOptions = [
   {
     value: IP.IPv4,
@@ -570,7 +569,6 @@ const getWanList = (id?: string) => {
     const { items } = data
     if (items.length === 0) {
       modalType.value = ModalType.add
-      // Object.assign(wanList, [])
       wanList.length = 0
       return
     }
@@ -578,7 +576,8 @@ const getWanList = (id?: string) => {
       value: item.id,
       text: item.id,
     }))
-    Object.assign(wanList, items)
+    // Object.assign(wanList, items)
+    wanList.splice(0, wanList.length, ...items)
     wan.id = id ? id : items[items.length - 1].id
     modalType.value = ModalType.edit
     changeWan()
@@ -587,6 +586,7 @@ const getWanList = (id?: string) => {
 const changeWan = () => {
   wanRef.value.clearValidate()
   const thisWan = wanList.find((item) => item.id === wan.id)
+  getPortBind()
   wan.id = thisWan.id
   wan.enable = convertBooleanStatus(thisWan.enable)
   wan.serviceType = thisWan.serviceType
@@ -675,10 +675,6 @@ const save = () => {
       },
     }
     if (isAdd.value) {
-      if (wanList.length >= maxRuleNum) {
-        toast(format(t('trans0828'), [maxRuleNum]))
-        return
-      }
       addWan(newWan).then(() => {
         getWanList()
       })
@@ -712,7 +708,7 @@ const getPortBind = () => {
   getPortBindInfo().then(({ data }) => {
     const { items } = data
     items.forEach((item) => {
-      lanOptions.find((lan) => lan.value === item.id).readonly = convertBooleanStatus(bind.readonly)
+      lanOptions.find((lan) => lan.value === item.id).readonly = convertBooleanStatus(item.readonly)
     })
   })
 }
