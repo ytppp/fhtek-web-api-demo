@@ -42,29 +42,6 @@
               :options="netTypesOptions"
             ></fh-select>
           </fh-form-item>
-          <template v-if="isHidePortBinding">
-            <fh-form-item :label="t('trans0764')">
-              <fh-checkbox-group v-model="wan.lan">
-                <fh-checkbox v-for="item in lanOptions" :key="item.value" :label="item.value">
-                  {{ item.text }}
-                </fh-checkbox>
-              </fh-checkbox-group>
-            </fh-form-item>
-            <fh-form-item :label="t('trans0765')">
-              <fh-checkbox-group v-model="wan.wlan24g">
-                <fh-checkbox v-for="item in wlan24gOptions" :key="item.value" :label="item.value">
-                  {{ item.text }}
-                </fh-checkbox>
-              </fh-checkbox-group>
-            </fh-form-item>
-            <fh-form-item :label="t('trans0766')">
-              <fh-checkbox-group v-model="wan.wlan5g">
-                <fh-checkbox v-for="item in wlan5gOptions" :key="item.value" :label="item.value">
-                  {{ item.text }}
-                </fh-checkbox>
-              </fh-checkbox-group>
-            </fh-form-item>
-          </template>
           <template v-if="isRouter">
             <fh-form-item :label="t('trans0770')">
               <fh-radio-group v-model="wan.protocol">
@@ -95,6 +72,20 @@
             </fh-form-item>
             <fh-form-item :label="t('trans0776')">
               <fh-select v-model="wan.vlan.p8021" :options="p8021Options(7)"></fh-select>
+            </fh-form-item>
+          </template>
+          <template v-if="isHidePortBinding">
+            <fh-form-item :label="t('trans0764')">
+              <fh-checkbox-group class="wan-form__checkbox-group" v-model="wan.lan">
+                <fh-checkbox
+                  v-for="item in lanOptions"
+                  :key="item.value"
+                  :label="item.value"
+                  :disabled="item.readonly"
+                >
+                  {{ SsidText[item.value] }}
+                </fh-checkbox>
+              </fh-checkbox-group>
             </fh-form-item>
           </template>
           <fh-form-item class="form__submit-btn">
@@ -190,9 +181,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted, inject } from 'vue'
+import { ref, computed, reactive, onMounted, inject, readonly } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IP, VlanMode, ModalType, WanMode } from '@/util/constant'
+import { IP, VlanMode, ModalType, WanMode, SsidText } from '@/util/constant'
 import {
   format,
   isIP,
@@ -214,7 +205,7 @@ import {
   isValidInteger,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
-import { getLan, getWan, addWan, editWan, deleteWan } from '@/http/api'
+import { getLan, getWan, addWan, editWan, deleteWan, getPortBindInfo } from '@/http/api'
 import { isMobileDevice } from '@/util/tool'
 
 defineOptions({
@@ -253,55 +244,51 @@ const lanIp = ref('')
 const lanOptions = [
   {
     value: 'lan1',
-    text: 'LAN1',
+    readonly: false,
   },
   {
     value: 'lan2',
-    text: 'LAN2',
+    readonly: false,
   },
   {
     value: 'lan3',
-    text: 'LAN3',
+    readonly: false,
   },
   {
     value: 'lan4',
-    text: 'LAN4',
+    readonly: false,
   },
-]
-const wlan24gOptions = [
   {
     value: 'ssid1',
-    text: 'SSID1',
+    readonly: false,
   },
   {
     value: 'ssid2',
-    text: 'SSID2',
+    readonly: false,
   },
   {
     value: 'ssid3',
-    text: 'SSID3',
+    readonly: false,
   },
   {
     value: 'ssid4',
-    text: 'SSID4',
+    readonly: false,
   },
-]
-const wlan5gOptions = [
   {
     value: 'ssidac1',
-    text: 'SSIDAC1',
+    readonly: false,
   },
   {
     value: 'ssidac2',
-    text: 'SSIDAC2',
+    readonly: false,
   },
   {
     value: 'ssidac3',
-    text: 'SSIDAC3',
+    readonly: false,
   },
   {
     value: 'ssidac4',
-    text: 'SSIDAC4',
+    readonly: false,
   },
 ]
 const ipOptions = [
@@ -409,8 +396,6 @@ const wanInitial = () => ({
   enable: true,
   serviceType: ServiceType.INTERNET,
   lan: [],
-  wlan24g: [],
-  wlan5g: [],
   vlan: {
     mode: VlanMode.Tag,
     id: '',
@@ -605,8 +590,6 @@ const changeWan = () => {
   wan.enable = convertBooleanStatus(thisWan.enable)
   wan.serviceType = thisWan.serviceType
   wan.lan = thisWan.lan
-  wan.wlan24g = thisWan.wlan24g
-  wan.wlan5g = thisWan.wlan5g
   wan.vlan.mode = thisWan.vlan.mode
   wan.vlan.id = thisWan.vlan.id
   wan.vlan.p8021 = thisWan.vlan.p8021
@@ -650,8 +633,6 @@ const save = () => {
       enable: convertBooleanStatus(wan.enable),
       serviceType: wan.serviceType,
       lan: wan.lan,
-      wlan24g: wan.wlan24g,
-      wlan5g: wan.wlan5g,
       vlan: {
         mode: wan.vlan.mode,
         id: wan.vlan.id,
@@ -726,7 +707,14 @@ const getLanData = () => {
     lanIp.value = ip
   })
 }
-
+const getPortBind = () => {
+  getPortBindInfo().then(({ data }) => {
+    const { items } = data
+    items.forEach((item) => {
+      lanOptions.find((lan) => lan.value === item.id).readonly = convertBooleanStatus(bind.readonly)
+    })
+  })
+}
 const wanRules = reactive({
   serviceType: [
     {
@@ -1027,6 +1015,7 @@ const wanRules = reactive({
 onMounted(() => {
   getLanData()
   getWanList()
+  getPortBind()
 })
 </script>
 
@@ -1059,6 +1048,12 @@ onMounted(() => {
     top: -6px;
     left: 0px;
     color: #e1e1e1;
+  }
+  .wan-form__checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 15px);
+    gap: 10px;
   }
 }
 </style>

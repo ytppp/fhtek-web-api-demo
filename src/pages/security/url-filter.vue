@@ -66,7 +66,7 @@
 
 <script>
 import { isMac, format } from '@/util/tool'
-import { FilteringModes, ModalType } from '@/util/constant'
+import { FilteringModes, ModalType, SsidText } from '@/util/constant'
 import {
   getWifiMacFilterStatus,
   setWifiMacFilterStatus,
@@ -88,16 +88,6 @@ export default {
       form: {
         enable: false,
         mode: FilteringModes.blackList,
-      },
-      ssidText: {
-        ssid1: 'SSID1',
-        ssid2: 'SSID2',
-        ssid3: 'SSID3',
-        ssid4: 'SSID4',
-        ssidac1: 'SSIDAC1',
-        ssidac2: 'SSIDAC2',
-        ssidac3: 'SSIDAC3',
-        ssidac4: 'SSIDAC4',
       },
       modalForm: {
         id: '',
@@ -230,7 +220,7 @@ export default {
         items.forEach((item, i) => {
           tableData.push({
             ...item,
-            idAlias: item.id === this.all ? this.$t('trans0537') : this.ssidText[item.id],
+            idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
             pre_mac: item.mac,
             index: i,
           })
@@ -255,7 +245,7 @@ export default {
           if (convertBooleanStatus(item.enable)) {
             ssidOpts.push({
               value: item.id,
-              text: this.ssidText[item.id],
+              text: SsidText[item.id],
             })
           }
         })

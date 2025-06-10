@@ -114,6 +114,11 @@ let menus = [
             text: 'trans0457',
             config,
           },
+          {
+            url: '/network/lan/ipv6-new',
+            text: 'trans0457',
+            config,
+          },
         ],
       },
       {

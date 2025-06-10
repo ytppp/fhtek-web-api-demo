@@ -85,3 +85,18 @@ export enum FilteringModes {
   blackList = '0',
   whiteList = '1',
 }
+
+export enum SsidText {
+  lan1 = 'LAN1',
+  lan2 = 'LAN2',
+  lan3 = 'LAN3',
+  lan4 = 'LAN4',
+  ssid1 = 'SSID1',
+  ssid2 = 'SSID2',
+  ssid3 = 'SSID3',
+  ssid4 = 'SSID4',
+  ssidac1 = 'SSIDAC1',
+  ssidac2 = 'SSIDAC2',
+  ssidac3 = 'SSIDAC3',
+  ssidac4 = 'SSIDAC4',
+}

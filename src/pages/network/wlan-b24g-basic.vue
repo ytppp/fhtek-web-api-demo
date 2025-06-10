@@ -75,7 +75,7 @@ import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } fro
 import { useDataClean } from '@/hooks/data-clean'
 import { getWifi2g, setWifi2g, getWps, setWps } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
-import { StartAndStop, Encrypts, WpsStatus } from '@/util/constant'
+import { StartAndStop, Encrypts, WpsStatus, SsidText } from '@/util/constant'
 
 defineOptions({
   name: 'b24gBasicPage',
@@ -269,7 +269,7 @@ const getWifiData = (id?: string) => {
     }
     const ssidOptsList = items.map((item) => ({
       value: item.id,
-      text: item.id.toUpperCase(),
+      text: SsidText[item.id],
     }))
     Object.assign(ssidList, items)
     Object.assign(ssidOpts, ssidOptsList)
