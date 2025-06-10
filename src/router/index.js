@@ -14,6 +14,7 @@ import usb from '../pages/status/usb.vue'
 import wanNetwork from '../pages/network/wan.vue'
 import wanBinding from '../pages/network/wan-binding.vue'
 import lan from '../pages/network/lan.vue'
+import lanipv6 from '../pages/network/lan-ipv6.vue'
 import basicB24g from '../pages/network/wlan-b24g-basic.vue'
 import advancedB24g from '../pages/network/wlan-b24g-advanced.vue'
 import basicB5g from '../pages/network/wlan-b5g-basic.vue'
@@ -21,7 +22,13 @@ import advancedB5g from '../pages/network/wlan-b5g-advanced.vue'
 import portSetting from '../pages/network/port-setting.vue'
 import staticRoute from '../pages/network/static-route.vue'
 import defaultRoute from '../pages/network/default-route.vue'
+import firewall from '../pages/security/firewall.vue'
+import urlFilter from '../pages/security/url-filter.vue'
+import macFilter from '../pages/security/mac-filter.vue'
 import wifiMacFilter from '../pages/security/wifi-mac-filter.vue'
+import ipv4Filter from '../pages/security/ipv4-filter.vue'
+import acl from '../pages/security/acl.vue'
+import dos from '../pages/security/dos.vue'
 import portMapping from '../pages/app/port-mapping.vue'
 import dmz from '../pages/app/dmz.vue'
 import staticDns from '../pages/app/static-dns.vue'
@@ -117,9 +124,14 @@ export const router = createRouter({
       component: wanBinding,
     },
     {
-      path: '/network/lan',
-      name: 'lan',
+      path: '/network/lan/ipv4',
+      name: 'lanipv4',
       component: lan,
+    },
+    {
+      path: '/network/lan/ipv6',
+      name: 'lanipv6',
+      component: lanipv6,
     },
     {
       path: '/network/wlan/basic-24g',
@@ -157,9 +169,39 @@ export const router = createRouter({
       component: defaultRoute,
     },
     {
+      path: '/security/firewall',
+      name: 'firewall',
+      component: firewall,
+    },
+    {
+      path: '/security/url-filter',
+      name: 'urlFilter',
+      component: urlFilter,
+    },
+    {
+      path: '/security/mac-filter',
+      name: 'macFilter',
+      component: macFilter,
+    },
+    {
       path: '/security/wifi-mac-filter',
       name: 'wifiMacFilter',
       component: wifiMacFilter,
+    },
+    {
+      path: '/security/ipv4-filter',
+      name: 'ipv4Filter',
+      component: ipv4Filter,
+    },
+    {
+      path: '/security/acl',
+      name: 'acl',
+      component: acl,
+    },
+    {
+      path: '/security/dos',
+      name: 'dos',
+      component: dos,
     },
     {
       path: '/app/static-dns',

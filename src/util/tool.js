@@ -207,7 +207,7 @@ function ipRule(ip, mask) {
   return true
 }
 // 是否为私有地址
-function isPrivateIP(ip) {
+export function isPrivateIP(ip) {
   return IPAReg.test(ip) || IPBReg.test(ip) || isIPC(ip)
 }
 // 是否为网络地址
@@ -415,7 +415,7 @@ export function isValidVal(val, minLen, maxLen) {
   return isValidName(val)
 }
 
-function isValidName(name) {
+export function isValidName(name) {
   for (let i = 0; i < name.length; i++) {
     if (isNameUnsafe(name.charAt(i)) == true) {
       return false
@@ -457,4 +457,27 @@ export const isMac = (mac) => {
   return macRegex.test(mac)
   // 检查组播
   // return !isMulticastMac(mac)
+}
+export function isValidUrlName(url) {
+  let invalidArray = ['www', 'com', 'org', 'net', 'edu', 'www.', '.com', '.org', '.net', '.edu']
+  if (isValidAscii(url) != '') {
+    return false
+  }
+  if (isValidName(url) == false) {
+    return false
+  }
+  if (url.includes('http://') || url.includes('https://')) {
+    return false
+  }
+  for (let i = 0; i < url.length; i++) {
+    if (url.charAt(i) == '\\') {
+      return false
+    }
+  }
+  for (let i = 0; i < invalidArray.length; i++) {
+    if (url == invalidArray[i]) {
+      return false
+    }
+  }
+  return true
 }

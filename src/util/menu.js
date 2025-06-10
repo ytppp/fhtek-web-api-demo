@@ -103,6 +103,18 @@ let menus = [
         url: '/network/lan',
         text: 'trans0156',
         config,
+        children: [
+          {
+            url: '/network/lan/ipv4',
+            text: 'trans0456',
+            config,
+          },
+          {
+            url: '/network/lan/ipv6',
+            text: 'trans0457',
+            config,
+          },
+        ],
       },
       {
         url: '/network/port-setting',
@@ -154,13 +166,38 @@ let menus = [
     icon: 'icon-earth',
     children: [
       {
+        url: '/security/firewall',
+        text: 'trans0060',
+        config,
+      },
+      {
+        url: '/security/url-filter',
+        text: 'trans0832',
+        config,
+      },
+      {
+        url: '/security/mac-filter',
+        text: 'trans0833',
+        config,
+      },
+      {
         url: '/security/wifi-mac-filter',
         text: 'trans0827',
         config,
       },
       {
-        url: '/security/url-filter',
-        text: 'trans0058',
+        url: '/security/ipv4-filter',
+        text: 'trans0131',
+        config,
+      },
+      {
+        url: '/security/acl',
+        text: 'trans0059',
+        config,
+      },
+      {
+        url: '/security/dos',
+        text: 'trans0055',
         config,
       },
     ],

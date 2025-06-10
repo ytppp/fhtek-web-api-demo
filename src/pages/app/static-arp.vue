@@ -26,7 +26,7 @@
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0140')" prop="interface">
-            <fh-select v-model="form.interface" :options="wanOptions"></fh-select>
+            <fh-select v-model="modalForm.interface" :options="wanOpts"></fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0179')" prop="ip">
             <fh-input v-model="modalForm.ip"></fh-input>
@@ -72,6 +72,7 @@ export default {
         ip: '',
         interface: '',
       },
+      wanOpts: [],
       mask: '255.255.255.0',
       index: -1,
       modalFormRules: {
