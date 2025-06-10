@@ -54,9 +54,6 @@ const hideFullScreenLoading = () => {
 }
 
 const startLoading = () => {
-  // {
-  //   tip: translate('trans0576'),
-  // }
   loading.open()
 }
 
