@@ -373,7 +373,6 @@ export default {
       this.visible = true
     },
     openEditModal(row) {
-      this.modalForm.index = row.index
       const item = Temp.find((temp) => temp.name === row.mappingName)
       this.modalForm = {
         enable: row.enable,

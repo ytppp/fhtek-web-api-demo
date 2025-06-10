@@ -447,3 +447,14 @@ export function isValidDomain(value, flag = true) {
     : /^([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
   return domainReg.test(value)
 }
+function isMulticastMac(mac) {
+  const number = mac.split(':')[0]
+  const result = Number.parseInt(number, 16) & 0x01
+  return result === 0x01
+}
+export const isMac = (mac) => {
+  const macRegex = /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/
+  return macRegex.test(mac)
+  // 检查组播
+  // return !isMulticastMac(mac)
+}

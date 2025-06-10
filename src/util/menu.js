@@ -149,17 +149,17 @@ let menus = [
     ],
   },
   {
-    url: '/safety',
+    url: '/security',
     text: 'trans0031',
     icon: 'icon-earth',
     children: [
       {
-        url: '/safety/firewall',
-        text: 'trans0060',
+        url: '/security/wifi-mac-filter',
+        text: 'trans0827',
         config,
       },
       {
-        url: '/safety/url-filter',
+        url: '/security/url-filter',
         text: 'trans0058',
         config,
       },
@@ -218,6 +218,21 @@ let menus = [
       {
         url: '/app/dhcp-static-ip',
         text: 'trans0806',
+        config,
+      },
+      {
+        url: '/app/storage',
+        text: 'trans0810',
+        config,
+      },
+      {
+        url: '/app/samba',
+        text: 'trans0822',
+        config,
+      },
+      {
+        url: '/app/media-sharing',
+        text: 'trans0823',
         config,
       },
     ],

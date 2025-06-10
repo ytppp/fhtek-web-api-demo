@@ -269,7 +269,7 @@ const getWifiData = (id?: string) => {
     }
     const ssidOptsList = items.map((item) => ({
       value: item.id,
-      text: `SSID${item.id}`,
+      text: item.id.toUpperCase(),
     }))
     Object.assign(ssidList, items)
     Object.assign(ssidOpts, ssidOptsList)

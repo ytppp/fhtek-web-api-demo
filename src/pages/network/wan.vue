@@ -190,7 +190,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, computed, reactive, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { IP, VlanMode, ModalType, WanMode } from '@/util/constant'
 import {
@@ -236,7 +236,8 @@ enum PrefixMode {
   auto = 'auto',
   manually = 'manually',
 }
-
+const maxRuleNum = 8
+const toast = inject('toast')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const ipRef = ref(null)
@@ -691,6 +692,10 @@ const save = () => {
       },
     }
     if (isAdd.value) {
+      if (wanList.length >= maxRuleNum) {
+        toast(format(t('trans0828'), [maxRuleNum]))
+        return
+      }
       addWan(newWan).then(() => {
         getWanList()
       })
