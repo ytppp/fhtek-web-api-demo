@@ -23,7 +23,7 @@
             </template>
           </fh-form-item>
           <fh-form-item :label="t('trans0761')" label-position="left">
-            <fh-checkbox v-model="wan.enable" />
+            <fh-switch v-model="wan.enable" />
           </fh-form-item>
           <fh-form-item :label="t('trans0762')">
             <fh-select
@@ -55,7 +55,7 @@
               <template #extra>{{ getMtuTips().tips }}</template>
             </fh-form-item>
             <fh-form-item :label="t('trans0778')" label-position="left" v-if="isHideEnableNat">
-              <fh-checkbox v-model="wan.enableNat" />
+              <fh-switch v-model="wan.enableNat" />
             </fh-form-item>
           </template>
           <fh-form-item :label="t('trans0777')" v-if="isShowMultiVlanId" prop="multiVlanId">
@@ -99,7 +99,7 @@
               <fh-input type="password" v-model="wan.ppp.pwd" show-password> </fh-input>
             </fh-form-item>
             <fh-form-item :label="t('trans0790')" label-position="left">
-              <fh-checkbox v-model="wan.ppp.enableRouterBridge" />
+              <fh-switch v-model="wan.ppp.enableRouterBridge" />
             </fh-form-item>
           </div>
           <template v-if="isIpv4">
@@ -129,7 +129,7 @@
           <div class="wan-form__box" v-if="isIpv6">
             <span class="wan-form__titile">{{ $t('trans0457') }}</span>
             <fh-form-item :label="t('trans0779')" label-position="left" v-if="!isStatic">
-              <fh-checkbox v-model="wan.ipv6.isSlaac" />
+              <fh-switch v-model="wan.ipv6.isSlaac" />
             </fh-form-item>
             <template v-if="isStatic">
               <fh-form-item
@@ -152,7 +152,7 @@
               </fh-form-item>
             </template>
             <fh-form-item :label="t('trans0782')" label-position="left">
-              <fh-checkbox v-model="wan.ipv6.pd.enable" />
+              <fh-switch v-model="wan.ipv6.pd.enable" />
             </fh-form-item>
             <template v-if="isIpv6PdEnable">
               <fh-form-item :label="t('trans0783')">
@@ -208,7 +208,6 @@ import {
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { getLan, getWan, addWan, editWan, deleteWan, getPortBindInfo } from '@/http/api'
-import { isMobileDevice } from '@/util/tool'
 
 defineOptions({
   name: 'WanPage',
