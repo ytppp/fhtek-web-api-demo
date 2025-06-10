@@ -88,11 +88,6 @@
               </fh-checkbox-group>
             </fh-form-item>
           </template>
-          <fh-form-item class="form__submit-btn">
-            <fh-button @click="save" block>
-              {{ $t('trans0002') }}
-            </fh-button>
-          </fh-form-item>
         </div>
         <div class="wan-form__col">
           <div class="wan-form__box" v-if="isPppoe">
@@ -174,6 +169,13 @@
               </template>
             </template>
           </div>
+        </div>
+        <div class="wan-form__col">
+          <fh-form-item class="form__submit-btn">
+            <fh-button @click="save" block>
+              {{ $t('trans0002') }}
+            </fh-button>
+          </fh-form-item>
         </div>
       </fh-form>
     </div>
@@ -1023,18 +1025,16 @@ onMounted(() => {
 .wan-page {
   .wan-form {
     width: 100%;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     @media screen and (max-width: 768px) {
-      width: 100%;
-      flex-direction: column;
+      grid-template-columns: repeat(1, 1fr);
     }
   }
   .wan-form__col {
     width: 350px;
-    margin-right: 20px;
     @media screen and (max-width: 768px) {
       width: 100%;
-      margin-right: 0;
     }
   }
   .wan-form__box {
@@ -1051,9 +1051,12 @@ onMounted(() => {
   }
   .wan-form__checkbox-group {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 78px 78px 78px 78px;
     grid-template-rows: repeat(3, 15px);
-    gap: 10px;
+    gap: 5px;
+    .checkbox__label {
+      padding-left: 5px;
+    }
   }
 }
 </style>
