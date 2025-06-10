@@ -29,7 +29,7 @@ const props = defineProps({
   },
   labelWidth: {
     type: String,
-    default: '120px',
+    default: '150px',
   },
 })
 
