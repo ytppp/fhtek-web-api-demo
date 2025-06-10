@@ -76,7 +76,7 @@ const rules = {
     },
     {
       rule: (value) => isValidLength(value, 1, 24),
-      message: format(t('trans0003'), [t('trans0781'), 1, 64]),
+      message: format(t('trans0003'), [t('trans0781'), 1, 24]),
     },
   ],
   'loid.checkCode': [
@@ -122,9 +122,9 @@ const getOntAuthData = () => {
   getOntAuth().then((res) => {
     const { data } = res
     form.authType = data.auth_type
-    form.loid.loid = data.loid.loid
+    form.loid.loid = '' // data.loid.loid
     form.loid.checkCode = data.loid.checkcode
-    form.password.password = data.sn.password
+    form.password.password = '' // data.sn.password
     form.password.sn = data.sn.sn
   })
 }

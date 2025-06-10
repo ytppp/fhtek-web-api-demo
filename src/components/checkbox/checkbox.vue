@@ -104,16 +104,9 @@ export default {
       return this.isGroup ? this.checkboxGroup.circle || this.circle : this.circle
     },
     isDisabled() {
-      const flag = this.isGroup
+      return this.isGroup
         ? this.checkboxGroup.disabled || this.disabled || this.form?.disabled.value
         : this.disabled || this.form?.disabled.value
-      console.log(
-        this.isGroup,
-        this.checkboxGroup.disabled,
-        this.disabled,
-        this.form?.disabled.value,
-      )
-      return flag
     },
     model: {
       get() {

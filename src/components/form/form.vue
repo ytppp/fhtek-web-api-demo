@@ -25,10 +25,11 @@ const props = defineProps({
   },
   labelPosition: {
     type: String,
-    default: 'top', // when set to left or right, label-width must be set
+    default: 'left', // when set to left or right, label-width must be set
   },
   labelWidth: {
     type: String,
+    default: '150px',
   },
 })
 

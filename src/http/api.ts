@@ -41,8 +41,8 @@ export const getWan = (): Promise<ApiResponse<any>> => {
   return http.get(`GetWan`)
 }
 
-export const getPortBindInfo = (): Promise<ApiResponse<any>> => {
-  return http.get(`GetPortBindInfo`)
+export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
+  return http.get(`GetPortBindInfo`, createData(params))
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {
