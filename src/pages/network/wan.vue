@@ -705,7 +705,7 @@ const getLanData = () => {
   })
 }
 const getPortBind = () => {
-  getPortBindInfo().then(({ data }) => {
+  getPortBindInfo({ id: wan.id }).then(({ data }) => {
     const { items } = data
     items.forEach((item) => {
       lanOptions.find((lan) => lan.value === item.id).readonly = convertBooleanStatus(item.readonly)
