@@ -31,7 +31,7 @@
       </template>
     </main>
     <fh-footer v-if="isNoAuthPage" />
-    <div class="layout__toolbar-wrap" v-if="!isNoAuthPage">
+    <div class="layout__toolbar-wrap" v-if="!isNoAuthPage && menus.length <= toolbarMaxShowTotal">
       <ul class="layout__toolbar toolbar">
         <li
           v-for="(menu, index) in menus"
@@ -45,13 +45,7 @@
         </li>
       </ul>
     </div>
-    <fh-drawer
-      :title="$t('trans0016')"
-      size="90%"
-      v-model:visible="drawer"
-      :appendToBody="true"
-      v-if="isMobile"
-    >
+    <fh-drawer size="90%" v-model:visible="drawer" :appendToBody="true" v-if="isMobile">
       <div :style="{ height: '100%', backgroundColor: asideBgColor }">
         <fh-menu
           :menus="childMenus"
@@ -115,7 +109,7 @@ export default {
       url: location.hash.replace('#', ''),
       layoutMainMarginTop: 30,
       layoutHeaderHeight: 70,
-      toolbarMaxShowTotal: 5, // 最多显示的菜单数量
+      toolbarMaxShowTotal: 6, // 最多显示的菜单数量
       asideBgColor: '#DDDDDD',
       isMobile: false,
       drawer: false,

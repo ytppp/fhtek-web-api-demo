@@ -5,7 +5,7 @@
     </div>
     <div class="page__content">
       <div class="page__operation">
-        <fh-button size="small" @click="addWanConn" v-if="isEdit">
+        <fh-button size="small" @click="addWanConn" v-if="isEdit && wanList.length < maxRuleNum">
           {{ $t('trans0760') }}
         </fh-button>
         <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd && wanList.length">
@@ -23,7 +23,7 @@
             </template>
           </fh-form-item>
           <fh-form-item :label="t('trans0761')" label-position="left">
-            <fh-checkbox v-model="wan.enable" />
+            <fh-switch v-model="wan.enable" />
           </fh-form-item>
           <fh-form-item :label="t('trans0762')">
             <fh-select
@@ -55,7 +55,7 @@
               <template #extra>{{ getMtuTips().tips }}</template>
             </fh-form-item>
             <fh-form-item :label="t('trans0778')" label-position="left" v-if="isHideEnableNat">
-              <fh-checkbox v-model="wan.enableNat" />
+              <fh-switch v-model="wan.enableNat" />
             </fh-form-item>
           </template>
           <fh-form-item :label="t('trans0777')" v-if="isShowMultiVlanId" prop="multiVlanId">
@@ -99,7 +99,7 @@
               <fh-input type="password" v-model="wan.ppp.pwd" show-password> </fh-input>
             </fh-form-item>
             <fh-form-item :label="t('trans0790')" label-position="left">
-              <fh-checkbox v-model="wan.ppp.enableRouterBridge" />
+              <fh-switch v-model="wan.ppp.enableRouterBridge" />
             </fh-form-item>
           </div>
           <template v-if="isIpv4">
@@ -129,7 +129,7 @@
           <div class="wan-form__box" v-if="isIpv6">
             <span class="wan-form__titile">{{ $t('trans0457') }}</span>
             <fh-form-item :label="t('trans0779')" label-position="left" v-if="!isStatic">
-              <fh-checkbox v-model="wan.ipv6.isSlaac" />
+              <fh-switch v-model="wan.ipv6.isSlaac" />
             </fh-form-item>
             <template v-if="isStatic">
               <fh-form-item
@@ -152,7 +152,7 @@
               </fh-form-item>
             </template>
             <fh-form-item :label="t('trans0782')" label-position="left">
-              <fh-checkbox v-model="wan.ipv6.pd.enable" />
+              <fh-switch v-model="wan.ipv6.pd.enable" />
             </fh-form-item>
             <template v-if="isIpv6PdEnable">
               <fh-form-item :label="t('trans0783')">
@@ -183,7 +183,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted, inject, readonly } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { IP, VlanMode, ModalType, WanMode, SsidText } from '@/util/constant'
 import {
@@ -208,7 +208,6 @@ import {
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { getLan, getWan, addWan, editWan, deleteWan, getPortBindInfo } from '@/http/api'
-import { isMobileDevice } from '@/util/tool'
 
 defineOptions({
   name: 'WanPage',
@@ -231,7 +230,6 @@ enum PrefixMode {
   manually = 'manually',
 }
 const maxRuleNum = 8
-const toast = inject('toast')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const ipRef = ref(null)
@@ -243,7 +241,7 @@ const wanRef = ref(null)
 const modalType = ref(ModalType.add)
 const lanIp = ref('')
 
-const lanOptions = [
+const lanOptions = reactive([
   {
     value: 'lan1',
     readonly: false,
@@ -292,7 +290,7 @@ const lanOptions = [
     value: 'ssidac4',
     readonly: false,
   },
-]
+])
 const ipOptions = [
   {
     value: IP.IPv4,
@@ -571,7 +569,6 @@ const getWanList = (id?: string) => {
     const { items } = data
     if (items.length === 0) {
       modalType.value = ModalType.add
-      // Object.assign(wanList, [])
       wanList.length = 0
       return
     }
@@ -579,7 +576,8 @@ const getWanList = (id?: string) => {
       value: item.id,
       text: item.id,
     }))
-    Object.assign(wanList, items)
+    // Object.assign(wanList, items)
+    wanList.splice(0, wanList.length, ...items)
     wan.id = id ? id : items[items.length - 1].id
     modalType.value = ModalType.edit
     changeWan()
@@ -588,6 +586,7 @@ const getWanList = (id?: string) => {
 const changeWan = () => {
   wanRef.value.clearValidate()
   const thisWan = wanList.find((item) => item.id === wan.id)
+  getPortBind()
   wan.id = thisWan.id
   wan.enable = convertBooleanStatus(thisWan.enable)
   wan.serviceType = thisWan.serviceType
@@ -676,10 +675,6 @@ const save = () => {
       },
     }
     if (isAdd.value) {
-      if (wanList.length >= maxRuleNum) {
-        toast(format(t('trans0828'), [maxRuleNum]))
-        return
-      }
       addWan(newWan).then(() => {
         getWanList()
       })
@@ -713,7 +708,7 @@ const getPortBind = () => {
   getPortBindInfo().then(({ data }) => {
     const { items } = data
     items.forEach((item) => {
-      lanOptions.find((lan) => lan.value === item.id).readonly = convertBooleanStatus(bind.readonly)
+      lanOptions.find((lan) => lan.value === item.id).readonly = convertBooleanStatus(item.readonly)
     })
   })
 }
