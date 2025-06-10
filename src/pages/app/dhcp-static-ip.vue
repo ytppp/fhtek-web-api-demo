@@ -38,7 +38,7 @@
           <fh-form-item :label="$t('trans0393')" prop="ip">
             <fh-input v-model="modalForm.ip"></fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0546')" prop="mac">
+          <fh-form-item :label="$t('trans0097')" prop="mac">
             <fh-input v-model="modalForm.mac"></fh-input>
           </fh-form-item>
           <fh-form-item class="form__submit-btn">
@@ -123,7 +123,7 @@ export default {
         },
         {
           key: 'mac',
-          title: this.$t('trans0546'),
+          title: this.$t('trans0097'),
         },
       ],
       data: [],

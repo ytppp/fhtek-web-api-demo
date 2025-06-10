@@ -21,7 +21,7 @@ import advancedB5g from '../pages/network/wlan-b5g-advanced.vue'
 import portSetting from '../pages/network/port-setting.vue'
 import staticRoute from '../pages/network/static-route.vue'
 import defaultRoute from '../pages/network/default-route.vue'
-import firewall from '../pages/safety/firewall.vue'
+import wifiMacFilter from '../pages/security/wifi-mac-filter.vue'
 import portMapping from '../pages/app/port-mapping.vue'
 import dmz from '../pages/app/dmz.vue'
 import staticDns from '../pages/app/static-dns.vue'
@@ -32,6 +32,9 @@ import cwmp from '../pages/app/cwmp.vue'
 import time from '../pages/app/time.vue'
 import igmpMld from '../pages/app/igmp-mld.vue'
 import dhcpStaticIp from '../pages/app/dhcp-static-ip.vue'
+import storage from '../pages/app/storage.vue'
+import mediaSharing from '../pages/app/media-sharing.vue'
+import samba from '../pages/app/samba.vue'
 import upgrade from '../pages/management/upgrade.vue'
 import user from '../pages/management/user.vue'
 import device from '../pages/management/device.vue'
@@ -154,9 +157,9 @@ export const router = createRouter({
       component: defaultRoute,
     },
     {
-      path: '/safety/firewall',
-      name: 'firewall',
-      component: firewall,
+      path: '/security/wifi-mac-filter',
+      name: 'wifiMacFilter',
+      component: wifiMacFilter,
     },
     {
       path: '/app/static-dns',
@@ -207,6 +210,21 @@ export const router = createRouter({
       path: '/app/dhcp-static-ip',
       name: 'dhcp-static-ip',
       component: dhcpStaticIp,
+    },
+    {
+      path: '/app/storage',
+      name: 'storage',
+      component: storage,
+    },
+    {
+      path: '/app/media-sharing',
+      name: 'media-sharing',
+      component: mediaSharing,
+    },
+    {
+      path: '/app/samba',
+      name: 'samba',
+      component: samba,
     },
     {
       path: '/management/upgrade',

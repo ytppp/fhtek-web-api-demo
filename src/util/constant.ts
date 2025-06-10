@@ -80,3 +80,8 @@ export enum WpsStatus {
   configured = 'configured',
   unknown = 'unknown', // 当上述WpsStatus都不存在时，取此状态
 }
+
+export enum FilteringModes {
+  blackList = '0',
+  whiteList = '1',
+}

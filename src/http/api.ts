@@ -306,3 +306,27 @@ export const delDdns = (params): Promise<ApiResponse<any>> => {
     data: params,
   })
 }
+
+export const getWifiMacFilterStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('security.wifi_mac_filter.status:get')
+}
+
+export const setWifiMacFilterStatus = (params): Promise<ApiResponse<any>> => {
+  return http.post('security.wifi_mac_filter.status:edit', createData(params))
+}
+
+export const getWifiMacFilter = (): Promise<ApiResponse<any>> => {
+  return http.get('security.wifi_mac_filter.items:get')
+}
+
+export const addWifiMacFilter = (params): Promise<ApiResponse<any>> => {
+  return http.post('security.wifi_mac_filter.items:add', createData(params))
+}
+
+export const editWifiMacFilter = (params): Promise<ApiResponse<any>> => {
+  return http.post('security.wifi_mac_filter.items:edit', createData(params))
+}
+
+export const delWifiMacFilter = (params): Promise<ApiResponse<any>> => {
+  return http.post('security.wifi_mac_filter.items:delete', createData(params))
+}

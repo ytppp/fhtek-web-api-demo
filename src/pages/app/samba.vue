@@ -1,0 +1,167 @@
+<template>
+  <div class="page">
+    <div class="page__header">
+      <h1 class="page__title">{{ $t('trans0822') }}</h1>
+    </div>
+    <div class="page__content">
+      <fh-form class="form" ref="form" :model="form" :rules="rules">
+        <fh-form-item :label="$t('trans0829')">
+          <fh-checkbox-group v-model="form.enable">
+            <fh-checkbox v-for="item in enableOptions" :key="item.value" :label="item.value">
+              {{ item.text }}
+            </fh-checkbox>
+          </fh-checkbox-group>
+        </fh-form-item>
+        <fh-form-item :label="$t('trans0053')" prop="username">
+          <fh-input v-model="form.username"> </fh-input>
+        </fh-form-item>
+        <fh-form-item :label="$t('trans0185')" prop="pwd">
+          <fh-input v-model="form.pwd" type="password" show-password @blur="changePwd"> </fh-input>
+        </fh-form-item>
+        <fh-form-item :label="$t('trans0186')" prop="confirmPwd" ref="confirmPwd">
+          <fh-input v-model="form.confirmPwd" type="password" show-password> </fh-input>
+        </fh-form-item>
+        <fh-form-item class="form__submit-btn">
+          <fh-button @click="save" block>
+            {{ $t('trans0002') }}
+          </fh-button>
+        </fh-form-item>
+      </fh-form>
+    </div>
+  </div>
+</template>
+
+<script>
+import { isValidLength, isValidSymbol, specialChar } from '@/util/tool'
+import { getAccount, setAccount, logout } from '@/http/api'
+
+export default {
+  data() {
+    return {
+      usernameStoraged: '',
+      form: {
+        id: '',
+        role: '',
+        username: '',
+        pwd: '',
+        confirmPwd: '',
+      },
+      enableOptions: [
+        {
+          value: '1',
+          text: this.$t('trans0830'),
+        },
+        {
+          value: '0',
+          text: this.$t('trans0831'),
+        },
+      ],
+      rules: {
+        pwd: [
+          {
+            rule: (value) => value,
+            message: this.$t('trans0004'),
+          },
+          {
+            rule: (value) => isValidLength(value, 8, 64),
+            message: this.$t('trans0003').format(this.$t('trans0185'), 8, 64),
+          },
+          {
+            rule: (value) => isValidSymbol(value),
+            message: this.$t('trans0013').format(
+              this.$t('trans0185'),
+              this.$t('trans0042').format(specialChar),
+            ),
+          },
+        ],
+        confirmPwd: [
+          {
+            rule: (value) => value,
+            message: this.$t('trans0004'),
+          },
+          {
+            rule: (value) => isValidLength(value, 8, 64),
+            message: this.$t('trans0003').format(this.$t('trans0186'), 8, 64),
+          },
+          {
+            rule: (value) => isValidSymbol(value),
+            message: this.$t('trans0013').format(
+              this.$t('trans0186'),
+              this.$t('trans0042').format(specialChar),
+            ),
+          },
+          {
+            rule: () => this.validatePwd(),
+            message: this.$t('trans0195'),
+          },
+        ],
+      },
+      roleOpts: [],
+      userList: [],
+    }
+  },
+  methods: {
+    changePwd() {
+      if (this.$refs.confirmPwd && this.form.confirmPwd) {
+        this.$refs.confirmPwd.extraValidate(this.validatePwd, this.$t('trans0195'))
+      }
+    },
+    validatePwd() {
+      if (this.form.pwd) {
+        return this.form.pwd === this.form.confirmPwd
+      }
+      return true
+    },
+    save() {
+      if (this.$refs.form.validate()) {
+        const data = [
+          {
+            id: this.form.id,
+            name: this.form.username,
+            pwd: this.form.pwd,
+            role: this.form.role,
+          },
+        ]
+        setAccount(data).then(() => {
+          if (this.form.username === this.usernameStoraged) {
+            logout().then(() => {
+              this.$router.push('/login')
+            })
+          }
+        })
+      }
+    },
+    getAccountData() {
+      const data = {
+        role: this.form.role,
+      }
+      getAccount(data).then(({ data }) => {
+        const { items } = data
+        if (items.length === 0) {
+          return
+        }
+        const roleOpts = items.map((item) => ({
+          value: item.type,
+          text: item.type,
+        }))
+        this.roleOpts = roleOpts
+        this.userList = items
+        this.changeRole()
+      })
+    },
+    changeRole() {
+      const thisUser = this.userList.find((item) => item.type === this.form.role)
+      this.form.id = thisUser.id
+      this.form.username = thisUser.name
+      this.form.role = thisUser.type
+    },
+  },
+  created() {
+    this.form.username = this.usernameStoraged = sessionStorage.getItem('loginuser')
+    this.form.role = sessionStorage.getItem('role')
+  },
+  mounted() {
+    this.getAccountData()
+  },
+}
+</script>
