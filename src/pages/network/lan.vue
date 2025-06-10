@@ -1,13 +1,10 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0156') }}</h1>
+      <h1 class="page__title">{{ $t('trans0456') }}</h1>
     </div>
-    <div class="page__content page__content--padding-small">
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0456') }}</h2>
-      </div>
-      <fh-form class="form form--padding" ref="formRef" :model="form" :rules="rules">
+    <div class="page__content">
+      <fh-form class="form" ref="formRef" :model="form" :rules="rules">
         <fh-form-item :label="$t('trans0415')" prop="ip" ref="ipRef">
           <fh-input v-model="form.ip" @blur="changeIp" clearable> </fh-input>
           <template #extra>
@@ -38,26 +35,6 @@
           </fh-button>
         </fh-form-item>
       </fh-form>
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0457') }}</h2>
-      </div>
-      <fh-form class="form form--padding" ref="formIpv6Ref" :model="ipv6Form">
-        <fh-form-item :label="$t('trans0457')" label-position="left">
-          <fh-switch
-            v-model="ipv6Form.enable"
-            :active-value="EnableStatus.yes"
-            :inactive-value="EnableStatus.no"
-          ></fh-switch>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0489')">
-          <fh-select v-model="ipv6Form.mode" :options="modes"> </fh-select>
-        </fh-form-item>
-        <fh-form-item class="form__submit-btn">
-          <fh-button @click="saveIpv6" block>
-            {{ $t('trans0002') }}
-          </fh-button>
-        </fh-form-item>
-      </fh-form>
     </div>
   </div>
 </template>
@@ -78,7 +55,7 @@ import {
   getSubNetwork,
 } from '@/util/tool'
 import { EnableStatus } from '@/util/constant'
-import { getLan, setLan, getIpv6Lan, setIpv6Lan } from '@/http/api'
+import { getLan, setLan } from '@/http/api'
 
 defineOptions({
   name: 'LanPage',
@@ -104,11 +81,6 @@ enum Leases {
   oneDay = 24 * 60,
   oneWeek = 7 * 24 * 60,
 }
-enum Mode {
-  slaac = 'slaac',
-  dhcpv6 = 'dhcpv6',
-  hybrid = 'hybrid',
-}
 interface ILease {
   value: Leases
   text: string
@@ -127,25 +99,10 @@ const leases: ILease[] = [
     text: t('trans0464', 1, { named: { val: 1 } }),
   },
 ]
-const modes = [
-  {
-    value: Mode.slaac,
-    text: 'Slaac',
-  },
-  {
-    value: Mode.dhcpv6,
-    text: 'Dhcpv6',
-  },
-  {
-    value: Mode.hybrid,
-    text: 'Hybrid',
-  },
-]
 const ipRef = ref(null)
 const ipStartRef = ref(null)
 const ipEndRef = ref(null)
 const formRef = ref(null)
-const formIpv6Ref = ref(null)
 const ipOrigin = ref('')
 const wanIp = ref('')
 const form = reactive({
@@ -155,10 +112,6 @@ const form = reactive({
   ip_start: '',
   ip_end: '',
   lease: Leases.oneHour,
-})
-const ipv6Form = reactive({
-  enable: EnableStatus.yes,
-  mode: Mode.slaac,
 })
 const rules = reactive({
   ip: [
@@ -272,12 +225,6 @@ function getLanData() {
     ipOrigin.value = form.ip
   })
 }
-function getIpv6LanData() {
-  getIpv6Lan().then(({ data }) => {
-    ipv6Form.enable = data.enabled
-    ipv6Form.mode = data.address_mode
-  })
-}
 const changeIp = () => {
   if (!ipRef.value.validate()) {
     return
@@ -342,28 +289,8 @@ const save = () => {
       })
   }
 }
-const saveIpv6 = () => {
-  if (formIpv6Ref.value.validate()) {
-    loading.open()
-    setIpv6Lan({
-      enabled: ipv6Form.enable,
-      address_mode: ipv6Form.mode,
-    })
-      .then(() => {})
-      .catch(() => {})
-      .finally(() => {
-        setTimeout(() => {
-          loading.close()
-        }, 5000)
-      })
-  }
-}
-function getWanIp() {
-  // todo
-}
 onMounted(() => {
   getLanData()
-  getIpv6LanData()
 })
 </script>
 

@@ -115,6 +115,7 @@ export default {
       url: location.hash.replace('#', ''),
       layoutMainMarginTop: 30,
       layoutHeaderHeight: 70,
+      toolbarMaxShowTotal: 5, // 最多显示的菜单数量
       asideBgColor: '#DDDDDD',
       isMobile: false,
       drawer: false,

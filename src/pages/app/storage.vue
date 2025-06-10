@@ -9,7 +9,9 @@
       </div>
       <fh-form class="form form--padding" :model="clientForm" :rules="clientFormRules">
         <fh-form-item :label="$t('trans0812')" prop="url">
-          <fh-input v-model="clientForm.url"></fh-input>
+          <fh-input v-model="clientForm.url">
+            <template v-slot:prepend>{{ urlAppend }}</template>
+          </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0754')" prop="port">
           <fh-input v-model="clientForm.port"></fh-input>
@@ -80,8 +82,9 @@ import { computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
+const urlAppend = 'ftp://'
 const clientForm = reactive({
-  url: 'ftp://',
+  url: '',
   port: '',
   username: '',
   password: '',

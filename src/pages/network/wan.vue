@@ -215,6 +215,7 @@ import {
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { getLan, getWan, addWan, editWan, deleteWan } from '@/http/api'
+import { isMobileDevice } from '@/util/tool'
 
 defineOptions({
   name: 'WanPage',
@@ -251,55 +252,55 @@ const lanIp = ref('')
 
 const lanOptions = [
   {
-    value: 'LAN1',
+    value: 'lan1',
     text: 'LAN1',
   },
   {
-    value: 'LAN2',
+    value: 'lan2',
     text: 'LAN2',
   },
   {
-    value: 'LAN3',
+    value: 'lan3',
     text: 'LAN3',
   },
   {
-    value: 'LAN4',
+    value: 'lan4',
     text: 'LAN4',
   },
 ]
 const wlan24gOptions = [
   {
-    value: 'SSID1',
+    value: 'ssid1',
     text: 'SSID1',
   },
   {
-    value: 'SSID2',
+    value: 'ssid2',
     text: 'SSID2',
   },
   {
-    value: 'SSID3',
+    value: 'ssid3',
     text: 'SSID3',
   },
   {
-    value: 'SSID4',
+    value: 'ssid4',
     text: 'SSID4',
   },
 ]
 const wlan5gOptions = [
   {
-    value: 'SSIDAC1',
+    value: 'ssidac1',
     text: 'SSIDAC1',
   },
   {
-    value: 'SSIDAC2',
+    value: 'ssidac2',
     text: 'SSIDAC2',
   },
   {
-    value: 'SSIDAC3',
+    value: 'ssidac3',
     text: 'SSIDAC3',
   },
   {
-    value: 'SSIDAC4',
+    value: 'ssidac4',
     text: 'SSIDAC4',
   },
 ]
@@ -1034,10 +1035,18 @@ onMounted(() => {
   .wan-form {
     width: 100%;
     display: flex;
+    @media screen and (max-width: 768px) {
+      width: 100%;
+      flex-direction: column;
+    }
   }
   .wan-form__col {
     width: 350px;
     margin-right: 20px;
+    @media screen and (max-width: 768px) {
+      width: 100%;
+      margin-right: 0;
+    }
   }
   .wan-form__box {
     margin-top: 20px;
