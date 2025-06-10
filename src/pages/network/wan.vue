@@ -93,7 +93,7 @@
           <div class="wan-form__box" v-if="isPppoe">
             <span class="wan-form__titile">{{ $t('trans0081') }}</span>
             <fh-form-item :label="$t('trans0086')" prop="ppp.user">
-              <fh-input v-model="wan.ppp.user" maxlength="64"> </fh-input>
+              <fh-input v-model="wan.ppp.user"> </fh-input>
             </fh-form-item>
             <fh-form-item :label="$t('trans0087')" prop="ppp.pwd">
               <fh-input type="password" v-model="wan.ppp.pwd" show-password> </fh-input>
