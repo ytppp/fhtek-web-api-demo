@@ -42,7 +42,7 @@ export const getWan = (): Promise<ApiResponse<any>> => {
 }
 
 export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
-  return http.get(`GetPortBindInfo`, createData(params))
+  return http.post(`GetPortBindInfo`, createData(params))
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {
@@ -62,10 +62,6 @@ export const getWifi2g = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifi2g = (params): Promise<ApiResponse<any>> => {
-  // return http.post(api, {
-  //   method: 'wifi.b24g.basic:edit',
-  //   data: params,
-  // })
   return http.post('wifi.b24g.basic:edit', createData(params))
 }
 
