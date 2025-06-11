@@ -82,7 +82,7 @@ enum Channels24G {
 const dialog = inject('dialog')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
-const getCurrentChannel = ref('0')
+const channelCurrent = ref('0')
 const wifiFormRef = ref(null)
 const modeOpts = [
   {
@@ -110,10 +110,10 @@ const modeOpts = [
     text: '802.11b/g/n/ax',
   },
 ]
-const channelOpts = [
+const channelOpts = reactive([
   {
     value: Channels24G.auto,
-    text: format(t('trans0510'), [getCurrentChannel.value]),
+    text: format(t('trans0510'), [channelCurrent.value]),
   },
   {
     value: Channels24G.ch1,
@@ -167,7 +167,7 @@ const channelOpts = [
     value: Channels24G.ch13,
     text: Channels24G.ch13,
   },
-]
+])
 const bwOpts = [
   {
     value: BandWidths24G.b20,
@@ -248,7 +248,8 @@ const getWifi2gData = () => {
     wifi.power = data.power
     wifi.beacon = data.beacon_interval
     if (Channels24G.auto === wifi.channel) {
-      getCurrentChannel.value = data.channel_current
+      channelCurrent.value = data.channel_current
+      channelOpts[0].text = format(t('trans0510'), [channelCurrent.value])
     }
   })
 }

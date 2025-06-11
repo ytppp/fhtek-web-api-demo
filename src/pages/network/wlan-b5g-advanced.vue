@@ -5,9 +5,7 @@
     </div>
     <div class="page__content">
       <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
-        <fh-form-item
-          :label="format($t('trans0027'), [$t('trans0050')])"
-        >
+        <fh-form-item :label="format($t('trans0027'), [$t('trans0050')])">
           <fh-switch @change="switchEnable" v-model="wifi.enable"> </fh-switch>
         </fh-form-item>
         <template v-if="wifi.enable">
@@ -94,7 +92,7 @@ enum Channels5G {
 const dialog = inject('dialog')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
-const getCurrentChannel = ref('0')
+const channelCurrent = ref('0')
 const wifiFormRef = ref(null)
 const modeOpts = [
   {
@@ -121,7 +119,7 @@ const modeOpts = [
 const b5gChannelsInit = [
   {
     value: Channels5G.auto,
-    text: format(t('trans0510'), [getCurrentChannel.value]),
+    text: format(t('trans0510'), [channelCurrent.value]),
     show: true,
   },
   {
@@ -355,7 +353,8 @@ const getWifi5gData = () => {
     wifi.power = data.power
     wifi.beacon = data.beacon_interval
     if (Channels5G.auto === wifi.channel) {
-      getCurrentChannel.value = data.channel_current
+      channelCurrent.value = data.channel_current
+      b5gChannelsInit[0].text = format(t('trans0510'), [channelCurrent.value])
     }
   })
 }

@@ -104,6 +104,9 @@ watch(
 watch(
   () => props.options,
   () => setSelected(),
+  {
+    deep: true,
+  },
 )
 
 const setSelected = () => {
@@ -167,7 +170,6 @@ onMounted(() => {
 .select {
   position: relative;
   width: 100%;
-  max-width: @form-item-max-width;
   .select__caret {
     transition: transform 0.2s linear;
     &.is-reverse {
