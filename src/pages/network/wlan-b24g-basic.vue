@@ -25,8 +25,10 @@
         </fh-form-item>
         <fh-form-item :label="$t('trans0031')">
           <fh-select v-model="wifi.encrypt" :options="encrypts"> </fh-select>
+          <template #extra>
+            <fh-alert v-if="encryptTip" :title="encryptTip" type="info" show-icon />
+          </template>
         </fh-form-item>
-        <fh-alert v-if="encryptTip" :title="encryptTip" type="info" show-icon> </fh-alert>
         <fh-form-item :label="$t('trans0030')" v-if="!isEncryptNone" prop="password">
           <fh-input
             v-model="wifi.password"

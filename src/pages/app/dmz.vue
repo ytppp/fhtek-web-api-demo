@@ -6,14 +6,9 @@
     <div class="page__content">
       <fh-form class="form" ref="form" :model="form" :rules="rules">
         <fh-form-item :label="$t('trans0254')">
-          <fh-switch
-            @change="switchEnable"
-            :active-value="EnableStatus.yes"
-            :inactive-value="EnableStatus.no"
-            v-model="form.enable"
-          />
+          <fh-switch @change="switchEnable" v-model="form.enable" />
         </fh-form-item>
-        <template v-if="isEnabled">
+        <template v-if="form.enable">
           <fh-form-item :label="$t('trans0155')">
             <fh-select v-model="form.wan" :options="wanList"> </fh-select>
           </fh-form-item>
@@ -32,22 +27,22 @@
 </template>
 
 <script>
-import { EnableStatus } from '@/util/constant'
 import { isIP, getIpBefore, isNetworkIP, isBoardcastIP, isMulticast, isLoopback } from '@/util/tool'
 import { getDmz, setDmz, getLan, getWanList } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
 
+const { convertBooleanStatus } = useDataClean()
 export default {
   name: 'DmzPage',
   data() {
     return {
-      EnableStatus,
       lanIp: '',
       form: {
         wan: '',
-        enable: EnableStatus.no,
+        enable: false,
         ip: '',
       },
-      formEnable: EnableStatus.no,
+      formEnable: false,
       mask: '255.255.255.0',
       rules: {
         ip: [
@@ -86,26 +81,18 @@ export default {
       wanList: [],
     }
   },
-  computed: {
-    isEnabled() {
-      return this.form.enable === EnableStatus.yes
-    },
-    isInitEnabled() {
-      return this.formEnable === EnableStatus.yes
-    },
-  },
   methods: {
     save() {
       if (this.$refs.form.validate()) {
         setDmz({
           wan: this.form.ip,
-          enable: this.form.mask,
+          enable: convertBooleanStatus(this.form.enable),
           ip: this.form.ip,
         })
       }
     },
     switchEnable() {
-      if (this.isInitEnabled) {
+      if (this.formEnable) {
         this.save()
       }
     },
@@ -119,7 +106,7 @@ export default {
         const { wan, enable, ip } = data
         this.form = {
           wan,
-          enable,
+          enable: convertBooleanStatus(enable),
           ip,
         }
         this.formEnable = this.form.enable

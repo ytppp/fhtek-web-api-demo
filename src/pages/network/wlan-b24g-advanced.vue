@@ -10,9 +10,9 @@
         </fh-form-item>
         <template v-if="wifi.enable">
           <fh-form-item :label="$t('trans0508')">
-            <fh-select v-model="wifi.mode" :options="modeOpts"> </fh-select>
+            <fh-select @change="changeMode" v-model="wifi.mode" :options="modeOpts"> </fh-select>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0509')" v-if="showBandwidth">
+          <fh-form-item :label="$t('trans0509')">
             <fh-select v-model="wifi.bw" :options="bwOpts"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0507')">
@@ -51,12 +51,12 @@ enum BandWidths24G {
   b20m40 = 'bw20m40',
 }
 enum SelectMode24G {
-  modebgnmix = '9', // 802.11b/g/n 显示频宽
+  modebgnmix = '9', // 802.11b/g/n 显示全部频宽
   modebgmix = '0', // 802.11b/g
-  moden = '6', // 802.11n 显示频宽
+  moden = '6', // 802.11n 显示全部频宽
   modeg = '4', // 802.11g
   modeb = '1', // 802.11b
-  modeAx = '16', // 802.11b/g/n/ax 显示频宽
+  modeAx = '16', // 802.11b/g/n/ax 显示全部频宽
 }
 enum Powermodes {
   low = '50', // 50%
@@ -168,20 +168,34 @@ const channelOpts = reactive([
     text: Channels24G.ch13,
   },
 ])
-const bwOpts = [
-  {
-    value: BandWidths24G.b20,
-    text: '20MHz',
-  },
-  {
-    value: BandWidths24G.b40,
-    text: '40MHz',
-  },
-  {
-    value: BandWidths24G.b20m40,
-    text: '20/40MHz',
-  },
-]
+const bwOpts = computed(() => {
+  if (
+    wifi.mode === SelectMode24G.moden ||
+    wifi.mode === SelectMode24G.modebgnmix ||
+    wifi.mode === SelectMode24G.modeAx
+  ) {
+    return [
+      {
+        value: BandWidths24G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths24G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths24G.b20m40,
+        text: '20/40MHz',
+      },
+    ]
+  }
+  return [
+    {
+      value: BandWidths24G.b20,
+      text: '20MHz',
+    },
+  ]
+})
 const powerOpts = [
   {
     value: Powermodes.low,
@@ -216,15 +230,9 @@ const rules = reactive({
     },
   ],
 })
-
-const showBandwidth = computed(() => {
-  return (
-    wifi.mode === SelectMode24G.moden ||
-    wifi.mode === SelectMode24G.modebgnmix ||
-    wifi.mode === SelectMode24G.modeAx
-  )
-})
-
+const changeMode = () => {
+  wifi.bw = bwOpts.value[0].value
+}
 const switchEnable = (val) => {
   if (!val) {
     dialog

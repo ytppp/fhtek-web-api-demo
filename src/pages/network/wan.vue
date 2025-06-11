@@ -403,7 +403,7 @@ const wanInitial = () => ({
   },
   protocol: IP.IPv4,
   multiVlanId: '',
-  mtu: MtuRange.ipAndIpv4[1],
+  mtu: `${MtuRange.ipAndIpv4[1]}`,
   enableNat: false,
   wanMode: WanMode.route,
   netType: NetType.dhcp,
@@ -1013,7 +1013,7 @@ const wanRules = reactive({
   ],
   mtu: [
     {
-      rule: (value) => !!String(value).trim(),
+      rule: (value) => !!value.trim(),
       message: t('trans0004'),
     },
     {
@@ -1025,6 +1025,10 @@ const wanRules = reactive({
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
+    },
+    {
+      rule: (value) => isIP(value, IP.IPv6),
+      message: t('trans0397'),
     },
   ],
 })

@@ -52,5 +52,9 @@ const out = () => {
   vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
+  cursor: pointer;
+  + .svg-icon {
+    margin-left: 5px;
+  }
 }
 </style>

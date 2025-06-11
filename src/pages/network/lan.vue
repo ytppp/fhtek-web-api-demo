@@ -77,9 +77,9 @@ const { t } = useI18n()
 const dialog = inject('dialog')
 const loading = inject('loading')
 enum Leases {
-  oneHour = 1 * 60,
-  oneDay = 24 * 60,
-  oneWeek = 7 * 24 * 60,
+  oneHour = 60 * 60,
+  oneDay = 24 * 60 * 60,
+  oneWeek = 7 * 24 * 60 * 60,
 }
 interface ILease {
   value: Leases

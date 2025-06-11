@@ -7,22 +7,24 @@
       <div class="page__table">
         <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false">
           <template #operationgroup>
-            <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
+            <!-- <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
               {{ $t('trans0164') }}
-            </fh-button>
+            </fh-button> -->
+            <fh-icon
+              style="font-size: 24px"
+              v-if="isShowAddBtn"
+              @click="openAddModal"
+              name="icon-add"
+            />
           </template>
           <template #operation="scope">
-            <fh-button type="text" @click="openEditModal(scope.row)">
-              {{ $t('trans0165') }}
-            </fh-button>
-            <fh-button type="text" @click="del(scope.row)">
-              {{ $t('trans0111') }}
-            </fh-button>
+            <fh-icon @click="openEditModal(scope.row)" name="icon-edit-square" />
+            <fh-icon @click="del(scope.row)" name="icon-delete" />
           </template>
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model:visible="visible" :title="modalTitle">
+    <fh-modal v-model:visible="visible" :title="modalTitle" :before-close="handleClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0256')" prop="domain">
@@ -159,6 +161,9 @@ export default {
     },
   },
   methods: {
+    handleClose() {
+      this.$refs.modalForm.clearValidate()
+    },
     openAddModal() {
       this.modalForm.id = ''
       this.modalForm.domain = ''
