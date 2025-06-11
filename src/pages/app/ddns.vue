@@ -26,7 +26,7 @@
     <fh-modal v-model:visible="visible" :title="modalTitle">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
-          <fh-form-item :label="$t('trans0166')" label-position="left">
+          <fh-form-item :label="$t('trans0166')">
             <fh-switch v-model="modalForm.enable" />
           </fh-form-item>
           <fh-form-item :label="$t('trans0140')" prop="interface">

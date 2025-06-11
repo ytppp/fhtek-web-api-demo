@@ -7,8 +7,6 @@
       <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
         <fh-form-item
           :label="format($t('trans0027'), [$t('trans0050')])"
-          label-position="left"
-          :label-width="labelWidth"
         >
           <fh-switch @change="switchEnable" v-model="wifi.enable"> </fh-switch>
         </fh-form-item>
@@ -98,7 +96,6 @@ const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const getCurrentChannel = ref('0')
 const wifiFormRef = ref(null)
-const labelWidth = '110px'
 const modeOpts = [
   {
     value: SelectMode5G.modeAonly,

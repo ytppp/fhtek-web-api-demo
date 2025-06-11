@@ -14,7 +14,7 @@
       >
         <input type="hidden" name="loglevelchange" v-model="form.loglevelchange" />
         <input type="hidden" name="Enable" v-model="form.logEnable" />
-        <fh-form-item :label="$t('trans0188')" label-position="left">
+        <fh-form-item :label="$t('trans0188')">
           <fh-switch v-model="form.enable" @change="switchEnable" />
         </fh-form-item>
         <fh-form-item :label="$t('trans0239')">

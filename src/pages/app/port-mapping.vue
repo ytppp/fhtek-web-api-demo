@@ -37,7 +37,7 @@
           :rules="modalFormRules"
           method="post"
         >
-          <fh-form-item :label="$t('trans0166')" label-position="left">
+          <fh-form-item :label="$t('trans0166')">
             <fh-switch
               :active-value="EnableStatus.yes"
               :inactive-value="EnableStatus.no"

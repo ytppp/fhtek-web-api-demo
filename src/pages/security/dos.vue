@@ -7,8 +7,6 @@
       <fh-form class="form" ref="dosForm" :model="dosForm">
         <fh-form-item
           :label="$t('trans0115')"
-          :label-position="labelPosition"
-          :label-width="labelWidth"
         >
           <fh-switch v-model="dosForm.Dos_Flag" @change="switchEnable"> </fh-switch>
         </fh-form-item>
@@ -22,8 +20,6 @@ export default {
   name: 'DosPage',
   data() {
     return {
-      labelPosition: 'left',
-      labelWidth: '200px',
       dosForm: {
         DosConfig_Flag: false,
         Dos_Flag: false,

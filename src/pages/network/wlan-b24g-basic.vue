@@ -14,10 +14,10 @@
         <fh-form-item :label="$t('trans0712')" prop="ssid">
           <fh-input v-model="wifi.ssid"> </fh-input>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0796')" label-position="left" :label-width="labelWidth">
+        <fh-form-item :label="$t('trans0796')">
           <fh-switch v-model="wifi.enable"> </fh-switch>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0797')" label-position="left" :label-width="labelWidth">
+        <fh-form-item :label="$t('trans0797')">
           <fh-switch v-model="wifi.hide"> </fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0747')" prop="sta">
@@ -37,7 +37,7 @@
           >
           </fh-input>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0798')" label-position="left">
+        <fh-form-item :label="$t('trans0798')">
           <fh-switch v-model="wifi.enableWps"> </fh-switch>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
@@ -51,7 +51,7 @@
           <h2 class="page__title">{{ $t('trans0799') }}</h2>
         </div>
         <fh-form class="form form--padding wifi-form" :wps="wifi">
-          <fh-form-item :label="$t('trans0800')" label-position="left">
+          <fh-form-item :label="$t('trans0800')">
             {{ wpsStatusText }}
           </fh-form-item>
           <fh-form-item class="form__submit-btn">
@@ -85,7 +85,6 @@ const loading = ref(false)
 const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
 const wifiFormRef = ref(null)
-const labelWidth = '110px'
 const timeout = 2 * 60 * 1000
 const interval = 5000
 const encrypts = [

@@ -8,7 +8,7 @@
         <h2 class="page__title">{{ $t('trans0132') }}</h2>
       </div>
       <fh-form class="form form--padding" ref="form" :model="form" :rules="rules">
-        <fh-form-item :label="$t('trans0058')" label-position="left">
+        <fh-form-item :label="$t('trans0058')">
           <fh-switch v-model="form.enable" @change="switchEnable"></fh-switch>
         </fh-form-item>
         <template v-if="form.enable">
@@ -42,7 +42,7 @@
       <fh-modal v-model:visible="visible" :title="modalTitle" :before-close="handleClose">
         <template #body>
           <fh-form class="form modal-form" ref="form" :model="modelForm" :rules="rules">
-            <fh-form-item :label="$t('trans0058')" label-position="left">
+            <fh-form-item :label="$t('trans0058')">
               <fh-switch v-model="modelForm.enable" @change="switchEnable"></fh-switch>
             </fh-form-item>
             <fh-form-item :label="$t('trans0110')" prop="url" v-if="modelForm.enable">

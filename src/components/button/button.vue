@@ -180,7 +180,7 @@ const insertSpace = (node) => {
   }
   &.is-block {
     width: 100% !important;
-    max-width: @form-item-max-width !important;
+    /* max-width: @form-item-max-width !important; */
   }
 }
 </style>

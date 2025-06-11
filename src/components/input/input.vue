@@ -250,7 +250,7 @@ const getSuffixVisible = () => {
   position: relative;
   display: inline-block;
   width: 100%;
-  max-width: @form-item-max-width;
+  // max-width: @form-item-max-width;
   position: relative;
   .input__inner {
     font-size: @input-font-size;
