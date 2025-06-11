@@ -553,7 +553,7 @@ const getMtuTips = () => {
 const p8021Options = (max: number) => {
   const arr = []
   for (let i = 0; i <= max; i++) {
-    arr.push({ value: i, text: i })
+    arr.push({ value: `${i}`, text: i })
   }
   return arr
 }
