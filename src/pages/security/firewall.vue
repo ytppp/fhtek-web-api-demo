@@ -5,7 +5,7 @@
     </div>
     <div class="page__content">
       <fh-form class="form" ref="formRef" :model="form">
-        <fh-form-item :label="$t('trans0060')" label-position="left">
+        <fh-form-item :label="$t('trans0060')">
           <fh-switch
             v-model="form.enable"
             @change="switchEnable"
@@ -14,7 +14,7 @@
           >
           </fh-switch>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0703')" label-position="left">
+        <fh-form-item :label="$t('trans0703')">
           <div>{{ currentLevel }}</div>
         </fh-form-item>
         <fh-form-item :label="$t('trans0037')" v-if="form.enable">

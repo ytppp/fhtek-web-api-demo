@@ -11,7 +11,7 @@
             {{ $t('trans0644') }}
           </template>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0460')" label-position="left">
+        <fh-form-item :label="$t('trans0460')">
           <fh-switch
             v-model="form.enable"
             :active-value="EnableStatus.yes"

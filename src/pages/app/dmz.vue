@@ -5,7 +5,7 @@
     </div>
     <div class="page__content">
       <fh-form class="form" ref="form" :model="form" :rules="rules">
-        <fh-form-item :label="$t('trans0254')" label-position="left">
+        <fh-form-item :label="$t('trans0254')">
           <fh-switch
             @change="switchEnable"
             :active-value="EnableStatus.yes"

@@ -5,11 +5,7 @@
     </div>
     <div class="page__content">
       <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
-        <fh-form-item
-          :label="format($t('trans0027'), [$t('trans0049')])"
-          label-position="left"
-          :label-width="labelWidth"
-        >
+        <fh-form-item :label="format($t('trans0027'), [$t('trans0049')])">
           <fh-switch @change="switchEnable" v-model="wifi.enable"> </fh-switch>
         </fh-form-item>
         <template v-if="wifi.enable">
@@ -88,7 +84,6 @@ const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const getCurrentChannel = ref('0')
 const wifiFormRef = ref(null)
-const labelWidth = '110px'
 const modeOpts = [
   {
     value: SelectMode24G.modeb,

@@ -175,8 +175,7 @@ onMounted(() => {
     }
   }
   .input {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 100%;
     .input__inner {
       cursor: pointer;
     }

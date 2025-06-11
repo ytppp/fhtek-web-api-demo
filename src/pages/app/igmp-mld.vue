@@ -7,7 +7,7 @@
       <fh-form class="form" ref="form" :model="form" :rules="rules">
         <!-- 1: router 2: bridge  -->
         <!-- 1: ipv4 2: ipv6 3: ipv4/ipv6 -->
-        <fh-form-item :label="statusText" label-position="left">
+        <fh-form-item :label="statusText">
           <fh-switch v-model="form.enable"></fh-switch>
         </fh-form-item>
         <template v-if="isRoute">

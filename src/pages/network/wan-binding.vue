@@ -18,7 +18,7 @@
     <fh-modal v-model="visible" :title="$t('trans0165')">
       <template #body>
         <fh-form class="form modal-form" ref="modalFormRef" :model="form" :rules="modalFormRules">
-          <fh-form-item :label="$t('trans0754')" label-position="left">
+          <fh-form-item :label="$t('trans0754')">
             {{ form.port }}
           </fh-form-item>
           <fh-form-item :label="$t('trans0752')">

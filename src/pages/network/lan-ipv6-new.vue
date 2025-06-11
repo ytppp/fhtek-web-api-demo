@@ -14,7 +14,7 @@
           :model="slaacForm"
           :rules="slaacRules"
         >
-          <fh-form-item :label="$t('trans0640')" label-position="left" label-width="150px">
+          <fh-form-item :label="$t('trans0640')">
             <fh-switch v-model="slaacForm.enable" />
           </fh-form-item>
           <template v-if="slaacForm.enable">
@@ -53,10 +53,10 @@
             <fh-form-item prop="mtu" :label="$t('trans0092')">
               <fh-input v-model="slaacForm.mtu"></fh-input>
             </fh-form-item>
-            <fh-form-item :label="$t('trans0483')" label-position="left" label-width="150px">
+            <fh-form-item :label="$t('trans0483')">
               <fh-switch v-model="slaacForm.managed_flag"></fh-switch>
             </fh-form-item>
-            <fh-form-item :label="$t('trans0484')" label-position="left" label-width="150px">
+            <fh-form-item :label="$t('trans0484')">
               <fh-switch v-model="slaacForm.other_flag"></fh-switch>
             </fh-form-item>
           </template>
@@ -70,7 +70,7 @@
           <h2 class="page__title">{{ dhcpTitleText }}</h2>
         </div>
         <fh-form class="form form--padding" ref="dhcpFormRef" :model="dhcpForm" :rules="dhcpRules">
-          <fh-form-item :label="$t('trans0640')" label-position="left" label-width="150px">
+          <fh-form-item :label="$t('trans0640')">
             <fh-switch v-model="dhcpForm.enable" />
           </fh-form-item>
           <template v-if="dhcpForm.enable">

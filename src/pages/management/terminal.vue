@@ -5,10 +5,10 @@
     </div>
     <div class="page__content">
       <fh-form class="form" :model="form">
-        <fh-form-item :label="$t('trans0403')" label-position="left" label-width="120px">
+        <fh-form-item :label="$t('trans0403')">
           <fh-switch v-model="form.telnetEnable" />
         </fh-form-item>
-        <fh-form-item :label="$t('trans0402')" label-position="left" label-width="120px">
+        <fh-form-item :label="$t('trans0402')">
           <fh-switch v-model="form.sshEnable" />
         </fh-form-item>
         <fh-form-item class="form__submit-btn">

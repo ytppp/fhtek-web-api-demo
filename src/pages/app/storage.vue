@@ -44,7 +44,7 @@
         <h2 class="page__title">{{ $t('trans0815') }}</h2>
       </div>
       <fh-form class="form form--padding" :model="serverForm" :rules="serverFormRules">
-        <fh-form-item :label="t('trans0816')" label-position="left">
+        <fh-form-item :label="t('trans0816')">
           <fh-switch v-model="serverForm.enable" />
         </fh-form-item>
         <template v-if="serverForm.enable">

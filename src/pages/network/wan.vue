@@ -22,7 +22,7 @@
               </fh-button>
             </template>
           </fh-form-item>
-          <fh-form-item :label="t('trans0761')" label-position="left">
+          <fh-form-item :label="t('trans0761')">
             <fh-switch v-model="wan.enable" />
           </fh-form-item>
           <fh-form-item :label="t('trans0762')">
@@ -44,7 +44,7 @@
           </fh-form-item>
           <template v-if="isRouter">
             <fh-form-item :label="t('trans0770')">
-              <fh-radio-group v-model="wan.protocol">
+              <fh-radio-group v-model="wan.protocol" class="wan-form__protocol-checkbox-group">
                 <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
                   {{ item.text }}
                 </fh-radio>
@@ -54,7 +54,7 @@
               <fh-input v-model="wan.mtu"></fh-input>
               <template #extra>{{ getMtuTips().tips }}</template>
             </fh-form-item>
-            <fh-form-item :label="t('trans0778')" label-position="left" v-if="isHideEnableNat">
+            <fh-form-item :label="t('trans0778')" v-if="isHideEnableNat">
               <fh-switch v-model="wan.enableNat" />
             </fh-form-item>
           </template>
@@ -98,7 +98,7 @@
             <fh-form-item :label="$t('trans0087')" prop="ppp.pwd">
               <fh-input type="password" v-model="wan.ppp.pwd" show-password> </fh-input>
             </fh-form-item>
-            <fh-form-item :label="t('trans0790')" label-position="left">
+            <fh-form-item :label="t('trans0790')">
               <fh-switch v-model="wan.ppp.enableRouterBridge" />
             </fh-form-item>
           </div>
@@ -128,7 +128,7 @@
           </template>
           <div class="wan-form__box" v-if="isIpv6">
             <span class="wan-form__titile">{{ $t('trans0457') }}</span>
-            <fh-form-item :label="t('trans0779')" label-position="left" v-if="!isStatic">
+            <fh-form-item :label="t('trans0779')" v-if="!isStatic">
               <fh-switch v-model="wan.ipv6.isSlaac" />
             </fh-form-item>
             <template v-if="isStatic">
@@ -151,7 +151,7 @@
                 <fh-input v-model="wan.ipv6.static.dns2"></fh-input>
               </fh-form-item>
             </template>
-            <fh-form-item :label="t('trans0782')" label-position="left">
+            <fh-form-item :label="t('trans0782')">
               <fh-switch v-model="wan.ipv6.pd.enable" />
             </fh-form-item>
             <template v-if="isIpv6PdEnable">
@@ -183,7 +183,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, computed, reactive, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { IP, VlanMode, ModalType, WanMode, SsidText } from '@/util/constant'
 import {
@@ -403,7 +403,7 @@ const wanInitial = () => ({
   },
   protocol: IP.IPv4,
   multiVlanId: '',
-  mtu: '',
+  mtu: 0,
   enableNat: false,
   wanMode: WanMode.route,
   netType: NetType.dhcp,
@@ -451,6 +451,10 @@ const isIpv6PdEnable = computed(() => wan.ipv6.pd.enable)
 const isVlanModeTag = computed(() => wan.vlan.mode === VlanMode.Tag)
 const isIpv6PdModeManually = computed(() => wan.ipv6.pd.mode === PrefixMode.manually)
 const isShowMultiVlanId = computed(() => wan.serviceType === ServiceType.IPTV)
+const isNotPppoeAndIpv4 = computed(() => !isPppoe.value && wan.protocol === IP.IPv4)
+const isNotPppoeAndIpv6 = computed(() => !isPppoe.value && isIpv6.value)
+const isPppoeAndIpv4 = computed(() => isPppoe.value && wan.protocol === IP.IPv4)
+const isPppoeAndIpv6 = computed(() => isPppoe.value && isIpv6.value)
 const isHidePortBinding = computed(
   () => !(wan.serviceType === ServiceType.TR069 || wan.serviceType === ServiceType.VOICE),
 )
@@ -482,6 +486,9 @@ const isEdit = computed(() => {
 const changeWanMode = () => {
   wan.serviceType = serviceTypeOptions.value[0].value
 }
+
+watch([() => wan.netType, () => wan.protocol], () => initMtu())
+
 const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
 const isGatewaySameSegmentWithIp = (gateway, ip) =>
   !gateway || !ip || getIpBefore(gateway) === getIpBefore(ip)
@@ -518,36 +525,25 @@ const changeIpv6Dns1 = () => {
   )
 }
 const getMtuTips = () => {
-  if (!isPppoe.value && wan.protocol === IP.IPv4) {
+  if (isNotPppoeAndIpv4.value) {
     return {
       tips: rangeTips(t('trans0092'), MtuRange.ipAndIpv4[0], MtuRange.ipAndIpv4[1]),
       rule: isValidInteger(wan.mtu, MtuRange.ipAndIpv4[0], MtuRange.ipAndIpv4[1]),
-      ruleMsg: format(t('trans0388'), [
-        t('trans0092'),
-        MtuRange.ipAndIpv4[0],
-        MtuRange.ipAndIpv4[1],
-      ]),
     }
   }
-  if (!isPppoe.value && isIpv6.value) {
+  if (isNotPppoeAndIpv6.value) {
     return {
       tips: rangeTips(t('trans0092'), MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]),
       rule: isValidInteger(wan.mtu, MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]),
-      ruleMsg: format(t('trans0388'), [t('trans0092'), MtuRange.ipAndMix[0], MtuRange.ipAndMix[1]]),
     }
   }
-  if (isPppoe.value && wan.protocol === IP.IPv4) {
+  if (isPppoeAndIpv4.value) {
     return {
       tips: rangeTips(t('trans0092'), MtuRange.pppAndIpv4[0], MtuRange.pppAndIpv4[1]),
       rule: isValidInteger(wan.mtu, MtuRange.pppAndIpv4[0], MtuRange.pppAndIpv4[1]),
-      ruleMsg: format(t('trans0388'), [
-        t('trans0092'),
-        MtuRange.pppAndIpv4[0],
-        MtuRange.pppAndIpv4[1],
-      ]),
     }
   }
-  if (isPppoe.value && isIpv6.value) {
+  if (isPppoeAndIpv6.value) {
     return {
       tips: rangeTips(t('trans0092'), MtuRange.pppAndMix[0], MtuRange.pppAndMix[1]),
       rule: isValidInteger(wan.mtu, MtuRange.pppAndMix[0], MtuRange.pppAndMix[1]),
@@ -620,6 +616,7 @@ const changeWan = () => {
 const addWanConn = () => {
   modalType.value = ModalType.add
   Object.assign(wan, wanInitial())
+  getPortBind()
   wanRef.value.clearValidate()
 }
 const cancelWanConnAdd = () => {
@@ -695,6 +692,28 @@ const delWanConn = () => {
 const changeNetType = () => {
   if (isStatic.value) {
     wan.ipv6.pd.mode = PrefixMode.manually
+  }
+}
+const initMtu = () => {
+  if (isNotPppoeAndIpv4.value) {
+    if (wan.mtu < MtuRange.ipAndIpv4[0] || wan.mtu > MtuRange.ipAndIpv4[1]) {
+      wan.mtu = MtuRange.ipAndIpv4[1]
+    }
+  }
+  if (isNotPppoeAndIpv6.value) {
+    if (wan.mtu < MtuRange.ipAndMix[0] || wan.mtu > MtuRange.ipAndMix[1]) {
+      wan.mtu = MtuRange.ipAndMix[1]
+    }
+  }
+  if (isPppoeAndIpv4.value) {
+    if (wan.mtu < MtuRange.pppAndIpv4[0] || wan.mtu > MtuRange.pppAndIpv4[1]) {
+      wan.mtu = MtuRange.pppAndIpv4[1]
+    }
+  }
+  if (isPppoeAndIpv6.value) {
+    if (wan.mtu < MtuRange.pppAndMix[0] || wan.mtu > MtuRange.pppAndMix[1]) {
+      wan.mtu = MtuRange.pppAndMix[1]
+    }
   }
 }
 const getLanData = () => {
@@ -1012,7 +1031,6 @@ const wanRules = reactive({
 onMounted(() => {
   getLanData()
   getWanList()
-  getPortBind()
 })
 </script>
 
@@ -1050,6 +1068,14 @@ onMounted(() => {
     grid-template-rows: repeat(3, 15px);
     gap: 5px;
     .checkbox__label {
+      padding-left: 5px;
+    }
+  }
+  .wan-form__protocol-checkbox-group {
+    display: grid;
+    grid-template-columns: 48px 48px 48px;
+    gap: 5px;
+    .radio__label {
       padding-left: 5px;
     }
   }

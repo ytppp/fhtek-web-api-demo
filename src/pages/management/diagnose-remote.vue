@@ -8,7 +8,7 @@
         <fh-form-item :label="$t('trans0140')">
           <fh-select v-model="remote.interface" :options="interfaceOpts"> </fh-select>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0166')" label-position="left">
+        <fh-form-item :label="$t('trans0166')">
           {{ statusText }}
         </fh-form-item>
         <fh-form-item class="form__submit-btn">

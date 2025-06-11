@@ -5,7 +5,7 @@
     </div>
     <div class="page__content">
       <fh-form class="form form--no-center" ref="form" :model="form">
-        <fh-form-item :label="$t('trans0059')" label-position="left">
+        <fh-form-item :label="$t('trans0059')">
           <fh-switch v-model="form.enable" @change="switchEnable"></fh-switch>
         </fh-form-item>
       </fh-form>
@@ -30,7 +30,7 @@
     <fh-modal v-model:visible="visible" :title="modalTitle">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
-          <fh-form-item :label="$t('trans0166')" label-position="left">
+          <fh-form-item :label="$t('trans0166')">
             <fh-switch v-model="modalForm.enable"></fh-switch>
           </fh-form-item>
           <fh-form-item :label="$t('trans0150')" prop="aclRuleName">
