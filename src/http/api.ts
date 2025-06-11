@@ -42,19 +42,19 @@ export const getWan = (): Promise<ApiResponse<any>> => {
 }
 
 export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
-  return http.post(`GetPortBindInfo`, createData(params))
+  return http.post(`GetPortBindInfo`, createData(params), { loading: false })
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {
-  return http.post(`AddWan`, createData(params))
+  return http.post(`AddWan`, createData(params), { loading: false })
 }
 
 export const editWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWan', createData(params))
+  return http.post('SetWan', createData(params), { loading: false })
 }
 
 export const deleteWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('DeleteWan', createData(params))
+  return http.post('DeleteWan', createData(params), { loading: false })
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {

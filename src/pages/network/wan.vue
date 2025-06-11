@@ -403,7 +403,7 @@ const wanInitial = () => ({
   },
   protocol: IP.IPv4,
   multiVlanId: '',
-  mtu: 0,
+  mtu: MtuRange.ipAndIpv4[1],
   enableNat: false,
   wanMode: WanMode.route,
   netType: NetType.dhcp,
@@ -487,7 +487,7 @@ const changeWanMode = () => {
   wan.serviceType = serviceTypeOptions.value[0].value
 }
 
-watch([() => wan.netType, () => wan.protocol], () => initMtu())
+watch([() => wan.netType, () => wan.protocol], () => initMtu(), { flush: 'pre' })
 
 const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
 const isGatewaySameSegmentWithIp = (gateway, ip) =>
@@ -582,7 +582,6 @@ const getWanList = (id?: string) => {
 const changeWan = () => {
   wanRef.value.clearValidate()
   const thisWan = wanList.find((item) => item.id === wan.id)
-  getPortBind()
   wan.id = thisWan.id
   wan.enable = convertBooleanStatus(thisWan.enable)
   wan.serviceType = thisWan.serviceType
@@ -612,6 +611,7 @@ const changeWan = () => {
   wan.ipv6.static.gateway = thisWan.ipv6.static.gateway
   wan.ipv6.static.dns1 = thisWan.ipv6.static.dns1
   wan.ipv6.static.dns2 = thisWan.ipv6.static.dns2
+  getPortBind()
 }
 const addWanConn = () => {
   modalType.value = ModalType.add
@@ -1013,7 +1013,7 @@ const wanRules = reactive({
   ],
   mtu: [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => !!String(value).trim(),
       message: t('trans0004'),
     },
     {
