@@ -10,9 +10,9 @@
         </fh-form-item>
         <template v-if="wifi.enable">
           <fh-form-item :label="$t('trans0508')">
-            <fh-select v-model="wifi.mode" :options="modeOpts"> </fh-select>
+            <fh-select @change="changeMode" v-model="wifi.mode" :options="modeOpts"> </fh-select>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0509')" v-if="showBandwidth">
+          <fh-form-item :label="$t('trans0509')">
             <fh-select v-model="wifi.bw" :options="bwOpts"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0507')">
@@ -49,15 +49,15 @@ enum BandWidths5G {
   b20 = 'bw20',
   b40 = 'bw40',
   b80 = 'bw80',
-  b20m40 = 'bw20m40', // 802.11a/n 才显示
+  b20m40 = 'bw20m40',
   b20m40m80m160 = 'bw20m40m80m160',
 }
 enum SelectMode5G {
-  modeAonly = '2', // 802.11a 不显示频宽
-  modeANmixed = '8', // 802.11a/n
-  modeACNA = '14', // 802.11a/n/ac
-  modeACN = '15', // 802.11n/ac
-  modeAx = '17', // 802.11a/n/ac/ax
+  modeAonly = '2', // 802.11a 显示20M频宽
+  modeANmixed = '8', // 802.11a/n 显示20M, 40M, 20/40M频宽
+  modeACNA = '14', // 802.11a/n/ac 显示全部频宽
+  modeACN = '15', // 802.11n/ac 显示全部频宽
+  modeAx = '17', // 802.11a/n/ac/ax 显示全部频宽
 }
 enum Powermodes {
   low = '50', // 50%
@@ -275,7 +275,14 @@ const specialBandwidths = [BandWidths5G.b20]
 const specialChannels = [Channels5G.ch116, Channels5G.ch165]
 
 const bwOpts = computed(() => {
-  if (wifi.mode === SelectMode5G.modeANmixed) {
+  if (wifi.mode === SelectMode5G.modeAonly) {
+    return [
+      {
+        value: BandWidths5G.b20,
+        text: '20MHz',
+      },
+    ]
+  } else if (wifi.mode === SelectMode5G.modeANmixed) {
     return [
       {
         value: BandWidths5G.b20,
@@ -311,9 +318,6 @@ const bwOpts = computed(() => {
     ]
   }
 })
-const showBandwidth = computed(() => {
-  return wifi.mode !== SelectMode5G.modeAonly
-})
 const channelOpts = computed(() => {
   return b5gChannelsInit.filter((item) => {
     if (specialBandwidths.includes(wifi.bw)) {
@@ -329,7 +333,9 @@ const channelOpts = computed(() => {
     }
   })
 })
-
+const changeMode = () => {
+  wifi.bw = bwOpts.value[0].value
+}
 const switchEnable = (val) => {
   if (!val) {
     dialog

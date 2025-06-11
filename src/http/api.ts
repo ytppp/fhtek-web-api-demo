@@ -172,24 +172,36 @@ export const getStaticDnsList = (): Promise<ApiResponse<any>> => {
 }
 
 export const addStaticDns = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_dns:add',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'network.static_dns:add',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const editStaticDns = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_dns:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'network.static_dns:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const delStaticDns = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_dns:delete',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'network.static_dns:delete',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getStaticRoute = (): Promise<ApiResponse<any>> => {
@@ -232,12 +244,12 @@ export const editOntAuth = (params): Promise<ApiResponse<any>> => {
   })
 }
 
-export const getPortMirr = (): Promise<ApiResponse<any>> => {
-  return http.get('GetPortMirr')
+export const getPortMirr = (params): Promise<ApiResponse<any>> => {
+  return http.post('GetPortMirr', createData(params))
 }
 
 export const setPortMirr = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetPortMirr', createData(params))
+  return http.post('SetPortMirr', createData(params), { loading: false })
 }
 
 export const getTerminal = (): Promise<ApiResponse<any>> => {

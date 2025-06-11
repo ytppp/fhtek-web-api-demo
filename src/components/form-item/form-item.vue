@@ -27,7 +27,7 @@
       <slot></slot>
     </div>
     <transition name="form-item-error">
-      <div v-if="error" class="form-item__error">{{ validateMessage }}</div>
+      <div v-if="error" class="form-item__error" :style="contentStyle">{{ validateMessage }}</div>
     </transition>
     <div class="form-item__extra" :style="contentStyle" v-if="slots.extra">
       <slot name="extra"></slot>

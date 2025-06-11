@@ -65,7 +65,7 @@ const interfaceOpts = [
   // },
 ]
 const remote = reactive({
-  interface: 'All',
+  interface: Interface.all,
   status: StartAndStop.stop,
 })
 
@@ -79,24 +79,26 @@ const statusText = computed(() => {
   return t('trans0804')
 })
 const start = () => {
-  remote.status = StartAndStop.start
-  save()
+  save(StartAndStop.start)
 }
 const stop = () => {
-  remote.status = StartAndStop.start
-  save()
+  save(StartAndStop.stop)
 }
 const getPortMirrData = () => {
   loading.value = true
-  getPortMirr().then(({ data }) => {
+  getPortMirr({
+    interface: remote.interface,
+  }).then(({ data }) => {
     loading.value = false
-    remote.interface = data.interface
     remote.status = data.status
   })
 }
 
-const save = () => {
-  setPortMirr(remote).then(() => {
+const save = (order) => {
+  setPortMirr({
+    interface: remote.interface,
+    order,
+  }).then(() => {
     getPortMirrData()
   })
 }
