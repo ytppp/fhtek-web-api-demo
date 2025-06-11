@@ -44,7 +44,7 @@
           </fh-form-item>
           <template v-if="isRouter">
             <fh-form-item :label="t('trans0770')">
-              <fh-radio-group v-model="wan.protocol">
+              <fh-radio-group v-model="wan.protocol" class="wan-form__protocol-checkbox-group">
                 <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
                   {{ item.text }}
                 </fh-radio>
@@ -1068,6 +1068,14 @@ onMounted(() => {
     grid-template-rows: repeat(3, 15px);
     gap: 5px;
     .checkbox__label {
+      padding-left: 5px;
+    }
+  }
+  .wan-form__protocol-checkbox-group {
+    display: grid;
+    grid-template-columns: 48px 48px 48px;
+    gap: 5px;
+    .radio__label {
       padding-left: 5px;
     }
   }
