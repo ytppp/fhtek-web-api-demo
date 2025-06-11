@@ -43,7 +43,7 @@
             ></fh-select>
           </fh-form-item>
           <template v-if="isRouter">
-            <fh-form-item :label="t('trans0770')">
+            <fh-form-item :label="t('trans0135')">
               <fh-radio-group v-model="wan.protocol" class="wan-form__protocol-checkbox-group">
                 <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
                   {{ item.text }}
@@ -75,7 +75,7 @@
             </fh-form-item>
           </template>
           <template v-if="isHidePortBinding">
-            <fh-form-item :label="t('trans0764')">
+            <fh-form-item :label="t('trans0755')">
               <fh-checkbox-group class="wan-form__checkbox-group" v-model="wan.lan">
                 <fh-checkbox
                   v-for="item in lanOptions"

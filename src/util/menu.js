@@ -79,7 +79,7 @@ let menus = [
       },
       {
         url: '/status/usb',
-        text: 'trans0748',
+        text: 'trans0813',
         config,
       },
     ],

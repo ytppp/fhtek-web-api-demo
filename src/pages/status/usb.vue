@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0748') }}</h1>
+      <h1 class="page__title">{{ $t('trans0813') }}</h1>
     </div>
     <div class="page__content page__content--padding-small">
       <div class="page__sub-header">
@@ -30,7 +30,7 @@ const { cleanData, defaultVal } = useDataClean()
 
 const usb = reactive({
   status: {
-    label: t('trans0750'),
+    label: t('trans0813'),
     value: defaultVal,
   },
 })
