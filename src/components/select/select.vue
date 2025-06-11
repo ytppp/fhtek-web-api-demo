@@ -176,7 +176,7 @@ onMounted(() => {
   }
   .input {
     width: 100% !important;
-    // max-width: 100% !important;
+    // max-width: @form-item-max-width !important;
     .input__inner {
       cursor: pointer;
     }
