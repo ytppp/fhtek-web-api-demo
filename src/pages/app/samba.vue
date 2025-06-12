@@ -4,13 +4,9 @@
       <h1 class="page__title">{{ $t('trans0822') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form" ref="form" :model="form" :rules="rules">
+      <fh-form class="form" ref="form" :model="form" :rules="rules" v-if="hasUsbDevice">
         <fh-form-item :label="$t('trans0829')">
-          <fh-checkbox-group v-model="form.enable">
-            <fh-checkbox v-for="item in enableOptions" :key="item.value" :label="item.value">
-              {{ item.text }}
-            </fh-checkbox>
-          </fh-checkbox-group>
+          <fh-switch v-model="form.enable"> </fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0053')" prop="username">
           <fh-input v-model="form.username"> </fh-input>
@@ -27,35 +23,29 @@
           </fh-button>
         </fh-form-item>
       </fh-form>
+      <div style="padding-left: 20px; font-size: 16px" v-else>
+        {{ $t('trans0821') }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { isValidLength, isValidSymbol, specialChar } from '@/util/tool'
-import { getAccount, setAccount, logout } from '@/http/api'
+import { editSamba, getSamba, getUsb } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
 
+const { convertBooleanStatus } = useDataClean()
 export default {
   data() {
     return {
-      usernameStoraged: '',
+      hasUsbDevice: false,
       form: {
-        id: '',
-        role: '',
+        enable: false,
         username: '',
         pwd: '',
         confirmPwd: '',
       },
-      enableOptions: [
-        {
-          value: '1',
-          text: this.$t('trans0830'),
-        },
-        {
-          value: '0',
-          text: this.$t('trans0831'),
-        },
-      ],
       rules: {
         pwd: [
           {
@@ -96,8 +86,6 @@ export default {
           },
         ],
       },
-      roleOpts: [],
-      userList: [],
     }
   },
   methods: {
@@ -113,55 +101,29 @@ export default {
       return true
     },
     save() {
-      if (this.$refs.form.validate()) {
-        const data = [
-          {
-            id: this.form.id,
-            name: this.form.username,
-            pwd: this.form.pwd,
-            role: this.form.role,
-          },
-        ]
-        setAccount(data).then(() => {
-          if (this.form.username === this.usernameStoraged) {
-            logout().then(() => {
-              this.$router.push('/login')
-            })
-          }
-        })
-      }
-    },
-    getAccountData() {
-      const data = {
-        role: this.form.role,
-      }
-      getAccount(data).then(({ data }) => {
-        const { items } = data
-        if (items.length === 0) {
-          return
-        }
-        const roleOpts = items.map((item) => ({
-          value: item.type,
-          text: item.type,
-        }))
-        this.roleOpts = roleOpts
-        this.userList = items
-        this.changeRole()
+      if (!this.$refs.form.validate()) return
+      editSamba({
+        enable: convertBooleanStatus(this.form.enable),
+        username: this.form.username,
+        password: this.form.pwd,
       })
     },
-    changeRole() {
-      const thisUser = this.userList.find((item) => item.type === this.form.role)
-      this.form.id = thisUser.id
-      this.form.username = thisUser.name
-      this.form.role = thisUser.type
+    getSambaData() {
+      getSamba().then(({ data }) => {
+        this.form.enable = convertBooleanStatus(data.enable)
+      })
+    },
+    getUsbInfo() {
+      getUsb().then(({ data }) => {
+        hasUsbDevice.value = convertBooleanStatus(data.has_usb)
+        if (hasUsbDevice.value) {
+          this.getSambaData()
+        }
+      })
     },
   },
-  created() {
-    this.form.username = this.usernameStoraged = sessionStorage.getItem('loginuser')
-    this.form.role = sessionStorage.getItem('role')
-  },
   mounted() {
-    this.getAccountData()
+    this.getUsbInfo()
   },
 }
 </script>
