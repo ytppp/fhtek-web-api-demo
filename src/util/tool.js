@@ -481,3 +481,9 @@ export function isValidUrlName(url) {
   }
   return true
 }
+
+export function isValidUnixPath(path) {
+  // 匹配 Unix 路径（如 /path/to/file 或 ./file）
+  const pattern = /^(?:\/|(?:\.\/)?(?:[^\/\0]+\/)*[^\/\0]+)$/
+  return !pattern.test(path)
+}

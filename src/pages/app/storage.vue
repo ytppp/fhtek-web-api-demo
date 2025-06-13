@@ -26,9 +26,9 @@
             <fh-input v-model="clientForm.username"></fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0196')" prop="password">
-            <fh-input v-model="clientForm.password"></fh-input>
+            <fh-input v-model="clientForm.password" type="password" show-password></fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0812')" prop="path">
+          <fh-form-item :label="$t('trans0814')" prop="path">
             <fh-input v-model="clientForm.path"></fh-input>
             <template #extra>
               {{ $t('trans0818') }}
@@ -60,12 +60,12 @@
               <fh-input v-model="serverForm.username"></fh-input>
             </fh-form-item>
             <fh-form-item :label="$t('trans0196')" prop="password">
-              <fh-input v-model="serverForm.password"></fh-input>
+              <fh-input v-model="serverForm.password" type="password" show-password></fh-input>
             </fh-form-item>
             <fh-form-item :label="$t('trans0754')" prop="port">
               <fh-input v-model="serverForm.port"></fh-input>
             </fh-form-item>
-            <fh-form-item :label="$t('trans0817')" prop="path">
+            <fh-form-item :label="$t('trans0817')" prop="rootPath">
               <fh-input v-model="serverForm.rootPath"></fh-input>
               <template #extra>
                 {{ $t('trans0819') }}
@@ -74,7 +74,7 @@
           </template>
           <fh-form-item class="form__submit-btn">
             <fh-button @click="save" block>
-              {{ $t('trans0224') }}
+              {{ $t('trans0002') }}
             </fh-button>
           </fh-form-item>
         </fh-form>
@@ -89,6 +89,14 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import {
+  isValidInteger,
+  isValidLength,
+  isValidSymbol,
+  isValidUnixPath,
+  format,
+  specialChar,
+} from '@/util/tool'
 import { getUsb, usbDownload, editUsbServer, getUsbDownloadList } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -134,6 +142,10 @@ const clientFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidInteger(value, 1, 65535),
+      message: t('trans0452'),
+    },
   ],
   username: [
     {
@@ -146,11 +158,23 @@ const clientFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidLength(value, 8, 64),
+      message: format(t('trans0003'), [t('trans0185'), 8, 64]),
+    },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: format(t('trans0013'), [t('trans0185'), format(t('trans0042'), [specialChar])]),
+    },
   ],
   path: [
     {
       rule: (value) => value,
       message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidUnixPath(value),
+      message: t('trans0830'),
     },
   ],
 }
@@ -160,6 +184,10 @@ const serverFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidInteger(value, 1, 65535),
+      message: t('trans0452'),
+    },
   ],
   username: [
     {
@@ -172,11 +200,23 @@ const serverFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidLength(value, 8, 64),
+      message: format(t('trans0003'), [t('trans0185'), 8, 64]),
+    },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: format(t('trans0013'), [t('trans0185'), format(t('trans0042'), [specialChar])]),
+    },
   ],
-  path: [
+  rootPath: [
     {
       rule: (value) => value,
       message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidUnixPath(value),
+      message: t('trans0830'),
     },
   ],
 }
@@ -185,10 +225,10 @@ const columns = reactive([
     key: 'username',
     title: t('trans0812'),
   },
-  {
-    key: 'password',
-    title: t('trans0812'),
-  },
+  // {
+  //   key: 'password',
+  //   title: t('trans0812'),
+  // },
   {
     key: 'port',
     title: t('trans0754'),

@@ -38,6 +38,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getUsb, editMediaSharing, getMediaSharing } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { isValidUnixPath } from '@/util/tool'
 
 const { t } = useI18n()
 const { convertBooleanStatus } = useDataClean()
@@ -52,6 +53,10 @@ const rules = {
     {
       rule: (value) => value,
       message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidUnixPath(value),
+      message: t('trans0830'),
     },
   ],
 }

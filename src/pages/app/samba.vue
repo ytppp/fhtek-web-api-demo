@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { isValidLength, isValidSymbol, specialChar } from '@/util/tool'
+import { isValidLength, isValidSymbol, specialChar, format } from '@/util/tool'
 import { editSamba, getSamba, getUsb } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -54,14 +54,14 @@ export default {
           },
           {
             rule: (value) => isValidLength(value, 8, 64),
-            message: this.$t('trans0003').format(this.$t('trans0185'), 8, 64),
+            message: format(this.$t('trans0003'), [this.$t('trans0185'), 8, 64]),
           },
           {
             rule: (value) => isValidSymbol(value),
-            message: this.$t('trans0013').format(
+            message: format(this.$t('trans0013'), [
               this.$t('trans0185'),
-              this.$t('trans0042').format(specialChar),
-            ),
+              format(this.$t('trans0042'), [specialChar]),
+            ]),
           },
         ],
         confirmPwd: [
@@ -71,14 +71,14 @@ export default {
           },
           {
             rule: (value) => isValidLength(value, 8, 64),
-            message: this.$t('trans0003').format(this.$t('trans0186'), 8, 64),
+            message: format(this.$t('trans0003'), [this.$t('trans0186'), 8, 64]),
           },
           {
             rule: (value) => isValidSymbol(value),
-            message: this.$t('trans0013').format(
+            message: format(this.$t('trans0013'), [
               this.$t('trans0186'),
-              this.$t('trans0042').format(specialChar),
-            ),
+              format(this.$t('trans0042'), [specialChar]),
+            ]),
           },
           {
             rule: () => this.validatePwd(),
@@ -115,8 +115,8 @@ export default {
     },
     getUsbInfo() {
       getUsb().then(({ data }) => {
-        hasUsbDevice.value = convertBooleanStatus(data.has_usb)
-        if (hasUsbDevice.value) {
+        this.hasUsbDevice = convertBooleanStatus(data.has_usb)
+        if (this.hasUsbDevice) {
           this.getSambaData()
         }
       })
