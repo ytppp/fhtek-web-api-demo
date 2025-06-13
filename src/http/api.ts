@@ -342,3 +342,56 @@ export const editWifiMacFilter = (params): Promise<ApiResponse<any>> => {
 export const delWifiMacFilter = (params): Promise<ApiResponse<any>> => {
   return http.post('security.wifi_mac_filter.items:delete', createData(params))
 }
+
+export const getUsb = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.usb.status:get',
+  })
+}
+
+export const usbDownload = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.client.download:add',
+    data: params,
+  })
+}
+
+export const getUsbDownloadList = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.client.download:get',
+  })
+}
+
+export const editUsbServer = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.server:edit',
+    data: params,
+  })
+}
+
+export const editSamba = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.samba:edit',
+    data: params,
+  })
+}
+
+export const getSamba = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.samba:get',
+    data: params,
+  })
+}
+
+export const editMediaSharing = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.media_sharing:edit',
+    data: params,
+  })
+}
+
+export const getMediaSharing = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.media_sharing:get',
+  })
+}

@@ -3,92 +3,124 @@
     <div class="page__header">
       <h1 class="page__title">{{ $t('trans0810') }}</h1>
     </div>
-    <div class="page__content page__content--padding-small">
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0811') }}</h2>
-      </div>
-      <fh-form class="form form--padding" :model="clientForm" :rules="clientFormRules">
-        <fh-form-item :label="$t('trans0812')" prop="url">
-          <fh-input v-model="clientForm.url">
-            <template v-slot:prepend>{{ urlAppend }}</template>
-          </fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0754')" prop="port">
-          <fh-input v-model="clientForm.port"></fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0053')" prop="username">
-          <fh-input v-model="clientForm.username"></fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0196')" prop="password">
-          <fh-input v-model="clientForm.password"></fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0813')">
-          {{ clientUsbDeviceText }}
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0812')" prop="path" v-if="clientForm.usbDevice">
-          <fh-input v-model="clientForm.path"></fh-input>
-          <template #extra>
-            {{ $t('trans0818') }}
-          </template>
-        </fh-form-item>
-        <fh-form-item class="form__submit-btn">
-          <fh-button @click="download" block>
-            {{ $t('trans0820') }}
-          </fh-button>
-        </fh-form-item>
-      </fh-form>
-      <div class="page__table">
-        <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false"></fh-table>
-      </div>
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0815') }}</h2>
-      </div>
-      <fh-form class="form form--padding" :model="serverForm" :rules="serverFormRules">
-        <fh-form-item :label="t('trans0816')">
-          <fh-switch v-model="serverForm.enable" />
-        </fh-form-item>
-        <template v-if="serverForm.enable">
-          <fh-form-item :label="$t('trans0053')" prop="username">
-            <fh-input v-model="serverForm.username"></fh-input>
-          </fh-form-item>
-          <fh-form-item :label="$t('trans0196')" prop="password">
-            <fh-input v-model="serverForm.password"></fh-input>
+    <div class="page__content" :class="{ 'page__content--padding-small': hasUsbDevice }">
+      <template v-if="hasUsbDevice">
+        <div class="page__sub-header">
+          <h2 class="page__title">{{ $t('trans0811') }}</h2>
+        </div>
+        <fh-form
+          class="form form--padding"
+          ref="clientFormRef"
+          :model="clientForm"
+          :rules="clientFormRules"
+        >
+          <fh-form-item :label="$t('trans0812')" prop="url">
+            <fh-input v-model="clientForm.url">
+              <template v-slot:prepend>{{ UrlAppend }}</template>
+            </fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0754')" prop="port">
-            <fh-input v-model="serverForm.port"></fh-input>
+            <fh-input v-model="clientForm.port"></fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0813')">
-            {{ serverUsbDeviceText }}
+          <fh-form-item :label="$t('trans0053')" prop="username">
+            <fh-input v-model="clientForm.username"></fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0817')" prop="path" v-if="serverForm.usbDevice">
-            <fh-input v-model="serverForm.rootPath"></fh-input>
+          <fh-form-item :label="$t('trans0196')" prop="password">
+            <fh-input v-model="clientForm.password" type="password" show-password></fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0814')" prop="path">
+            <fh-input v-model="clientForm.path"></fh-input>
             <template #extra>
-              {{ $t('trans0819') }}
+              {{ $t('trans0818') }}
             </template>
           </fh-form-item>
-        </template>
-        <fh-form-item class="form__submit-btn">
-          <fh-button @click="save" block>
-            {{ $t('trans0224') }}
-          </fh-button>
-        </fh-form-item>
-      </fh-form>
+          <fh-form-item class="form__submit-btn">
+            <fh-button @click="download" block>
+              {{ $t('trans0820') }}
+            </fh-button>
+          </fh-form-item>
+        </fh-form>
+        <div class="page__table">
+          <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false"></fh-table>
+        </div>
+        <div class="page__sub-header">
+          <h2 class="page__title">{{ $t('trans0815') }}</h2>
+        </div>
+        <fh-form
+          class="form form--padding"
+          ref="serverFormRef"
+          :model="serverForm"
+          :rules="serverFormRules"
+        >
+          <fh-form-item :label="t('trans0816')">
+            <fh-switch v-model="serverForm.enable" />
+          </fh-form-item>
+          <template v-if="serverForm.enable">
+            <fh-form-item :label="$t('trans0053')" prop="username">
+              <fh-input v-model="serverForm.username"></fh-input>
+            </fh-form-item>
+            <fh-form-item :label="$t('trans0196')" prop="password">
+              <fh-input v-model="serverForm.password" type="password" show-password></fh-input>
+            </fh-form-item>
+            <fh-form-item :label="$t('trans0754')" prop="port">
+              <fh-input v-model="serverForm.port"></fh-input>
+            </fh-form-item>
+            <fh-form-item :label="$t('trans0817')" prop="rootPath">
+              <fh-input v-model="serverForm.rootPath"></fh-input>
+              <template #extra>
+                {{ $t('trans0819') }}
+              </template>
+            </fh-form-item>
+          </template>
+          <fh-form-item class="form__submit-btn">
+            <fh-button @click="save" block>
+              {{ $t('trans0002') }}
+            </fh-button>
+          </fh-form-item>
+        </fh-form>
+      </template>
+      <div style="padding-left: 20px; font-size: 16px" v-else>
+        {{ $t('trans0821') }}
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import {
+  isValidInteger,
+  isValidLength,
+  isValidSymbol,
+  isValidUnixPath,
+  format,
+  specialChar,
+} from '@/util/tool'
+import { getUsb, usbDownload, editUsbServer, getUsbDownloadList } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
 
+enum DownloadStatus {
+  done = '0',
+  failed = '2',
+  doing = '1',
+}
 const { t } = useI18n()
-const urlAppend = 'ftp://'
+const UrlAppend = 'ftp://'
+const DownloadStatusText = {
+  [DownloadStatus.done]: t('trans0748'),
+  [DownloadStatus.failed]: t('trans0750'),
+  [DownloadStatus.doing]: t('trans0765'),
+}
+const { convertBooleanStatus } = useDataClean()
+const clientFormRef = ref(null)
+const serverFormRef = ref(null)
+const hasUsbDevice = ref(false)
 const clientForm = reactive({
   url: '',
   port: '',
   username: '',
   password: '',
-  usbDevice: '',
   path: '',
 })
 const serverForm = reactive({
@@ -96,7 +128,6 @@ const serverForm = reactive({
   username: '',
   password: '',
   port: '',
-  usbDevice: '',
   rootPath: '',
 })
 const clientFormRules = {
@@ -111,6 +142,10 @@ const clientFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidInteger(value, 1, 65535),
+      message: t('trans0452'),
+    },
   ],
   username: [
     {
@@ -123,11 +158,23 @@ const clientFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidLength(value, 8, 64),
+      message: format(t('trans0003'), [t('trans0185'), 8, 64]),
+    },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: format(t('trans0013'), [t('trans0185'), format(t('trans0042'), [specialChar])]),
+    },
   ],
   path: [
     {
       rule: (value) => value,
       message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidUnixPath(value),
+      message: t('trans0830'),
     },
   ],
 }
@@ -137,6 +184,10 @@ const serverFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidInteger(value, 1, 65535),
+      message: t('trans0452'),
+    },
   ],
   username: [
     {
@@ -149,11 +200,23 @@ const serverFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidLength(value, 8, 64),
+      message: format(t('trans0003'), [t('trans0185'), 8, 64]),
+    },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: format(t('trans0013'), [t('trans0185'), format(t('trans0042'), [specialChar])]),
+    },
   ],
-  path: [
+  rootPath: [
     {
       rule: (value) => value,
       message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidUnixPath(value),
+      message: t('trans0830'),
     },
   ],
 }
@@ -162,10 +225,10 @@ const columns = reactive([
     key: 'username',
     title: t('trans0812'),
   },
-  {
-    key: 'password',
-    title: t('trans0812'),
-  },
+  // {
+  //   key: 'password',
+  //   title: t('trans0812'),
+  // },
   {
     key: 'port',
     title: t('trans0754'),
@@ -179,20 +242,61 @@ const columns = reactive([
     title: t('trans0812'),
   },
   {
-    key: 'status',
+    key: 'statusAilas',
     title: t('trans0166'),
   },
 ])
 const data = []
 
-const clientUsbDeviceText = computed(() => {
-  return clientForm.usbDevice ? clientForm.usbDevice : t('trans0821')
-})
-const serverUsbDeviceText = computed(() => {
-  return serverForm.usbDevice ? serverForm.usbDevice : t('trans0821')
-})
-const download = () => {
-  // todo
+const getUsbInfo = () => {
+  getUsb().then(({ data }) => {
+    hasUsbDevice.value = convertBooleanStatus(data.has_usb)
+    if (hasUsbDevice.value) {
+      getDownloadList()
+    }
+  })
 }
-const save = () => {}
+
+const download = () => {
+  if (!clientFormRef.value.validate()) return
+  const data = {
+    url: clientForm.url,
+    port: clientForm.port,
+    username: clientForm.username,
+    password: clientForm.password,
+    path: clientForm.path,
+  }
+  usbDownload([data])
+}
+const save = () => {
+  if (!serverFormRef.value.validate()) return
+  const data = {
+    enable: convertBooleanStatus(serverForm.enable),
+    port: serverForm.port,
+    username: serverForm.username,
+    password: serverForm.password,
+    root_path: serverForm.rootPath,
+  }
+  editUsbServer(data)
+}
+
+const getDownloadList = () => {
+  getUsbDownloadList().then(({ data }) => {
+    const { items } = data
+    const tableData = []
+    items.forEach((item, i) => {
+      tableData.push({
+        ...item,
+        index: i,
+        statusAilas: DownloadStatusText[item.status],
+      })
+    })
+    Object.assign(data, tableData)
+    // data.splice(0, data.length, ...tableData)
+  })
+}
+
+onMounted(() => {
+  getUsbInfo()
+})
 </script>

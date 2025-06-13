@@ -4,51 +4,85 @@
       <h1 class="page__title">{{ $t('trans0823') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form form--padding" :model="form" :rules="rules">
+      <fh-form
+        class="form form--padding"
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        v-if="hasUsbDevice"
+      >
         <fh-form-item :label="t('trans0824')">
           <fh-switch v-model="form.enable" />
         </fh-form-item>
-        <template v-if="form.enable">
-          <fh-form-item :label="$t('trans0813')">
-            {{ usbDeviceText }}
-          </fh-form-item>
-          <fh-form-item :label="$t('trans0825')" prop="path" v-if="form.usbDevice">
-            <fh-input v-model="form.sharingpath"></fh-input>
-            <template #extra>
-              {{ $t('trans0826') }}
-            </template>
-          </fh-form-item>
-        </template>
+        <fh-form-item :label="$t('trans0825')" prop="sharingpath" v-if="form.enable">
+          <fh-input v-model="form.sharingpath"></fh-input>
+          <template #extra>
+            {{ $t('trans0826') }}
+          </template>
+        </fh-form-item>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
             {{ $t('trans0224') }}
           </fh-button>
         </fh-form-item>
       </fh-form>
+      <div style="padding-left: 20px; font-size: 16px" v-else>
+        {{ $t('trans0821') }}
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { getUsb, editMediaSharing, getMediaSharing } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
+import { isValidUnixPath } from '@/util/tool'
 
 const { t } = useI18n()
+const { convertBooleanStatus } = useDataClean()
+const hasUsbDevice = ref(false)
+const formRef = ref(null)
 const form = reactive({
   enable: false,
-  usbDevice: '',
   sharingpath: '',
 })
 const rules = {
-  path: [
+  sharingpath: [
     {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidUnixPath(value),
+      message: t('trans0830'),
+    },
   ],
 }
-const usbDeviceText = computed(() => {
-  return form.usbDevice ? form.usbDevice : t('trans0821')
+const getUsbInfo = () => {
+  getUsb().then(({ data }) => {
+    hasUsbDevice.value = convertBooleanStatus(data.has_usb)
+    if (hasUsbDevice.value) {
+      getMediaSharingData()
+    }
+  })
+}
+const getMediaSharingData = () => {
+  getMediaSharing().then(({ data }) => {
+    form.enable = convertBooleanStatus(data.enable)
+  })
+}
+const save = () => {
+  if (!formRef.value.validate()) return
+  const data = {
+    enable: convertBooleanStatus(form.enable),
+    sharingpath: form.sharingpath,
+  }
+  editMediaSharing(data)
+}
+
+onMounted(() => {
+  getUsbInfo()
 })
-const save = () => {}
 </script>

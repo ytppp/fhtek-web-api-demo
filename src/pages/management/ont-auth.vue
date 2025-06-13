@@ -122,9 +122,9 @@ const getOntAuthData = () => {
   getOntAuth().then((res) => {
     const { data } = res
     form.authType = data.auth_type
-    form.loid.loid = '' // data.loid.loid
+    form.loid.loid = data.loid.loid
     form.loid.checkCode = data.loid.checkcode
-    form.password.password = '' // data.sn.password
+    form.password.password = data.sn.password
     form.password.sn = data.sn.sn
   })
 }
@@ -147,6 +147,6 @@ const save = () => {
 }
 
 onMounted(() => {
-  getOntAuthData()
+  // getOntAuthData()
 })
 </script>
