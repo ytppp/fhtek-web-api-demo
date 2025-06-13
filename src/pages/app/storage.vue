@@ -223,11 +223,11 @@ const serverFormRules = {
 const columns = reactive([
   {
     key: 'username',
-    title: t('trans0812'),
+    title: t('trans0053'),
   },
   // {
   //   key: 'password',
-  //   title: t('trans0812'),
+  //   title: t('trans0196'),
   // },
   {
     key: 'port',
@@ -239,7 +239,7 @@ const columns = reactive([
   },
   {
     key: 'path',
-    title: t('trans0812'),
+    title: t('trans0814'),
   },
   {
     key: 'statusAilas',
@@ -260,7 +260,7 @@ const getUsbInfo = () => {
 const download = () => {
   if (!clientFormRef.value.validate()) return
   const data = {
-    url: clientForm.url,
+    url: `${UrlAppend}${clientForm.url}`,
     port: clientForm.port,
     username: clientForm.username,
     password: clientForm.password,
