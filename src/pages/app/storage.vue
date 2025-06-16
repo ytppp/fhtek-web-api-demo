@@ -41,7 +41,11 @@
           </fh-form-item>
         </fh-form>
         <div class="page__table">
-          <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false"></fh-table>
+          <fh-table
+            :columns="columns"
+            :data-source="tableData"
+            :show-row-checkbox="false"
+          ></fh-table>
         </div>
         <div class="page__sub-header">
           <h2 class="page__title">{{ $t('trans0815') }}</h2>
@@ -65,7 +69,7 @@
             <fh-form-item :label="$t('trans0754')" prop="port">
               <fh-input v-model="serverForm.port"></fh-input>
             </fh-form-item>
-            <fh-form-item :label="$t('trans0817')" prop="rootPath">
+            <fh-form-item :label="$t('trans0825')" prop="rootPath">
               <fh-input v-model="serverForm.rootPath"></fh-input>
               <template #extra>
                 {{ $t('trans0819') }}
@@ -246,7 +250,7 @@ const columns = reactive([
     title: t('trans0166'),
   },
 ])
-const data = []
+const tableData = reactive([])
 
 const getUsbInfo = () => {
   getUsb().then(({ data }) => {
@@ -283,16 +287,15 @@ const save = () => {
 const getDownloadList = () => {
   getUsbDownloadList().then(({ data }) => {
     const { items } = data
-    const tableData = []
+    const table = []
     items.forEach((item, i) => {
-      tableData.push({
+      table.push({
         ...item,
         index: i,
         statusAilas: DownloadStatusText[item.status],
       })
     })
-    Object.assign(data, tableData)
-    // data.splice(0, data.length, ...tableData)
+    Object.assign(tableData, table)
   })
 }
 
