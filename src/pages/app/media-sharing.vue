@@ -14,15 +14,15 @@
         <fh-form-item :label="t('trans0824')">
           <fh-switch v-model="form.enable" />
         </fh-form-item>
-        <fh-form-item :label="$t('trans0825')" prop="sharingpath" v-if="form.enable">
-          <fh-input v-model="form.sharingpath"></fh-input>
+        <fh-form-item :label="$t('trans0825')" prop="sharingPath" v-if="form.enable">
+          <fh-input v-model="form.sharingPath"></fh-input>
           <template #extra>
             {{ $t('trans0826') }}
           </template>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
-            {{ $t('trans0224') }}
+            {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
       </fh-form>
@@ -46,10 +46,10 @@ const hasUsbDevice = ref(false)
 const formRef = ref(null)
 const form = reactive({
   enable: false,
-  sharingpath: '',
+  sharingPath: '',
 })
 const rules = {
-  sharingpath: [
+  sharingPath: [
     {
       rule: (value) => value,
       message: t('trans0004'),
@@ -71,13 +71,14 @@ const getUsbInfo = () => {
 const getMediaSharingData = () => {
   getMediaSharing().then(({ data }) => {
     form.enable = convertBooleanStatus(data.enable)
+    form.sharingPath = data.sharing_path
   })
 }
 const save = () => {
   if (!formRef.value.validate()) return
   const data = {
     enable: convertBooleanStatus(form.enable),
-    sharingpath: form.sharingpath,
+    sharing_path: form.sharingPath,
   }
   editMediaSharing(data)
 }
