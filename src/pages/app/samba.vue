@@ -47,6 +47,12 @@ export default {
         confirmPwd: '',
       },
       rules: {
+        username: [
+          {
+            rule: (value) => value,
+            message: this.$t('trans0004'),
+          },
+        ],
         pwd: [
           {
             rule: (value) => value,
@@ -111,6 +117,7 @@ export default {
     getSambaData() {
       getSamba().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
+        this.form.username = data.username
       })
     },
     getUsbInfo() {

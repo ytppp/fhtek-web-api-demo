@@ -64,7 +64,7 @@ let menus = [
       },
       {
         url: '/status/voip',
-        text: 'trans0718',
+        text: 'trans0732',
         config,
       },
       {
