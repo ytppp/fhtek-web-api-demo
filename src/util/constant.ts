@@ -10,11 +10,6 @@ export const Role = {
   super: 'root',
   admin: 'admin',
 }
-export const MeshRole = {
-  auto: '0',
-  controller: '1',
-  agent: '2',
-}
 export const FileType = {
   config: '1',
   firmware: '4',
@@ -99,4 +94,10 @@ export enum SsidText {
   ssidac2 = 'SSIDAC2',
   ssidac3 = 'SSIDAC3',
   ssidac4 = 'SSIDAC4',
+}
+
+export enum MeshRole {
+  auto = '0',
+  controller = '1',
+  agent = '2',
 }

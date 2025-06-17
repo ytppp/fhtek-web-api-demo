@@ -23,6 +23,8 @@ import advancedB5g from '../pages/network/wlan-b5g-advanced.vue'
 import portSetting from '../pages/network/port-setting.vue'
 import staticRoute from '../pages/network/static-route.vue'
 import defaultRoute from '../pages/network/default-route.vue'
+import mesh from '../pages/network/mesh.vue'
+import vpn from '../pages/network/vpn.vue'
 import firewall from '../pages/security/firewall.vue'
 import urlFilter from '../pages/security/url-filter.vue'
 import macFilter from '../pages/security/mac-filter.vue'
@@ -173,6 +175,16 @@ export const router = createRouter({
       path: '/network/default-route',
       name: 'defaultRoute',
       component: defaultRoute,
+    },
+    {
+      path: '/network/mesh',
+      name: 'mesh',
+      component: mesh,
+    },
+    {
+      path: '/network/vpn',
+      name: 'vpn',
+      component: vpn,
     },
     {
       path: '/security/firewall',
