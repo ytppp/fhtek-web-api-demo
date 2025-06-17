@@ -163,6 +163,16 @@ let menus = [
         text: 'trans0795',
         config,
       },
+      {
+        url: '/network/mesh',
+        text: 'trans0568',
+        config,
+      },
+      {
+        url: '/network/vpn',
+        text: 'trans0647',
+        config,
+      },
     ],
   },
   {

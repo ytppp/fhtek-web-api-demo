@@ -395,3 +395,16 @@ export const getMediaSharing = (): Promise<ApiResponse<any>> => {
     method: 'storage.media_sharing:get',
   })
 }
+
+export const getMesh = (): Promise<ApiResponse<any>> => {
+  return http.get('mesh.settings:get')
+}
+export const setMesh = (params): Promise<ApiResponse<any>> => {
+  return http.post('mesh.settings:edit', createData(params))
+}
+export const triggerMesh = (params): Promise<ApiResponse<any>> => {
+  return http.post('mesh.trigger:edit', createData(params))
+}
+export const getTopology = (): Promise<ApiResponse<any>> => {
+  return http.get('mesh.topology:get', {}, { loading: false })
+}

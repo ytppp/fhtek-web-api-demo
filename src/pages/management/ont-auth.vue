@@ -147,6 +147,6 @@ const save = () => {
 }
 
 onMounted(() => {
-  // getOntAuthData()
+  getOntAuthData()
 })
 </script>

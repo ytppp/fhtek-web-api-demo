@@ -58,10 +58,15 @@
               <fh-switch v-model="wan.enableNat" />
             </fh-form-item>
           </template>
-          <fh-form-item :label="t('trans0777')" v-if="isShowMultiVlanId" prop="multiVlanId">
-            <fh-input v-model="wan.multiVlanId"></fh-input>
-            <template #extra>{{ rangeTips(t('trans0777'), 1, 4094) }}</template>
-          </fh-form-item>
+          <template v-if="isIptvWan">
+            <fh-form-item :label="t('trans0777')" prop="multiVlanId">
+              <fh-input v-model="wan.multiVlanId"></fh-input>
+              <template #extra>{{ rangeTips(t('trans0777'), 1, 4094) }}</template>
+            </fh-form-item>
+            <fh-form-item :label="igmpVersionText">
+              <fh-select v-model="wan.igmpVersion" :options="igmpVersionOptions"></fh-select>
+            </fh-form-item>
+          </template>
           <fh-form-item :label="t('trans0771')">
             <fh-select v-model="wan.vlan.mode" :options="vlanModeOptions"></fh-select>
           </fh-form-item>
@@ -229,6 +234,11 @@ enum PrefixMode {
   auto = 'auto',
   manually = 'manually',
 }
+enum IgmpVersion {
+  v1 = '1',
+  v2 = '2',
+  v3 = '3',
+}
 const maxRuleNum = 8
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
@@ -343,6 +353,20 @@ const vlanModeOptions = [
     text: t('trans0774'),
   },
 ]
+const igmpVersionOptions = [
+  {
+    value: IgmpVersion.v1,
+    text: 'V1',
+  },
+  {
+    value: IgmpVersion.v2,
+    text: 'V2',
+  },
+  {
+    value: IgmpVersion.v3,
+    text: 'V3',
+  },
+]
 const prefixModeOptions = [
   {
     value: PrefixMode.auto,
@@ -403,6 +427,7 @@ const wanInitial = () => ({
   },
   protocol: IP.IPv4,
   multiVlanId: '',
+  igmpVersion: IgmpVersion.v2,
   mtu: `${MtuRange.ipAndIpv4[1]}`,
   enableNat: false,
   wanMode: WanMode.route,
@@ -450,7 +475,7 @@ const isPppoe = computed(() => wan.netType === NetType.pppoe)
 const isIpv6PdEnable = computed(() => wan.ipv6.pd.enable)
 const isVlanModeTag = computed(() => wan.vlan.mode === VlanMode.Tag)
 const isIpv6PdModeManually = computed(() => wan.ipv6.pd.mode === PrefixMode.manually)
-const isShowMultiVlanId = computed(() => wan.serviceType === ServiceType.IPTV)
+const isIptvWan = computed(() => wan.serviceType === ServiceType.IPTV)
 const isNotPppoeAndIpv4 = computed(() => !isPppoe.value && wan.protocol === IP.IPv4)
 const isNotPppoeAndIpv6 = computed(() => !isPppoe.value && isIpv6.value)
 const isPppoeAndIpv4 = computed(() => isPppoe.value && wan.protocol === IP.IPv4)
@@ -483,12 +508,15 @@ const isAdd = computed(() => {
 const isEdit = computed(() => {
   return modalType.value === ModalType.edit
 })
-const changeWanMode = () => {
-  wan.serviceType = serviceTypeOptions.value[0].value
-}
+const igmpVersionText = computed(() => {
+  return `${t('trans0375')} ${t('trans0379')}`
+})
 
 watch([() => wan.netType, () => wan.protocol], () => initMtu(), { flush: 'pre' })
 
+const changeWanMode = () => {
+  wan.serviceType = serviceTypeOptions.value[0].value
+}
 const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
 const isGatewaySameSegmentWithIp = (gateway, ip) =>
   !gateway || !ip || getIpBefore(gateway) === getIpBefore(ip)
@@ -591,6 +619,7 @@ const changeWan = () => {
   wan.vlan.p8021 = thisWan.vlan.p8021
   wan.protocol = thisWan.protocol
   wan.multiVlanId = thisWan.multiVlanId
+  wan.igmpVersion = thisWan.igmpversion
   wan.mtu = thisWan.mtu
   wan.enableNat = convertBooleanStatus(thisWan.enableNat)
   wan.wanMode = thisWan.wanMode
@@ -638,6 +667,7 @@ const save = () => {
       },
       protocol: wan.protocol,
       multiVlanId: wan.multiVlanId,
+      igmpversion: wan.igmpVersion,
       mtu: wan.mtu,
       enableNat: convertBooleanStatus(wan.enableNat),
       wanMode: wan.wanMode,
