@@ -217,6 +217,6 @@ const b5gSsidColumns = reactive([
 ])
 const b24gInterfaceData = reactive([])
 const b24gSsidData = reactive([])
-const b5gInterfaceData = reactive()
+const b5gInterfaceData = reactive([])
 const b5gSsidData = reactive([])
 </script>

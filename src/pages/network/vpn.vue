@@ -17,31 +17,24 @@
           </fh-radio-group>
         </fh-form-item>
         <fh-form-item :label="statusText">
-          <fh-radio-group v-model="vpnForm.connStatus">
-            <fh-radio
-              name="action"
-              v-for="status in connStatusList"
-              :key="status.value"
-              :label="status.value"
-            >
-              {{ status.text }}
-            </fh-radio>
-          </fh-radio-group>
+          <fh-switch v-model="vpnForm.enable"></fh-switch>
         </fh-form-item>
-        <fh-form-item :label="serverText" prop="server">
-          <fh-input name="serverIpAddr" v-model="vpnForm.server"></fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0053')" prop="username">
-          <fh-input name="username" v-model="vpnForm.username"></fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0196')" prop="password">
-          <fh-input
-            name="password"
-            type="password"
-            show-password
-            v-model="vpnForm.password"
-          ></fh-input>
-        </fh-form-item>
+        <template v-if="vpnForm.enable">
+          <fh-form-item :label="serverText" prop="server">
+            <fh-input name="serverIpAddr" v-model="vpnForm.server"></fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0053')" prop="username">
+            <fh-input name="username" v-model="vpnForm.username"></fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0196')" prop="password">
+            <fh-input
+              name="password"
+              type="password"
+              show-password
+              v-model="vpnForm.password"
+            ></fh-input>
+          </fh-form-item>
+        </template>
         <fh-form-item class="form__submit-btn">
           <fh-button id="submitbutton" block @click="save">{{ $t('trans0002') }}</fh-button>
         </fh-form-item>
@@ -62,14 +55,10 @@ import {
   ip2int,
   isValidDomain,
 } from '@/util/tool'
-const ConnStatus = {
-  connected: 'add',
-  disconnected: 'delete',
-}
-const VpnStatus = {
-  up: 'up',
-  down: 'down',
-}
+import { getVpn, setVpn, getLan } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
+
+const { convertBooleanStatus } = useDataClean()
 const VpnType = {
   l2tp: 'l2tp',
   pptp: 'pptp',
@@ -79,24 +68,15 @@ export default {
   data() {
     return {
       vpnForm: {
-        connStatus: '',
+        type: VpnType.l2tp,
+        enable: false,
         server: '',
         username: '',
         password: '',
       },
       lanIp: '',
-      vpnTypeInitial: '',
-      connStatusInitial: '',
-      connStatusList: [
-        {
-          value: ConnStatus.connected,
-          text: this.$t('trans0652'),
-        },
-        {
-          value: ConnStatus.disconnected,
-          text: this.$t('trans0653'),
-        },
-      ],
+      vpnTypeInitial: VpnType.l2tp,
+      enableInitial: false,
       vpnTypes: [
         {
           value: VpnType.l2tp,
@@ -175,9 +155,6 @@ export default {
     }
   },
   computed: {
-    isVpnStatusUp() {
-      return this.vpnForm.status === VpnStatus.up
-    },
     isVpnTypeL2tp() {
       return this.vpnForm.type === VpnType.l2tp
     },
@@ -194,11 +171,17 @@ export default {
   methods: {
     save() {
       if (this.$refs.vpnForm.validate()) {
-        // todo
+        setVpn({
+          type: this.vpnForm.type,
+          enable: convertBooleanStatus(this.vpnForm.enable),
+          server: this.vpnForm.server,
+          username: this.vpnForm.username,
+          password: this.vpnForm.password,
+        })
       }
     },
     changeVpnType() {
-      if (this.connStatusInitial == ConnStatus.disconnected) {
+      if (!this.enableInitial) {
         return
       }
       let message = ''
@@ -219,20 +202,24 @@ export default {
         },
       })
     },
+    getLanData() {
+      getLan().then(({ data }) => {
+        this.lanIp = data.lan.ip
+      })
+    },
+    getVpnData() {
+      getVpn().then(({ data }) => {
+        this.vpnTypeInitial = this.vpnForm.type = data.type
+        this.enableInitial = this.vpnForm.enable = convertBooleanStatus(data.enable)
+        this.vpnForm.server = data.server
+        this.vpnForm.username = data.username
+        this.vpnForm.password = data.password
+      })
+    },
   },
   created() {
-    // this.lanIp = this.cleanVal(lanIp, '')
-    // this.vpnForm.status = this.cleanVal(status, '')
-    // this.vpnForm.ip = this.cleanVal(ip, '')
-    // this.vpnForm.gateway = this.cleanVal(gateway, '')
-    // this.vpnTypeInitial = this.vpnForm.type = this.cleanVal(type, VpnType.l2tp)
-    // this.connStatusInitial = this.vpnForm.connStatus = this.cleanVal(
-    //   connStatus,
-    //   ConnStatus.connected,
-    // )
-    // this.vpnForm.server = this.cleanVal(server, '')
-    // this.vpnForm.username = this.cleanVal(username, '')
-    // this.vpnForm.password = this.cleanVal(password, '')
+    this.getLanData()
+    this.getVpnData()
   },
 }
 </script>
