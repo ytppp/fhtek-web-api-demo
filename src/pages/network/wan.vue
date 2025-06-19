@@ -96,7 +96,7 @@
         </div>
         <div class="wan-form__col">
           <div class="wan-form__box" v-if="isPppoe">
-            <span class="wan-form__titile">{{ $t('trans0081') }}</span>
+            <span class="wan-form__title">{{ $t('trans0081') }}</span>
             <fh-form-item :label="$t('trans0086')" prop="ppp.user">
               <fh-input v-model="wan.ppp.user"> </fh-input>
             </fh-form-item>
@@ -109,7 +109,7 @@
           </div>
           <template v-if="isIpv4">
             <div class="wan-form__box" v-if="isStatic">
-              <span class="wan-form__titile">{{ $t('trans0456') }}</span>
+              <span class="wan-form__title">{{ $t('trans0456') }}</span>
               <fh-form-item
                 :label="format($t('trans0598'), [$t('trans0456')])"
                 prop="ipv4.static.ip"
@@ -132,7 +132,7 @@
             </div>
           </template>
           <div class="wan-form__box" v-if="isIpv6">
-            <span class="wan-form__titile">{{ $t('trans0457') }}</span>
+            <span class="wan-form__title">{{ $t('trans0457') }}</span>
             <fh-form-item :label="t('trans0779')" v-if="!isStatic">
               <fh-switch v-model="wan.ipv6.isSlaac" />
             </fh-form-item>
@@ -1090,7 +1090,7 @@ onMounted(() => {
     padding: 8px;
     position: relative;
   }
-  .wan-form__titile {
+  .wan-form__title {
     position: absolute;
     top: -6px;
     left: 0px;

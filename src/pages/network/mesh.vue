@@ -289,9 +289,14 @@ const getMeshData = () => {
 const doingHandle = () => {
   getTopoData()
 }
-const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle)
+const { createCountDown } = useCountDown(timeout, interval, doingHandle)
 onMounted(() => {
   getMeshData()
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    chart.value && chart.value.resize()
+  })
 })
 </script>
 
