@@ -173,6 +173,23 @@ let menus = [
         text: 'trans0647',
         config,
       },
+      {
+        url: '/network/voip',
+        text: 'trans0732',
+        config,
+        children: [
+          {
+            url: '/network/wlan/basic-voip',
+            text: 'trans0546',
+            config,
+          },
+          {
+            url: '/network/wlan/advanced-voip',
+            text: 'trans0579',
+            config,
+          },
+        ],
+      },
     ],
   },
   {

@@ -1,3 +1,4 @@
+3
 <template>
   <div class="page">
     <div class="page__header">
@@ -229,9 +230,9 @@ const saveWps = (order: StartAndStop) => {
 const doingHandle = () => {
   getWpsData()
 }
-const doneHandle = () => {
-  wps.status = WpsStatus.idle
-}
+// const doneHandle = () => {
+//   wps.status = WpsStatus.idle
+// }
 const getWpsData = () => {
   wps.id = wifi.id
   loading.value = true
@@ -261,7 +262,7 @@ const getWpsData = () => {
     }
   })
 }
-const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle, doneHandle)
+const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle)
 const getWifiData = (id?: string) => {
   getWifi2g().then(({ data }) => {
     const { items } = data
