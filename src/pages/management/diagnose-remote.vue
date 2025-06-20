@@ -4,7 +4,7 @@
       <h1 class="page__title">{{ $t('trans0803') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form form--padding wifi-form" :model="remote">
+      <fh-form class="form form--padding" :model="remote">
         <fh-form-item :label="$t('trans0140')">
           <fh-select v-model="remote.interface" :options="interfaceOpts"> </fh-select>
         </fh-form-item>

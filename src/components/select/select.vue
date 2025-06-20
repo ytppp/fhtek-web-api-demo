@@ -197,7 +197,7 @@ onMounted(() => {
   }
   .select__popup-item {
     list-style: none;
-    padding: 17px 10px;
+    padding: 10px;
     line-height: 1;
     cursor: pointer;
     width: 100%;

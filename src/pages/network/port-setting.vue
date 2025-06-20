@@ -4,7 +4,7 @@
       <h1 class="page__title">{{ $t('trans0751') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form modal-form" ref="formRef" :model="form">
+      <fh-form class="form" ref="formRef" :model="form">
         <fh-form-item label="LAN1">
           <fh-select v-model="form.lan1" :options="modeList"> </fh-select>
         </fh-form-item>

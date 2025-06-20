@@ -36,7 +36,9 @@
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
-        <fh-alert type="info" :title="$t('trans0121')" show-icon :center="false"> </fh-alert>
+        <fh-form-item>
+          <fh-alert type="info" :title="$t('trans0121')" show-icon :center="false" />
+        </fh-form-item>
       </fh-form>
     </div>
   </div>
