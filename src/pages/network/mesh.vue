@@ -8,14 +8,14 @@
         <h2 class="page__title">{{ $t('trans0568') }}</h2>
       </div>
       <fh-form class="form form--padding" :model="form">
-        <fh-form-item :label="$t('trans0641')" label-position="left">
+        <fh-form-item :label="$t('trans0641')">
           <fh-switch v-model="form.enable" />
         </fh-form-item>
         <template v-if="form.enable">
-          <fh-form-item :label="$t('trans0835')" label-position="left">
+          <fh-form-item :label="$t('trans0835')">
             <fh-switch v-model="form.enableSteering" />
           </fh-form-item>
-          <fh-form-item :label="$t('trans0569')" label-position="left">
+          <fh-form-item :label="$t('trans0569')">
             <div>{{ roleText }}</div>
           </fh-form-item>
         </template>
