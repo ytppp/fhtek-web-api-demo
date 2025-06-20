@@ -7,7 +7,7 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0119') }}</h2>
       </div>
-      <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
+      <fh-form class="form form--padding" ref="wifiFormRef" :model="wifi" :rules="rules">
         <fh-form-item :label="$t('trans0711')">
           <fh-select @change="changeSsid" v-model="wifi.id" :options="ssidOpts"> </fh-select>
         </fh-form-item>
@@ -25,8 +25,10 @@
         </fh-form-item>
         <fh-form-item :label="$t('trans0031')">
           <fh-select v-model="wifi.encrypt" :options="encryptsOpts"> </fh-select>
+          <template #extra>
+            <fh-alert v-if="encryptTip" :title="encryptTip" type="info" show-icon />
+          </template>
         </fh-form-item>
-        <fh-alert v-if="encryptTip" :title="encryptTip" type="info" show-icon> </fh-alert>
         <fh-form-item :label="$t('trans0030')" v-if="!isEncryptNone" prop="password">
           <fh-input
             v-model="wifi.password"
@@ -50,7 +52,7 @@
         <div class="page__sub-header">
           <h2 class="page__title">{{ $t('trans0799') }}</h2>
         </div>
-        <fh-form class="form form--padding wifi-form" :wps="wifi">
+        <fh-form class="form form--padding" :wps="wifi">
           <fh-form-item :label="$t('trans0800')">
             {{ wpsStatusText }}
           </fh-form-item>
@@ -270,16 +272,3 @@ onMounted(() => {
   getWifiData()
 })
 </script>
-
-<style lang="less">
-.wifi-form {
-  .form-item {
-    .form-item__extra {
-      margin-left: 0px !important;
-    }
-  }
-  .page__sub-header {
-    margin-bottom: 20px;
-  }
-}
-</style>

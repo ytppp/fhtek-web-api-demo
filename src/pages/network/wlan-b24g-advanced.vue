@@ -4,7 +4,7 @@
       <h1 class="page__title">{{ format($t('trans0611'), [$t('trans0049')]) }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
+      <fh-form class="form form--padding" ref="wifiFormRef" :model="wifi" :rules="rules">
         <fh-form-item :label="format($t('trans0027'), [$t('trans0049')])">
           <fh-switch @change="switchEnable" v-model="wifi.enable"> </fh-switch>
         </fh-form-item>
@@ -280,16 +280,3 @@ onMounted(() => {
   getWifi2gData()
 })
 </script>
-
-<style lang="less">
-.wifi-form {
-  .form-item {
-    .form-item__extra {
-      margin-left: 0px !important;
-    }
-  }
-  .page__sub-header {
-    margin-bottom: 20px;
-  }
-}
-</style>

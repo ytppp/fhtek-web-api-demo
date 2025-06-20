@@ -189,7 +189,7 @@ onMounted(() => {
     right: -1px;
     top: 52px;
     font-size: 14px;
-    max-height: 336px;
+    max-height: 238px;
     background: @select-popup-background-color;
     border-radius: 5px;
     border: 1px solid @select-popup-border-color;
@@ -197,7 +197,7 @@ onMounted(() => {
   }
   .select__popup-item {
     list-style: none;
-    padding: 17px 10px;
+    padding: 10px;
     line-height: 1;
     cursor: pointer;
     width: 100%;

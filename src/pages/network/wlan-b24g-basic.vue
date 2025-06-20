@@ -8,7 +8,7 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0118') }}</h2>
       </div>
-      <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
+      <fh-form class="form form--padding" ref="wifiFormRef" :model="wifi" :rules="rules">
         <fh-form-item :label="$t('trans0711')">
           <fh-select @change="changeSsid" v-model="wifi.id" :options="ssidOpts"> </fh-select>
         </fh-form-item>
@@ -53,7 +53,7 @@
         <div class="page__sub-header">
           <h2 class="page__title">{{ $t('trans0799') }}</h2>
         </div>
-        <fh-form class="form form--padding wifi-form" :wps="wifi">
+        <fh-form class="form form--padding" :wps="wifi">
           <fh-form-item :label="$t('trans0800')">
             {{ wpsStatusText }}
           </fh-form-item>
@@ -273,16 +273,3 @@ onMounted(() => {
   getWifiData()
 })
 </script>
-
-<style lang="less">
-.wifi-form {
-  .form-item {
-    .form-item__extra {
-      margin-left: 0px !important;
-    }
-  }
-  .page__sub-header {
-    margin-bottom: 20px;
-  }
-}
-</style>

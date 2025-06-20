@@ -4,7 +4,7 @@
       <h1 class="page__title">{{ $t('trans0059') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form form--no-center" ref="form" :model="form">
+      <fh-form class="form" ref="form" :model="form">
         <fh-form-item :label="$t('trans0059')">
           <fh-switch v-model="form.enable" @change="switchEnable"></fh-switch>
         </fh-form-item>
