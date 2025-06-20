@@ -409,7 +409,7 @@ export default {
     .menu-item {
       .menu-item__main {
         flex-wrap: wrap;
-        padding: 8px 20px;
+        padding: 12px 20px;
       }
       &:first-child {
         margin-top: 0;
@@ -422,7 +422,7 @@ export default {
       .child-menu-item {
         width: 100%;
         .child-menu-item__main {
-          padding: 8px 30px;
+          padding: 12px 30px;
         }
       }
     }

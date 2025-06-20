@@ -1,5 +1,3 @@
-import { translate } from '@/i18n/index'
-
 export const customers = {
   demo: 'demo',
   fhtek: 'fhtek',
