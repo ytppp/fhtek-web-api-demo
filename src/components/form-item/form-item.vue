@@ -93,9 +93,7 @@ const labelStyle = computed(() => {
 const contentStyle = computed(() => {
   const ret = {}
   if (labelPositionCom.value === 'top') return ret
-  if (!props.label && !props.labelWidth) return ret
   if (labelWidthCom.value === 'auto') {
-    // don't konw how to do
     if (props.labelWidth === 'auto') {
       ret.marginLeft = computedLabelWidth.value
     } else if (form.labelWidth.value === 'auto') {
@@ -209,29 +207,30 @@ defineExpose({
     font-size: 16px;
     color: #000;
     font-weight: 500;
-    height: 30px;
-    line-height: 30px;
     &.form-item__label--top {
       float: none;
       width: 100%;
+      height: 30px;
+      line-height: 30px;
     }
     &.form-item__label--left,
     &.form-item__label--right {
       float: left;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      padding-right: 10px;
-      &.form-item__label {
-        height: 40px;
-        line-height: 40px;
-      }
+      // overflow: hidden;
+      // white-space: nowrap;
+      // text-overflow: ellipsis;
+      padding-right: 30px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
     }
     &.form-item__label--left {
       text-align: left;
+      justify-content: flex-start;
     }
     &.form-item__label--right {
       text-align: right;
+      justify-content: flex-end;
     }
   }
   .form-item__content {

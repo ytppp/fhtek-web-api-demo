@@ -29,12 +29,16 @@
             {{ $t('trans0574') }}
           </fh-button>
         </fh-form-item>
-        <div class="mesh-tip-btn">
-          <fh-button type="text" @click="visible = true">
-            {{ $t('trans0061') }}
-          </fh-button>
-        </div>
-        <fh-alert type="info" :title="meshTip" show-icon :center="false"> </fh-alert>
+        <fh-form-item>
+          <div class="mesh-tip-btn">
+            <fh-button type="text" @click="visible = true">
+              {{ $t('trans0061') }}
+            </fh-button>
+          </div>
+        </fh-form-item>
+        <fh-form-item>
+          <fh-alert type="info" :title="meshTip" show-icon :center="false" />
+        </fh-form-item>
       </fh-form>
       <fh-modal class="mesh-tip-modal" v-model:visible="visible" width="50%">
         <template #body>

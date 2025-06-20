@@ -334,7 +334,9 @@ const channelOpts = computed(() => {
   })
 })
 const changeMode = () => {
-  wifi.bw = bwOpts.value[0].value
+  if (!bwOpts.value.find((item) => item.value === wifi.bw)) {
+    wifi.bw = bwOpts.value[0].value
+  }
 }
 const switchEnable = (val) => {
   if (!val) {

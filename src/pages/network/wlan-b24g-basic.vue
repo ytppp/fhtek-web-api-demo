@@ -25,7 +25,7 @@
           <fh-input v-model="wifi.sta"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0031')">
-          <fh-select v-model="wifi.encrypt" :options="encrypts"> </fh-select>
+          <fh-select v-model="wifi.encrypt" :options="encryptsOpts"> </fh-select>
           <template #extra>
             <fh-alert v-if="encryptTip" :title="encryptTip" type="info" show-icon />
           </template>
@@ -78,7 +78,7 @@ import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } fro
 import { useDataClean } from '@/hooks/data-clean'
 import { getWifi2g, setWifi2g, getWps, setWps } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
-import { StartAndStop, Encrypts, WpsStatus, SsidText } from '@/util/constant'
+import { StartAndStop, Encrypts, encryptsOpts, WpsStatus, SsidText, Ssid1 } from '@/util/constant'
 
 defineOptions({
   name: 'b24gBasicPage',
@@ -90,44 +90,6 @@ const { convertBooleanStatus, defaultVal } = useDataClean()
 const wifiFormRef = ref(null)
 const timeout = 2 * 60 * 1000
 const interval = 5000
-const encrypts = [
-  {
-    value: Encrypts.none,
-    text: 'Open',
-  },
-  {
-    value: Encrypts.wpaWpa2PskTkip,
-    text: 'WPA/WPA2-PSK(TKIP)',
-  },
-  {
-    value: Encrypts.wpaWpa2PskCcmp,
-    text: 'WPA/WPA2-PSK(CCMP)',
-  },
-  {
-    value: Encrypts.wpaWpa2PskTkipCcmp,
-    text: 'WPA/WPA2-PSK(TKIP|CCMP)',
-  },
-  {
-    value: Encrypts.wpa2Wpa3PskSaeCcmp,
-    text: 'WPA2/WPA3-PSK/SAE(CCMP)',
-  },
-  {
-    value: Encrypts.wpaPskCcmp,
-    text: 'WPA-PSK(CCMP)',
-  },
-  {
-    value: Encrypts.wpaPskTkip,
-    text: 'WPA-PSK(TKIP)',
-  },
-  {
-    value: Encrypts.wpa2PskTkip,
-    text: 'WPA2-PSK(TKIP)',
-  },
-  {
-    value: Encrypts.wpa3SaeCcmp,
-    text: 'WPA3-SAE(CCMP)',
-  },
-]
 const ssidOpts = reactive([])
 const ssidList = reactive([])
 const wifi = reactive({
@@ -210,7 +172,7 @@ const encryptTip = computed(() => {
   return ''
 })
 const isEnableWps = computed(() => {
-  return wifi.enableWpsInitial && wifi.enableInitial
+  return wifi.enableWpsInitial && wifi.enableInitial && wifi.id === Ssid1
 })
 
 const start = () => {
@@ -230,9 +192,6 @@ const saveWps = (order: StartAndStop) => {
 const doingHandle = () => {
   getWpsData()
 }
-// const doneHandle = () => {
-//   wps.status = WpsStatus.idle
-// }
 const getWpsData = () => {
   wps.id = wifi.id
   loading.value = true

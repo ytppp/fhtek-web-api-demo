@@ -181,7 +181,7 @@ const showClear = computed(() => {
   )
 })
 const showPwdVisible = computed(() => {
-  return props.showPassword && !inputDisabled.value && !props.readonly && focused.value
+  return props.showPassword && !inputDisabled.value && !props.readonly //  && focused.value
 })
 const upperLimit = computed(() => {
   return attrs.maxlength
