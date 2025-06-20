@@ -117,11 +117,7 @@ export enum MeshRole {
   agent = '2',
 }
 
-export const encryptsOpts = [
-  {
-    value: Encrypts.none,
-    text: translate('trans0033'),
-  },
+export const encrypts = [
   {
     value: Encrypts.wpa2PskCcmp,
     text: 'WPA2-PSK(CCMP)',

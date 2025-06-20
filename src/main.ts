@@ -8,9 +8,9 @@ import '@/assets/style/main.less'
 
 const app = createApp(App)
 
-registerComponents(app)
 registerI18n(app)
 registerRouter(app)
+registerComponents(app)
 setFavicon(getPublicFile(`${VITE_CUSTOMER_CONFIG.favicon}`))
 setDocTitle(VITE_CUSTOMER_CONFIG.title)
 

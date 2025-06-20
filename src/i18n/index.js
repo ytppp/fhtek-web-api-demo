@@ -60,7 +60,7 @@ const i18n = createI18n({
   },
 })
 
-const registerComponents = (app) => {
+const registerI18n = (app) => {
   app.use(i18n)
 }
 
@@ -93,4 +93,4 @@ export function toLocaleNumber(
   }
 }
 
-export default registerComponents
+export default registerI18n
