@@ -189,7 +189,7 @@ onMounted(() => {
     right: -1px;
     top: 52px;
     font-size: 14px;
-    max-height: 200px;
+    max-height: 336px;
     background: @select-popup-background-color;
     border-radius: 5px;
     border: 1px solid @select-popup-border-color;

@@ -1,7 +1,7 @@
 import SvgPathWireless from '@/assets/images/wireless.png'
 import SvgPathWired from '@/assets/images/wired.png'
-import SvgPathAgent from '@/assets/images/agent.png'
 import SvgPathController from '@/assets/images/controller.png'
+import SvgPathAgent from '@/assets/images/agent.png'
 const DeviceRoleStr = 'Device role'
 const AlMacStr = 'AL MAC'
 const NeighborAlStr = 'neighbor_al'

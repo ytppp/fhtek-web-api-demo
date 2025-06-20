@@ -24,7 +24,7 @@
           <fh-input v-model="wifi.sta"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0031')">
-          <fh-select v-model="wifi.encrypt" :options="encrypts"> </fh-select>
+          <fh-select v-model="wifi.encrypt" :options="encryptsOpts"> </fh-select>
         </fh-form-item>
         <fh-alert v-if="encryptTip" :title="encryptTip" type="info" show-icon> </fh-alert>
         <fh-form-item :label="$t('trans0030')" v-if="!isEncryptNone" prop="password">
@@ -75,7 +75,7 @@ import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } fro
 import { useDataClean } from '@/hooks/data-clean'
 import { getWifi5g, setWifi5g, getWps, setWps } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
-import { StartAndStop, Encrypts, WpsStatus, SsidText } from '@/util/constant'
+import { StartAndStop, Encrypts, encryptsOpts, WpsStatus, SsidText, Ssidac1 } from '@/util/constant'
 
 defineOptions({
   name: 'b5gBasicPage',
@@ -87,44 +87,6 @@ const { convertBooleanStatus, defaultVal } = useDataClean()
 const wifiFormRef = ref(null)
 const timeout = 2 * 60 * 1000
 const interval = 5000
-const encrypts = [
-  {
-    value: Encrypts.none,
-    text: 'Open',
-  },
-  {
-    value: Encrypts.wpaWpa2PskTkip,
-    text: 'WPA/WPA2-PSK(TKIP)',
-  },
-  {
-    value: Encrypts.wpaWpa2PskCcmp,
-    text: 'WPA/WPA2-PSK(CCMP)',
-  },
-  {
-    value: Encrypts.wpaWpa2PskTkipCcmp,
-    text: 'WPA/WPA2-PSK(TKIP|CCMP)',
-  },
-  {
-    value: Encrypts.wpa2Wpa3PskSaeCcmp,
-    text: 'WPA2/WPA3-PSK/SAE(CCMP)',
-  },
-  {
-    value: Encrypts.wpaPskCcmp,
-    text: 'WPA-PSK(CCMP)',
-  },
-  {
-    value: Encrypts.wpaPskTkip,
-    text: 'WPA-PSK(TKIP)',
-  },
-  {
-    value: Encrypts.wpa2PskTkip,
-    text: 'WPA2-PSK(TKIP)',
-  },
-  {
-    value: Encrypts.wpa3SaeCcmp,
-    text: 'WPA3-SAE(CCMP)',
-  },
-]
 const ssidOpts = reactive([])
 const ssidList = reactive([])
 const wifi = reactive({
@@ -207,7 +169,7 @@ const encryptTip = computed(() => {
   return ''
 })
 const isEnableWps = computed(() => {
-  return wifi.enableWpsInitial && wifi.enableInitial
+  return wifi.enableWpsInitial && wifi.enableInitial && wifi.id === Ssidac1
 })
 
 const start = () => {
@@ -226,9 +188,6 @@ const saveWps = (order: StartAndStop) => {
 }
 const doingHandle = () => {
   getWpsData()
-}
-const doneHandle = () => {
-  wps.status = WpsStatus.idle
 }
 const getWpsData = () => {
   wps.id = wifi.id
@@ -259,7 +218,7 @@ const getWpsData = () => {
     }
   })
 }
-const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle, doneHandle)
+const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle)
 const getWifiData = (id?: string) => {
   getWifi5g().then(({ data }) => {
     const { items } = data

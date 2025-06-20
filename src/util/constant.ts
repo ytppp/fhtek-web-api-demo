@@ -1,3 +1,5 @@
+import { translate } from '@/i18n/index'
+
 export const customers = {
   demo: 'demo',
   fhtek: 'fhtek',
@@ -59,14 +61,14 @@ export enum StartAndStop {
 
 export enum Encrypts {
   none = 'none',
-  wpaWpa2PskTkip = 'psk-mixed+tkip',
+  wpa2PskCcmp = 'psk2+ccmp',
+  wpa2PskTkipCcmp = 'psk2+tkip+ccmp',
+  wpa3SaeCcmp = 'sae',
   wpaWpa2PskCcmp = 'psk-mixed+ccmp',
   wpaWpa2PskTkipCcmp = 'psk-mixed+tkip+ccmp',
-  wpa2Wpa3PskSaeCcmp = 'sae-mixed',
+  wpa2PskWpa3SaeCcmp = 'sae-mixed',
   wpaPskCcmp = 'psk+ccmp',
-  wpaPskTkip = 'psk+tkip',
-  wpa2PskTkip = 'psk2+tkip',
-  wpa3SaeCcmp = 'sae',
+  wpaPskTkipCcmp = 'psk+tkip+ccmp',
 }
 
 export enum WpsStatus {
@@ -81,19 +83,32 @@ export enum FilteringModes {
   whiteList = '1',
 }
 
-export enum SsidText {
-  lan1 = 'LAN1',
-  lan2 = 'LAN2',
-  lan3 = 'LAN3',
-  lan4 = 'LAN4',
-  ssid1 = 'SSID1',
-  ssid2 = 'SSID2',
-  ssid3 = 'SSID3',
-  ssid4 = 'SSID4',
-  ssidac1 = 'SSIDAC1',
-  ssidac2 = 'SSIDAC2',
-  ssidac3 = 'SSIDAC3',
-  ssidac4 = 'SSIDAC4',
+export const Lan1 = 'lan1'
+export const Lan2 = 'lan2'
+export const Lan3 = 'lan3'
+export const Lan4 = 'lan4'
+export const Ssid1 = 'ssid1'
+export const Ssid2 = 'ssid2'
+export const Ssid3 = 'ssid3'
+export const Ssid4 = 'ssid4'
+export const Ssidac1 = 'ssidac1'
+export const Ssidac2 = 'ssidac2'
+export const Ssidac3 = 'ssidac3'
+export const Ssidac4 = 'ssidac4'
+
+export const SsidText = {
+  [Lan1]: 'LAN1',
+  [Lan2]: 'LAN2',
+  [Lan3]: 'LAN3',
+  [Lan4]: 'LAN4',
+  [Ssid1]: 'SSID1',
+  [Ssid2]: 'SSID2',
+  [Ssid3]: 'SSID3',
+  [Ssid4]: 'SSID4',
+  [Ssidac1]: 'SSIDAC1',
+  [Ssidac2]: 'SSIDAC2',
+  [Ssidac3]: 'SSIDAC3',
+  [Ssidac4]: 'SSIDAC4',
 }
 
 export enum MeshRole {
@@ -101,3 +116,42 @@ export enum MeshRole {
   controller = '1',
   agent = '2',
 }
+
+export const encryptsOpts = [
+  {
+    value: Encrypts.none,
+    text: translate('trans0033'),
+  },
+  {
+    value: Encrypts.wpa2PskCcmp,
+    text: 'WPA2-PSK(CCMP)',
+  },
+  {
+    value: Encrypts.wpa2PskTkipCcmp,
+    text: 'WPA2-PSK(TKIP+CCMP)',
+  },
+  {
+    value: Encrypts.wpa3SaeCcmp,
+    text: 'WPA3-SAE(CCMP)',
+  },
+  {
+    value: Encrypts.wpaWpa2PskCcmp,
+    text: 'WPA/WPA2-PSK(CCMP)',
+  },
+  {
+    value: Encrypts.wpaWpa2PskTkipCcmp,
+    text: 'WPA/WPA2-PSK(TKIP+CCMP)',
+  },
+  {
+    value: Encrypts.wpa2PskWpa3SaeCcmp,
+    text: 'WPA2-PSK/WPA3-SAE(CCMP)',
+  },
+  {
+    value: Encrypts.wpaPskCcmp,
+    text: 'WPA-PSK(CCMP)',
+  },
+  {
+    value: Encrypts.wpaPskTkipCcmp,
+    text: 'WPA-PSK(TKIP+CCMP)',
+  },
+]

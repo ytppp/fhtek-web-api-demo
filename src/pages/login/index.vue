@@ -4,7 +4,13 @@
       <div style="text-align: center">
         <img class="signin-form__img" :src="logoSrc" alt="" />
       </div>
-      <fh-form ref="form" :disabled="formDisabled" :model="userinfo" :rules="rules">
+      <fh-form
+        label-position="top"
+        ref="form"
+        :disabled="formDisabled"
+        :model="userinfo"
+        :rules="rules"
+      >
         <fh-form-item prop="username">
           <fh-input :placeholder="$t('trans0621')" v-model="userinfo.username" clearable>
             <template #prefix>
