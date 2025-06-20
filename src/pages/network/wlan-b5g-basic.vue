@@ -77,7 +77,7 @@ import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } fro
 import { useDataClean } from '@/hooks/data-clean'
 import { getWifi5g, setWifi5g, getWps, setWps } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
-import { StartAndStop, Encrypts, encryptsOpts, WpsStatus, SsidText, Ssidac1 } from '@/util/constant'
+import { StartAndStop, Encrypts, encrypts, WpsStatus, SsidText, Ssidac1 } from '@/util/constant'
 
 defineOptions({
   name: 'b5gBasicPage',
@@ -91,6 +91,13 @@ const timeout = 2 * 60 * 1000
 const interval = 5000
 const ssidOpts = reactive([])
 const ssidList = reactive([])
+const encryptsOpts = [
+  {
+    value: Encrypts.none,
+    text: t('trans0033'),
+  },
+  ...encrypts,
+]
 const wifi = reactive({
   id: '',
   ssid: '',
