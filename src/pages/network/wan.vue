@@ -13,175 +13,170 @@
         </fh-button>
       </div>
       <fh-form class="form wan-form" ref="wanRef" :model="wan" :rules="wanRules">
-        <div class="wan-form__col">
-          <fh-form-item :label="t('trans0140')" v-if="isEdit">
-            <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
-            <template #extra>
-              <fh-button @click="delWanConn" size="small">
-                {{ $t('trans0759') }}
-              </fh-button>
-            </template>
+        <fh-form-item :label="t('trans0140')" v-if="isEdit">
+          <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
+          <template #extra>
+            <fh-button @click="delWanConn" size="small">
+              {{ $t('trans0759') }}
+            </fh-button>
+          </template>
+        </fh-form-item>
+        <fh-form-item :label="t('trans0761')">
+          <fh-switch v-model="wan.enable" />
+        </fh-form-item>
+        <fh-form-item :label="t('trans0762')">
+          <fh-select
+            @change="changeWanMode"
+            v-model="wan.wanMode"
+            :options="wanModeOptions"
+          ></fh-select>
+        </fh-form-item>
+        <fh-form-item :label="t('trans0763')" prop="serviceType">
+          <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
+        </fh-form-item>
+        <fh-form-item :label="t('trans0080')" v-if="isRouter" prop="netType">
+          <fh-select
+            @change="changeNetType"
+            v-model="wan.netType"
+            :options="netTypesOptions"
+          ></fh-select>
+        </fh-form-item>
+        <template v-if="isRouter">
+          <fh-form-item :label="t('trans0135')">
+            <fh-radio-group v-model="wan.protocol" class="wan-form__protocol-checkbox-group">
+              <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
+                {{ item.text }}
+              </fh-radio>
+            </fh-radio-group>
           </fh-form-item>
-          <fh-form-item :label="t('trans0761')">
-            <fh-switch v-model="wan.enable" />
+          <fh-form-item :label="t('trans0092')" prop="mtu">
+            <fh-input v-model="wan.mtu"></fh-input>
+            <template #extra>{{ getMtuTips().tips }}</template>
           </fh-form-item>
-          <fh-form-item :label="t('trans0762')">
-            <fh-select
-              @change="changeWanMode"
-              v-model="wan.wanMode"
-              :options="wanModeOptions"
-            ></fh-select>
+          <fh-form-item :label="t('trans0778')" v-if="isHideEnableNat">
+            <fh-switch v-model="wan.enableNat" />
           </fh-form-item>
-          <fh-form-item :label="t('trans0763')" prop="serviceType">
-            <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
+        </template>
+        <template v-if="isIptvWan">
+          <fh-form-item :label="t('trans0777')" prop="multiVlanId">
+            <fh-input v-model="wan.multiVlanId"></fh-input>
+            <template #extra>{{ rangeTips(t('trans0777'), 1, 4094) }}</template>
           </fh-form-item>
-          <fh-form-item :label="t('trans0080')" v-if="isRouter" prop="netType">
-            <fh-select
-              @change="changeNetType"
-              v-model="wan.netType"
-              :options="netTypesOptions"
-            ></fh-select>
+          <fh-form-item :label="igmpVersionText">
+            <fh-select v-model="wan.igmpVersion" :options="igmpVersionOptions"></fh-select>
           </fh-form-item>
-          <template v-if="isRouter">
-            <fh-form-item :label="t('trans0135')">
-              <fh-radio-group v-model="wan.protocol" class="wan-form__protocol-checkbox-group">
-                <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
+        </template>
+        <fh-form-item :label="t('trans0771')">
+          <fh-select v-model="wan.vlan.mode" :options="vlanModeOptions"></fh-select>
+        </fh-form-item>
+        <template v-if="isVlanModeTag">
+          <fh-form-item :label="t('trans0775')" prop="vlan.id">
+            <fh-input v-model="wan.vlan.id"></fh-input>
+            <template #extra>{{ rangeTips(t('trans0775'), 1, 4094) }}</template>
+          </fh-form-item>
+          <fh-form-item :label="t('trans0776')">
+            <fh-select v-model="wan.vlan.p8021" :options="p8021Options(7)"></fh-select>
+          </fh-form-item>
+        </template>
+        <template v-if="isHidePortBinding">
+          <fh-form-item :label="t('trans0755')">
+            <fh-checkbox-group class="wan-form__checkbox-group" v-model="wan.lan">
+              <fh-checkbox
+                v-for="item in lanOptions"
+                :key="item.value"
+                :label="item.value"
+                :disabled="item.readonly"
+              >
+                {{ SsidText[item.value] }}
+              </fh-checkbox>
+            </fh-checkbox-group>
+          </fh-form-item>
+        </template>
+        <template v-if="isPppoe">
+          <div class="page__sub-header">
+            <h2 class="page__title">{{ $t('trans0081') }}</h2>
+          </div>
+          <fh-form-item :label="$t('trans0086')" prop="ppp.user">
+            <fh-input v-model="wan.ppp.user"> </fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0087')" prop="ppp.pwd">
+            <fh-input type="password" v-model="wan.ppp.pwd" show-password> </fh-input>
+          </fh-form-item>
+          <fh-form-item :label="t('trans0790')">
+            <fh-switch v-model="wan.ppp.enableRouterBridge" />
+          </fh-form-item>
+        </template>
+        <template v-if="isIpv4 && isStatic">
+          <div class="page__sub-header">
+            <h2 class="page__title">{{ $t('trans0456') }}</h2>
+          </div>
+          <fh-form-item
+            :label="format($t('trans0598'), [$t('trans0456')])"
+            prop="ipv4.static.ip"
+            ref="ipRef"
+          >
+            <fh-input v-model="wan.ipv4.static.ip" @blur="ipChange"></fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0459')" prop="ipv4.static.mask" ref="maskRef">
+            <fh-input v-model="wan.ipv4.static.mask" @blur="maskChange"></fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0548')" prop="ipv4.static.gateway" ref="gatewayRef">
+            <fh-input v-model="wan.ipv4.static.gateway"></fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0496')" prop="ipv4.static.dns1">
+            <fh-input v-model="wan.ipv4.static.dns1" @change="changeDns1"></fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0497')" prop="ipv4.static.dns2" ref="dns2Ref">
+            <fh-input v-model="wan.ipv4.static.dns2"></fh-input>
+          </fh-form-item>
+        </template>
+        <template v-if="isIpv6">
+          <div class="page__sub-header">
+            <h2 class="page__title">{{ $t('trans0457') }}</h2>
+          </div>
+          <fh-form-item :label="t('trans0779')" v-if="!isStatic">
+            <fh-switch v-model="wan.ipv6.isSlaac" />
+          </fh-form-item>
+          <template v-if="isStatic">
+            <fh-form-item :label="format($t('trans0598'), [$t('trans0457')])" prop="ipv6.static.ip">
+              <fh-input
+                :placeholder="`${format($t('trans0598'), [$t('trans0457')])}/${$t('trans0477')}`"
+                v-model="wan.ipv6.static.ip"
+              ></fh-input>
+            </fh-form-item>
+            <fh-form-item :label="$t('trans0599')" prop="ipv6.static.gateway">
+              <fh-input v-model="wan.ipv6.static.gateway"></fh-input>
+            </fh-form-item>
+            <fh-form-item :label="$t('trans0496')" prop="ipv6.static.dns1">
+              <fh-input v-model="wan.ipv6.static.dns1" @change="changeIpv6Dns1"></fh-input>
+            </fh-form-item>
+            <fh-form-item :label="$t('trans0497')" prop="ipv6.static.dns2" ref="ipv6Dns2Ref">
+              <fh-input v-model="wan.ipv6.static.dns2"></fh-input>
+            </fh-form-item>
+          </template>
+          <fh-form-item :label="t('trans0782')">
+            <fh-switch v-model="wan.ipv6.pd.enable" />
+          </fh-form-item>
+          <template v-if="isIpv6PdEnable">
+            <fh-form-item :label="t('trans0783')">
+              <fh-radio-group v-model="wan.ipv6.pd.mode" :disabled="isStatic">
+                <fh-radio v-for="item in prefixModeOptions" :key="item.value" :label="item.value">
                   {{ item.text }}
                 </fh-radio>
               </fh-radio-group>
             </fh-form-item>
-            <fh-form-item :label="t('trans0092')" prop="mtu">
-              <fh-input v-model="wan.mtu"></fh-input>
-              <template #extra>{{ getMtuTips().tips }}</template>
-            </fh-form-item>
-            <fh-form-item :label="t('trans0778')" v-if="isHideEnableNat">
-              <fh-switch v-model="wan.enableNat" />
-            </fh-form-item>
-          </template>
-          <template v-if="isIptvWan">
-            <fh-form-item :label="t('trans0777')" prop="multiVlanId">
-              <fh-input v-model="wan.multiVlanId"></fh-input>
-              <template #extra>{{ rangeTips(t('trans0777'), 1, 4094) }}</template>
-            </fh-form-item>
-            <fh-form-item :label="igmpVersionText">
-              <fh-select v-model="wan.igmpVersion" :options="igmpVersionOptions"></fh-select>
-            </fh-form-item>
-          </template>
-          <fh-form-item :label="t('trans0771')">
-            <fh-select v-model="wan.vlan.mode" :options="vlanModeOptions"></fh-select>
-          </fh-form-item>
-          <template v-if="isVlanModeTag">
-            <fh-form-item :label="t('trans0775')" prop="vlan.id">
-              <fh-input v-model="wan.vlan.id"></fh-input>
-              <template #extra>{{ rangeTips(t('trans0775'), 1, 4094) }}</template>
-            </fh-form-item>
-            <fh-form-item :label="t('trans0776')">
-              <fh-select v-model="wan.vlan.p8021" :options="p8021Options(7)"></fh-select>
-            </fh-form-item>
-          </template>
-          <template v-if="isHidePortBinding">
-            <fh-form-item :label="t('trans0755')">
-              <fh-checkbox-group class="wan-form__checkbox-group" v-model="wan.lan">
-                <fh-checkbox
-                  v-for="item in lanOptions"
-                  :key="item.value"
-                  :label="item.value"
-                  :disabled="item.readonly"
-                >
-                  {{ SsidText[item.value] }}
-                </fh-checkbox>
-              </fh-checkbox-group>
-            </fh-form-item>
-          </template>
-        </div>
-        <div class="wan-form__col">
-          <div class="wan-form__box" v-if="isPppoe">
-            <span class="wan-form__title">{{ $t('trans0081') }}</span>
-            <fh-form-item :label="$t('trans0086')" prop="ppp.user">
-              <fh-input v-model="wan.ppp.user"> </fh-input>
-            </fh-form-item>
-            <fh-form-item :label="$t('trans0087')" prop="ppp.pwd">
-              <fh-input type="password" v-model="wan.ppp.pwd" show-password> </fh-input>
-            </fh-form-item>
-            <fh-form-item :label="t('trans0790')">
-              <fh-switch v-model="wan.ppp.enableRouterBridge" />
-            </fh-form-item>
-          </div>
-          <template v-if="isIpv4">
-            <div class="wan-form__box" v-if="isStatic">
-              <span class="wan-form__title">{{ $t('trans0456') }}</span>
-              <fh-form-item
-                :label="format($t('trans0598'), [$t('trans0456')])"
-                prop="ipv4.static.ip"
-                ref="ipRef"
-              >
-                <fh-input v-model="wan.ipv4.static.ip" @blur="ipChange"></fh-input>
-              </fh-form-item>
-              <fh-form-item :label="$t('trans0459')" prop="ipv4.static.mask" ref="maskRef">
-                <fh-input v-model="wan.ipv4.static.mask" @blur="maskChange"></fh-input>
-              </fh-form-item>
-              <fh-form-item :label="$t('trans0548')" prop="ipv4.static.gateway" ref="gatewayRef">
-                <fh-input v-model="wan.ipv4.static.gateway"></fh-input>
-              </fh-form-item>
-              <fh-form-item :label="$t('trans0496')" prop="ipv4.static.dns1">
-                <fh-input v-model="wan.ipv4.static.dns1" @change="changeDns1"></fh-input>
-              </fh-form-item>
-              <fh-form-item :label="$t('trans0497')" prop="ipv4.static.dns2" ref="dns2Ref">
-                <fh-input v-model="wan.ipv4.static.dns2"></fh-input>
-              </fh-form-item>
-            </div>
-          </template>
-          <div class="wan-form__box" v-if="isIpv6">
-            <span class="wan-form__title">{{ $t('trans0457') }}</span>
-            <fh-form-item :label="t('trans0779')" v-if="!isStatic">
-              <fh-switch v-model="wan.ipv6.isSlaac" />
-            </fh-form-item>
-            <template v-if="isStatic">
-              <fh-form-item
-                :label="format($t('trans0598'), [$t('trans0457')])"
-                prop="ipv6.static.ip"
-              >
-                <fh-input
-                  :placeholder="`${format($t('trans0598'), [$t('trans0457')])}/${$t('trans0477')}`"
-                  v-model="wan.ipv6.static.ip"
-                ></fh-input>
-              </fh-form-item>
-              <fh-form-item :label="$t('trans0599')" prop="ipv6.static.gateway">
-                <fh-input v-model="wan.ipv6.static.gateway"></fh-input>
-              </fh-form-item>
-              <fh-form-item :label="$t('trans0496')" prop="ipv6.static.dns1">
-                <fh-input v-model="wan.ipv6.static.dns1" @change="changeIpv6Dns1"></fh-input>
-              </fh-form-item>
-              <fh-form-item :label="$t('trans0497')" prop="ipv6.static.dns2" ref="ipv6Dns2Ref">
-                <fh-input v-model="wan.ipv6.static.dns2"></fh-input>
+            <template v-if="isIpv6PdModeManually">
+              <fh-form-item :label="$t('trans0784')" prop="ipv6.pd.address">
+                <fh-input v-model="wan.ipv6.pd.address"></fh-input>
               </fh-form-item>
             </template>
-            <fh-form-item :label="t('trans0782')">
-              <fh-switch v-model="wan.ipv6.pd.enable" />
-            </fh-form-item>
-            <template v-if="isIpv6PdEnable">
-              <fh-form-item :label="t('trans0783')">
-                <fh-radio-group v-model="wan.ipv6.pd.mode" :disabled="isStatic">
-                  <fh-radio v-for="item in prefixModeOptions" :key="item.value" :label="item.value">
-                    {{ item.text }}
-                  </fh-radio>
-                </fh-radio-group>
-              </fh-form-item>
-              <template v-if="isIpv6PdModeManually">
-                <fh-form-item :label="$t('trans0784')" prop="ipv6.pd.address">
-                  <fh-input v-model="wan.ipv6.pd.address"></fh-input>
-                </fh-form-item>
-              </template>
-            </template>
-          </div>
-        </div>
-        <div class="wan-form__col">
-          <fh-form-item class="form__submit-btn">
-            <fh-button @click="save" block>
-              {{ $t('trans0002') }}
-            </fh-button>
-          </fh-form-item>
-        </div>
+          </template>
+        </template>
+        <fh-form-item class="form__submit-btn">
+          <fh-button @click="save" block>
+            {{ $t('trans0002') }}
+          </fh-button>
+        </fh-form-item>
       </fh-form>
     </div>
   </div>
@@ -1071,46 +1066,22 @@ onMounted(() => {
 <style lang="less">
 .wan-page {
   .wan-form {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    @media screen and (max-width: 768px) {
-      grid-template-columns: repeat(1, 1fr);
+    .wan-form__checkbox-group {
+      display: grid;
+      grid-template-columns: 78px 78px 78px 78px;
+      grid-template-rows: repeat(3, 15px);
+      gap: 5px;
+      .checkbox__label {
+        padding-left: 5px;
+      }
     }
-  }
-  .wan-form__col {
-    width: 350px;
-    @media screen and (max-width: 768px) {
-      width: 100%;
-    }
-  }
-  .wan-form__box {
-    margin-top: 20px;
-    border: 1px dashed #e1e1e1;
-    padding: 8px;
-    position: relative;
-  }
-  .wan-form__title {
-    position: absolute;
-    top: -6px;
-    left: 0px;
-    color: #e1e1e1;
-  }
-  .wan-form__checkbox-group {
-    display: grid;
-    grid-template-columns: 78px 78px 78px 78px;
-    grid-template-rows: repeat(3, 15px);
-    gap: 5px;
-    .checkbox__label {
-      padding-left: 5px;
-    }
-  }
-  .wan-form__protocol-checkbox-group {
-    display: grid;
-    grid-template-columns: 48px 48px 48px;
-    gap: 5px;
-    .radio__label {
-      padding-left: 5px;
+    .wan-form__protocol-checkbox-group {
+      display: grid;
+      grid-template-columns: 48px 48px 48px;
+      gap: 5px;
+      .radio__label {
+        padding-left: 5px;
+      }
     }
   }
 }
