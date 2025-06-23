@@ -3,7 +3,7 @@
     <div class="page__header">
       <h1 class="page__title">{{ $t('trans0457') }}</h1>
     </div>
-    <div class="page__content" :class="{ 'page__content--padding-small': isMix }">
+    <div class="page__content">
       <template v-if="isMix">
         <div class="page__sub-header">
           <h2 class="page__title">{{ slaacTitleText }}</h2>

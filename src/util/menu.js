@@ -114,11 +114,11 @@ let menus = [
             text: 'trans0457',
             config,
           },
-          {
-            url: '/network/lan/ipv6-new',
-            text: 'trans0457',
-            config,
-          },
+          // {
+          //   url: '/network/lan/ipv6-new',
+          //   text: 'trans0457',
+          //   config,
+          // },
         ],
       },
       {
@@ -269,11 +269,11 @@ let menus = [
         text: 'trans0247',
         config,
       },
-      {
-        url: '/app/igmp-mld',
-        text: 'trans0248',
-        config,
-      },
+      // {
+      //   url: '/app/igmp-mld',
+      //   text: 'trans0248',
+      //   config,
+      // },
       {
         url: '/app/static-arp',
         text: 'trans0805',
