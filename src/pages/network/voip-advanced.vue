@@ -4,7 +4,13 @@
       <h1 class="page__title">{{ $t('trans0579') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form" ref="formRef" :model="form" :rules="rules" v-if="hasVoipWan">
+      <fh-form
+        class="form form--small"
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        v-if="hasVoipWan"
+      >
         <div class="page__sub-header">
           <h2 class="page__title">{{ $t('trans0924') }}</h2>
         </div>

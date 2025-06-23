@@ -145,27 +145,27 @@ export function handleBusinessError(response: any): boolean {
       flag = false
       break
     case ResultEnum.NOAUTH:
-      message = data.msg || translate('trans0696')
+      message = translate('trans0696') // data.msg || translate('trans0696')
       break
     case ResultEnum.OVERDUE:
-      message = data.msg || translate('trans0697')
+      message = translate('trans0697') // data.msg || translate('trans0697')
       router.push('/login')
       break
     case ResultEnum.INVALIDSESSION:
-      message = data.msg || translate('trans0698')
+      message = translate('trans0698') // data.msg || translate('trans0698')
       router.push('/login')
       break
     case ResultEnum.INVALIDJSON:
-      message = data.msg || translate('trans0699')
+      message = translate('trans0699') // data.msg || translate('trans0699')
       break
     case ResultEnum.HASLOGIN:
-      message = data.msg || translate('trans0012')
+      message = translate('trans0012') // data.msg || translate('trans0012')
       break
     case ResultEnum.INVALIDFILE:
-      message = data.msg || translate('trans0700')
+      message = translate('trans0700') // data.msg || translate('trans0700')
       break
     default:
-      message = data.msg || translate('trans0701')
+      message = translate('trans0701') // data.msg || translate('trans0701')
   }
   if (config.toast && message.length) {
     toast(message)

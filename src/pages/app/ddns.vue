@@ -7,17 +7,17 @@
       <div class="page__table">
         <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false">
           <template #operationgroup>
-            <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">{{
-              $t('trans0164')
-            }}</fh-button>
+            <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
+              {{ $t('trans0164') }}
+            </fh-button>
           </template>
           <template #enable="scope">
             <fh-switch v-model="scope.row.enable" @change="toggleStatus(scope.row)" />
           </template>
           <template #operation="scope">
-            <fh-button type="text" @click="openEditModal(scope.row)">{{
-              $t('trans0165')
-            }}</fh-button>
+            <fh-button type="text" @click="openEditModal(scope.row)">
+              {{ $t('trans0165') }}
+            </fh-button>
             <fh-button type="text" @click="del">{{ $t('trans0111') }}</fh-button>
           </template>
         </fh-table>

@@ -4,19 +4,35 @@
       <h1 class="page__title">{{ $t('trans0014') }}</h1>
     </div>
     <div class="page__content">
-      <div class="page__operation">
-        <fh-button size="small" @click="addWanConn" v-if="isEdit && wanList.length < maxRuleNum">
-          {{ $t('trans0760') }}
-        </fh-button>
-        <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd && wanList.length">
-          {{ $t('trans0020') }}
-        </fh-button>
-      </div>
       <fh-form class="form form--small wan-form" ref="wanRef" :model="wan" :rules="wanRules">
-        <fh-form-item :label="t('trans0140')" v-if="isEdit">
-          <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
+        <fh-form-item :label="t('trans0140')" v-if="wanList.length">
+          <div style="display: flex; align-items: center">
+            <fh-select
+              style="width: 300px; margin-right: 4px"
+              v-model="wan.id"
+              :options="wanOptions"
+              @change="changeWan"
+              v-if="isEdit"
+            ></fh-select>
+            <fh-button
+              style="width: 120px"
+              size="small"
+              @click="addWanConn"
+              v-if="isEdit && wanList.length < maxRuleNum"
+            >
+              {{ $t('trans0760') }}
+            </fh-button>
+            <fh-button
+              style="width: 120px"
+              size="small"
+              @click="cancelWanConnAdd"
+              v-if="isAdd && wanList.length"
+            >
+              {{ $t('trans0020') }}
+            </fh-button>
+          </div>
           <template #extra>
-            <fh-button @click="delWanConn" size="small">
+            <fh-button style="width: 120px" @click="delWanConn" size="small" v-if="isEdit">
               {{ $t('trans0759') }}
             </fh-button>
           </template>
@@ -102,9 +118,10 @@
           <fh-form-item :label="$t('trans0087')" prop="ppp.pwd">
             <fh-input type="password" v-model="wan.ppp.pwd" show-password> </fh-input>
           </fh-form-item>
-          <fh-form-item :label="t('trans0790')">
+          <!-- 暂时不支持 by ytp 20250623 -->
+          <!-- <fh-form-item :label="t('trans0790')">
             <fh-switch v-model="wan.ppp.enableRouterBridge" />
-          </fh-form-item>
+          </fh-form-item> -->
         </template>
         <template v-if="isIpv4 && isStatic">
           <div class="page__sub-header">
@@ -427,7 +444,7 @@ const wanInitial = () => ({
   multiVlanId: '',
   igmpVersion: IgmpVersion.v2,
   mtu: MtuRange.ipAndIpv4[1],
-  enableNat: false,
+  enableNat: true,
   wanMode: WanMode.route,
   netType: NetType.dhcp,
   ppp: {
