@@ -3,7 +3,7 @@
     <div class="page__header">
       <h1 class="page__title">{{ $t('trans0628') }}</h1>
     </div>
-    <div class="page__content page__content--padding-small">
+    <div class="page__content">
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0702') }}</h2>
       </div>

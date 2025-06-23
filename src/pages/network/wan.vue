@@ -12,7 +12,7 @@
           {{ $t('trans0020') }}
         </fh-button>
       </div>
-      <fh-form class="form wan-form" ref="wanRef" :model="wan" :rules="wanRules">
+      <fh-form class="form form--small wan-form" ref="wanRef" :model="wan" :rules="wanRules">
         <fh-form-item :label="t('trans0140')" v-if="isEdit">
           <fh-select v-model="wan.id" :options="wanOptions" @change="changeWan"></fh-select>
           <template #extra>
@@ -60,7 +60,7 @@
         <template v-if="isIptvWan">
           <fh-form-item :label="t('trans0777')" prop="multiVlanId">
             <fh-input v-model="wan.multiVlanId"></fh-input>
-            <template #extra>{{ rangeTips(t('trans0777'), 1, 4094) }}</template>
+            <template #extra>{{ rangeTips(t('trans0777'), '1', '4094') }}</template>
           </fh-form-item>
           <fh-form-item :label="igmpVersionText">
             <fh-select v-model="wan.igmpVersion" :options="igmpVersionOptions"></fh-select>
@@ -72,7 +72,7 @@
         <template v-if="isVlanModeTag">
           <fh-form-item :label="t('trans0775')" prop="vlan.id">
             <fh-input v-model="wan.vlan.id"></fh-input>
-            <template #extra>{{ rangeTips(t('trans0775'), 1, 4094) }}</template>
+            <template #extra>{{ rangeTips(t('trans0775'), '1', '4094') }}</template>
           </fh-form-item>
           <fh-form-item :label="t('trans0776')">
             <fh-select v-model="wan.vlan.p8021" :options="p8021Options(7)"></fh-select>
@@ -136,6 +136,9 @@
           </div>
           <fh-form-item :label="t('trans0779')" v-if="!isStatic">
             <fh-switch v-model="wan.ipv6.isSlaac" />
+            <template #extra>
+              {{ t('trans0925') }}
+            </template>
           </fh-form-item>
           <template v-if="isStatic">
             <fh-form-item :label="format($t('trans0598'), [$t('trans0457')])" prop="ipv6.static.ip">
@@ -405,10 +408,10 @@ const serviceTypesInit = [
   },
 ]
 const MtuRange = {
-  ipAndIpv4: [576, 1500],
-  ipAndMix: [1280, 1500],
-  pppAndIpv4: [576, 1492],
-  pppAndMix: [1280, 1492],
+  ipAndIpv4: ['576', '1500'],
+  ipAndMix: ['1280', '1500'],
+  pppAndIpv4: ['576', '1492'],
+  pppAndMix: ['1280', '1492'],
 }
 const wanInitial = () => ({
   id: '',
@@ -423,7 +426,7 @@ const wanInitial = () => ({
   protocol: IP.IPv4,
   multiVlanId: '',
   igmpVersion: IgmpVersion.v2,
-  mtu: `${MtuRange.ipAndIpv4[1]}`,
+  mtu: MtuRange.ipAndIpv4[1],
   enableNat: false,
   wanMode: WanMode.route,
   netType: NetType.dhcp,
@@ -580,7 +583,7 @@ const p8021Options = (max: number) => {
   }
   return arr
 }
-const rangeTips = (text: string, min: number, max: number) => {
+const rangeTips = (text: string, min: string, max: string) => {
   return format(t('trans0373'), [text, min, max])
 }
 const getWanList = (id?: string) => {
@@ -720,23 +723,24 @@ const changeNetType = () => {
   }
 }
 const initMtu = () => {
+  const mtu = Number(wan.mtu)
   if (isNotPppoeAndIpv4.value) {
-    if (wan.mtu < MtuRange.ipAndIpv4[0] || wan.mtu > MtuRange.ipAndIpv4[1]) {
+    if (mtu < Number(MtuRange.ipAndIpv4[0]) || mtu > Number(MtuRange.ipAndIpv4[1])) {
       wan.mtu = MtuRange.ipAndIpv4[1]
     }
   }
   if (isNotPppoeAndIpv6.value) {
-    if (wan.mtu < MtuRange.ipAndMix[0] || wan.mtu > MtuRange.ipAndMix[1]) {
+    if (mtu < Number(MtuRange.ipAndMix[0]) || mtu > Number(MtuRange.ipAndMix[1])) {
       wan.mtu = MtuRange.ipAndMix[1]
     }
   }
   if (isPppoeAndIpv4.value) {
-    if (wan.mtu < MtuRange.pppAndIpv4[0] || wan.mtu > MtuRange.pppAndIpv4[1]) {
+    if (mtu < Number(MtuRange.pppAndIpv4[0]) || mtu > Number(MtuRange.pppAndIpv4[1])) {
       wan.mtu = MtuRange.pppAndIpv4[1]
     }
   }
   if (isPppoeAndIpv6.value) {
-    if (wan.mtu < MtuRange.pppAndMix[0] || wan.mtu > MtuRange.pppAndMix[1]) {
+    if (mtu < Number(MtuRange.pppAndMix[0]) || mtu > Number(MtuRange.pppAndMix[1])) {
       wan.mtu = MtuRange.pppAndMix[1]
     }
   }

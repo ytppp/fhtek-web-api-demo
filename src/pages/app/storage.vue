@@ -3,7 +3,7 @@
     <div class="page__header">
       <h1 class="page__title">{{ $t('trans0810') }}</h1>
     </div>
-    <div class="page__content" :class="{ 'page__content--padding-small': hasUsbDevice }">
+    <div class="page__content">
       <template v-if="hasUsbDevice">
         <div class="page__sub-header">
           <h2 class="page__title">{{ $t('trans0811') }}</h2>

@@ -199,7 +199,7 @@ defineExpose({
 .form-item {
   margin-bottom: 20px;
   &:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
   }
   .form-item__label {
     display: inline-block;
