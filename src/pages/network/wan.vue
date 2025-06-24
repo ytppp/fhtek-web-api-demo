@@ -14,25 +14,12 @@
               @change="changeWan"
               v-if="isEdit"
             ></fh-select>
-            <fh-button
-              style="width: 120px"
-              size="small"
-              @click="addWanConn"
-              v-if="isEdit && wanList.length < maxRuleNum"
-            >
-              {{ $t('trans0760') }}
-            </fh-button>
-            <fh-button
-              style="width: 120px"
-              size="small"
-              @click="cancelWanConnAdd"
-              v-if="isAdd && wanList.length"
-            >
+            <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd">
               {{ $t('trans0020') }}
             </fh-button>
           </div>
           <template #extra>
-            <fh-button style="width: 120px" @click="delWanConn" size="small" v-if="isEdit">
+            <fh-button @click="delWanConn" size="small" v-if="isEdit">
               {{ $t('trans0759') }}
             </fh-button>
           </template>
@@ -470,6 +457,7 @@ const wanInitial = () => ({
     },
   },
 })
+const lastWanId = ref('')
 const wan = reactive(wanInitial())
 const wanOpts = reactive([])
 const wanList = reactive([])
@@ -619,18 +607,27 @@ const getWanList = (id?: string) => {
       wanList.length = 0
       return
     }
-    const wanOptsList = items.map((item) => ({
-      value: item.id,
-      text: item.wanName,
-    }))
+    const wanOptsList = []
+    if (items.length < maxRuleNum) {
+      wanOptsList.push({
+        value: ModalType.add,
+        text: t('trans0760'),
+      })
+    }
+    items.forEach((item) => {
+      wanOptsList.push({
+        value: item.id,
+        text: item.wanName,
+      })
+    })
     wanOpts.splice(0, wanOpts.length, ...wanOptsList)
     wanList.splice(0, wanList.length, ...items)
-    wan.id = id ? id : items[items.length - 1].id
+    lastWanId.value = wan.id = id ? id : items[items.length - 1].id
     modalType.value = ModalType.edit
-    changeWan()
+    initWan()
   })
 }
-const changeWan = () => {
+const initWan = () => {
   wanRef.value.clearValidate()
   const thisWan = wanList.find((item) => item.id === wan.id)
   wan.enable = convertBooleanStatus(thisWan.enable)
@@ -664,6 +661,14 @@ const changeWan = () => {
   wan.ipv6.static.dns2 = thisWan.ipv6.static.dns2
   getPortBind()
 }
+const changeWan = () => {
+  if (wan.id === ModalType.add) {
+    addWanConn()
+    return
+  }
+  lastWanId.value = wan.id
+  initWan()
+}
 const addWanConn = () => {
   modalType.value = ModalType.add
   Object.assign(wan, wanInitial())
@@ -671,10 +676,10 @@ const addWanConn = () => {
   wanRef.value.clearValidate()
 }
 const cancelWanConnAdd = () => {
-  wan.id = wanOpts[0].value
+  wan.id = lastWanId.value
   modalType.value = ModalType.edit
   wanRef.value.clearValidate()
-  changeWan()
+  initWan()
 }
 const save = () => {
   if (wanRef.value.validate()) {
@@ -729,7 +734,6 @@ const save = () => {
       })
     }
     if (isEdit.value) {
-      newWan.id = wan.id
       editWan(newWan).then(({ data }) => {
         const { id } = data
         getWanList(id)
