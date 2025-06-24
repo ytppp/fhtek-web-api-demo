@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { ModalType } from '@/util/constant'
+import { ModalType, ServiceType } from '@/util/constant'
 import { getWan, getDdns, addDdns, editDdns, delDdns } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -149,6 +149,9 @@ export default {
     isAdd() {
       return this.modalType === ModalType.add
     },
+    isEdit() {
+      return this.modalType === ModalType.edit
+    },
     modalTitle() {
       return this.isAdd ? this.$t('trans0164') : this.$t('trans0165')
     },
@@ -210,7 +213,7 @@ export default {
         }
       }
     },
-    del() {
+    del(row) {
       delDdns({ id: row.id }).then((res) => {
         this.getDdnsList()
       })
@@ -232,10 +235,16 @@ export default {
     getWanData() {
       getWan().then(({ data }) => {
         const { items } = data
-        this.wanList = items.map((item) => ({
-          value: item.id,
-          text: item.id,
-        }))
+        const wanList = []
+        items.forEach((item) => {
+          if (item.serviceType === ServiceType.INTERNET) {
+            wanList.push({
+              value: item.id,
+              text: item.id,
+            })
+          }
+        })
+        this.wanList = wanList
       })
     },
   },

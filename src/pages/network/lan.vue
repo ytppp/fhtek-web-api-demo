@@ -12,13 +12,9 @@
           </template>
         </fh-form-item>
         <fh-form-item :label="$t('trans0460')">
-          <fh-switch
-            v-model="form.enable"
-            :active-value="EnableStatus.yes"
-            :inactive-value="EnableStatus.no"
-          ></fh-switch>
+          <fh-switch v-model="form.enable"></fh-switch>
         </fh-form-item>
-        <template v-if="isEnable">
+        <template v-if="form.enable">
           <fh-form-item prop="ip_start" :label="$t('trans0151')" ref="ipStartRef">
             <fh-input v-model="form.ip_start" @blur="ipStartChange"></fh-input>
           </fh-form-item>
@@ -54,13 +50,14 @@ import {
   isValidGatewayIP,
   getSubNetwork,
 } from '@/util/tool'
-import { EnableStatus } from '@/util/constant'
 import { getLan, setLan } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
 
 defineOptions({
   name: 'LanPage',
 })
 
+const { convertBooleanStatus } = useDataClean()
 const isSameSubNetwork = (ip, ip2, mask) => {
   const subnetwork = getSubNetwork(ip, mask)
   const subnetwork2 = getSubNetwork(ip2, mask)
@@ -106,7 +103,7 @@ const formRef = ref(null)
 const ipOrigin = ref('')
 const wanIp = ref('')
 const form = reactive({
-  enable: EnableStatus.yes,
+  enable: true,
   ip: '',
   mask: '',
   ip_start: '',
@@ -204,9 +201,6 @@ const rules = reactive({
     },
   ],
 })
-const isEnable = computed(() => {
-  return form.enable === EnableStatus.yes
-})
 const isIpChanged = computed(() => ipOrigin.value !== form.ip)
 
 function getLanData() {
@@ -215,7 +209,7 @@ function getLanData() {
     const { ip, mask } = lan
     const { enable, ip_start, ip_offset, lease } = dhcp
     Object.assign(form, {
-      enable,
+      enable: convertBooleanStatus(enable),
       ip,
       mask,
       ip_start: `${getIpBefore(ip)}${ip_start}`,
@@ -269,7 +263,7 @@ const save = () => {
         mask: form.mask,
       },
       dhcp: {
-        enable: form.enable,
+        enable: convertBooleanStatus(form.enable),
         ip_start: getIpAfter(form.ip_start),
         ip_offset: `${Number(getIpAfter(form.ip_end)) - Number(getIpAfter(form.ip_start))}`,
         lease: form.lease,

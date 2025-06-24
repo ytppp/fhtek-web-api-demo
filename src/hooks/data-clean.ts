@@ -11,12 +11,16 @@ export const useDataClean = () => {
       }
     })
   }
-  const convertBooleanStatus = (flag: any) => {
-    if (flag === EnableStatus.yes || flag === EnableStatus.no) {
+  const convertBooleanStatus = (flag: string | boolean) => {
+    if (typeof flag === 'string' && (flag === EnableStatus.yes || flag === EnableStatus.no)) {
       return flag === EnableStatus.yes
     }
-    if (flag) return EnableStatus.yes
-    if (!flag) return EnableStatus.no
+    if (typeof flag === 'boolean') {
+      if (flag) return EnableStatus.yes
+      if (!flag) return EnableStatus.no
+    }
+    // 底层可能传空字符串，这里做兼容处理
+    return false
   }
   return {
     undefinedFlag,

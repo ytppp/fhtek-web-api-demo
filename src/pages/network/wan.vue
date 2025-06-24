@@ -205,7 +205,7 @@
 <script lang="ts" setup>
 import { ref, computed, reactive, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IP, VlanMode, ModalType, WanMode, SsidText } from '@/util/constant'
+import { IP, VlanMode, ModalType, WanMode, SsidText, ServiceType } from '@/util/constant'
 import {
   format,
   isIP,
@@ -232,14 +232,6 @@ import { getLan, getWan, addWan, editWan, deleteWan, getPortBindInfo } from '@/h
 defineOptions({
   name: 'WanPage',
 })
-enum ServiceType {
-  TR069 = 'TR069',
-  INTERNET = 'INTERNET',
-  TR069_INTERNET = 'TR069_INTERNET',
-  IPTV = 'IPTV',
-  VOICE = 'VOICE',
-  VOICE_INTERNET = 'VOICE_INTERNET',
-}
 enum NetType {
   dhcp = 'dhcp',
   static = 'static',

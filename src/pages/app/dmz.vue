@@ -9,7 +9,7 @@
           <fh-switch @change="switchEnable" v-model="form.enable" />
         </fh-form-item>
         <template v-if="form.enable">
-          <fh-form-item :label="$t('trans0155')">
+          <fh-form-item :label="$t('trans0140')">
             <fh-select v-model="form.wan" :options="wanList"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0642')" prop="ip">
@@ -28,8 +28,9 @@
 
 <script>
 import { isIP, getIpBefore, isNetworkIP, isBoardcastIP, isMulticast, isLoopback } from '@/util/tool'
-import { getDmz, setDmz, getLan, getWanList } from '@/http/api'
+import { getDmz, setDmz, getLan, getWan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { ServiceType } from '@/util/constant'
 
 const { convertBooleanStatus } = useDataClean()
 export default {
@@ -113,13 +114,16 @@ export default {
       })
     },
     getWanListData() {
-      getWanList().then(({ data }) => {
+      getWan().then(({ data }) => {
+        const { items } = data
         const wanList = []
-        data.map((item) => {
-          wanList.push({
-            value: item.name,
-            text: item.name,
-          })
+        items.forEach((item) => {
+          if (item.serviceType === ServiceType.INTERNET) {
+            wanList.push({
+              value: item.id,
+              text: item.id,
+            })
+          }
         })
         this.wanList = wanList
       })
