@@ -276,7 +276,7 @@ export default {
         const { items } = data
         this.wanList = items.map((item) => ({
           value: item.id,
-          text: item.id,
+          text: item.wanName,
         }))
       })
     },

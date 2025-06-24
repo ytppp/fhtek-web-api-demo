@@ -121,7 +121,7 @@ export default {
           if (item.serviceType === ServiceType.INTERNET) {
             wanList.push({
               value: item.id,
-              text: item.id,
+              text: item.wanName,
             })
           }
         })

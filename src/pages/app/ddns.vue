@@ -159,6 +159,7 @@ export default {
   methods: {
     openAddModal() {
       this.modalForm.enable = true
+      this.modalForm.id = ''
       this.modalForm.interface = this.wanList[0].value
       this.modalForm.domain = ''
       this.modalForm.username = ''
@@ -169,6 +170,7 @@ export default {
     },
     openEditModal(row) {
       this.modalForm.enable = row.Active
+      this.modalForm.id = row.id
       this.modalForm.interface = row.interface
       this.modalForm.domain = row.domain
       this.modalForm.username = row.username
@@ -240,7 +242,7 @@ export default {
           if (item.serviceType === ServiceType.INTERNET) {
             wanList.push({
               value: item.id,
-              text: item.id,
+              text: item.wanName,
             })
           }
         })
