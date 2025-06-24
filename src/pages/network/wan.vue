@@ -174,21 +174,23 @@
               <fh-input v-model="wan.ipv6.static.dns2"></fh-input>
             </fh-form-item>
           </template>
-          <fh-form-item :label="t('trans0782')">
-            <fh-switch v-model="wan.ipv6.pd.enable" />
-          </fh-form-item>
-          <template v-if="isIpv6PdEnable">
-            <fh-form-item :label="t('trans0783')">
-              <fh-radio-group v-model="wan.ipv6.pd.mode" :disabled="isStatic">
-                <fh-radio v-for="item in prefixModeOptions" :key="item.value" :label="item.value">
-                  {{ item.text }}
-                </fh-radio>
-              </fh-radio-group>
+          <template v-if="isHideIpv6Pd">
+            <fh-form-item :label="t('trans0782')">
+              <fh-switch v-model="wan.ipv6.pd.enable" />
             </fh-form-item>
-            <template v-if="isIpv6PdModeManually">
-              <fh-form-item :label="$t('trans0784')" prop="ipv6.pd.address">
-                <fh-input v-model="wan.ipv6.pd.address"></fh-input>
+            <template v-if="isIpv6PdEnable">
+              <fh-form-item :label="t('trans0783')">
+                <fh-radio-group v-model="wan.ipv6.pd.mode" :disabled="isStatic">
+                  <fh-radio v-for="item in prefixModeOptions" :key="item.value" :label="item.value">
+                    {{ item.text }}
+                  </fh-radio>
+                </fh-radio-group>
               </fh-form-item>
+              <template v-if="isIpv6PdModeManually">
+                <fh-form-item :label="$t('trans0784')" prop="ipv6.pd.address">
+                  <fh-input v-model="wan.ipv6.pd.address"></fh-input>
+                </fh-form-item>
+              </template>
             </template>
           </template>
         </template>
@@ -493,6 +495,14 @@ const isHidePortBinding = computed(
 const isHideEnableNat = computed(
   () => !(wan.serviceType === ServiceType.TR069 || wan.serviceType === ServiceType.VOICE),
 )
+const isHideIpv6Pd = computed(
+  () =>
+    !(
+      wan.serviceType === ServiceType.TR069 ||
+      wan.serviceType === ServiceType.IPTV ||
+      wan.serviceType === ServiceType.VOICE
+    ),
+)
 const serviceTypeOptions = computed(() => {
   if (isBridge.value) {
     serviceTypesInit.forEach((item) => {
@@ -519,7 +529,13 @@ const igmpVersionText = computed(() => {
   return `${t('trans0375')} ${t('trans0379')}`
 })
 
-watch([() => wan.netType, () => wan.protocol], () => initMtu(), { flush: 'pre' })
+watch(
+  [() => wan.netType, () => wan.protocol],
+  () => {
+    initMtu()
+  },
+  { flush: 'pre' },
+)
 
 const changeWanMode = () => {
   wan.serviceType = serviceTypeOptions.value[0].value
@@ -714,8 +730,9 @@ const save = () => {
     }
     if (isEdit.value) {
       newWan.id = wan.id
-      editWan(newWan).then(() => {
-        getWanList(newWan.id)
+      editWan(newWan).then(({ data }) => {
+        const { id } = data
+        getWanList(id)
       })
     }
   }

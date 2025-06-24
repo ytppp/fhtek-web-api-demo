@@ -74,9 +74,9 @@ const { t } = useI18n()
 const dialog = inject('dialog')
 const loading = inject('loading')
 enum Leases {
-  oneHour = `${60 * 60}`,
-  oneDay = `${24 * 60 * 60}`,
-  oneWeek = `${7 * 24 * 60 * 60}`,
+  oneHour = 60 * 60,
+  oneDay = 24 * 60 * 60,
+  oneWeek = 7 * 24 * 60 * 60,
 }
 interface ILease {
   value: Leases
@@ -266,7 +266,7 @@ const save = () => {
         enable: convertBooleanStatus(form.enable),
         ip_start: getIpAfter(form.ip_start),
         ip_offset: `${Number(getIpAfter(form.ip_end)) - Number(getIpAfter(form.ip_start))}`,
-        lease: form.lease,
+        lease: `${form.lease}`,
       },
     })
       .then(() => {})

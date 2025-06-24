@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, inject, onMounted, computed } from 'vue'
+import { reactive, ref, inject, onMounted, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, isValidInteger } from '@/util/tool'
 import { getWifi5gAdv, setWifi5gAdv } from '@/http/api'
@@ -338,6 +338,17 @@ const changeMode = () => {
     wifi.bw = bwOpts.value[0].value
   }
 }
+
+watch(
+  () => wifi.bw,
+  (val) => {
+    if (val !== BandWidths5G.b20) {
+      wifi.channel = Channels5G.auto
+    }
+  },
+  { flush: 'pre' },
+)
+
 const switchEnable = (val) => {
   if (!val) {
     dialog
