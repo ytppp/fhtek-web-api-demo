@@ -19,6 +19,8 @@ const ConnectedStaInfoStr = 'connected sta info'
 const StaMACAddrStr = 'STA MAC address'
 const UplinkRssiStr = 'uplink rssi'
 const BhStaStr = 'BH STA'
+const Upstream1905Device = 'Upstream 1905 device'
+
 const DeviceRole = {
   controller: '01',
   agent: '02',
@@ -79,43 +81,39 @@ function addConnection(source) {
   source.forEach((s) => {
     let neighbors = []
     // 有邻居结点
-    if (s[BackhaulLinkMetricsStr]) {
-      s[BackhaulLinkMetricsStr].forEach((n) => {
-        // 邻居节点
-        const neighborNode = source.filter((ss) => ss[AlMacStr] === n[NeighborAlStr])[0]
-        // 邻居中有该节点，但是该节点不在数据源中
-        if (!neighborNode) {
-          return
+    if (s[Upstream1905Device]) {
+      const neighborNode = source.find((ss) => ss[AlMacStr] === s[Upstream1905Device])
+      if (!neighborNode) {
+        return
+      }
+      if (s[DeviceRoleStr] === DeviceRole.controller) {
+        // 从邻居结点取自己的信息
+        const self = neighborNode[BhInfoStr].filter(
+          (nr) => nr[NeighborAlmacAddrStr] === s[AlMacStr],
+        )[0]
+        if (self) {
+          neighbors.push({
+            mac: neighborNode[AlMacStr],
+            rssi: Number(self[RssiStr]),
+            type: self[BackhaulMediumTypeStr], // 连接上级节点使用的频段
+            [DeviceRoleStr]: neighborNode[DeviceRoleStr],
+          })
         }
-        if (s[DeviceRoleStr] === DeviceRole.controller) {
-          // 从邻居结点取自己的信息
-          const self = neighborNode[BhInfoStr].filter(
-            (nr) => nr[NeighborAlmacAddrStr] === s[AlMacStr],
-          )[0]
-          if (self) {
-            neighbors.push({
-              mac: n[NeighborAlStr],
-              rssi: Number(self[RssiStr]),
-              type: self[BackhaulMediumTypeStr], // 连接上级节点使用的频段
-              [DeviceRoleStr]: neighborNode[DeviceRoleStr],
-            })
-          }
+      }
+      if (s[DeviceRoleStr] === DeviceRole.agent) {
+        // 从自身的"BH Info"获取邻居结点的信息
+        const self = s[BhInfoStr].filter(
+          (nr) => nr[NeighborAlmacAddrStr] === neighborNode[AlMacStr],
+        )[0]
+        if (self) {
+          neighbors.push({
+            mac: self[NeighborAlmacAddrStr],
+            rssi: Number(self[RssiStr]),
+            type: self[BackhaulMediumTypeStr],
+            [DeviceRoleStr]: neighborNode[DeviceRoleStr],
+          })
         }
-        if (s[DeviceRoleStr] === DeviceRole.agent) {
-          // 从自身的"BH Info"获取邻居结点的信息
-          const node = s[BhInfoStr].filter(
-            (nr) => nr[NeighborAlmacAddrStr] === neighborNode[AlMacStr],
-          )[0]
-          if (node) {
-            neighbors.push({
-              mac: node[NeighborAlmacAddrStr],
-              rssi: Number(node[RssiStr]),
-              type: node[BackhaulMediumTypeStr],
-              [DeviceRoleStr]: neighborNode[DeviceRoleStr],
-            })
-          }
-        }
-      })
+      }
     }
     if (s[OtherClientsInfoStr]?.length) {
       s[OtherClientsInfoStr].forEach((n) => {

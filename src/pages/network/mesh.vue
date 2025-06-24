@@ -101,8 +101,8 @@ const roles = [
 const chart = ref(null)
 const enableIninial = ref(false)
 const form = reactive({
-  enable: true,
-  enableSteering: true,
+  enable: false,
+  enableSteering: false,
   role: MeshRole.controller,
 })
 
@@ -123,6 +123,8 @@ const save = () => {
   setMesh({
     enable: convertBooleanStatus(form.enable),
     steering: convertBooleanStatus(form.enableSteering),
+  }).then(() => {
+    getMeshData()
   })
 }
 const trigger = () => {
@@ -278,6 +280,7 @@ const drawTopo = (routers) => {
   chart.value.setOption(option, true)
 }
 const getMeshData = () => {
+  cleanCountDown()
   getMesh().then(({ data }) => {
     enableIninial.value = form.enable = convertBooleanStatus(data.enable)
     form.role = data.role
@@ -293,7 +296,7 @@ const getMeshData = () => {
 const doingHandle = () => {
   getTopoData()
 }
-const { createCountDown } = useCountDown(timeout, interval, doingHandle)
+const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle)
 onMounted(() => {
   getMeshData()
 })
