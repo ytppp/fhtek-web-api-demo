@@ -730,8 +730,9 @@ const save = () => {
     }
     if (isEdit.value) {
       newWan.id = wan.id
-      editWan(newWan).then(() => {
-        getWanList(newWan.id)
+      editWan(newWan).then(({ data }) => {
+        const { id } = data
+        getWanList(id)
       })
     }
   }
