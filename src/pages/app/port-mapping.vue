@@ -12,12 +12,7 @@
             </fh-button>
           </template>
           <template #enable="scope">
-            <fh-switch
-              :active-value="EnableStatus.yes"
-              :inactive-value="EnableStatus.no"
-              v-model="scope.row.enable"
-              @change="toggleStatus(scope.row)"
-            />
+            <fh-switch v-model="scope.row.enable" @change="toggleStatus(scope.row)" />
           </template>
           <template #operation="scope">
             <fh-button type="text" @click="openEditModal(scope.row)">
@@ -38,11 +33,7 @@
           method="post"
         >
           <fh-form-item :label="$t('trans0166')">
-            <fh-switch
-              :active-value="EnableStatus.yes"
-              :inactive-value="EnableStatus.no"
-              v-model="modalForm.enable"
-            />
+            <fh-switch v-model="modalForm.enable" />
           </fh-form-item>
           <fh-form-item :label="$t('trans0424')">
             <fh-radio-group v-model="modalForm.mappingMode" @change="changeMappingMode">
@@ -85,10 +76,12 @@
 </template>
 
 <script>
-import { ProtocolType, EnableStatus } from '@/util/constant'
+import { ProtocolType } from '@/util/constant'
 import { isValidInteger, isValidVal, isIP } from '@/util/tool'
 import { getPortMapping, setPortMapping, editPortMapping, delPortMapping } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
 
+const { convertBooleanStatus } = useDataClean()
 const maxRuleNum = 10
 const ModalType = {
   add: 'add',
@@ -181,10 +174,9 @@ export default {
     return {
       maxRuleNum,
       modalType: ModalType.add,
-      EnableStatus,
       visible: false,
       modalForm: {
-        enable: EnableStatus.yes,
+        enable: true,
         index: -1,
         mappingMode: MappingMode.temp,
         temp: Temp[0].name,
@@ -358,7 +350,7 @@ export default {
     },
     openAddModal() {
       this.modalForm = {
-        enable: EnableStatus.yes,
+        enable: true,
         index: -1,
         mappingMode: MappingMode.temp,
         temp: Temp[0].name,
@@ -399,7 +391,7 @@ export default {
             dest_port: this.modalForm.extPort,
             src: this.modalForm.intHost,
             src_port: this.modalForm.intPort,
-            enable: this.modalForm.enable,
+            enable: convertBooleanStatus(this.modalForm.enable),
           },
         ]
         if (this.isEdit) {
@@ -423,7 +415,6 @@ export default {
       }
     },
     del(row) {
-      console.log(row.index)
       delPortMapping({
         id: row.index,
       }).then(() => {
@@ -472,7 +463,7 @@ export default {
             extPort: item.dest_port || '',
             intHost: item.src || '',
             intPort: item.src_port || '',
-            enable: item.enable,
+            enable: convertBooleanStatus(item.enable),
           })
         })
         this.data = tableData

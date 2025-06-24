@@ -37,9 +37,9 @@ export const ProtocolType = {
   ICMP: 'ICMP',
 }
 
-export const EnableStatus = {
-  yes: '1',
-  no: '0',
+export enum EnableStatus {
+  yes = '1',
+  no = '0',
 }
 
 export const ModalType = {
@@ -149,3 +149,13 @@ export const encrypts = [
     text: 'WPA-PSK(TKIP+CCMP)',
   },
 ]
+
+
+export enum ServiceType {
+  TR069 = 'TR069',
+  INTERNET = 'INTERNET',
+  TR069_INTERNET = 'TR069_INTERNET',
+  IPTV = 'IPTV',
+  VOICE = 'VOICE',
+  VOICE_INTERNET = 'VOICE_INTERNET',
+}

@@ -10,14 +10,17 @@
         </fh-form-item>
       </fh-form>
       <div class="page__table">
-        <fh-table :columns="columns" :data="data" @select="select">
+        <fh-table :columns="columns" :data-source="data" @select="select">
           <template #operationgroup>
             <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
               {{ $t('trans0164') }}
             </fh-button>
-            <fh-button size="small" v-show="isShowDelBtn" @click="del">{{
+            <fh-button size="small" v-if="isShowDelBtn" @click="del">{{
               $t('trans0111')
             }}</fh-button>
+          </template>
+          <template #Active="scope">
+            <fh-switch v-model="scope.row.Active" @change="toggleStatus(scope.row)" />
           </template>
           <template #operation="scope">
             <fh-button type="text" @click="openEditModal(scope.row)">
@@ -79,7 +82,9 @@
 <script>
 import { isValidUrlName, getStringByte, isValidName, isPrivateIP } from '@/util/tool'
 import { ModalType } from '@/util/constant'
+import { useDataClean } from '@/hooks/data-clean'
 
+const { convertBooleanStatus } = useDataClean()
 function cmpIpAddress(address1, address2) {
   let Lnum = 0
   let Snum = 0
@@ -120,6 +125,7 @@ export default {
         enable: false,
       },
       modalForm: {
+        id: '',
         enable: true,
         aclRuleName: '',
         scrIPAddrBegin: '',
@@ -166,7 +172,7 @@ export default {
       interfaceList: [
         {
           value: Interface.Wan,
-          text: this.$t('trans0155'),
+          text: this.$t('trans0140'),
         },
         {
           value: Interface.Lan,
@@ -229,24 +235,6 @@ export default {
           key: 'Active',
           title: this.$t('trans0166'),
           width: '60',
-          render: (h, params) => {
-            const props = {
-              props: {
-                value: params.row.Active,
-                activeValue: EnableStatus.yes,
-                inactiveValue: EnableStatus.no,
-              },
-              on: {
-                change: () => this.toggleStatus(params.row),
-              },
-              style: {
-                verticalAlign: 'middle',
-              },
-            }
-            return h('fh-switch', {
-              ...props,
-            })
-          },
         },
       ],
       data: [],
@@ -255,7 +243,7 @@ export default {
   },
   computed: {
     isShowAddBtn() {
-      return this.form.acl_num < maxAclRuleNum
+      return this.data.length < maxAclRuleNum
     },
     isShowDelBtn() {
       return this.indexList.length > 0
@@ -268,9 +256,6 @@ export default {
     },
   },
   watch: {
-    'modalForm.enable': function (val) {
-      this.modalForm.EnableAcl_Flag = val ? 'Yes' : 'No'
-    },
     indexList: function (val) {
       this.form.delnum = this.indexList.length ? `${this.indexList.toString()},` : ''
     },
@@ -288,12 +273,7 @@ export default {
       return true
     },
     switchEnable(val) {
-      this.form.EnACLFilter_Flag = val ? 'Yes' : 'No'
-      this.form.Actionflag = 'Add'
-      this.form.Acl_Flag = '2'
-      this.loadingBeforeAction(() => {
-        this.submit('form')
-      })
+      // todo
     },
     openAddModal() {
       this.modalForm.enable = true
@@ -302,18 +282,16 @@ export default {
       this.modalForm.scrIPAddrEnd = ''
       // this.modalForm.interface = Interface.Wan;
       this.modalForm.application = Application.ALL
-      this.modalForm.curNum = add_aclnum
       this.modalType = ModalType.add
       this.visible = true
     },
     setEditModal(row) {
-      this.modalForm.enable = row.Active == EnableStatus.yes
+      this.modalForm.enable = row.Active
       this.modalForm.aclRuleName = row.aclRuleName
       this.modalForm.scrIPAddrBegin = row.scrIPAddrBegin
       this.modalForm.scrIPAddrEnd = row.scrIPAddrEnd
       // this.modalForm.interface = row.interface;
       this.modalForm.application = row.application
-      this.modalForm.curNum = row.Index
       this.modalType = ModalType.edit
     },
     openEditModal(row) {
@@ -322,32 +300,23 @@ export default {
     },
     toggleStatus(row) {
       this.setEditModal(row)
-      this.modalForm.enable = row.Active !== EnableStatus.yes
+      this.modalForm.enable = !row.Active
       this.save()
     },
     save() {
       if (this.$refs.modalForm.validate()) {
-        this.modalForm.Save_Flag = 1
-        this.loadingBeforeAction(() => {
-          this.submit('modalForm')
-        })
+        // todo
       }
     },
     del() {
-      this.form.Actionflag = 'Del'
-      this.form.Acl_Flag = '1'
-      this.loadingBeforeAction(() => {
-        this.submit('form')
-      })
+      // todo
     },
     select(list) {
       this.indexList = list.map((item) => item.Index)
     },
   },
   created() {
-    // this.form.acl_num = parseInt(Common_acl_num)
     // this.form.enable = Common_Activate === 'Yes'
-    // this.modalForm.curNum = add_aclnum
     // const res = JSON.parse(aclListStr)
     // const data = []
     // res.data.forEach((item) => {

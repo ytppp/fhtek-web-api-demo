@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0155') }}</h1>
+      <h1 class="page__title">{{ $t('trans0140') }}</h1>
     </div>
     <div class="page__content">
       <div class="page__sub-header">
@@ -42,7 +42,7 @@ const { t } = useI18n()
 const ipv4Columns = reactive([
   {
     key: 'wan',
-    title: t('trans0155'),
+    title: t('trans0140'),
   },
   {
     key: 'status',
@@ -84,7 +84,7 @@ const ipv4Columns = reactive([
 const ipv6Columns = reactive([
   {
     key: 'wan',
-    title: t('trans0155'),
+    title: t('trans0140'),
   },
   {
     key: 'status',

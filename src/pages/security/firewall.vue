@@ -6,13 +6,7 @@
     <div class="page__content">
       <fh-form class="form" ref="formRef" :model="form">
         <fh-form-item :label="$t('trans0060')">
-          <fh-switch
-            v-model="form.enable"
-            @change="switchEnable"
-            :active-value="EnableStatus.yes"
-            :inactive-value="EnableStatus.no"
-          >
-          </fh-switch>
+          <fh-switch v-model="form.enable" @change="switchEnable"> </fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0703')">
           <div>{{ currentLevel }}</div>
@@ -34,7 +28,11 @@
 import { ref, reactive, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { setFirewall, getFirewall } from '@/http/api'
-import { EnableStatus } from '@/util/constant'
+import { useDataClean } from '@/hooks/data-clean'
+
+defineOptions({
+  name: 'FirewallPage',
+})
 
 enum SecurityLevels {
   disable = 'disable',
@@ -44,6 +42,7 @@ enum SecurityLevels {
   userdefined = 'userdefined',
 }
 
+const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const dialog = inject('dialog')
 const securityLevels = [
@@ -70,41 +69,39 @@ const securityLevels = [
 ]
 const formRef = ref(null)
 const form = reactive({
-  enable: EnableStatus.yes,
+  enable: true,
   level: SecurityLevels.disable,
 })
-const formEnable = ref(false)
+const formEnableInitial = ref(false)
 const currentLevel = ref(SecurityLevels.disable)
-const switchEnable = (val) => {
-  const message = val === EnableStatus.yes ? t('trans0066') : t('trans0067')
-  if (formEnable.value) {
+const switchEnable = () => {
+  if (!form.enable && formEnableInitial.value) {
     dialog
       .confirm({
         okText: t('trans0019'),
         cancelText: t('trans0020'),
-        message,
+        message: t('trans0067'),
       })
       .then(() => {
         save()
       })
       .catch(() => {
-        form.enable = EnableStatus.yes
+        form.enable = true
       })
   }
 }
 const save = () => {
   setFirewall({
-    enable: form.enable,
+    enable: convertBooleanStatus(form.enable),
     level: form.level,
   })
 }
 const getFirewallData = () => {
   getFirewall().then(({ data }) => {
     const { enable, level } = data
-    form.enable = enable
+    formEnableInitial.value = form.enable = convertBooleanStatus(enable) as boolean
     form.level = level
     currentLevel.value = level
-    formEnable.value = enable === EnableStatus.yes
   })
 }
 onMounted(() => {
