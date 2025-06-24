@@ -220,7 +220,7 @@ const handleBlur = (event) => {
   emits('blur', event)
   setTimeout(() => {
     formItem?.validate()
-  }, 100)
+  }, 250)
 }
 const handleChange = (event) => {
   model.value = event.target.value
