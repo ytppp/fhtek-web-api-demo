@@ -53,13 +53,13 @@ const getWanData = () => {
       if (item.protocol === IP.IPv4 || item.protocol === IP.mix) {
         ipv4WanList.push({
           value: item.id,
-          text: item.id,
+          text: item.wanName,
         })
       }
       if (item.protocol === IP.IPv6 || item.protocol === IP.mix) {
         ipv6WanList.push({
           value: item.id,
-          text: item.id,
+          text: item.wanName,
         })
       }
     })

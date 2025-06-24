@@ -605,9 +605,8 @@ const getWanList = (id?: string) => {
     }
     wanOptions = items.map((item) => ({
       value: item.id,
-      text: item.id,
+      text: item.wanName,
     }))
-    // Object.assign(wanList, items)
     wanList.splice(0, wanList.length, ...items)
     wan.id = id ? id : items[items.length - 1].id
     modalType.value = ModalType.edit
@@ -617,7 +616,6 @@ const getWanList = (id?: string) => {
 const changeWan = () => {
   wanRef.value.clearValidate()
   const thisWan = wanList.find((item) => item.id === wan.id)
-  wan.id = thisWan.id
   wan.enable = convertBooleanStatus(thisWan.enable)
   wan.serviceType = thisWan.serviceType
   wan.lan = thisWan.lan
