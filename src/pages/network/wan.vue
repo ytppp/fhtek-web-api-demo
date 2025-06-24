@@ -10,7 +10,7 @@
             <fh-select
               style="width: 300px; margin-right: 4px"
               v-model="wan.id"
-              :options="wanOptions"
+              :options="wanOpts"
               @change="changeWan"
               v-if="isEdit"
             ></fh-select>
@@ -469,7 +469,7 @@ const wanInitial = () => ({
   },
 })
 const wan = reactive(wanInitial())
-let wanOptions: any[] = []
+const wanOpts = reactive([])
 const wanList = reactive([])
 
 const isRouter = computed(() => wan.wanMode === WanMode.route)
@@ -603,10 +603,11 @@ const getWanList = (id?: string) => {
       wanList.length = 0
       return
     }
-    wanOptions = items.map((item) => ({
+    const wanOptsList = items.map((item) => ({
       value: item.id,
       text: item.wanName,
     }))
+    wanOpts.splice(0, wanOptsList.length, ...wanOptsList)
     wanList.splice(0, wanList.length, ...items)
     wan.id = id ? id : items[items.length - 1].id
     modalType.value = ModalType.edit
@@ -654,7 +655,7 @@ const addWanConn = () => {
   wanRef.value.clearValidate()
 }
 const cancelWanConnAdd = () => {
-  wan.id = wanOptions[0].value
+  wan.id = wanOpts[0].value
   modalType.value = ModalType.edit
   wanRef.value.clearValidate()
   changeWan()
