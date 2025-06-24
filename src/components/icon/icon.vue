@@ -1,9 +1,8 @@
 <template>
-  <span>
-    <svg @click="click" @mouseover="hover" @mouseout="out" class="svg-icon" aria-hidden="true">
-      <use :xlink:href="iconName"></use>
-    </svg>
-  </span>
+  <svg @click="click" @mouseover="hover" @mouseout="out" class="svg-icon" aria-hidden="true">
+    <use :xlink:href="iconName"></use>
+    <title>{{ title }}</title>
+  </svg>
 </template>
 
 <script setup>
@@ -20,6 +19,9 @@ const props = defineProps({
     default: '',
   },
   hoverName: {
+    type: String,
+  },
+  title: {
     type: String,
   },
 })

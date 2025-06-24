@@ -7,11 +7,8 @@
       <div class="page__table">
         <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false">
           <template #operationgroup>
-            <!-- <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
-              {{ $t('trans0164') }}
-            </fh-button> -->
             <fh-icon
-              style="font-size: 20px"
+              class="page__table-icon"
               v-if="isShowAddBtn"
               @click="openAddModal"
               name="icon-add"
@@ -20,13 +17,13 @@
           </template>
           <template #operation="scope">
             <fh-icon
-              style="font-size: 20px"
+              class="page__table-icon"
               @click="openEditModal(scope.row)"
               name="icon-edit-square"
               :title="$t('trans0165')"
             />
             <fh-icon
-              style="font-size: 20px"
+              class="page__table-icon"
               @click="del(scope.row)"
               name="icon-delete"
               :title="$t('trans0111')"
