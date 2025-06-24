@@ -6,18 +6,16 @@
     <div class="page__content">
       <fh-form class="form form--small wan-form" ref="wanRef" :model="wan" :rules="wanRules">
         <fh-form-item :label="t('trans0140')" v-if="wanList.length">
-          <div style="display: flex; align-items: center">
-            <fh-select
-              style="width: 300px; margin-right: 4px"
-              v-model="wan.id"
-              :options="wanOpts"
-              @change="changeWan"
-              v-if="isEdit"
-            ></fh-select>
-            <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd">
-              {{ $t('trans0020') }}
-            </fh-button>
-          </div>
+          <fh-select
+            style="width: 300px; margin-right: 4px"
+            v-model="wan.id"
+            :options="wanOpts"
+            @change="changeWan"
+            v-if="isEdit"
+          ></fh-select>
+          <fh-button size="small" @click="cancelWanConnAdd" v-if="isAdd">
+            {{ $t('trans0020') }}
+          </fh-button>
           <template #extra>
             <fh-button @click="delWanConn" size="small" v-if="isEdit">
               {{ $t('trans0759') }}
