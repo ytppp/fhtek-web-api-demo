@@ -1,7 +1,9 @@
 <template>
-  <svg @click="click" @mouseover="hover" @mouseout="out" class="svg-icon" aria-hidden="true">
-    <use :xlink:href="iconName"></use>
-  </svg>
+  <span>
+    <svg @click="click" @mouseover="hover" @mouseout="out" class="svg-icon" aria-hidden="true">
+      <use :xlink:href="iconName"></use>
+    </svg>
+  </span>
 </template>
 
 <script setup>

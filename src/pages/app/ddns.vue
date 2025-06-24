@@ -134,7 +134,7 @@ export default {
           title: this.$t('trans0053'),
         },
         {
-          key: 'Active',
+          key: 'enable',
           title: this.$t('trans0166'),
           width: '60',
         },
@@ -169,7 +169,7 @@ export default {
       this.visible = true
     },
     openEditModal(row) {
-      this.modalForm.enable = row.Active
+      this.modalForm.enable = row.enable
       this.modalForm.id = row.id
       this.modalForm.interface = row.interface
       this.modalForm.domain = row.domain
@@ -180,13 +180,11 @@ export default {
       this.visible = true
     },
     toggleStatus(row) {
-      this.modalForm.enable = !row.Active
       const data = {
-        id: this.modalForm.id,
-        enable: convertBooleanStatus(this.modalForm.enable),
+        id: row.id,
+        enable: convertBooleanStatus(row.enable),
       }
       editDdns([data]).then(() => {
-        this.visible = false
         this.getDdnsList()
       })
     },
@@ -227,7 +225,7 @@ export default {
         items.forEach((item, i) => {
           tableData.push({
             ...item,
-            Active: convertBooleanStatus(item.Active),
+            enable: convertBooleanStatus(item.enable),
             index: i,
           })
         })

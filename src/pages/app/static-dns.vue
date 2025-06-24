@@ -11,15 +11,26 @@
               {{ $t('trans0164') }}
             </fh-button> -->
             <fh-icon
-              style="font-size: 24px"
+              style="font-size: 20px"
               v-if="isShowAddBtn"
               @click="openAddModal"
               name="icon-add"
+              :title="$t('trans0164')"
             />
           </template>
           <template #operation="scope">
-            <fh-icon @click="openEditModal(scope.row)" name="icon-edit-square" />
-            <fh-icon @click="del(scope.row)" name="icon-delete" />
+            <fh-icon
+              style="font-size: 20px"
+              @click="openEditModal(scope.row)"
+              name="icon-edit-square"
+              :title="$t('trans0165')"
+            />
+            <fh-icon
+              style="font-size: 20px"
+              @click="del(scope.row)"
+              name="icon-delete"
+              :title="$t('trans0111')"
+            />
           </template>
         </fh-table>
       </div>
