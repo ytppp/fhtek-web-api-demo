@@ -607,7 +607,7 @@ const getWanList = (id?: string) => {
       value: item.id,
       text: item.wanName,
     }))
-    wanOpts.splice(0, wanOptsList.length, ...wanOptsList)
+    wanOpts.splice(0, wanOpts.length, ...wanOptsList)
     wanList.splice(0, wanList.length, ...items)
     wan.id = id ? id : items[items.length - 1].id
     modalType.value = ModalType.edit
