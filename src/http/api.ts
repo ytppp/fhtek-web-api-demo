@@ -368,6 +368,11 @@ export const editUsbServer = (params): Promise<ApiResponse<any>> => {
     data: params,
   })
 }
+export const getUsbServer = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.server:get',
+  })
+}
 
 export const editSamba = (params): Promise<ApiResponse<any>> => {
   return http.post(api, {

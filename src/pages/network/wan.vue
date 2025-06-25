@@ -6,7 +6,12 @@
     <div class="page__content">
       <fh-form class="form form--small wan-form" ref="wanRef" :model="wan" :rules="wanRules">
         <fh-form-item :label="t('trans0140')" v-if="wanList.length">
-          <fh-select v-model="wan.id" :options="wanOpts" @change="changeWan"></fh-select>
+          <fh-select
+            v-model="wan.id"
+            :before-change="beforeChangeWan"
+            :options="wanOpts"
+            @change="changeWan"
+          ></fh-select>
           <template #extra>
             <fh-button @click="delWanConn" size="small" v-if="isEdit">
               {{ $t('trans0759') }}
@@ -509,6 +514,7 @@ const wanInitial = () => ({
     },
   },
 })
+const lastWanId = ref('')
 const wan = reactive(wanInitial())
 const wanOpts = reactive([])
 const wanList = reactive([])
@@ -579,6 +585,9 @@ watch(
   { flush: 'pre' },
 )
 
+const beforeChangeWan = () => {
+  lastWanId.value = wan.id
+}
 const changeWanMode = () => {
   wan.serviceType = serviceTypeOptions.value[0].value
   if (isRouter.value) {
@@ -733,21 +742,25 @@ const changeWan = () => {
     initWanForm()
     return
   }
-  const wanCopy = cloneDeep(wan)
-  dialog
-    .confirm({
-      okText: t('trans0019'),
-      cancelText: t('trans0020'),
-      message: t('trans0779').format(t('trans0140')),
-    })
-    .then(() => {
-      modalType.value = ModalType.edit
-      initWan()
-    })
-    .catch(() => {
-      initWanForm(wanCopy)
-      wan.id = ModalType.add
-    })
+  if (lastWanId.value === ModalType.add && wan.id !== ModalType.add) {
+    const wanCopy = cloneDeep(wan)
+    dialog
+      .confirm({
+        okText: t('trans0019'),
+        cancelText: t('trans0020'),
+        message: t('trans0779').format(t('trans0140')),
+      })
+      .then(() => {
+        modalType.value = ModalType.edit
+        initWan()
+      })
+      .catch(() => {
+        initWanForm(wanCopy)
+        wan.id = ModalType.add
+      })
+    return
+  }
+  initWan()
 }
 const initWanForm = (wanInfo: any = '') => {
   modalType.value = ModalType.add

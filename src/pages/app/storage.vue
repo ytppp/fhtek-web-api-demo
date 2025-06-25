@@ -101,7 +101,7 @@ import {
   format,
   specialChar,
 } from '@/util/tool'
-import { getUsb, usbDownload, editUsbServer, getUsbDownloadList } from '@/http/api'
+import { getUsb, usbDownload, editUsbServer, getUsbDownloadList, getUsbServer } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
 enum DownloadStatus {
@@ -161,14 +161,6 @@ const clientFormRules = {
     {
       rule: (value) => value,
       message: t('trans0004'),
-    },
-    {
-      rule: (value) => isValidLength(value, 8, 64),
-      message: format(t('trans0003'), [t('trans0185'), 8, 64]),
-    },
-    {
-      rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0185'), format(t('trans0042'), [specialChar])]),
     },
   ],
   path: [
@@ -257,6 +249,7 @@ const getUsbInfo = () => {
     hasUsbDevice.value = convertBooleanStatus(data.has_usb)
     if (hasUsbDevice.value) {
       getDownloadList()
+      getUsbServer()
     }
   })
 }
@@ -282,6 +275,16 @@ const save = () => {
     root_path: serverForm.rootPath,
   }
   editUsbServer(data)
+}
+
+const getUsbServer = () => {
+  getUsbServer().then(({ data }) => {
+    serverForm.enable = convertBooleanStatus(data.enable)
+    serverForm.username = data.username
+    serverForm.password = data.password
+    serverForm.port = data.port
+    serverForm.rootPath = data.root_path
+  })
 }
 
 const getDownloadList = () => {
