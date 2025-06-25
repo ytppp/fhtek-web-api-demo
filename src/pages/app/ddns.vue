@@ -90,6 +90,7 @@ const serverList = servers.map((val) => ({
 }))
 
 export default {
+  name: 'DdnsPage',
   data() {
     return {
       maxRuleNum,
@@ -172,7 +173,7 @@ export default {
     openAddModal() {
       this.modalForm.enable = true
       this.modalForm.id = ''
-      this.modalForm.interface = this.wanList[0].value
+      this.modalForm.interface = this.wanList[0]?.value ?? ''
       this.modalForm.domain = ''
       this.modalForm.username = ''
       this.modalForm.password = ''
@@ -249,7 +250,10 @@ export default {
         const { items } = data
         const wanList = []
         items.forEach((item) => {
-          if (item.serviceType === ServiceType.INTERNET) {
+          if (
+            item.serviceType === ServiceType.INTERNET ||
+            item.serviceType === ServiceType.TR069_INTERNET
+          ) {
             wanList.push({
               value: item.id,
               text: item.wanName,
