@@ -7,7 +7,6 @@
       <fh-form class="form form--small wan-form" ref="wanRef" :model="wan" :rules="wanRules">
         <fh-form-item :label="t('trans0140')" v-if="wanList.length">
           <fh-select
-            style="width: 300px; margin-right: 4px"
             v-model="wan.id"
             :options="wanOpts"
             @change="changeWan"
