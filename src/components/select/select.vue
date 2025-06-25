@@ -131,7 +131,6 @@ const scrollToSelect = () => {
 }
 const select = (option) => {
   // selected = option
-  let flag = false
   selected.value = option.value
   selected.text = option.text
   opened.value = false

@@ -776,7 +776,7 @@
   "trans0776": "802.1p",
   "trans0777": "Multicast VLAN ID",
   "trans0778": "Enable NAT",
-  "trans0779": "Enable SLAAC",
+  "trans0779": "Switching %s will discard the current configuration. Are you sure to continue?",
   "trans0780": "ONT Authentication",
   "trans0781": "LOID",
   "trans0782": "Enable PD",
@@ -845,7 +845,7 @@
   "trans0845": "Dial Start Timer(s)",
   "trans0846": "Dial Short Timer(s)",
   "trans0847": "Dial Long Timer(s)",
-  "trans0848": "trans0848",
+  "trans0848": "Link Mode",
   "trans0849": "busytonetimer(s)",
   "trans0850": "hangingremindertimer(s)",
   "trans0851": "noanswertimer(s)",
@@ -862,7 +862,7 @@
   "trans0862": "Enable Silence Compression",
   "trans0863": "Send Unregister message",
   "trans0864": "Enable Echo Cancel",
-  "trans0865": "trans0865",
+  "trans0865": "Connect via PPP",
   "trans0866": "Enable Adaptive Jitter Buffer",
   "trans0867": "Jitter Buffer Max",
   "trans0868": "G.723 Speed",
@@ -886,7 +886,7 @@
   "trans0886": "Call forwarding on \"no answer\"",
   "trans0887": "Call forwarding on \"no answer time(s)\"",
   "trans0888": "Three party service",
-  "trans0889": "trans0889",
+  "trans0889": "Connect via IP",
   "trans0890": "trans0890",
   "trans0891": "Caller id mode",
   "trans0892": "Min flash hook time interval(ms)",
@@ -922,5 +922,5 @@
   "trans0922": "Call forwarding Mode",
   "trans0923": "SIP",
   "trans0924": "VoIP Advanced Settings",
-  "trans0925": "After enabling SLAAC, it will be given priority."
+  "trans0925": "trans0925"
 }
