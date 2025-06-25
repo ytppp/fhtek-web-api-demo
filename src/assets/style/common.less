@@ -54,6 +54,9 @@
     }
     .page__table-icon {
       font-size: 20px;
+      &:hover {
+        color: @primaryColor;
+      }
     }
   }
 }
@@ -79,8 +82,12 @@
       width: 100%;
     }
   }
-  .form-item__content {
+  .form-item__content,
+  .form-item__extra {
     width: 300px;
+    @media screen and (max-width: 768px) {
+      width: 100%;
+    }
   }
   .switch {
     display: flex;

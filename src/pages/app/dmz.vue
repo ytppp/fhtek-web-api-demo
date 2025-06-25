@@ -86,7 +86,7 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         setDmz({
-          wan: this.form.ip,
+          wan: this.form.wan,
           enable: convertBooleanStatus(this.form.enable),
           ip: this.form.ip,
         })

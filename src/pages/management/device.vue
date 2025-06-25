@@ -5,33 +5,19 @@
     </div>
     <div class="page__content">
       <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0224') }}</h2>
+        <h2 class="page__title">{{ $t('trans0075') }}</h2>
       </div>
-      <fh-form class="form form--padding" :model="resetForm" name="resetForm" method="post">
-        <input type="hidden" id="defaultflag" name="defaultflag" v-model="resetForm.defaultflag" />
-        <input
-          type="hidden"
-          id="restoreflag2"
-          name="restoreflag2"
-          v-model="resetForm.restoreflag2"
-        />
+      <fh-form class="form form--padding">
         <fh-form-item>
-          <fh-button @click="resetDefaults" block>
-            {{ $t('trans0224') }}
+          <fh-button @click="reboot" block>
+            {{ $t('trans0075') }}
           </fh-button>
         </fh-form-item>
       </fh-form>
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0224') }}</h2>
       </div>
-      <fh-form class="form form--padding" :model="resetForm" name="resetForm" method="post">
-        <input type="hidden" id="defaultflag" name="defaultflag" v-model="resetForm.defaultflag" />
-        <input
-          type="hidden"
-          id="restoreflag2"
-          name="restoreflag2"
-          v-model="resetForm.restoreflag2"
-        />
+      <fh-form class="form form--padding">
         <fh-form-item>
           <fh-button @click="resetDefaults" block>
             {{ $t('trans0224') }}
@@ -41,25 +27,14 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0643') }}</h2>
       </div>
-      <fh-form
-        class="form form--padding"
-        enctype="multipart/form-data"
-        ref="form"
-        :disabled="formDisabled"
-        :model="form"
-        name="form"
-        method="post"
-      >
-        <input type="hidden" name="postflag" v-model="form.postflag" />
-        <input type="hidden" name="HTML_HEADER_TYPE" v-model="form.HTML_HEADER_TYPE" />
-        <input type="hidden" name="upload_type" v-model="form.type" />
+      <fh-form class="form form--padding" ref="form">
         <fh-form-item :label="$t('trans0226')">
           <fh-button @click="backConfig" block>
             {{ $t('trans0226') }}
           </fh-button>
         </fh-form-item>
         <fh-form-item :label="$t('trans0634')">
-          <fh-upload dragable ref="uploader" name="FW_UploadFile" />
+          <fh-upload dragable ref="uploader" />
           <!-- :accept="accept"
             :before-upload="beforeUpload"
             :on-error="handleUploadError"
@@ -83,52 +58,42 @@
 export default {
   data() {
     return {
-      tip: true,
-      isReset: false,
-      resetForm: {
-        defaultflag: '0',
-        restoreflag2: '0',
-      },
       form: {
         type: '',
         postflag: '1',
         HTML_HEADER_TYPE: '2',
       },
+      alert: '',
+      saveBtnDisabled: false,
     }
   },
-  computed: {},
   methods: {
+    reboot() {},
     resetDefaults() {
-      dialog.confirm({
-        okText: this.$t('trans0019'),
-        cancelText: this.$t('trans0020'),
-        message: this.$t('trans0225'),
-        callback: {
-          ok: () => {},
-          cancel: () => {},
-        },
-      })
+      dialog
+        .confirm({
+          okText: this.$t('trans0019'),
+          cancelText: this.$t('trans0020'),
+          message: this.$t('trans0225'),
+          callback: {
+            ok: () => {},
+            cancel: () => {},
+          },
+        })
+        .then(() => {})
+        .catch(() => {})
     },
     backConfig() {
-      dialog.confirm({
-        okText: this.$t('trans0019'),
-        cancelText: this.$t('trans0020'),
-        message: this.$t('trans0228'),
-        callback: {
-          ok: () => {},
-          cancel: () => {},
-        },
-      })
+      dialog
+        .confirm({
+          okText: this.$t('trans0019'),
+          cancelText: this.$t('trans0020'),
+          message: this.$t('trans0228'),
+        })
+        .then(() => {})
+        .catch(() => {})
     },
-    reseting() {
-      this.isStopRefresh = true
-      loading.open({
-        tip: this.$t('trans0617'),
-      })
-      setTimeout(() => {
-        loading.close()
-      }, 1000)
-    },
+    save() {},
   },
 }
 </script>

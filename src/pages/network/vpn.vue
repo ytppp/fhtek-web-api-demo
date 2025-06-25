@@ -192,15 +192,14 @@ export default {
         // l2tp => pptp
         message = this.$t('trans0659').format(this.$t('trans0650'), this.$t('trans0657'))
       }
-      this.$dialog.info({
-        okText: this.$t('trans0019'),
-        message,
-        callback: {
-          ok: () => {
-            this.vpnForm.type = this.isVpnTypePptp ? VpnType.l2tp : VpnType.pptp
-          },
-        },
-      })
+      this.$dialog
+        .info({
+          okText: this.$t('trans0019'),
+          message,
+        })
+        .then(() => {
+          this.vpnForm.type = this.isVpnTypePptp ? VpnType.l2tp : VpnType.pptp
+        })
     },
     getLanData() {
       getLan().then(({ data }) => {
