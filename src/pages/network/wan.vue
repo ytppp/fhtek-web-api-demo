@@ -514,7 +514,7 @@ const wanInitial = () => ({
     },
   },
 })
-const lastWanId = ref
+const lastWanId = ref('')
 const wan = reactive(wanInitial())
 const wanOpts = reactive([])
 const wanList = reactive([])

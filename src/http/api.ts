@@ -370,7 +370,7 @@ export const editUsbServer = (params): Promise<ApiResponse<any>> => {
 }
 export const getUsbServer = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'storage.server:add',
+    method: 'storage.server:get',
   })
 }
 
