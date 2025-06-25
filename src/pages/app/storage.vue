@@ -101,7 +101,7 @@ import {
   format,
   specialChar,
 } from '@/util/tool'
-import { getUsb, usbDownload, editUsbServer, getUsbDownloadList } from '@/http/api'
+import { getUsb, usbDownload, editUsbServer, getUsbDownloadList, getUsbServer } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
 enum DownloadStatus {
@@ -257,6 +257,7 @@ const getUsbInfo = () => {
     hasUsbDevice.value = convertBooleanStatus(data.has_usb)
     if (hasUsbDevice.value) {
       getDownloadList()
+      getUsbServer()
     }
   })
 }
@@ -282,6 +283,16 @@ const save = () => {
     root_path: serverForm.rootPath,
   }
   editUsbServer(data)
+}
+
+const getUsbServer = () => {
+  getUsbServer().then(({ data }) => {
+    serverForm.enable = convertBooleanStatus(data.enable)
+    serverForm.username = data.username
+    serverForm.password = data.password
+    serverForm.port = data.port
+    serverForm.rootPath = data.root_path
+  })
 }
 
 const getDownloadList = () => {

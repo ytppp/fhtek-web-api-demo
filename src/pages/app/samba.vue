@@ -118,6 +118,7 @@ export default {
       getSamba().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
         this.form.username = data.username
+        this.form.pwd = data.password
       })
     },
     getUsbInfo() {
