@@ -572,7 +572,7 @@ const igmpVersionText = computed(() => {
 })
 
 watch(
-  [() => wan.netType, () => wan.protocol],
+  [() => wan.linkMode, () => wan.protocol],
   () => {
     initMtu()
   },
@@ -588,7 +588,7 @@ const changeWanMode = () => {
   }
 }
 const changeLinkMode = () => {
-  if (wan.linkMode === LinkMode.ppp) {
+  if (isLinkModePPP.value) {
     wan.ipv4.netType = NetType.pppoe
   } else {
     wan.ipv4.netType = NetType.dhcp
@@ -705,18 +705,20 @@ const initWan = () => {
   wan.protocol = thisWan.protocol
   wan.multiVlanId = thisWan.multiVlanId
   wan.igmpVersion = thisWan.igmpversion
+  wan.linkMode = thisWan.linkMode
   wan.mtu = thisWan.mtu
   wan.ipv4.enableNat = convertBooleanStatus(thisWan.enableNat)
   wan.wanMode = thisWan.wanMode
-  wan.netType = thisWan.netType
   wan.ppp.user = thisWan.ppp.user
   wan.ppp.pwd = thisWan.ppp.pwd
   wan.ppp.enableRouterBridge = convertBooleanStatus(thisWan.ppp.enableRouterBridge)
+  wan.ipv4.netType = thisWan.ipv4.netType
   wan.ipv4.static.ip = thisWan.ipv4.static.ip
   wan.ipv4.static.mask = thisWan.ipv4.static.mask
   wan.ipv4.static.gateway = thisWan.ipv4.static.gateway
   wan.ipv4.static.dns1 = thisWan.ipv4.static.dns1
   wan.ipv4.static.dns2 = thisWan.ipv4.static.dns2
+  wan.ipv6.netType = thisWan.ipv6.netType
   wan.ipv6.pd.enable = convertBooleanStatus(thisWan.ipv6.pd.enable)
   wan.ipv6.pd.mode = thisWan.ipv6.pd.mode
   wan.ipv6.pd.address = thisWan.ipv6.pd.address
@@ -767,6 +769,7 @@ const save = () => {
       protocol: wan.protocol,
       multiVlanId: wan.multiVlanId,
       igmpversion: wan.igmpVersion,
+      linkMode: wan.linkMode,
       enableNat: convertBooleanStatus(wan.ipv4.enableNat),
       mtu: wan.mtu,
       wanMode: wan.wanMode,
