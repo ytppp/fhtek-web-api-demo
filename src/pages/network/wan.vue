@@ -160,7 +160,10 @@
                 </fh-form-item>
                 <template v-if="isIpv6PdModeManually">
                   <fh-form-item :label="$t('trans0784')" prop="ipv6.pd.address">
-                    <fh-input v-model="wan.ipv6.pd.address"></fh-input>
+                    <fh-input
+                      v-model="wan.ipv6.pd.address"
+                      :placeholder="`${format($t('trans0598'), [$t('trans0457')])}/${$t('trans0477')}`"
+                    ></fh-input>
                   </fh-form-item>
                 </template>
               </template>
@@ -1175,7 +1178,17 @@ const wanRules = reactive({
       message: t('trans0004'),
     },
     {
-      rule: (value) => isIP(value, IP.IPv6),
+      rule: (value) => {
+        const parts = value.split('/')
+        if (parts.length === 2) {
+          const ip = parts[0]
+          const prefix = parseInt(parts[1])
+          if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && prefix >= 0 && prefix <= 128) {
+            return true
+          }
+        }
+        return isIP(value, IP.IPv6)
+      },
       message: t('trans0397'),
     },
   ],
