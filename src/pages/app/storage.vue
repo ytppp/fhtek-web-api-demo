@@ -162,14 +162,6 @@ const clientFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
-    {
-      rule: (value) => isValidLength(value, 8, 64),
-      message: format(t('trans0003'), [t('trans0185'), 8, 64]),
-    },
-    {
-      rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0185'), format(t('trans0042'), [specialChar])]),
-    },
   ],
   path: [
     {

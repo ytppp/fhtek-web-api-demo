@@ -72,6 +72,10 @@ const props = defineProps({
   name: String,
   placeholder: String,
   label: String,
+  beforeChange: {
+    type: Function,
+    default: () => {},
+  },
 })
 const model = defineModel({
   required: true,
@@ -140,6 +144,7 @@ const select = (option) => {
   }
 }
 const change = () => {
+  if (props.beforeChange) props.beforeChange()
   model.value = selected.value
   emit('change', selected.value)
 }
