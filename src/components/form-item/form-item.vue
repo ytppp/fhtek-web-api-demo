@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed, provide, inject, useSlots } from 'vue'
+import { ref, computed, provide, inject, useSlots, useTemplateRef } from 'vue'
 import LabelWrap from './label-wrap.vue'
 
 defineOptions({
@@ -69,7 +69,7 @@ const props = defineProps({
   },
 })
 const slots = useSlots()
-const formItemRef = ref(null)
+const formItemRef = useTemplateRef('formItemRef')
 const validateMessage = ref('')
 const computedLabelWidth = ref('')
 const result = ref(null) // null表示没有进行校验，true通过，false未通过

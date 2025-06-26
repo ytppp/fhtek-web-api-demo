@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted, inject } from 'vue'
+import { ref, reactive, onMounted, inject, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { setFirewall, getFirewall } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -67,7 +67,7 @@ const securityLevels = [
   //   text: t('trans0065'),
   // }
 ]
-const formRef = ref(null)
+const formRef = useTemplateRef('formRef')
 const form = reactive({
   enable: true,
   level: SecurityLevels.disable,
