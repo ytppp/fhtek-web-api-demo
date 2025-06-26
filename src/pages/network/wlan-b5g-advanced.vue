@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, inject, onMounted, computed, watch } from 'vue'
+import { reactive, ref, inject, onMounted, computed, watch, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, isValidInteger } from '@/util/tool'
 import { getWifi5gAdv, setWifi5gAdv } from '@/http/api'
@@ -93,7 +93,7 @@ const dialog = inject('dialog')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const channelCurrent = ref('0')
-const wifiFormRef = ref(null)
+const wifiFormRef = useTemplateRef('wifiFormRef')
 const modeOpts = [
   {
     value: SelectMode5G.modeAonly,

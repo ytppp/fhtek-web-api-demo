@@ -54,6 +54,7 @@ import {
   isLoopback,
   ip2int,
   isValidDomain,
+  isBoardcastIP,
 } from '@/util/tool'
 import { getVpn, setVpn, getLan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'

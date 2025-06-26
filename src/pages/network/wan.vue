@@ -204,7 +204,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, onMounted, watch, inject } from 'vue'
+import { ref, computed, reactive, onMounted, watch, inject, useTemplateRef } from 'vue'
 import cloneDeep from 'lodash-es/cloneDeep'
 import { useI18n } from 'vue-i18n'
 import {
@@ -277,12 +277,12 @@ const maxRuleNum = 8
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const dialog = inject('dialog')
-const ipRef = ref(null)
-const maskRef = ref(null)
-const gatewayRef = ref(null)
-const dns2Ref = ref(null)
-const ipv6Dns2Ref = ref(null)
-const wanRef = ref(null)
+const wanRef = useTemplateRef('wanRef')
+const ipRef = useTemplateRef('ipRef')
+const maskRef = useTemplateRef('maskRef')
+const gatewayRef = useTemplateRef('gatewayRef')
+const dns2Ref = useTemplateRef('dns2Ref')
+const ipv6Dns2Ref = useTemplateRef('ipv6Dns2Ref')
 const modalType = ref(ModalType.add)
 const lanIp = ref('')
 

@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, onMounted } from 'vue'
+import { computed, reactive, ref, onMounted, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
@@ -87,7 +87,7 @@ defineOptions({
 const loading = ref(false)
 const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
-const wifiFormRef = ref(null)
+const wifiFormRef = useTemplateRef('wifiFormRef')
 const timeout = 2 * 60 * 1000
 const interval = 5000
 const ssidOpts = reactive([])
