@@ -26,10 +26,6 @@ export default defineComponent({
       default: String,
       default: 'success',
     },
-    onHide: {
-      type: Function,
-      default: () => {},
-    },
   },
   data() {
     return {
