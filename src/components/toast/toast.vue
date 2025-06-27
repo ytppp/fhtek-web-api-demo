@@ -26,6 +26,10 @@ export default defineComponent({
       default: String,
       default: 'success',
     },
+    onHide: {
+      type: Function,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -43,7 +47,11 @@ export default defineComponent({
     hide() {
       clearTimeout(this.timer)
       this.timer = null
-      this.$emit('hide')
+      console.log('222')
+      // this.$emit('hide')
+      if (this.onHide) {
+        this.onHide()
+      }
     },
   },
   mounted() {

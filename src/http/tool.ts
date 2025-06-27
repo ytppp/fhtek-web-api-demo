@@ -59,10 +59,7 @@ const startLoading = () => {
 
 //结束loading
 const endLoading = () => {
-  // loading.close()
-  setTimeout(() => {
-    loading.close()
-  }, 500)
+  loading.close()
 }
 
 // 处理HTTP状态码

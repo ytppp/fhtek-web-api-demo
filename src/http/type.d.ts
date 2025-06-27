@@ -1,4 +1,3 @@
-import { toast } from '@/components/toast/index.js';
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export interface TAxiosRequestConfig extends AxiosRequestConfig {
