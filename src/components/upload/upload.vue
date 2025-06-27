@@ -76,7 +76,7 @@
               src="@/assets/images/ic_delete.png"
               alt=""
               width="24"
-              v-if="!uploadDisabled"
+              v-if="uploadFail"
               @click="cancel(file)"
             />
           </div>

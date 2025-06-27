@@ -193,7 +193,7 @@ const saveWps = (order: StartAndStop) => {
     id: wps.id,
     order,
   }).then(() => {
-    getWpsData()
+    createCountDown()
   })
 }
 const doingHandle = () => {

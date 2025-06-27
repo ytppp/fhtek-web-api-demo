@@ -5,7 +5,7 @@
     </div>
     <div class="page__content">
       <fh-form class="form form--small wan-form" ref="wanRef" :model="wan" :rules="wanRules">
-        <fh-form-item :label="t('trans0140')" v-if="wanList.length">
+        <fh-form-item :label="t('trans0140')">
           <fh-select
             v-model="wan.id"
             :before-change="beforeChangeWan"
@@ -680,26 +680,28 @@ const rangeTips = (text: string, min: string, max: string) => {
 const getWanList = (id?: string) => {
   getWan().then(({ data }) => {
     const { items, total } = data
-    if (total === 0) {
-      modalType.value = ModalType.add
-      wanList.length = 0
-      return
-    }
     const wanOptsList = []
+    wanList.length = 0
     if (total < maxRuleNum) {
       wanOptsList.push({
         value: ModalType.add,
         text: t('trans0760'),
       })
     }
-    items.forEach((item) => {
-      wanOptsList.push({
-        value: item.id,
-        text: item.wanName,
+    if (total) {
+      items.forEach((item) => {
+        wanOptsList.push({
+          value: item.id,
+          text: item.wanName,
+        })
       })
-    })
+    }
     wanOpts.splice(0, wanOpts.length, ...wanOptsList)
     wanList.splice(0, wanList.length, ...items)
+    if (total === 0) {
+      initWanForm()
+      return
+    }
     wan.id = id ? id : items[items.length - 1].id
     modalType.value = ModalType.edit
     initWan()

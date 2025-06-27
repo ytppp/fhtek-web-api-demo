@@ -59,6 +59,7 @@ import {
 import { getVpn, setVpn, getLan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
+
 const { convertBooleanStatus } = useDataClean()
 const VpnType = {
   l2tp: 'l2tp',

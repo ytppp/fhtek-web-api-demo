@@ -33,8 +33,12 @@ export const upload = (params, onprogressCallback): Promise<ApiResponse<any>> =>
   return http.upload('uploadTest', params, onprogressCallback, { loading: false })
 }
 
+export const uploadConfig = (params, onprogressCallback): Promise<ApiResponse<any>> => {
+  return http.upload('uploadConfig', params, onprogressCallback, { loading: false })
+}
+
 export const getUpgradeStatus = (): Promise<ApiResponse<any>> => {
-  return http.get('ChkUpgradeStatus', {}, { loading: false, toast: false })
+  return http.get('ChkUpgradeStatus', undefined, { loading: false, toast: false })
 }
 
 export const getWan = (): Promise<ApiResponse<any>> => {
@@ -411,7 +415,7 @@ export const triggerMesh = (params): Promise<ApiResponse<any>> => {
   return http.post('mesh.trigger:edit', createData(params))
 }
 export const getTopology = (): Promise<ApiResponse<any>> => {
-  return http.get('mesh.topology:get', {}, { loading: false })
+  return http.get('mesh.topology:get', undefined, { loading: false })
 }
 export const getVpn = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
@@ -423,4 +427,23 @@ export const setVpn = (params): Promise<ApiResponse<any>> => {
     method: 'network.vpn.settings:edit',
     data: params,
   })
+}
+
+export const startReboot = (): Promise<ApiResponse<any>> => {
+  return http.post('reboot')
+}
+
+export const rebootStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getRebootStatus', undefined, { loading: false, toast: false })
+}
+
+export const startReset = (): Promise<ApiResponse<any>> => {
+  return http.post('reset')
+}
+
+export const resetStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getResetStatus', undefined, { loading: false, toast: false })
+}
+export const backup = (): Promise<ApiResponse<any>> => {
+  return http.get('getConfig', undefined, { loading: false, toast: false })
 }

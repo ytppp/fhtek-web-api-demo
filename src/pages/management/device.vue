@@ -34,66 +34,186 @@
           </fh-button>
         </fh-form-item>
         <fh-form-item :label="$t('trans0634')">
-          <fh-upload dragable ref="uploader" />
-          <!-- :accept="accept"
+          <fh-upload
+            dragable
+            ref="uploader"
+            :accept="accept"
+            :disabled="saveBtnDisabled"
             :before-upload="beforeUpload"
-            :on-error="handleUploadError"
-            :on-success="handleUploadsuccess"
-            :on-cancel="handleUploadcancel" -->
+          />
         </fh-form-item>
         <fh-form-item>
           <fh-button @click="save" block :disabled="saveBtnDisabled">
             {{ $t('trans0634') }}
           </fh-button>
         </fh-form-item>
-        <fh-form-item v-show="alert">
-          <fh-alert :title="alert" type="success"> </fh-alert>
-        </fh-form-item>
       </fh-form>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      form: {
-        type: '',
-        postflag: '1',
-        HTML_HEADER_TYPE: '2',
-      },
-      alert: '',
-      saveBtnDisabled: false,
-    }
-  },
-  methods: {
-    reboot() {},
-    resetDefaults() {
-      dialog
-        .confirm({
-          okText: this.$t('trans0019'),
-          cancelText: this.$t('trans0020'),
-          message: this.$t('trans0225'),
-          callback: {
-            ok: () => {},
-            cancel: () => {},
-          },
-        })
-        .then(() => {})
-        .catch(() => {})
-    },
-    backConfig() {
-      dialog
-        .confirm({
-          okText: this.$t('trans0019'),
-          cancelText: this.$t('trans0020'),
-          message: this.$t('trans0228'),
-        })
-        .then(() => {})
-        .catch(() => {})
-    },
-    save() {},
-  },
+<script lang="ts" setup>
+import { ref, useTemplateRef, inject, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import {
+  startReboot,
+  rebootStatus,
+  startReset,
+  resetStatus,
+  backup,
+  uploadConfig,
+  getLan,
+} from '@/http/api'
+import { useCountDown } from '@/hooks/countdown'
+
+defineOptions({
+  name: 'DevicePage',
+})
+
+enum Status {
+  doing = 'doing',
+  done = 'done',
+  fail = 'fail',
 }
+
+const { t } = useI18n()
+const timeout = 1000 * 60 * 2 // 2 minutes
+const interval = 5000 // 5 second
+const accept = '.tgz'
+const saveBtnDisabled = ref(false)
+const dialog = inject('dialog')
+const loading = inject('loading')
+const toast = inject('toast')
+const uploader = useTemplateRef('uploader')
+const lanIp = ref('')
+const isHasfile = ref(false)
+
+const doingRebootHandle = () => {
+  checkRebootStatus()
+}
+const doingResetHandle = () => {
+  checkResetStatus()
+}
+const doneRebootHandle = () => {
+  loading.close()
+}
+const doneResetHandle = () => {
+  loading.close()
+}
+const reboot = () => {
+  startReboot().then(({ data }) => {
+    const status = data.status
+    if (status === Status.doing) {
+      loading.open()
+      createRebootCountDown()
+    }
+  })
+}
+const reset = () => {
+  startReset().then(({ data }) => {
+    const status = data.status
+    if (status === Status.doing) {
+      loading.open()
+      createResetCountDown()
+    }
+  })
+}
+const checkRebootStatus = () => {
+  rebootStatus().then(({ data }) => {
+    const status = data.status
+    if (status === Status.done || status === Status.fail) {
+      cleanRebootCountDown()
+    }
+  })
+}
+const checkResetStatus = () => {
+  resetStatus().then(({ data }) => {
+    const status = data.status
+    if (status === Status.done || status === Status.fail) {
+      cleanResetCountDown()
+    }
+  })
+}
+const resetDefaults = () => {
+  dialog
+    .confirm({
+      okText: t('trans0019'),
+      cancelText: t('trans0020'),
+      message: t('trans0225'),
+    })
+    .then(() => {
+      reset()
+    })
+    .catch(() => {})
+}
+const getBackupFile = () => {
+  loading.open()
+  backup().then(({ data }) => {
+    loading.close()
+    window.location.href = `${import.meta.env.DEV ? `http://${lanIp.value}` : location.origin}/${data.cfg_name}`
+  })
+}
+const backConfig = () => {
+  dialog
+    .confirm({
+      okText: t('trans0019'),
+      cancelText: t('trans0020'),
+      message: t('trans0228'),
+    })
+    .then(() => {
+      getBackupFile()
+    })
+    .catch(() => {})
+}
+const beforeUpload = (files) => {
+  isHasfile.value = files.length > 0
+  return isHasfile.value
+}
+const save = () => {
+  if (!isHasfile.value) {
+    toast(t('trans0222'), 3000, 'error')
+    return
+  }
+  loading.open()
+  const fd = new FormData()
+  fd.append('file', uploader.value.files[0])
+  uploadConfig(fd, (progressEvent) => {
+    const { loaded, total, lengthComputable } = progressEvent
+    if (lengthComputable) {
+      uploader.value.percentage = Math.floor((loaded / total) * 100)
+      if (loaded >= total) {
+        uploader.value.status = uploader.value.UploadStatus.success
+      } else {
+        uploader.value.status = uploader.value.UploadStatus.uploading
+      }
+    }
+  })
+    .then(() => {})
+    .catch(() => {
+      uploader.value.status = uploader.value.UploadStatus.fail
+    })
+    .finally(() => {
+      loading.close()
+    })
+}
+function getLanData() {
+  getLan().then(({ data }) => {
+    const { lan } = data
+    const { ip } = lan
+    lanIp.value = ip
+  })
+}
+const { createCountDown: createRebootCountDown, cleanCountDown: cleanRebootCountDown } =
+  useCountDown(timeout, interval, doingRebootHandle, doneRebootHandle)
+const { createCountDown: createResetCountDown, cleanCountDown: cleanResetCountDown } = useCountDown(
+  timeout,
+  interval,
+  doingResetHandle,
+  doneResetHandle,
+)
+onMounted(() => {
+  createRebootCountDown()
+  createResetCountDown()
+  getLanData()
+})
 </script>
