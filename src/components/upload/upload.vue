@@ -76,7 +76,7 @@
               src="@/assets/images/ic_delete.png"
               alt=""
               width="24"
-              v-if="!uploadDisabled"
+              v-if="uploadFail"
               @click="cancel(file)"
             />
           </div>
@@ -162,7 +162,9 @@ export default {
   },
   computed: {
     uploadDisabled() {
-      return this.disabled || (this.form || {}).disabled.value || this.uploadLoading
+      return (
+        this.disabled || (this.form || {}).disabled.value || this.uploadLoading || this.uploadFail
+      )
     },
     uploadSuccess() {
       return this.status === UploadStatus.success

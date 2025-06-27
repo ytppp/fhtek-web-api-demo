@@ -1,7 +1,7 @@
 <template>
   <transition name="toast">
     <teleport to="body">
-      <div class="toast" :class="`toast--${type}`" v-show="visible" id="toastEl">
+      <div class="toast" :class="`toast--${type}`" v-show="visible" id="toastEl" ref="toastRef">
         <span>{{ text }}</span>
       </div>
     </teleport>
@@ -41,17 +41,13 @@ export default defineComponent({
     startTimer() {
       this.timer = setTimeout(() => {
         this.visible = false
-        this.$el.addEventListener('transitionend', this.hide)
+        this.$refs.toastRef.addEventListener('transitionend', this.hide)
       }, this.duration)
     },
     hide() {
       clearTimeout(this.timer)
       this.timer = null
-      console.log('222')
-      // this.$emit('hide')
-      if (this.onHide) {
-        this.onHide()
-      }
+      this.$emit('hide')
     },
   },
   mounted() {

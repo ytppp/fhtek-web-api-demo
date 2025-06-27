@@ -265,20 +265,20 @@ export default {
         })
       }
       if (this.isEdit) {
-        data.pre_mac = this.modalForm.pre_mac
-        editWifiMacFilter(data).then(() => {
-          this.visible = false
-          this.getWifiMacFilterList()
+        delWifiMacFilter(data).then(() => {
+          data.pre_mac = this.modalForm.pre_mac
+          editWifiMacFilter(data).then(() => {
+            this.visible = false
+            this.getWifiMacFilterList()
+          })
         })
       }
     },
     del(row) {
-      console.log(row)
-      const data = {
+      delWifiMacFilter({
         id: row.id,
         mac: row.mac,
-      }
-      delWifiMacFilter(data).then(() => {
+      }).then(() => {
         this.getWifiMacFilterList()
       })
     },

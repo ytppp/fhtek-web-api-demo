@@ -22,7 +22,6 @@ const toast = (options) => {
     h(FhToast, {
       ...opt,
       onHide: () => {
-        console.log('1111')
         toastInstance.close()
       },
     }),

@@ -39,9 +39,6 @@
             ref="uploader"
             :accept="accept"
             :disabled="saveBtnDisabled"
-            :on-error="handleUploadError"
-            :on-success="handleUploadsuccess"
-            :on-cancel="handleUploadcancel"
             :before-upload="beforeUpload"
           />
         </fh-form-item>
@@ -65,6 +62,7 @@ import {
   resetStatus,
   backup,
   uploadConfig,
+  getLan,
 } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
 
@@ -86,8 +84,9 @@ const saveBtnDisabled = ref(false)
 const dialog = inject('dialog')
 const loading = inject('loading')
 const toast = inject('toast')
-const upgrade = inject('upgrade')
 const uploader = useTemplateRef('uploader')
+const lanIp = ref('')
+const isHasfile = ref(false)
 
 const doingRebootHandle = () => {
   checkRebootStatus()
@@ -151,7 +150,7 @@ const getBackupFile = () => {
   loading.open()
   backup().then(({ data }) => {
     loading.close()
-    window.location.href = `${location.origin}/${data.cfg_name}`
+    window.location.href = `${import.meta.env.DEV ? `http://${lanIp.value}` : location.origin}/${data.cfg_name}`
   })
 }
 const backConfig = () => {
@@ -166,28 +165,16 @@ const backConfig = () => {
     })
     .catch(() => {})
 }
-const handleUploadError = () => {
-  saveBtnDisabled.value = true
-}
-const handleUploadsuccess = () => {
-  saveBtnDisabled.value = false
-}
-const handleUploadcancel = () => {
-  saveBtnDisabled.value = false
-}
 const beforeUpload = (files) => {
-  if (!files.length) {
-    return false
-  }
-  const isValidFileName = !!files.find((file) => {
-    return true // file.name.split('_')[0] === this.uploadFileName // eg: file name: FTG6214X-B4I_V1.0.0-rc.1.bin
-  })
-  if (!isValidFileName) {
-    toast(t('trans0366'))
-  }
-  return isValidFileName
+  isHasfile.value = files.length > 0
+  return isHasfile.value
 }
 const save = () => {
+  if (!isHasfile.value) {
+    toast(t('trans0222'), 3000, 'error')
+    return
+  }
+  loading.open()
   const fd = new FormData()
   fd.append('file', uploader.value.files[0])
   uploadConfig(fd, (progressEvent) => {
@@ -201,18 +188,19 @@ const save = () => {
       }
     }
   })
-    .then(() => {
-      // upgrading(t('trans0635'))
-    })
+    .then(() => {})
     .catch(() => {
       uploader.value.status = uploader.value.UploadStatus.fail
     })
+    .finally(() => {
+      loading.close()
+    })
 }
-const upgrading = (tip) => {
-  upgrade.open({
-    timeout,
-    title: t('trans0468'),
-    tip,
+function getLanData() {
+  getLan().then(({ data }) => {
+    const { lan } = data
+    const { ip } = lan
+    lanIp.value = ip
   })
 }
 const { createCountDown: createRebootCountDown, cleanCountDown: cleanRebootCountDown } =
@@ -226,5 +214,6 @@ const { createCountDown: createResetCountDown, cleanCountDown: cleanResetCountDo
 onMounted(() => {
   createRebootCountDown()
   createResetCountDown()
+  getLanData()
 })
 </script>
