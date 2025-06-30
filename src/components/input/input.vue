@@ -114,7 +114,7 @@ const props = defineProps({
   },
   disabled: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   readonly: {
     type: Boolean,
