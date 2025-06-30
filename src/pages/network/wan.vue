@@ -36,7 +36,7 @@
         <fh-form-item :label="t('trans0763')" prop="serviceType">
           <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
         </fh-form-item>
-        <template v-if="isRouter">
+        <template v-if="isRoute">
           <fh-form-item :label="t('trans0848')">
             <fh-select
               @change="changeLinkMode"
@@ -61,7 +61,13 @@
             <fh-input v-model="wan.multiVlanId"></fh-input>
             <template #extra>{{ rangeTips(t('trans0777'), '1', '4094') }}</template>
           </fh-form-item>
-          <fh-form-item :label="igmpVersionText">
+          <fh-form-item :label="statusText">
+            <fh-switch v-model="wan.igmpEnable"></fh-switch>
+          </fh-form-item>
+          <fh-form-item
+            :label="versionText"
+            v-if="!(isBridge || (isRoute && wan.protocol === IP.IPv6))"
+          >
             <fh-select v-model="wan.igmpVersion" :options="igmpVersionOptions"></fh-select>
           </fh-form-item>
         </template>
@@ -77,7 +83,7 @@
             <fh-select v-model="wan.vlan.p8021" :options="p8021Options(7)"></fh-select>
           </fh-form-item>
         </template>
-        <template v-if="isRouter && isPppoe">
+        <template v-if="isRoute && isPppoe">
           <fh-form-item :label="$t('trans0086')" prop="ppp.user">
             <fh-input v-model="wan.ppp.user"> </fh-input>
           </fh-form-item>
@@ -103,7 +109,7 @@
             </fh-checkbox-group>
           </fh-form-item>
         </template>
-        <template v-if="isRouter">
+        <template v-if="isRoute">
           <template v-if="isIpv4">
             <div class="page__sub-header">
               <h2 class="page__title">{{ $t('trans0593').format($t('trans0456')) }}</h2>
@@ -488,6 +494,7 @@ const wanInitial = () => ({
   },
   protocol: IP.IPv4,
   multiVlanId: '',
+  igmpEnable: false,
   igmpVersion: IgmpVersion.v2,
   mtu: MtuRange.ipAndIpv4[1],
   wanMode: WanMode.route,
@@ -527,7 +534,7 @@ const wan = reactive(wanInitial())
 const wanOpts = reactive([])
 const wanList = reactive([])
 
-const isRouter = computed(() => wan.wanMode === WanMode.route)
+const isRoute = computed(() => wan.wanMode === WanMode.route)
 const isBridge = computed(() => wan.wanMode === WanMode.bridge)
 const isIpMix = computed(() => wan.protocol === IP.mix)
 const isIpv4 = computed(() => wan.protocol === IP.IPv4 || isIpMix.value)
@@ -568,7 +575,7 @@ const serviceTypeOptions = computed(() => {
       }
     })
   }
-  if (isRouter.value) {
+  if (isRoute.value) {
     serviceTypesInit.forEach((item) => {
       item.show = true
     })
@@ -581,8 +588,36 @@ const isAdd = computed(() => {
 const isEdit = computed(() => {
   return modalType.value === ModalType.edit
 })
-const igmpVersionText = computed(() => {
-  return `${t('trans0375')} ${t('trans0379')}`
+
+const type = computed(() => {
+  let text = ''
+  if (isIpv4.value) {
+    text = t('trans0375')
+  }
+  if (isIpv6.value) {
+    text = t('trans0376')
+  }
+  if (isIpMix.value) {
+    text = t('trans0377')
+  }
+  return text
+})
+const mode = computed(() => {
+  let mode = ''
+  if (isBridge.value) {
+    mode = t('trans0387') // snopp
+  }
+  if (isRoute.value) {
+    mode = t('trans0386') // proxy
+  }
+  return mode
+})
+
+const statusText = computed(() => {
+  return `${type.value} ${mode.value}`
+})
+const versionText = computed(() => {
+  return `${type.value} ${mode.value} ${t('trans0379')}`
 })
 
 watch(
@@ -600,7 +635,7 @@ const changeWanMode = () => {
   if (!serviceTypeOptions.value.find((item) => item.value === wan.serviceType)) {
     wan.serviceType = serviceTypeOptions.value[0].value
   }
-  if (isRouter.value) {
+  if (isRoute.value) {
     wan.protocol = IP.IPv4
   } else if (isBridge.value) {
     wan.protocol = IP.mix
@@ -725,6 +760,7 @@ const initWan = () => {
   wan.vlan.p8021 = thisWan.vlan.p8021
   wan.protocol = thisWan.protocol
   wan.multiVlanId = thisWan.multiVlanId
+  wan.igmpEnable = convertBooleanStatus(thisWan.igmpEnable)
   wan.igmpVersion = thisWan.igmpversion
   wan.linkMode = thisWan.linkMode
   wan.mtu = thisWan.mtu
@@ -793,6 +829,7 @@ const save = () => {
       },
       protocol: wan.protocol,
       multiVlanId: wan.multiVlanId,
+      igmpEnable: convertBooleanStatus(wan.igmpEnable),
       igmpversion: wan.igmpVersion,
       linkMode: wan.linkMode,
       enableNat: convertBooleanStatus(wan.ipv4.enableNat),

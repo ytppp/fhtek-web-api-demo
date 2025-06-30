@@ -14,6 +14,9 @@
         <template v-if="form.enable">
           <fh-form-item :label="$t('trans0835')">
             <fh-switch v-model="form.enableSteering" />
+            <template #extra>
+              {{ $t('trans0890') }}
+            </template>
           </fh-form-item>
           <fh-form-item :label="$t('trans0569')">
             <div>{{ roleText }}</div>

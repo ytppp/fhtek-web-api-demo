@@ -19,7 +19,7 @@
             <fh-select @change="changeMode" v-model="wifi.mode" :options="modeOpts"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0509')">
-            <fh-select v-model="wifi.bw" :options="bwOpts"> </fh-select>
+            <fh-select @change="changeBw" v-model="wifi.bw" :options="bwOpts"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0507')">
             <fh-select v-model="wifi.channel" :options="channelOpts"> </fh-select>
@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, inject, onMounted, computed, watch, useTemplateRef } from 'vue'
+import { reactive, ref, inject, onMounted, computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, isValidInteger } from '@/util/tool'
 import { getWifi5gAdv, setWifi5gAdv, getMesh } from '@/http/api'
@@ -346,16 +346,11 @@ const changeMode = () => {
   }
 }
 
-watch(
-  () => wifi.bw,
-  (val) => {
-    if (val !== BandWidths5G.b20) {
-      wifi.channel = Channels5G.auto
-    }
-  },
-  { flush: 'pre' },
-)
-
+const changeBw = () => {
+  if (wifi.bw !== BandWidths5G.b20) {
+    wifi.channel = Channels5G.auto
+  }
+}
 const switchEnable = (val) => {
   if (!val) {
     dialog
