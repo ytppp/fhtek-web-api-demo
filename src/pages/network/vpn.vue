@@ -59,7 +59,6 @@ import {
 import { getVpn, setVpn, getLan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
-
 const { convertBooleanStatus } = useDataClean()
 const VpnType = {
   l2tp: 'l2tp',
@@ -97,7 +96,11 @@ export default {
           },
           {
             rule: (value) =>
-              (isIP(value) && !isMulticast(value) && !isLoopback(value) && isBoardcastIP(value) && ip2int(value) != 0) ||
+              (isIP(value) &&
+                !isMulticast(value) &&
+                !isLoopback(value) &&
+                isBoardcastIP(value) &&
+                ip2int(value) != 0) ||
               isValidDomain(value),
             message: this.$t('trans0397'),
           },
@@ -179,6 +182,8 @@ export default {
           server: this.vpnForm.server,
           username: this.vpnForm.username,
           password: this.vpnForm.password,
+        }).then(() => {
+          this.getVpnData()
         })
       }
     },

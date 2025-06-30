@@ -114,7 +114,7 @@ const props = defineProps({
   },
   disabled: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   readonly: {
     type: Boolean,
@@ -157,7 +157,10 @@ const passwordVisible = ref(false)
 const emits = defineEmits(['focus', 'blur', 'change', 'input', 'clear'])
 
 const inputDisabled = computed(() => {
-  return props.disabled || form?.disabled.value
+  if (!props.disabled) {
+    return props.disabled
+  }
+  return form?.disabled.value
 })
 const currentLabel = computed(() => {
   return props.label || formItem?.label.value || ''

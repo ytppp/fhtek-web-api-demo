@@ -27,7 +27,7 @@
           <fh-switch v-model="wifi.hide"> </fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0747')" prop="sta">
-          <fh-input v-model="wifi.sta"> </fh-input>
+          <fh-input v-model="wifi.sta" :disabled="false"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0031')">
           <fh-select v-model="wifi.encrypt" :options="encryptsOpts"> </fh-select>
@@ -49,7 +49,7 @@
           <fh-switch v-model="wifi.enableWps"> </fh-switch>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
-          <fh-button @click="save" block>
+          <fh-button @click="save" :disabled="false" block>
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>

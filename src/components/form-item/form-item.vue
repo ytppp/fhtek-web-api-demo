@@ -69,7 +69,7 @@ const props = defineProps({
   },
 })
 const slots = useSlots()
-const formItemRef = useTemplateRef('formItemRef')
+const formItemRef = useTemplateRef('')
 const validateMessage = ref('')
 const computedLabelWidth = ref('')
 const result = ref(null) // null表示没有进行校验，true通过，false未通过
