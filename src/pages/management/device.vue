@@ -112,7 +112,6 @@ const reboot = () => {
         const status = data.status
         if (status === Status.doing) {
           loading.open({
-            title: t('trans0468'),
             tip: t('trans0229'),
           })
           createRebootCountDown()
@@ -126,7 +125,6 @@ const reset = () => {
     const status = data.status
     if (status === Status.doing) {
       loading.open({
-        title: t('trans0468'),
         tip: t('trans0617'),
       })
       createResetCountDown()
@@ -195,7 +193,6 @@ const save = () => {
     return
   }
   loading.open({
-    title: t('trans0468'),
     tip: t('trans0635'),
   })
   const fd = new FormData()

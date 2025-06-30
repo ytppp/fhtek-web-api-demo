@@ -38,7 +38,7 @@
           </template>
         </fh-table>
       </div>
-      <fh-modal v-model:visible="visible" :title="modalTitle" :before-close="handleClose">
+      <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
         <template #body>
           <fh-form
             class="form modal-form"
@@ -130,7 +130,6 @@ export default {
                 tempData = this.data.filter((item) => item.index !== this.modalForm.index)
               }
               flag = !tempData.some((item) => {
-                console.log(item.id, this.modalForm.id, item.mac, value)
                 return item.id === this.modalForm.id && item.mac === value
               })
               return flag
@@ -169,7 +168,7 @@ export default {
     },
   },
   methods: {
-    changeFilterMode(val) {
+    changeFilterMode() {
       const message = this.$t('trans0125').format(
         this.isBlackList ? this.$t('trans0105') : this.$t('trans0106'),
       )
@@ -214,19 +213,24 @@ export default {
       this.visible = true
     },
     getWifiMacFilterList() {
-      getWifiMacFilter().then(({ data }) => {
-        const tableData = []
-        const { items } = data
-        items.forEach((item, i) => {
-          tableData.push({
-            ...item,
-            idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
-            pre_mac: item.mac,
-            index: i,
+      getWifiMacFilter()
+        .then(({ data }) => {
+          const tableData = []
+          const { items } = data
+          items.forEach((item, i) => {
+            tableData.push({
+              ...item,
+              idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
+              pre_mac: item.mac,
+              index: i,
+            })
           })
+          this.data = tableData
         })
-        this.data = tableData
-      })
+        .catch(() => {})
+        .finally(() => {
+          this.visible = false
+        })
     },
     handleClose() {
       this.$refs.modalFormRef.clearValidate()
@@ -260,7 +264,6 @@ export default {
       }
       if (this.isAdd) {
         addWifiMacFilter(data).then(() => {
-          this.visible = false
           this.getWifiMacFilterList()
         })
       }
@@ -268,7 +271,6 @@ export default {
         delWifiMacFilter(data).then(() => {
           data.pre_mac = this.modalForm.pre_mac
           editWifiMacFilter(data).then(() => {
-            this.visible = false
             this.getWifiMacFilterList()
           })
         })

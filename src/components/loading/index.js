@@ -4,21 +4,14 @@ import { mergeOptions } from '@/util/tool'
 import { usePopup } from '@/hooks/popup'
 import Popup from '@/components/popup/popup.vue'
 
-const DefaultOpt = {
+const defaultOptions = {
   tip: '',
   title: '',
 }
 let instance = null
 export default {
   open(options) {
-    const opt = null
-    if (typeof options === 'string') {
-      opt = mergeOptions(DefaultOpt, {
-        title: options,
-      })
-    } else {
-      opt = mergeOptions(DefaultOpt, options)
-    }
+    const opt = mergeOptions(defaultOptions, options)
     if (!instance) {
       instance = usePopup(
         h(

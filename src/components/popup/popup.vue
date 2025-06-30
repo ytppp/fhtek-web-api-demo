@@ -64,14 +64,21 @@ const parentNode = computed(() => {
 watch(
   () => model.value,
   (val) => {
+    if (props.isManual) return
     if (val) {
       wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
       overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
-      parentNode.value.style.overflow = 'hidden'
-      parentNode.value.addEventListener('touchmove', preventDefault, false)
+      if (parentNode.value) {
+        parentNode.value.style.overflow = 'hidden'
+        console.log('1', overflow.value, '2', parentNode.value.style.overflow)
+        parentNode.value.addEventListener('touchmove', preventDefault, false)
+      }
     } else {
-      parentNode.value.style.overflow = overflow.value
-      parentNode.value.removeEventListener('touchmove', preventDefault, false)
+      if (parentNode.value) {
+        parentNode.value.style.overflow = overflow.value
+        console.log('11', overflow.value, '22', parentNode.value.style.overflow)
+        parentNode.value.removeEventListener('touchmove', preventDefault, false)
+      }
     }
   },
 )

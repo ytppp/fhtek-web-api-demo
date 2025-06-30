@@ -39,7 +39,7 @@
           </template>
         </fh-table>
       </div>
-      <fh-modal v-model:visible="visible" :title="modalTitle" :before-close="handleClose">
+      <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
         <template #body>
           <fh-form class="form modal-form" ref="form" :model="modelForm" :rules="rules">
             <fh-form-item :label="$t('trans0058')">
