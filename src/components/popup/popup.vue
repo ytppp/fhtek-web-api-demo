@@ -70,13 +70,11 @@ watch(
       overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
       if (parentNode.value) {
         parentNode.value.style.overflow = 'hidden'
-        console.log('1', overflow.value, '2', parentNode.value.style.overflow)
         parentNode.value.addEventListener('touchmove', preventDefault, false)
       }
     } else {
       if (parentNode.value) {
         parentNode.value.style.overflow = overflow.value
-        console.log('11', overflow.value, '22', parentNode.value.style.overflow)
         parentNode.value.removeEventListener('touchmove', preventDefault, false)
       }
     }
