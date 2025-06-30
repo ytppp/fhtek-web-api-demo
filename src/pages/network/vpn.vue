@@ -97,7 +97,7 @@ export default {
           },
           {
             rule: (value) =>
-              (isIP(value) && !isMulticast(value) && !isLoopback(value) && ip2int(value) != 0) ||
+              (isIP(value) && !isMulticast(value) && !isLoopback(value) && isBoardcastIP(value) && ip2int(value) != 0) ||
               isValidDomain(value),
             message: this.$t('trans0397'),
           },

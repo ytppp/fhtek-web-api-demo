@@ -41,7 +41,7 @@
           <fh-alert type="info" :title="meshTip" show-icon :center="false" />
         </fh-form-item> -->
       </fh-form>
-      <fh-modal class="mesh-tip-modal" v-model:visible="visible" width="50%">
+      <fh-modal class="mesh-tip-modal" v-model="visible" width="50%">
         <template #body>
           <h2>{{ $t('trans0026') }}</h2>
           <h3>{{ $t('trans0113') }}</h3>

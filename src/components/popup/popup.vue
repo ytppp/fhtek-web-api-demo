@@ -67,11 +67,15 @@ watch(
     if (val) {
       wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
       overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
-      parentNode.value.style.overflow = 'hidden'
-      parentNode.value.addEventListener('touchmove', preventDefault, false)
+      if (parentNode.value) {
+        parentNode.value.style.overflow = 'hidden'
+        parentNode.value.addEventListener('touchmove', preventDefault, false)
+      }
     } else {
-      parentNode.value.style.overflow = overflow.value
-      parentNode.value.removeEventListener('touchmove', preventDefault, false)
+      if (parentNode.value) {
+        parentNode.value.style.overflow = overflow.value
+        parentNode.value.removeEventListener('touchmove', preventDefault, false)
+      }
     }
   },
 )

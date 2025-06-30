@@ -4,7 +4,13 @@
       <h1 class="page__title">{{ format($t('trans0611'), [$t('trans0050')]) }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form form--padding" ref="wifiFormRef" :model="wifi" :rules="rules">
+      <fh-form
+        class="form form--padding"
+        ref="wifiFormRef"
+        :model="wifi"
+        :rules="rules"
+        :disabled="enableSteering"
+      >
         <fh-form-item :label="format($t('trans0027'), [$t('trans0050')])">
           <fh-switch @change="switchEnable" v-model="wifi.enable"> </fh-switch>
         </fh-form-item>
@@ -39,7 +45,7 @@
 import { reactive, ref, inject, onMounted, computed, watch, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, isValidInteger } from '@/util/tool'
-import { getWifi5gAdv, setWifi5gAdv } from '@/http/api'
+import { getWifi5gAdv, setWifi5gAdv, getMesh } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
 defineOptions({
@@ -93,6 +99,7 @@ const dialog = inject('dialog')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const channelCurrent = ref('0')
+const enableSteering = ref(false)
 const wifiFormRef = useTemplateRef('wifiFormRef')
 const modeOpts = [
   {
@@ -390,7 +397,13 @@ const save = () => {
     setWifi5gAdv(data)
   }
 }
+const getMeshData = () => {
+  getMesh().then(({ data }) => {
+    enableSteering.value = convertBooleanStatus(data.steering)
+  })
+}
 onMounted(() => {
   getWifi5gData()
+  getMeshData()
 })
 </script>

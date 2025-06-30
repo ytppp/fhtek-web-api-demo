@@ -38,8 +38,9 @@
             dragable
             ref="uploader"
             :accept="accept"
-            :disabled="saveBtnDisabled"
-            :before-upload="beforeUpload"
+            :on-error="handleUploadError"
+            :on-success="handleUploadsuccess"
+            :on-cancel="handleUploadcancel"
           />
         </fh-form-item>
         <fh-form-item>
@@ -86,7 +87,6 @@ const loading = inject('loading')
 const toast = inject('toast')
 const uploader = useTemplateRef('uploader')
 const lanIp = ref('')
-const isHasfile = ref(false)
 
 const doingRebootHandle = () => {
   checkRebootStatus()
@@ -101,19 +101,32 @@ const doneResetHandle = () => {
   loading.close()
 }
 const reboot = () => {
-  startReboot().then(({ data }) => {
-    const status = data.status
-    if (status === Status.doing) {
-      loading.open()
-      createRebootCountDown()
-    }
-  })
+  dialog
+    .confirm({
+      okText: t('trans0019'),
+      cancelText: t('trans0020'),
+      message: t('trans0242'),
+    })
+    .then(() => {
+      startReboot().then(({ data }) => {
+        const status = data.status
+        if (status === Status.doing) {
+          loading.open({
+            tip: t('trans0229'),
+          })
+          createRebootCountDown()
+        }
+      })
+    })
+    .catch(() => {})
 }
 const reset = () => {
   startReset().then(({ data }) => {
     const status = data.status
     if (status === Status.doing) {
-      loading.open()
+      loading.open({
+        tip: t('trans0617'),
+      })
       createResetCountDown()
     }
   })
@@ -165,16 +178,23 @@ const backConfig = () => {
     })
     .catch(() => {})
 }
-const beforeUpload = (files) => {
-  isHasfile.value = files.length > 0
-  return isHasfile.value
+const handleUploadError = () => {
+  saveBtnDisabled.value = true
+}
+const handleUploadsuccess = () => {
+  saveBtnDisabled.value = false
+}
+const handleUploadcancel = () => {
+  saveBtnDisabled.value = false
 }
 const save = () => {
-  if (!isHasfile.value) {
+  if (!uploader.value.files.length) {
     toast(t('trans0222'), 3000, 'error')
     return
   }
-  loading.open()
+  loading.open({
+    tip: t('trans0635'),
+  })
   const fd = new FormData()
   fd.append('file', uploader.value.files[0])
   uploadConfig(fd, (progressEvent) => {
@@ -188,7 +208,9 @@ const save = () => {
       }
     }
   })
-    .then(() => {})
+    .then(() => {
+      createRebootCountDown()
+    })
     .catch(() => {
       uploader.value.status = uploader.value.UploadStatus.fail
     })

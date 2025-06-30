@@ -38,7 +38,7 @@
           </template>
         </fh-table>
       </div>
-      <fh-modal v-model:visible="visible" :title="modalTitle" :before-close="handleClose">
+      <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
         <template #body>
           <fh-form
             class="form modal-form"
@@ -214,19 +214,24 @@ export default {
       this.visible = true
     },
     getWifiMacFilterList() {
-      getWifiMacFilter().then(({ data }) => {
-        const tableData = []
-        const { items } = data
-        items.forEach((item, i) => {
-          tableData.push({
-            ...item,
-            idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
-            pre_mac: item.mac,
-            index: i,
+      getWifiMacFilter()
+        .then(({ data }) => {
+          const tableData = []
+          const { items } = data
+          items.forEach((item, i) => {
+            tableData.push({
+              ...item,
+              idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
+              pre_mac: item.mac,
+              index: i,
+            })
           })
+          this.data = tableData
         })
-        this.data = tableData
-      })
+        .catch(() => {})
+        .finally(() => {
+          this.visible = false
+        })
     },
     handleClose() {
       this.$refs.modalFormRef.clearValidate()

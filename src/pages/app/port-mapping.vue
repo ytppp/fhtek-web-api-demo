@@ -8,7 +8,7 @@
         <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false">
           <template #operationgroup>
             <fh-icon
-              class="page__table-icon"
+              class="page__header-icon"
               v-if="isShowAddBtn"
               @click="openAddModal"
               name="icon-add"
@@ -20,13 +20,13 @@
           </template>
           <template #operation="scope">
             <fh-icon
-              class="page__table-icon"
+              class="page__header-icon"
               @click="openEditModal(scope.row)"
               name="icon-edit-square"
               :title="$t('trans0165')"
             />
             <fh-icon
-              class="page__table-icon"
+              class="page__header-icon"
               @click="del(scope.row)"
               name="icon-delete"
               :title="$t('trans0111')"
@@ -35,7 +35,7 @@
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model:visible="visible" :title="modalTitle" :before-close="handleClose">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
       <template #body>
         <fh-form
           class="form modal-form"
@@ -463,23 +463,28 @@ export default {
       this.$refs.modalForm.clearValidate()
     },
     getPortMappingData() {
-      getPortMapping().then(({ data }) => {
-        const tableData = []
-        const { items } = data
-        items.forEach((item) => {
-          tableData.push({
-            index: item.id || '',
-            mappingName: item.name || '',
-            protocol: item.proto || '',
-            extHost: item.dest || '',
-            extPort: item.dest_port || '',
-            intHost: item.src || '',
-            intPort: item.src_port || '',
-            enable: convertBooleanStatus(item.enable),
+      getPortMapping()
+        .then(({ data }) => {
+          const tableData = []
+          const { items } = data
+          items.forEach((item) => {
+            tableData.push({
+              index: item.id || '',
+              mappingName: item.name || '',
+              protocol: item.proto || '',
+              extHost: item.dest || '',
+              extPort: item.dest_port || '',
+              intHost: item.src || '',
+              intPort: item.src_port || '',
+              enable: convertBooleanStatus(item.enable),
+            })
           })
+          this.data = tableData
         })
-        this.data = tableData
-      })
+        .catch(() => {})
+        .finally(() => {
+          this.visible = false
+        })
     },
   },
   mounted() {

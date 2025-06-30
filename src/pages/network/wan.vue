@@ -6,17 +6,22 @@
     <div class="page__content">
       <fh-form class="form form--small wan-form" ref="wanRef" :model="wan" :rules="wanRules">
         <fh-form-item :label="t('trans0140')">
-          <fh-select
-            v-model="wan.id"
-            :before-change="beforeChangeWan"
-            :options="wanOpts"
-            @change="changeWan"
-          ></fh-select>
-          <template #extra>
-            <fh-button @click="delWanConn" size="small" v-if="isEdit">
-              {{ $t('trans0759') }}
-            </fh-button>
-          </template>
+          <div style="display: flex; align-items: center">
+            <fh-select
+              style="width: 300px; margin-right: 4px"
+              v-model="wan.id"
+              :before-change="beforeChangeWan"
+              :options="wanOpts"
+              @change="changeWan"
+            ></fh-select>
+            <fh-icon
+              class="page__header-icon"
+              @click="delWanConn"
+              name="icon-delete"
+              :title="$t('trans0759')"
+              v-if="isEdit"
+            />
+          </div>
         </fh-form-item>
         <fh-form-item :label="t('trans0761')">
           <fh-switch v-model="wan.enable" />
@@ -592,7 +597,9 @@ const beforeChangeWan = () => {
   lastWanId.value = wan.id
 }
 const changeWanMode = () => {
-  wan.serviceType = serviceTypeOptions.value[0].value
+  if (!serviceTypeOptions.value.find((item) => item.value === wan.serviceType)) {
+    wan.serviceType = serviceTypeOptions.value[0].value
+  }
   if (isRouter.value) {
     wan.protocol = IP.IPv4
   } else if (isBridge.value) {
@@ -936,7 +943,7 @@ const wanRules = reactive({
   'ipv6.netType': [
     {
       rule: (value) => value,
-      message: format(t('trans0677'), [t('trans0080')]),
+      message: format(t('trans0677'), [t('trans0597')]),
     },
   ],
   'ipv4.static.ip': [

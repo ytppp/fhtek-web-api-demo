@@ -7,7 +7,13 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0119') }}</h2>
       </div>
-      <fh-form class="form form--padding" ref="wifiFormRef" :model="wifi" :rules="rules">
+      <fh-form
+        class="form form--padding"
+        ref="wifiFormRef"
+        :model="wifi"
+        :rules="rules"
+        :disabled="enableSteering"
+      >
         <fh-form-item :label="$t('trans0711')">
           <fh-select @change="changeSsid" v-model="wifi.id" :options="ssidOpts"> </fh-select>
         </fh-form-item>
@@ -39,7 +45,7 @@
           >
           </fh-input>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0798')">
+        <fh-form-item :label="$t('trans0798')" v-if="isSsidac1">
           <fh-switch v-model="wifi.enableWps"> </fh-switch>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
@@ -75,7 +81,7 @@ import { computed, reactive, ref, onMounted, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
-import { getWifi5g, setWifi5g, getWps, setWps } from '@/http/api'
+import { getWifi5g, setWifi5g, getWps, setWps, getMesh } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
 import { StartAndStop, Encrypts, encrypts, WpsStatus, SsidText, Ssidac1 } from '@/util/constant'
 
@@ -87,6 +93,7 @@ const loading = ref(false)
 const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
 const wifiFormRef = useTemplateRef('wifiFormRef')
+const enableSteering = ref(false)
 const timeout = 2 * 60 * 1000
 const interval = 5000
 const ssidOpts = reactive([])
@@ -177,8 +184,11 @@ const encryptTip = computed(() => {
   }
   return ''
 })
+const isSsidac1 = computed(() => {
+  return wifi.id === Ssidac1
+})
 const isEnableWps = computed(() => {
-  return wifi.enableWpsInitial && wifi.enableInitial && wifi.id === Ssidac1
+  return wifi.enableWpsInitial && wifi.enableInitial && isSsidac1.value
 })
 
 const start = () => {
@@ -275,7 +285,13 @@ const save = () => {
     })
   }
 }
+const getMeshData = () => {
+  getMesh().then(({ data }) => {
+    enableSteering.value = convertBooleanStatus(data.steering)
+  })
+}
 onMounted(() => {
   getWifiData()
+  getMeshData()
 })
 </script>
