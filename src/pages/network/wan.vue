@@ -6,17 +6,22 @@
     <div class="page__content">
       <fh-form class="form form--small wan-form" ref="wanRef" :model="wan" :rules="wanRules">
         <fh-form-item :label="t('trans0140')">
-          <fh-select
-            v-model="wan.id"
-            :before-change="beforeChangeWan"
-            :options="wanOpts"
-            @change="changeWan"
-          ></fh-select>
-          <template #extra>
-            <fh-button @click="delWanConn" size="small" v-if="isEdit">
-              {{ $t('trans0759') }}
-            </fh-button>
-          </template>
+          <div style="display: flex; align-items: center">
+            <fh-select
+              style="width: 300px; margin-right: 4px"
+              v-model="wan.id"
+              :before-change="beforeChangeWan"
+              :options="wanOpts"
+              @change="changeWan"
+            ></fh-select>
+            <fh-icon
+              class="page__table-icon"
+              @click="delWanConn"
+              name="icon-delete"
+              :title="$t('trans0111')"
+              v-if="isEdit"
+            />
+          </div>
         </fh-form-item>
         <fh-form-item :label="t('trans0761')">
           <fh-switch v-model="wan.enable" />

@@ -64,7 +64,6 @@ const parentNode = computed(() => {
 watch(
   () => model.value,
   (val) => {
-    if (props.isManual) return
     if (val) {
       wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
       overflow.value = parentNode.value ? parentNode.value.style.overflow : ''

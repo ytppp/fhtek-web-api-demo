@@ -221,7 +221,7 @@ export function isNetworkIP(ip, mask) {
   return r === bip
 }
 // 是否是广播地址
-export function isBoardcastIP(ip, mask) {
+export function isBoardcastIP(ip, mask = '255.255.255.0') {
   const bip = ip2int(ip)
   const bmask = ~ip2int(mask)
   const r = (bip | bmask) >>> 0 // >>>0去掉符号位
