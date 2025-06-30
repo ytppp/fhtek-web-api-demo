@@ -118,7 +118,11 @@ export default {
         const { items } = data
         const wanList = []
         items.forEach((item) => {
-          if (item.serviceType === ServiceType.INTERNET) {
+          if (
+            item.serviceType === ServiceType.INTERNET ||
+            item.serviceType === ServiceType.TR069_INTERNET ||
+            item.serviceType === ServiceType.VOICE_INTERNET
+          ) {
             wanList.push({
               value: item.id,
               text: item.wanName,

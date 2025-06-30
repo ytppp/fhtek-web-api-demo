@@ -15,10 +15,10 @@
               @change="changeWan"
             ></fh-select>
             <fh-icon
-              class="page__table-icon"
+              class="page__header-icon"
               @click="delWanConn"
               name="icon-delete"
-              :title="$t('trans0111')"
+              :title="$t('trans0759')"
               v-if="isEdit"
             />
           </div>
@@ -597,7 +597,9 @@ const beforeChangeWan = () => {
   lastWanId.value = wan.id
 }
 const changeWanMode = () => {
-  wan.serviceType = serviceTypeOptions.value[0].value
+  if (!serviceTypeOptions.value.find((item) => item.value === wan.serviceType)) {
+    wan.serviceType = serviceTypeOptions.value[0].value
+  }
   if (isRouter.value) {
     wan.protocol = IP.IPv4
   } else if (isBridge.value) {
@@ -941,7 +943,7 @@ const wanRules = reactive({
   'ipv6.netType': [
     {
       rule: (value) => value,
-      message: format(t('trans0677'), [t('trans0080')]),
+      message: format(t('trans0677'), [t('trans0597')]),
     },
   ],
   'ipv4.static.ip': [

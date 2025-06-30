@@ -25,17 +25,20 @@
 import { ref, reactive, onMounted, inject } from 'vue'
 import { getIpv6Lan, setIpv6Lan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'LanIpv6Page',
 })
 
+const { t } = useI18n()
 const { convertBooleanStatus } = useDataClean()
 const loading = inject('loading')
 enum Mode {
   slaac = 'slaac',
   dhcpv6 = 'dhcpv6',
   hybrid = 'hybrid',
+  none = 'none'
 }
 const modes = [
   {
@@ -49,6 +52,10 @@ const modes = [
   {
     value: Mode.hybrid,
     text: 'Hybrid',
+  },
+  {
+    value: Mode.none,
+    text: t('trans0357'),
   },
 ]
 const formRef = ref(null)

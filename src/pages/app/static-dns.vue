@@ -8,7 +8,7 @@
         <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false">
           <template #operationgroup>
             <fh-icon
-              class="page__table-icon"
+              class="page__header-icon"
               v-if="isShowAddBtn"
               @click="openAddModal"
               name="icon-add"
@@ -17,13 +17,13 @@
           </template>
           <template #operation="scope">
             <fh-icon
-              class="page__table-icon"
+              class="page__header-icon"
               @click="openEditModal(scope.row)"
               name="icon-edit-square"
               :title="$t('trans0165')"
             />
             <fh-icon
-              class="page__table-icon"
+              class="page__header-icon"
               @click="del(scope.row)"
               name="icon-delete"
               :title="$t('trans0111')"

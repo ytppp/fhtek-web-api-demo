@@ -40,7 +40,7 @@
           >
           </fh-input>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0798')">
+        <fh-form-item :label="$t('trans0798')" v-if="isSsid1">
           <fh-switch v-model="wifi.enableWps"> </fh-switch>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
@@ -178,8 +178,11 @@ const encryptTip = computed(() => {
   }
   return ''
 })
+const isSsid1 = computed(() => {
+  return wifi.id === Ssid1
+})
 const isEnableWps = computed(() => {
-  return wifi.enableWpsInitial && wifi.enableInitial && wifi.id === Ssid1
+  return wifi.enableWpsInitial && wifi.enableInitial && isSsid1.value
 })
 
 const start = () => {
