@@ -65,7 +65,10 @@ const classes = computed(() => [
 ])
 
 const btnDisabled = computed(() => {
-  return props.disabled || form?.disabled.value
+  if (!props.disabled) {
+    return props.disabled
+  }
+  return form?.disabled.value
 })
 
 const processedSlots = computed(() => {
