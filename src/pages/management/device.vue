@@ -38,7 +38,6 @@
             dragable
             ref="uploader"
             :accept="accept"
-            :before-upload="beforeUpload"
             :on-error="handleUploadError"
             :on-success="handleUploadsuccess"
             :on-cancel="handleUploadcancel"
@@ -102,19 +101,34 @@ const doneResetHandle = () => {
   loading.close()
 }
 const reboot = () => {
-  startReboot().then(({ data }) => {
-    const status = data.status
-    if (status === Status.doing) {
-      loading.open()
-      createRebootCountDown()
-    }
-  })
+  dialog
+    .confirm({
+      okText: t('trans0019'),
+      cancelText: t('trans0020'),
+      message: t('trans0242'),
+    })
+    .then(() => {
+      startReboot().then(({ data }) => {
+        const status = data.status
+        if (status === Status.doing) {
+          loading.open({
+            title: t('trans0468'),
+            tip: t('trans0229'),
+          })
+          createRebootCountDown()
+        }
+      })
+    })
+    .catch(() => {})
 }
 const reset = () => {
   startReset().then(({ data }) => {
     const status = data.status
     if (status === Status.doing) {
-      loading.open()
+      loading.open({
+        title: t('trans0468'),
+        tip: t('trans0617'),
+      })
       createResetCountDown()
     }
   })
@@ -180,7 +194,10 @@ const save = () => {
     toast(t('trans0222'), 3000, 'error')
     return
   }
-  loading.open()
+  loading.open({
+    title: t('trans0468'),
+    tip: t('trans0635'),
+  })
   const fd = new FormData()
   fd.append('file', uploader.value.files[0])
   uploadConfig(fd, (progressEvent) => {
@@ -195,7 +212,6 @@ const save = () => {
     }
   })
     .then(() => {
-      loading.open()
       createRebootCountDown()
     })
     .catch(() => {
