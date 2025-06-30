@@ -72,13 +72,7 @@
             </div>
           </div>
           <div class="delete-wrap">
-            <img
-              src="@/assets/images/ic_delete.png"
-              alt=""
-              width="24"
-              v-if="uploadFail"
-              @click="cancel(file)"
-            />
+            <img src="@/assets/images/ic_delete.png" alt="" width="24" @click="cancel(file)" />
           </div>
         </div>
         <div class="file__error" v-if="uploadFail">{{ err || $t('trans0206') }}</div>
@@ -162,7 +156,9 @@ export default {
   },
   computed: {
     uploadDisabled() {
-      return this.disabled || (this.form || {}).disabled.value || this.uploadLoading
+      return (
+        this.disabled || (this.form || {}).disabled.value || this.uploadLoading || this.uploadFail
+      )
     },
     uploadSuccess() {
       return this.status === UploadStatus.success

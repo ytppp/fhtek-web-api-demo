@@ -38,8 +38,10 @@
             dragable
             ref="uploader"
             :accept="accept"
-            :disabled="saveBtnDisabled"
             :before-upload="beforeUpload"
+            :on-error="handleUploadError"
+            :on-success="handleUploadsuccess"
+            :on-cancel="handleUploadcancel"
           />
         </fh-form-item>
         <fh-form-item>
@@ -86,7 +88,6 @@ const loading = inject('loading')
 const toast = inject('toast')
 const uploader = useTemplateRef('uploader')
 const lanIp = ref('')
-const isHasfile = ref(false)
 
 const doingRebootHandle = () => {
   checkRebootStatus()
@@ -165,12 +166,17 @@ const backConfig = () => {
     })
     .catch(() => {})
 }
-const beforeUpload = (files) => {
-  isHasfile.value = files.length > 0
-  return isHasfile.value
+const handleUploadError = () => {
+  saveBtnDisabled.value = true
+}
+const handleUploadsuccess = () => {
+  saveBtnDisabled.value = false
+}
+const handleUploadcancel = () => {
+  saveBtnDisabled.value = false
 }
 const save = () => {
-  if (!isHasfile.value) {
+  if (!uploader.value.files.length) {
     toast(t('trans0222'), 3000, 'error')
     return
   }
@@ -188,7 +194,10 @@ const save = () => {
       }
     }
   })
-    .then(() => {})
+    .then(() => {
+      loading.open()
+      createRebootCountDown()
+    })
     .catch(() => {
       uploader.value.status = uploader.value.UploadStatus.fail
     })
