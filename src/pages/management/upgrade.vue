@@ -9,6 +9,7 @@
           <fh-upload
             dragable
             ref="uploader"
+            :accept="accept"
             :before-upload="beforeUpload"
             :on-error="handleUploadError"
             :on-success="handleUploadsuccess"
@@ -40,7 +41,6 @@ export default {
       successFlag: 'SUCCESS',
       form: {},
       isHasfile: false,
-      time: 120,
       file: '',
     }
   },
@@ -58,12 +58,16 @@ export default {
       this.file = file
     },
     save() {
+      if (!this.file.length) {
+        this.$toast(this.$t('trans0222'), 3000, 'error')
+        return
+      }
       const fd = new FormData()
       fd.append('file', this.file[0])
       upload(fd, (progressEvent) => {
         const { loaded, total, lengthComputable } = progressEvent
         if (lengthComputable) {
-          this.$refs.uploader.percentage = Math.floor((loaded / total) * 100)
+          this.$refs.uploader.uploadPercentage = Math.floor((loaded / total) * 100)
           if (loaded >= total) {
             this.$refs.uploader.status = this.$refs.uploader.UploadStatus.success
           } else {
@@ -80,7 +84,6 @@ export default {
     },
     upgrading() {
       this.$upgrade.open({
-        timeout: this.time,
         title: this.$t('trans0468'),
         tip: this.$t('trans0203'),
       })
@@ -99,7 +102,7 @@ export default {
   mounted() {
     getUpgradeStatus().then(({ data }) => {
       const { upgradestatus } = data
-      if (upgradestatus === 1) {
+      if (upgradestatus == 1) {
         this.upgrading()
       }
     })

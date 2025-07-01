@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive, computed, defineComponent, onMounted } from 'vue'
+import { ref, reactive, computed, defineComponent, onMounted, defineEmits } from 'vue'
 import { useCountDown } from '@/hooks/countdown'
-import { getUpgradeStatus } from '@/http/api'
+import { getUpgradeStatus, logout } from '@/http/api'
 import { router } from '@/router/index'
 
 export default defineComponent({
@@ -37,20 +37,21 @@ export default defineComponent({
     },
     timeout: {
       type: Number,
-      default: 120,
+      default: 120000,
+    },
+    interval: {
+      type: Number,
+      default: 1000,
     },
     progressVisible: {
       type: Boolean,
       default: false,
     },
-    hideHandle: {
-      type: Function,
-      default: () => {},
-    },
   },
-  setup(props) {
-    const average = 100 / props.timeout
-    const reqFreq = 5
+  emits: ['hide'],
+  setup(props, { emit }) {
+    const average = 100 / (props.timeout / props.interval)
+    const reqFreq = 5000
     const percent = ref(0)
     const styles = reactive({
       width: 0,
@@ -69,12 +70,17 @@ export default defineComponent({
       }
     }
     const doneHandle = () => {
-      if (props.hideHandle) {
+      emit('hide')
+      logout().then(() => {
         router.push('/login')
-        props.hideHandle()
-      }
+      })
     }
-    const { createCountDown, cleanCountDown } = useCountDown(props.timeout, 1000, doingHandle, doneHandle)
+    const { createCountDown, cleanCountDown } = useCountDown(
+      props.timeout,
+      props.interval,
+      doingHandle,
+      doneHandle,
+    )
     onMounted(() => {
       createCountDown()
     })
@@ -135,7 +141,7 @@ export default defineComponent({
     overflow: hidden;
     color: @progress-bar-color;
     text-align: center;
-    background-color: @primaryColor;
+    background-color: #00d061;
     transition: width 1s ease;
     position: relative;
   }

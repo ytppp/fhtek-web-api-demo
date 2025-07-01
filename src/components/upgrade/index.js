@@ -8,7 +8,8 @@ const defaultOptions = {
   url: '',
   title: '',
   tip: '',
-  timeout: 300,
+  timeout: 120000,
+  interval: 1000,
   progressVisible: true,
 }
 let instance = null
@@ -26,8 +27,8 @@ export default {
           () =>
             h(FhUpgrade, {
               ...opt,
-              hideHandle: () => {
-                instance.close()
+              onHide: () => {
+                this.close()
               },
             }),
         ),
