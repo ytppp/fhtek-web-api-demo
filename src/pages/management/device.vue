@@ -161,9 +161,7 @@ const resetDefaults = () => {
     .catch(() => {})
 }
 const getBackupFile = () => {
-  loading.open()
   backup().then(({ data }) => {
-    loading.close()
     window.location.href = `${import.meta.env.DEV ? `http://${lanIp.value}` : location.origin}/${data.cfg_name}`
   })
 }

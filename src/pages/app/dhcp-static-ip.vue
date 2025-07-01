@@ -184,7 +184,6 @@ export default {
           data.gateway = this.modalForm.gateway
           data.interface = this.modalForm.interface
           addStaticRoute([data]).then((res) => {
-            this.visible = false
             this.getStaticRouteListData()
           })
         }
@@ -195,7 +194,6 @@ export default {
           data.gateway = this.modalForm.gateway
           data.interface = this.modalForm.interface
           editStaticRoute([data]).then((res) => {
-            this.visible = false
             this.getStaticRouteListData()
           })
         }

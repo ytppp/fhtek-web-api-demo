@@ -46,19 +46,19 @@ export const getWan = (): Promise<ApiResponse<any>> => {
 }
 
 export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
-  return http.post(`GetPortBindInfo`, createData(params), { loading: false })
+  return http.post(`GetPortBindInfo`, createData(params))
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {
-  return http.post(`AddWan`, createData(params), { loading: false })
+  return http.post(`AddWan`, createData(params))
 }
 
 export const editWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWan', createData(params), { loading: false })
+  return http.post('SetWan', createData(params))
 }
 
 export const deleteWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('DeleteWan', createData(params), { loading: false })
+  return http.post('DeleteWan', createData(params))
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
@@ -182,7 +182,6 @@ export const addStaticDns = (params): Promise<ApiResponse<any>> => {
       method: 'network.static_dns:add',
       data: params,
     },
-    { loading: false },
   )
 }
 
@@ -193,7 +192,6 @@ export const editStaticDns = (params): Promise<ApiResponse<any>> => {
       method: 'network.static_dns:edit',
       data: params,
     },
-    { loading: false },
   )
 }
 
@@ -204,7 +202,6 @@ export const delStaticDns = (params): Promise<ApiResponse<any>> => {
       method: 'network.static_dns:delete',
       data: params,
     },
-    { loading: false },
   )
 }
 
@@ -253,7 +250,7 @@ export const getPortMirr = (params): Promise<ApiResponse<any>> => {
 }
 
 export const setPortMirr = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetPortMirr', createData(params), { loading: false })
+  return http.post('SetPortMirr', createData(params))
 }
 
 export const getTerminal = (): Promise<ApiResponse<any>> => {
@@ -445,5 +442,5 @@ export const resetStatus = (): Promise<ApiResponse<any>> => {
   return http.get('getResetStatus', undefined, { loading: false, toast: false })
 }
 export const backup = (): Promise<ApiResponse<any>> => {
-  return http.get('getConfig', undefined, { loading: false, toast: false })
+  return http.get('getConfig', undefined)
 }

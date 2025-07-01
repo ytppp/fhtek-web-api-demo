@@ -213,14 +213,12 @@ export default {
         }
         if (this.isAdd) {
           addDdns([data]).then(() => {
-            this.visible = false
             this.getDdnsList()
           })
         }
         if (this.isEdit) {
           data.id = this.modalForm.id
           editDdns([data]).then(() => {
-            this.visible = false
             this.getDdnsList()
           })
         }

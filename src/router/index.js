@@ -343,7 +343,9 @@ export const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  http.cancelAllRequests()
+  if (to.path !== '/login') {
+    http.cancelAllRequests()
+  }
   next()
 })
 
