@@ -76,7 +76,6 @@ export default {
         }
       })
         .then(() => {
-          console.log('1111111111')
           this.upgrading()
         })
         .catch(() => {

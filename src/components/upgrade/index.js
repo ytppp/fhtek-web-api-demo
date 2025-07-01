@@ -17,7 +17,6 @@ let instance = null
 export default {
   open(options) {
     const opt = mergeOptions(defaultOptions, options)
-    console.log('open upgrade', opt)
     if (!instance) {
       instance = usePopup(
         h(
@@ -29,7 +28,7 @@ export default {
             h(FhUpgrade, {
               ...opt,
               onHide: () => {
-                instance.close()
+                this.close()
               },
             }),
         ),

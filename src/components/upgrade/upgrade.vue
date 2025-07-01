@@ -17,7 +17,7 @@
 <script lang="ts">
 import { ref, reactive, computed, defineComponent, onMounted, defineEmits } from 'vue'
 import { useCountDown } from '@/hooks/countdown'
-import { getUpgradeStatus } from '@/http/api'
+import { getUpgradeStatus, logout } from '@/http/api'
 import { router } from '@/router/index'
 
 export default defineComponent({
@@ -71,7 +71,9 @@ export default defineComponent({
     }
     const doneHandle = () => {
       emit('hide')
-      router.push('/login')
+      logout().then(() => {
+        router.push('/login')
+      })
     }
     const { createCountDown, cleanCountDown } = useCountDown(
       props.timeout,
@@ -139,7 +141,7 @@ export default defineComponent({
     overflow: hidden;
     color: @progress-bar-color;
     text-align: center;
-    background-color: @primaryColor;
+    background-color: #00d061;
     transition: width 1s ease;
     position: relative;
   }
