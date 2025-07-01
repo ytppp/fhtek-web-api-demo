@@ -114,8 +114,12 @@ const props = defineProps({
   },
   disabled: {
     type: Boolean,
-    default: true,
+    default: false,
   },
+  notDisabled: {
+    type: Boolean,
+    default: false,
+  }, // Determine whether the input is not disabled. If true, it will override the disabled property.
   readonly: {
     type: Boolean,
     default: false,
@@ -157,10 +161,10 @@ const passwordVisible = ref(false)
 const emits = defineEmits(['focus', 'blur', 'change', 'input', 'clear'])
 
 const inputDisabled = computed(() => {
-  if (!props.disabled) {
-    return props.disabled
+  if (props.notDisabled) {
+    return false
   }
-  return form?.disabled.value
+  return props.disabled || form?.disabled.value
 })
 const currentLabel = computed(() => {
   return props.label || formItem?.label.value || ''

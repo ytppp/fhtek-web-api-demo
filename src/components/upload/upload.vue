@@ -159,9 +159,7 @@ export default {
   },
   computed: {
     uploadDisabled() {
-      return (
-        this.disabled || (this.form || {}).disabled.value || this.uploadLoading || this.uploadFail
-      )
+      return this.disabled || this.form?.disabled.value || this.uploadLoading
     },
     uploadSuccess() {
       return this.status === UploadStatus.success

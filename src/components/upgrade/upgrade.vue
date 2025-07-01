@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive, computed, defineComponent, onMounted, defineEmits } from 'vue'
+import { ref, reactive, computed, defineComponent, onMounted } from 'vue'
 import { useCountDown } from '@/hooks/countdown'
-import { getUpgradeStatus, logout } from '@/http/api'
+import { getUpgradeStatus } from '@/http/api'
 import { router } from '@/router/index'
 
 export default defineComponent({
@@ -71,9 +71,7 @@ export default defineComponent({
     }
     const doneHandle = () => {
       emit('hide')
-      logout().then(() => {
-        router.push('/login')
-      })
+      router.push('/login')
     }
     const { createCountDown, cleanCountDown } = useCountDown(
       props.timeout,

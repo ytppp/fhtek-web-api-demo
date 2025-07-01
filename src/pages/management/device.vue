@@ -41,6 +41,7 @@
             :on-error="handleUploadError"
             :on-success="handleUploadsuccess"
             :on-cancel="handleUploadcancel"
+            :disabled="saveBtnDisabled"
           />
         </fh-form-item>
         <fh-form-item>
@@ -166,6 +167,16 @@ const getBackupFile = () => {
     window.location.href = `${import.meta.env.DEV ? `http://${lanIp.value}` : location.origin}/${data.cfg_name}`
   })
 }
+// const beforeUpload = (files) => {
+//   this.isHasfile = files.length > 0
+//   const isValidFileName = !!files.find((file) => {
+//     return true // file.name.split('_')[0] === this.uploadFileName // eg: file name: FTG6214X-B4I_V1.0.0-rc.1.bin
+//   })
+//   if (!isValidFileName) {
+//     this.$toast({ text: this.$t('trans0366') })
+//   }
+//   return isValidFileName
+// }
 const backConfig = () => {
   dialog
     .confirm({
@@ -180,12 +191,15 @@ const backConfig = () => {
 }
 const handleUploadError = () => {
   saveBtnDisabled.value = true
+  console.log('handleUploadError', saveBtnDisabled.value)
 }
 const handleUploadsuccess = () => {
   saveBtnDisabled.value = false
+  console.log('handleUploadsuccess', saveBtnDisabled.value)
 }
 const handleUploadcancel = () => {
   saveBtnDisabled.value = false
+  console.log('handleUploadcancel', saveBtnDisabled.value)
 }
 const save = () => {
   if (!uploader.value.files.length) {
@@ -195,6 +209,7 @@ const save = () => {
   loading.open({
     tip: t('trans0635'),
   })
+  saveBtnDisabled.value = true
   const fd = new FormData()
   fd.append('file', uploader.value.files[0])
   uploadConfig(fd, (progressEvent) => {
@@ -212,6 +227,7 @@ const save = () => {
       createRebootCountDown()
     })
     .catch(() => {
+      saveBtnDisabled.value = false
       uploader.value.status = uploader.value.UploadStatus.fail
     })
     .finally(() => {
