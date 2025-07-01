@@ -517,7 +517,7 @@ const wanInitial = () => ({
   ipv6: {
     netType: NetType.auto,
     pd: {
-      enable: false,
+      enable: true,
       mode: PrefixMode.auto,
       address: '',
     },
@@ -880,9 +880,18 @@ const save = () => {
   }
 }
 const delWanConn = () => {
-  deleteWan({ id: wan.id }).then(() => {
-    getWanList()
-  })
+  dialog
+    .confirm({
+      okText: t('trans0019'),
+      cancelText: t('trans0020'),
+      message: t('trans0409'),
+    })
+    .then(() => {
+      deleteWan({ id: wan.id }).then(() => {
+        getWanList()
+      })
+    })
+    .catch(() => {})
 }
 const initMtu = () => {
   const mtu = Number(wan.mtu)

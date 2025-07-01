@@ -99,7 +99,7 @@ export default {
               (isIP(value) &&
                 !isMulticast(value) &&
                 !isLoopback(value) &&
-                isBoardcastIP(value) &&
+                !isBoardcastIP(value) &&
                 ip2int(value) != 0) ||
               isValidDomain(value),
             message: this.$t('trans0397'),

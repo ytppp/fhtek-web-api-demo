@@ -347,7 +347,7 @@ const changeMode = () => {
 }
 
 const changeBw = () => {
-  if (wifi.bw !== BandWidths5G.b20) {
+  if (wifi.bw !== BandWidths5G.b20 && (wifi.channel === Channels5G.ch116 || wifi.channel === Channels5G.ch165)) {
     wifi.channel = Channels5G.auto
   }
 }

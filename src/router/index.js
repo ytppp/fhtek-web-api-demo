@@ -1,4 +1,5 @@
 import { createWebHashHistory, createRouter } from 'vue-router'
+import { http } from '@/http'
 
 import login from '../pages/login/index.vue'
 import home from '../pages/home/index.vue'
@@ -341,9 +342,10 @@ export const router = createRouter({
   ],
 })
 
-// router.beforeEach(async (to, from, next) => {
-//   // todo
-// })
+router.beforeEach(async (to, from, next) => {
+  http.cancelAllRequests()
+  next()
+})
 
 function registerRouter(app) {
   app.use(router)
