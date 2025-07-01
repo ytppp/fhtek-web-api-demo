@@ -4,7 +4,7 @@
       <h1 class="page__title">{{ $t('trans0187') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form" ref="form" :disabled="formDisabled" :model="form">
+      <fh-form class="form" ref="form" :disabled="formDisabled">
         <fh-form-item>
           <fh-upload
             dragable
@@ -14,11 +14,10 @@
             :on-error="handleUploadError"
             :on-success="handleUploadsuccess"
             :on-cancel="handleUploadcancel"
-            :request="upload"
           />
         </fh-form-item>
         <fh-form-item>
-          <fh-button @click="save" block :disabled="saveBtnDisabled">
+          <fh-button @click="save" block>
             {{ $t('trans0187') }}
           </fh-button>
         </fh-form-item>
@@ -34,36 +33,29 @@ export default {
   data() {
     return {
       uploadFileName: '',
-      isSuccess: false,
       accept: '.bin',
       formDisabled: false,
-      saveBtnDisabled: false,
-      successFlag: 'SUCCESS',
-      form: {},
       isHasfile: false,
-      file: '',
     }
   },
   methods: {
     handleUploadError() {
-      this.saveBtnDisabled = true
+      this.formDisabled = true
     },
     handleUploadsuccess() {
-      this.saveBtnDisabled = false
+      this.formDisabled = false
     },
     handleUploadcancel() {
-      this.saveBtnDisabled = false
-    },
-    upload(file) {
-      this.file = file
+      this.formDisabled = false
     },
     save() {
-      if (!this.file.length) {
+      if (!this.$refs.uploader.files.length) {
         this.$toast(this.$t('trans0222'), 3000, 'error')
         return
       }
+      this.formDisabled = true
       const fd = new FormData()
-      fd.append('file', this.file[0])
+      fd.append('file', this.$refs.uploader.files[0])
       upload(fd, (progressEvent) => {
         const { loaded, total, lengthComputable } = progressEvent
         if (lengthComputable) {
@@ -79,6 +71,7 @@ export default {
           this.upgrading()
         })
         .catch(() => {
+          this.formDisabled = false
           this.$refs.uploader.status = this.$refs.uploader.UploadStatus.fail
         })
     },

@@ -8,7 +8,7 @@ const defaultOptions = {
   url: '',
   title: '',
   tip: '',
-  timeout: 120000,
+  timeout: 80 * 1000,
   interval: 1000,
   progressVisible: true,
 }

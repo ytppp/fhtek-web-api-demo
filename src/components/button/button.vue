@@ -19,6 +19,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  notDisabled: {
+    type: Boolean,
+    default: false,
+  }, // Determine whether the button is not disabled. If true, it will override the disabled property.
   block: {
     type: Boolean,
     default: false,
@@ -65,10 +69,10 @@ const classes = computed(() => [
 ])
 
 const btnDisabled = computed(() => {
-  if (!props.disabled) {
-    return props.disabled
+  if (props.notDisabled) {
+    return false
   }
-  return form?.disabled.value
+  return props.disabled || form?.disabled.value
 })
 
 const processedSlots = computed(() => {
