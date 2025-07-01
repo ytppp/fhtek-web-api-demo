@@ -265,14 +265,12 @@ export default {
       }
       if (this.isAdd) {
         addWifiMacFilter(data).then(() => {
-          this.visible = false
           this.getWifiMacFilterList()
         })
       }
       if (this.isEdit) {
         data.pre_mac = this.modalForm.pre_mac
         editWifiMacFilter(data).then(() => {
-          this.visible = false
           this.getWifiMacFilterList()
         })
       }

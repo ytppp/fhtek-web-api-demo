@@ -410,16 +410,10 @@ export default {
           data[0].id = this.modalForm.index
           editPortMapping(data)
             .then(() => {
-              this.visible = false
-            })
-            .then(() => {
               this.getPortMappingData()
             })
         } else {
           setPortMapping(data)
-            .then(() => {
-              this.visible = false
-            })
             .then(() => {
               this.getPortMappingData()
             })

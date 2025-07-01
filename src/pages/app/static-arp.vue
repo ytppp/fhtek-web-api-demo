@@ -173,7 +173,6 @@ export default {
           data.domain = this.modalForm.domain
           data.ip = this.modalForm.ip
           addStaticDns([data]).then((res) => {
-            this.visible = false
             this.getStaticDnsListData()
           })
         }
@@ -182,7 +181,6 @@ export default {
           data.domain = this.modalForm.domain
           data.ip = this.modalForm.ip
           editStaticDns([data]).then((res) => {
-            this.visible = false
             this.getStaticDnsListData()
           })
         }
