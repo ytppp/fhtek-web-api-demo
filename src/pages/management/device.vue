@@ -200,7 +200,7 @@ const save = () => {
   uploadConfig(fd, (progressEvent) => {
     const { loaded, total, lengthComputable } = progressEvent
     if (lengthComputable) {
-      uploader.value.percentage = Math.floor((loaded / total) * 100)
+      uploader.value.uploadPercentage = Math.floor((loaded / total) * 100)
       if (loaded >= total) {
         uploader.value.status = uploader.value.UploadStatus.success
       } else {

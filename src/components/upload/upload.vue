@@ -65,7 +65,6 @@
             <div class="upgradeing" v-if="!uploadSuccess">
               <span
                 :class="{ upgradeing__loading: uploadLoading, upgradeing__fail: uploadFail }"
-                class="upgradeing__loading"
                 :style="{ width: width }"
               ></span>
               <div v-if="uploadLoading" class="upgradeing__percent">{{ width }}</div>
@@ -439,7 +438,7 @@ export default {
             display: inline-block;
             height: 3px;
             transition: width 1s ease;
-            background: @upload-progress-completed-color;
+            background: @primaryColor;
           }
           .upgradeing__fail {
             display: inline-block;
