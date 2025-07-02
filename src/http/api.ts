@@ -176,33 +176,24 @@ export const getStaticDnsList = (): Promise<ApiResponse<any>> => {
 }
 
 export const addStaticDns = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.static_dns:add',
-      data: params,
-    },
-  )
+  return http.post(api, {
+    method: 'network.static_dns:add',
+    data: params,
+  })
 }
 
 export const editStaticDns = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.static_dns:edit',
-      data: params,
-    },
-  )
+  return http.post(api, {
+    method: 'network.static_dns:edit',
+    data: params,
+  })
 }
 
 export const delStaticDns = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.static_dns:delete',
-      data: params,
-    },
-  )
+  return http.post(api, {
+    method: 'network.static_dns:delete',
+    data: params,
+  })
 }
 
 export const getStaticRoute = (): Promise<ApiResponse<any>> => {

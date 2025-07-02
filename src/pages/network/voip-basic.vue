@@ -95,7 +95,7 @@ import {
   isValidGatewayIP,
   getSubNetwork,
 } from '@/util/tool'
-import { getLan, setLan } from '@/http/api'
+// import { getLan, setLan } from '@/http/api'
 
 defineOptions({
   name: 'VoipBasicPage',

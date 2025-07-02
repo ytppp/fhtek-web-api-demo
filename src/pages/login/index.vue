@@ -130,7 +130,7 @@ export default {
             // const { role } = data
             const role = Role.super
             sessionStorage.setItem('role', role)
-            sessionStorage.setItem('loginuser', this.userinfo.username)
+            sessionStorage.setItem('login_user', this.userinfo.username)
             this.$router.push('/home')
           })
           .finally(() => {
