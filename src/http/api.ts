@@ -42,7 +42,7 @@ export const getUpgradeStatus = (): Promise<ApiResponse<any>> => {
 }
 
 export const getWan = (): Promise<ApiResponse<any>> => {
-  return http.get(`GetWan`)
+  return http.get(`GetWan`, undefined)
 }
 
 export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
@@ -50,15 +50,15 @@ export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {
-  return http.post(`AddWan`, createData(params), { loading: false })
+  return http.post(`AddWan`, createData(params))
 }
 
 export const editWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWan', createData(params), { loading: false })
+  return http.post('SetWan', createData(params))
 }
 
 export const deleteWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('DeleteWan', createData(params), { loading: false })
+  return http.post('DeleteWan', createData(params))
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
