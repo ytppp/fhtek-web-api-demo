@@ -142,9 +142,7 @@ const save = () => {
         sn: form.password.sn,
       },
     }
-    editOntAuth(data).then(() => {
-      getOntAuthData()
-    })
+    editOntAuth(data)
   }
 }
 

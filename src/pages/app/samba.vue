@@ -112,8 +112,6 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         username: this.form.username,
         password: this.form.pwd,
-      }).then(() => {
-        this.getSambaData()
       })
     },
     getSambaData() {

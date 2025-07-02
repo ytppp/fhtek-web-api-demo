@@ -207,9 +207,7 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      setWifiMacFilterStatus(data).then(() => {
-        this.getWifiMacFilterStatusData()
-      })
+      setWifiMacFilterStatus(data)
     },
     openAddModal() {
       this.modalForm.id = this.ssidOpts[0].value
@@ -229,7 +227,10 @@ export default {
       this.modalType = ModalType.edit
       this.visible = true
     },
-    getWifiMacFilterList() {
+    getWifiMacFilterList(loading = false) {
+      if (loading) {
+        this.$loading.open()
+      }
       getWifiMacFilter()
         .then(({ data }) => {
           const tableData = []
@@ -248,6 +249,9 @@ export default {
         .catch(() => {})
         .finally(() => {
           this.visible = false
+          if (loading) {
+            this.$loading.close()
+          }
         })
     },
     handleClose() {
@@ -280,9 +284,11 @@ export default {
         id: this.modalForm.id,
         mac: this.modalForm.mac,
       }
+      this.$loading.open()
       if (this.isAdd) {
         addWifiMacFilter(data).then(() => {
           this.getWifiMacFilterList()
+          this.$loading.close()
         })
       }
       if (this.isEdit) {
@@ -292,23 +298,26 @@ export default {
         }).then(() => {
           editWifiMacFilter(data).then(() => {
             this.getWifiMacFilterList()
+            this.$loading.close()
           })
         })
       }
     },
     del(row) {
+      this.$loading.open()
       delWifiMacFilter({
         id: row.id,
         mac: row.mac,
       }).then(() => {
         this.getWifiMacFilterList()
+        this.$loading.close()
       })
     },
   },
   mounted() {
     this.getWifiMacFilterStatusData()
     this.getSsidIndex()
-    this.getWifiMacFilterList()
+    this.getWifiMacFilterList(true)
   },
 }
 </script>

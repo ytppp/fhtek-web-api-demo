@@ -35,9 +35,7 @@ const form = reactive({
 })
 
 const save = () => {
-  setDefaultRoute(form).then(() => {
-    getDefaultRouteData()
-  })
+  setDefaultRoute(form)
 }
 const getDefaultRouteData = () => {
   getDefaultRoute().then(({ data }) => {

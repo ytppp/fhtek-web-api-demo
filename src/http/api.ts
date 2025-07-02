@@ -74,7 +74,7 @@ export const getWifi2gAdv = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifi2gAdv = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b24g.advanced:edit', createData(params), { loading: false })
+  return http.post('wifi.b24g.advanced:edit', createData(params))
 }
 
 export const getWifi5gAdv = (): Promise<ApiResponse<any>> => {
@@ -155,14 +155,10 @@ export const getDmz = (): Promise<ApiResponse<any>> => {
 }
 
 export const setDmz = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'firewall.dmz:edit',
-      data: params,
-    },
-    { loading: false },
-  )
+  return http.post(api, {
+    method: 'firewall.dmz:edit',
+    data: params,
+  })
 }
 
 export const getWanList = (params): Promise<ApiResponse<any>> => {
@@ -173,14 +169,10 @@ export const getWanList = (params): Promise<ApiResponse<any>> => {
 }
 
 export const setFirewall = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'firewall:edit',
-      data: params,
-    },
-    { loading: false },
-  )
+  return http.post(api, {
+    method: 'firewall:edit',
+    data: params,
+  })
 }
 
 export const getFirewall = (): Promise<ApiResponse<any>> => {
@@ -274,14 +266,10 @@ export const getOntAuth = (): Promise<ApiResponse<any>> => {
 }
 
 export const editOntAuth = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'management.ont_auth:edit',
-      data: params,
-    },
-    { loading: false },
-  )
+  return http.post(api, {
+    method: 'management.ont_auth:edit',
+    data: params,
+  })
 }
 
 export const getPortMirr = (params): Promise<ApiResponse<any>> => {
@@ -299,14 +287,10 @@ export const getTerminal = (): Promise<ApiResponse<any>> => {
 }
 
 export const setTerminal = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'management.acl_control:edit',
-      data: params,
-    },
-    { loading: false },
-  )
+  return http.post(api, {
+    method: 'management.acl_control:edit',
+    data: params,
+  })
 }
 
 export const getDefaultRoute = (): Promise<ApiResponse<any>> => {
@@ -316,14 +300,10 @@ export const getDefaultRoute = (): Promise<ApiResponse<any>> => {
 }
 
 export const setDefaultRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.default_route:edit',
-      data: params,
-    },
-    { loading: false },
-  )
+  return http.post(api, {
+    method: 'network.default_route:edit',
+    data: params,
+  })
 }
 
 export const getAccount = (params): Promise<ApiResponse<any>> => {
@@ -384,11 +364,11 @@ export const getWifiMacFilterStatus = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifiMacFilterStatus = (params): Promise<ApiResponse<any>> => {
-  return http.post('security.wifi_mac_filter.status:edit', createData(params), { loading: false })
+  return http.post('security.wifi_mac_filter.status:edit', createData(params))
 }
 
 export const getWifiMacFilter = (): Promise<ApiResponse<any>> => {
-  return http.get('security.wifi_mac_filter.items:get')
+  return http.get('security.wifi_mac_filter.items:get', undefined, { loading: false })
 }
 
 export const addWifiMacFilter = (params): Promise<ApiResponse<any>> => {
@@ -421,20 +401,20 @@ export const usbDownload = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getUsbDownloadList = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'storage.client.download:get',
-  })
-}
-
-export const editUsbServer = (params): Promise<ApiResponse<any>> => {
   return http.post(
     api,
     {
-      method: 'storage.server:edit',
-      data: params,
+      method: 'storage.client.download:get',
     },
     { loading: false },
   )
+}
+
+export const editUsbServer = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.server:edit',
+    data: params,
+  })
 }
 export const getUsbServer = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
@@ -443,14 +423,10 @@ export const getUsbServer = (): Promise<ApiResponse<any>> => {
 }
 
 export const editSamba = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'storage.samba:edit',
-      data: params,
-    },
-    { loading: false },
-  )
+  return http.post(api, {
+    method: 'storage.samba:edit',
+    data: params,
+  })
 }
 
 export const getSamba = (params): Promise<ApiResponse<any>> => {
@@ -461,14 +437,10 @@ export const getSamba = (params): Promise<ApiResponse<any>> => {
 }
 
 export const editMediaSharing = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'storage.media_sharing:edit',
-      data: params,
-    },
-    { loading: false },
-  )
+  return http.post(api, {
+    method: 'storage.media_sharing:edit',
+    data: params,
+  })
 }
 
 export const getMediaSharing = (): Promise<ApiResponse<any>> => {

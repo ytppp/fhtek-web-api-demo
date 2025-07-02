@@ -91,7 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   isValidInteger,
@@ -110,6 +110,7 @@ enum DownloadStatus {
   doing = '1',
 }
 const { t } = useI18n()
+const loading = inject('loading')
 const UrlAppend = 'ftp://'
 const DownloadStatusText = {
   [DownloadStatus.done]: t('trans0748'),
@@ -248,7 +249,7 @@ const getUsbInfo = () => {
   getUsb().then(({ data }) => {
     hasUsbDevice.value = convertBooleanStatus(data.has_usb)
     if (hasUsbDevice.value) {
-      getDownloadList()
+      getDownloadList(true)
       getUsbServerData()
     }
   })
@@ -256,6 +257,7 @@ const getUsbInfo = () => {
 
 const download = () => {
   if (!clientFormRef.value.validate()) return
+  loading.open()
   const data = {
     url: `${UrlAppend}${clientForm.url}`,
     port: clientForm.port,
@@ -263,9 +265,13 @@ const download = () => {
     password: clientForm.password,
     path: clientForm.path,
   }
-  usbDownload([data]).then(() => {
-    getDownloadList()
-  })
+  usbDownload([data])
+    .then(() => {
+      getDownloadList()
+    })
+    .finally(() => {
+      loading.close()
+    })
 }
 const save = () => {
   if (!serverFormRef.value.validate()) return
@@ -276,9 +282,7 @@ const save = () => {
     password: serverForm.password,
     root_path: serverForm.rootPath,
   }
-  editUsbServer(data).then(() => {
-    getUsbServerData()
-  })
+  editUsbServer(data)
 }
 
 const getUsbServerData = () => {
@@ -291,19 +295,28 @@ const getUsbServerData = () => {
   })
 }
 
-const getDownloadList = () => {
-  getUsbDownloadList().then(({ data }) => {
-    const { items } = data
-    const table = []
-    items.forEach((item, i) => {
-      table.push({
-        ...item,
-        index: i,
-        statusAilas: DownloadStatusText[item.status],
+const getDownloadList = (loadingFlag = false) => {
+  if (loadingFlag) {
+    loading.open()
+  }
+  getUsbDownloadList()
+    .then(({ data }) => {
+      const { items } = data
+      const table = []
+      items.forEach((item, i) => {
+        table.push({
+          ...item,
+          index: i,
+          statusAilas: DownloadStatusText[item.status],
+        })
       })
+      Object.assign(tableData, table)
     })
-    Object.assign(tableData, table)
-  })
+    .finally(() => {
+      if (loadingFlag) {
+        loading.close()
+      }
+    })
 }
 
 onMounted(() => {

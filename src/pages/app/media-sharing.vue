@@ -80,9 +80,7 @@ const save = () => {
     enable: convertBooleanStatus(form.enable),
     sharing_path: form.sharingPath,
   }
-  editMediaSharing(data).then(() => {
-    getMediaSharingData()
-  })
+  editMediaSharing(data)
 }
 
 onMounted(() => {
