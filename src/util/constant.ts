@@ -150,7 +150,6 @@ export const encrypts = [
   },
 ]
 
-
 export enum ServiceType {
   TR069 = 'TR069',
   INTERNET = 'INTERNET',
@@ -158,4 +157,15 @@ export enum ServiceType {
   IPTV = 'IPTV',
   VOICE = 'VOICE',
   VOICE_INTERNET = 'VOICE_INTERNET',
+}
+
+export enum NetType {
+  dhcp = 'dhcp',
+  static = 'static',
+  pppoe = 'pppoe',
+  dhcpv6 = 'dhcpv6',
+  auto = 'auto',
+  slaac = 'slaac',
+  hybrid = 'hybrid',
+  none = 'none',
 }
