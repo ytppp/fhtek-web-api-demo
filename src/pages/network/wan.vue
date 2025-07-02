@@ -237,6 +237,7 @@ import {
   Ssidac2,
   Ssidac3,
   Ssidac4,
+  NetType,
 } from '@/util/constant'
 import {
   format,
@@ -264,13 +265,6 @@ import { getLan, getWan, addWan, editWan, deleteWan, getPortBindInfo } from '@/h
 defineOptions({
   name: 'WanPage',
 })
-enum NetType {
-  dhcp = 'dhcp',
-  static = 'static',
-  pppoe = 'pppoe',
-  dhcpv6 = 'dhcpv6',
-  auto = 'auto',
-}
 enum PrefixMode {
   auto = 'auto',
   manually = 'manually',
@@ -894,26 +888,17 @@ const delWanConn = () => {
     .catch(() => {})
 }
 const initMtu = () => {
-  const mtu = Number(wan.mtu)
   if (isNotPppoeAndIpv4.value) {
-    if (mtu < Number(MtuRange.ipAndIpv4[0]) || mtu > Number(MtuRange.ipAndIpv4[1])) {
-      wan.mtu = MtuRange.ipAndIpv4[1]
-    }
+    wan.mtu = MtuRange.ipAndIpv4[1]
   }
   if (isNotPppoeAndIpv6.value) {
-    if (mtu < Number(MtuRange.ipAndMix[0]) || mtu > Number(MtuRange.ipAndMix[1])) {
-      wan.mtu = MtuRange.ipAndMix[1]
-    }
+    wan.mtu = MtuRange.ipAndMix[1]
   }
   if (isPppoeAndIpv4.value) {
-    if (mtu < Number(MtuRange.pppAndIpv4[0]) || mtu > Number(MtuRange.pppAndIpv4[1])) {
-      wan.mtu = MtuRange.pppAndIpv4[1]
-    }
+    wan.mtu = MtuRange.pppAndIpv4[1]
   }
   if (isPppoeAndIpv6.value) {
-    if (mtu < Number(MtuRange.pppAndMix[0]) || mtu > Number(MtuRange.pppAndMix[1])) {
-      wan.mtu = MtuRange.pppAndMix[1]
-    }
+    wan.mtu = MtuRange.pppAndMix[1]
   }
 }
 const getLanData = () => {
