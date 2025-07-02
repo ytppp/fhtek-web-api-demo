@@ -38,7 +38,6 @@ export function hideLoading(config: TAxiosRequestConfig): void {
 let needLoadingRequestCount = 0
 
 const showFullScreenLoading = () => {
-  console.log('showFullScreenLoading', needLoadingRequestCount)
   if (needLoadingRequestCount === 0) {
     startLoading()
   }
