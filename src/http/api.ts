@@ -42,7 +42,7 @@ export const getUpgradeStatus = (): Promise<ApiResponse<any>> => {
 }
 
 export const getWan = (): Promise<ApiResponse<any>> => {
-  return http.get(`GetWan`, undefined)
+  return http.get(`GetWan`)
 }
 
 export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
@@ -66,7 +66,7 @@ export const getWifi2g = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifi2g = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b24g.basic:edit', createData(params), { loading: false })
+  return http.post('wifi.b24g.basic:edit', createData(params))
 }
 
 export const getWifi2gAdv = (): Promise<ApiResponse<any>> => {
@@ -82,7 +82,7 @@ export const getWifi5gAdv = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifi5gAdv = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b5g.advanced:edit', createData(params), { loading: false })
+  return http.post('wifi.b5g.advanced:edit', createData(params))
 }
 
 export const getWps = (params): Promise<ApiResponse<any>> => {
@@ -98,7 +98,7 @@ export const getWifi5g = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifi5g = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b5g.basic:edit', createData(params), { loading: false })
+  return http.post('wifi.b5g.basic:edit', createData(params))
 }
 
 export const getIpv6Lan = (): Promise<ApiResponse<any>> => {
@@ -143,8 +143,7 @@ export const delPortMapping = (params): Promise<ApiResponse<any>> => {
     {
       method: 'firewall.port_mapping:delete',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -193,8 +192,7 @@ export const addStaticDns = (params): Promise<ApiResponse<any>> => {
     {
       method: 'network.static_dns:add',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -204,8 +202,7 @@ export const editStaticDns = (params): Promise<ApiResponse<any>> => {
     {
       method: 'network.static_dns:edit',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -215,8 +212,7 @@ export const delStaticDns = (params): Promise<ApiResponse<any>> => {
     {
       method: 'network.static_dns:delete',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -232,8 +228,7 @@ export const addStaticRoute = (params): Promise<ApiResponse<any>> => {
     {
       method: 'network.static_route:add',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -243,8 +238,7 @@ export const editStaticRoute = (params): Promise<ApiResponse<any>> => {
     {
       method: 'network.static_route:edit',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -254,8 +248,7 @@ export const delStaticRoute = (params): Promise<ApiResponse<any>> => {
     {
       method: 'network.static_route:delete',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -277,7 +270,7 @@ export const getPortMirr = (params): Promise<ApiResponse<any>> => {
 }
 
 export const setPortMirr = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetPortMirr', createData(params), { loading: false })
+  return http.post('SetPortMirr', createData(params))
 }
 
 export const getTerminal = (): Promise<ApiResponse<any>> => {
@@ -332,8 +325,7 @@ export const addDdns = (params): Promise<ApiResponse<any>> => {
     {
       method: 'network.ddns:add',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -343,8 +335,7 @@ export const editDdns = (params): Promise<ApiResponse<any>> => {
     {
       method: 'network.ddns:edit',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -354,8 +345,7 @@ export const delDdns = (params): Promise<ApiResponse<any>> => {
     {
       method: 'network.ddns:delete',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -368,19 +358,19 @@ export const setWifiMacFilterStatus = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getWifiMacFilter = (): Promise<ApiResponse<any>> => {
-  return http.get('security.wifi_mac_filter.items:get', undefined, { loading: false })
+  return http.get('security.wifi_mac_filter.items:get')
 }
 
 export const addWifiMacFilter = (params): Promise<ApiResponse<any>> => {
-  return http.post('security.wifi_mac_filter.items:add', createData(params), { loading: false })
+  return http.post('security.wifi_mac_filter.items:add', createData(params))
 }
 
 export const editWifiMacFilter = (params): Promise<ApiResponse<any>> => {
-  return http.post('security.wifi_mac_filter.items:edit', createData(params), { loading: false })
+  return http.post('security.wifi_mac_filter.items:edit', createData(params))
 }
 
 export const delWifiMacFilter = (params): Promise<ApiResponse<any>> => {
-  return http.post('security.wifi_mac_filter.items:delete', createData(params), { loading: false })
+  return http.post('security.wifi_mac_filter.items:delete', createData(params))
 }
 
 export const getUsb = (): Promise<ApiResponse<any>> => {
@@ -395,8 +385,7 @@ export const usbDownload = (params): Promise<ApiResponse<any>> => {
     {
       method: 'storage.client.download:add',
       data: params,
-    },
-    { loading: false },
+    }
   )
 }
 
@@ -405,8 +394,7 @@ export const getUsbDownloadList = (): Promise<ApiResponse<any>> => {
     api,
     {
       method: 'storage.client.download:get',
-    },
-    { loading: false },
+    }
   )
 }
 

@@ -110,7 +110,6 @@ enum DownloadStatus {
   doing = '1',
 }
 const { t } = useI18n()
-const loading = inject('loading')
 const UrlAppend = 'ftp://'
 const DownloadStatusText = {
   [DownloadStatus.done]: t('trans0748'),
@@ -257,7 +256,6 @@ const getUsbInfo = () => {
 
 const download = () => {
   if (!clientFormRef.value.validate()) return
-  loading.open()
   const data = {
     url: `${UrlAppend}${clientForm.url}`,
     port: clientForm.port,
@@ -268,9 +266,6 @@ const download = () => {
   usbDownload([data])
     .then(() => {
       getDownloadList()
-    })
-    .finally(() => {
-      loading.close()
     })
 }
 const save = () => {
@@ -295,10 +290,7 @@ const getUsbServerData = () => {
   })
 }
 
-const getDownloadList = (loadingFlag = false) => {
-  if (loadingFlag) {
-    loading.open()
-  }
+const getDownloadList = () => {
   getUsbDownloadList()
     .then(({ data }) => {
       const { items } = data
@@ -311,11 +303,6 @@ const getDownloadList = (loadingFlag = false) => {
         })
       })
       Object.assign(tableData, table)
-    })
-    .finally(() => {
-      if (loadingFlag) {
-        loading.close()
-      }
     })
 }
 

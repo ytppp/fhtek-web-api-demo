@@ -227,10 +227,7 @@ export default {
       this.modalType = ModalType.edit
       this.visible = true
     },
-    getWifiMacFilterList(loading = false) {
-      if (loading) {
-        this.$loading.open()
-      }
+    getWifiMacFilterList() {
       getWifiMacFilter()
         .then(({ data }) => {
           const tableData = []
@@ -249,9 +246,6 @@ export default {
         .catch(() => {})
         .finally(() => {
           this.visible = false
-          if (loading) {
-            this.$loading.close()
-          }
         })
     },
     handleClose() {
@@ -284,11 +278,9 @@ export default {
         id: this.modalForm.id,
         mac: this.modalForm.mac,
       }
-      this.$loading.open()
       if (this.isAdd) {
         addWifiMacFilter(data).then(() => {
           this.getWifiMacFilterList()
-          this.$loading.close()
         })
       }
       if (this.isEdit) {
@@ -298,19 +290,16 @@ export default {
         }).then(() => {
           editWifiMacFilter(data).then(() => {
             this.getWifiMacFilterList()
-            this.$loading.close()
           })
         })
       }
     },
     del(row) {
-      this.$loading.open()
       delWifiMacFilter({
         id: row.id,
         mac: row.mac,
       }).then(() => {
         this.getWifiMacFilterList()
-        this.$loading.close()
       })
     },
   },
