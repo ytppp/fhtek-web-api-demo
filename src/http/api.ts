@@ -50,15 +50,15 @@ export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {
-  return http.post(`AddWan`, createData(params))
+  return http.post(`AddWan`, createData(params), { loading: false })
 }
 
 export const editWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWan', createData(params))
+  return http.post('SetWan', createData(params), { loading: false })
 }
 
 export const deleteWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('DeleteWan', createData(params))
+  return http.post('DeleteWan', createData(params), { loading: false })
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
@@ -66,7 +66,7 @@ export const getWifi2g = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifi2g = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b24g.basic:edit', createData(params))
+  return http.post('wifi.b24g.basic:edit', createData(params), { loading: false })
 }
 
 export const getWifi2gAdv = (): Promise<ApiResponse<any>> => {
@@ -74,7 +74,7 @@ export const getWifi2gAdv = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifi2gAdv = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b24g.advanced:edit', createData(params))
+  return http.post('wifi.b24g.advanced:edit', createData(params), { loading: false })
 }
 
 export const getWifi5gAdv = (): Promise<ApiResponse<any>> => {
@@ -82,7 +82,7 @@ export const getWifi5gAdv = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifi5gAdv = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b5g.advanced:edit', createData(params))
+  return http.post('wifi.b5g.advanced:edit', createData(params), { loading: false })
 }
 
 export const getWps = (params): Promise<ApiResponse<any>> => {
@@ -98,7 +98,7 @@ export const getWifi5g = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifi5g = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b5g.basic:edit', createData(params))
+  return http.post('wifi.b5g.basic:edit', createData(params), { loading: false })
 }
 
 export const getIpv6Lan = (): Promise<ApiResponse<any>> => {
@@ -116,24 +116,36 @@ export const getPortMapping = (): Promise<ApiResponse<any>> => {
 }
 
 export const setPortMapping = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'firewall.port_mapping:add',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'firewall.port_mapping:add',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const editPortMapping = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'firewall.port_mapping:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'firewall.port_mapping:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const delPortMapping = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'firewall.port_mapping:delete',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'firewall.port_mapping:delete',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getDmz = (): Promise<ApiResponse<any>> => {
@@ -143,10 +155,14 @@ export const getDmz = (): Promise<ApiResponse<any>> => {
 }
 
 export const setDmz = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'firewall.dmz:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'firewall.dmz:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getWanList = (params): Promise<ApiResponse<any>> => {
@@ -157,10 +173,14 @@ export const getWanList = (params): Promise<ApiResponse<any>> => {
 }
 
 export const setFirewall = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'firewall:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'firewall:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getFirewall = (): Promise<ApiResponse<any>> => {
@@ -182,6 +202,7 @@ export const addStaticDns = (params): Promise<ApiResponse<any>> => {
       method: 'network.static_dns:add',
       data: params,
     },
+    { loading: false },
   )
 }
 
@@ -192,6 +213,7 @@ export const editStaticDns = (params): Promise<ApiResponse<any>> => {
       method: 'network.static_dns:edit',
       data: params,
     },
+    { loading: false },
   )
 }
 
@@ -202,6 +224,7 @@ export const delStaticDns = (params): Promise<ApiResponse<any>> => {
       method: 'network.static_dns:delete',
       data: params,
     },
+    { loading: false },
   )
 }
 
@@ -212,24 +235,36 @@ export const getStaticRoute = (): Promise<ApiResponse<any>> => {
 }
 
 export const addStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:add',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'network.static_route:add',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const editStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'network.static_route:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const delStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:delete',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'network.static_route:delete',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getOntAuth = (): Promise<ApiResponse<any>> => {
@@ -239,10 +274,14 @@ export const getOntAuth = (): Promise<ApiResponse<any>> => {
 }
 
 export const editOntAuth = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'management.ont_auth:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'management.ont_auth:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getPortMirr = (params): Promise<ApiResponse<any>> => {
@@ -250,7 +289,7 @@ export const getPortMirr = (params): Promise<ApiResponse<any>> => {
 }
 
 export const setPortMirr = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetPortMirr', createData(params))
+  return http.post('SetPortMirr', createData(params), { loading: false })
 }
 
 export const getTerminal = (): Promise<ApiResponse<any>> => {
@@ -260,10 +299,14 @@ export const getTerminal = (): Promise<ApiResponse<any>> => {
 }
 
 export const setTerminal = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'management.acl_control:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'management.acl_control:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getDefaultRoute = (): Promise<ApiResponse<any>> => {
@@ -273,10 +316,14 @@ export const getDefaultRoute = (): Promise<ApiResponse<any>> => {
 }
 
 export const setDefaultRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.default_route:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'network.default_route:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getAccount = (params): Promise<ApiResponse<any>> => {
@@ -300,24 +347,36 @@ export const getDdns = (): Promise<ApiResponse<any>> => {
 }
 
 export const addDdns = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.ddns:add',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'network.ddns:add',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const editDdns = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.ddns:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'network.ddns:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const delDdns = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.ddns:delete',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'network.ddns:delete',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getWifiMacFilterStatus = (): Promise<ApiResponse<any>> => {
@@ -325,7 +384,7 @@ export const getWifiMacFilterStatus = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifiMacFilterStatus = (params): Promise<ApiResponse<any>> => {
-  return http.post('security.wifi_mac_filter.status:edit', createData(params))
+  return http.post('security.wifi_mac_filter.status:edit', createData(params), { loading: false })
 }
 
 export const getWifiMacFilter = (): Promise<ApiResponse<any>> => {
@@ -333,15 +392,15 @@ export const getWifiMacFilter = (): Promise<ApiResponse<any>> => {
 }
 
 export const addWifiMacFilter = (params): Promise<ApiResponse<any>> => {
-  return http.post('security.wifi_mac_filter.items:add', createData(params))
+  return http.post('security.wifi_mac_filter.items:add', createData(params), { loading: false })
 }
 
 export const editWifiMacFilter = (params): Promise<ApiResponse<any>> => {
-  return http.post('security.wifi_mac_filter.items:edit', createData(params))
+  return http.post('security.wifi_mac_filter.items:edit', createData(params), { loading: false })
 }
 
 export const delWifiMacFilter = (params): Promise<ApiResponse<any>> => {
-  return http.post('security.wifi_mac_filter.items:delete', createData(params))
+  return http.post('security.wifi_mac_filter.items:delete', createData(params), { loading: false })
 }
 
 export const getUsb = (): Promise<ApiResponse<any>> => {
@@ -351,10 +410,14 @@ export const getUsb = (): Promise<ApiResponse<any>> => {
 }
 
 export const usbDownload = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'storage.client.download:add',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'storage.client.download:add',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getUsbDownloadList = (): Promise<ApiResponse<any>> => {
@@ -364,10 +427,14 @@ export const getUsbDownloadList = (): Promise<ApiResponse<any>> => {
 }
 
 export const editUsbServer = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'storage.server:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'storage.server:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 export const getUsbServer = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
@@ -376,10 +443,14 @@ export const getUsbServer = (): Promise<ApiResponse<any>> => {
 }
 
 export const editSamba = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'storage.samba:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'storage.samba:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getSamba = (params): Promise<ApiResponse<any>> => {
@@ -390,10 +461,14 @@ export const getSamba = (params): Promise<ApiResponse<any>> => {
 }
 
 export const editMediaSharing = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'storage.media_sharing:edit',
-    data: params,
-  })
+  return http.post(
+    api,
+    {
+      method: 'storage.media_sharing:edit',
+      data: params,
+    },
+    { loading: false },
+  )
 }
 
 export const getMediaSharing = (): Promise<ApiResponse<any>> => {
@@ -406,7 +481,7 @@ export const getMesh = (): Promise<ApiResponse<any>> => {
   return http.get('mesh.settings:get')
 }
 export const setMesh = (params): Promise<ApiResponse<any>> => {
-  return http.post('mesh.settings:edit', createData(params))
+  return http.post('mesh.settings:edit', createData(params), { loading: false })
 }
 export const triggerMesh = (params): Promise<ApiResponse<any>> => {
   return http.post('mesh.trigger:edit', createData(params))

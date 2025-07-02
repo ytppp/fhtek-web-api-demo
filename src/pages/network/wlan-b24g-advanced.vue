@@ -273,7 +273,9 @@ const save = () => {
       power: wifi.power,
       beacon_interval: wifi.beacon,
     }
-    setWifi2gAdv(data)
+    setWifi2gAdv(data).then(() => {
+      getWifi2gData()
+    })
   }
 }
 onMounted(() => {

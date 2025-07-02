@@ -195,7 +195,9 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      setWifiMacFilterStatus(data)
+      setWifiMacFilterStatus(data).then(() => {
+        this.getWifiMacFilterStatusData()
+      })
     },
     openAddModal() {
       this.modalForm.id = this.ssidOpts[0].value

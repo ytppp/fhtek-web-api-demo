@@ -209,6 +209,7 @@ export default {
         })
         .then(() => {
           logout().then(() => {
+            sessionStorage.clear()
             this.$router.push('/login')
           })
         })

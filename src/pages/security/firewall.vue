@@ -94,6 +94,8 @@ const save = () => {
   setFirewall({
     enable: convertBooleanStatus(form.enable),
     level: form.level,
+  }).then(() => {
+    getFirewallData()
   })
 }
 const getFirewallData = () => {

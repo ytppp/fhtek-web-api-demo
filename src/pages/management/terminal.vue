@@ -41,7 +41,9 @@ const save = () => {
       enable: convertBooleanStatus(form.sshEnable),
     },
   }
-  setTerminal(data)
+  setTerminal(data).then(() => {
+    getTerminalData()
+  })
 }
 const getTerminalData = () => {
   getTerminal().then(({ data }) => {

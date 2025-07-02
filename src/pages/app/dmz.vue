@@ -89,6 +89,8 @@ export default {
           wan: this.form.wan,
           enable: convertBooleanStatus(this.form.enable),
           ip: this.form.ip,
+        }).then(() => {
+          this.getDmzData()
         })
       }
     },

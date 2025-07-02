@@ -4,24 +4,15 @@
       <h1 class="page__title">{{ $t('trans0188') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form
-        class="form"
-        ref="form"
-        :model="form"
-        name="form"
-        method="post"
-        action="/cgi-bin/log.asp"
-      >
-        <input type="hidden" name="loglevelchange" v-model="form.loglevelchange" />
-        <input type="hidden" name="Enable" v-model="form.logEnable" />
+      <fh-form class="form" ref="form" :model="form">
         <fh-form-item :label="$t('trans0188')">
           <fh-switch v-model="form.enable" @change="switchEnable" />
         </fh-form-item>
         <fh-form-item :label="$t('trans0239')">
-          <fh-select v-model="form.writeLevel" :options="logLevelList" name="loglevel" />
+          <fh-select v-model="form.writeLevel" :options="logLevelList" />
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
-          <fh-button id="submitbutton" @click="save" block>
+          <fh-button @click="save" block>
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
@@ -34,15 +25,8 @@
           <fh-button @click="backupSyslog">
             {{ $t('trans0241') }}
           </fh-button>
-          <fh-select
-            class="log__header-select"
-            v-model="displayLevel"
-            :options="logLevelList"
-            name="loglevel"
-            @change="changeDisplayLevel"
-          />
         </div>
-        <div class="log__main" v-loading="uploading">
+        <div class="log__main">
           <div style="width: 100%; height: 600px">log记录</div>
         </div>
       </div>
@@ -64,13 +48,9 @@ const LogLevel = {
 export default {
   data() {
     return {
-      uploading: false,
       form: {
         enable: false,
         writeLevel: LogLevel.Debug,
-
-        logEnable: '',
-        loglevelchange: '0',
       },
       displayLevel: LogLevel.Debug,
       logLevelList: [
@@ -110,28 +90,21 @@ export default {
     }
   },
   methods: {
-    changeDisplayLevel(val) {
-      this.uploading = true
-      document.getElementById('syslog').contentWindow.postMessage({ level: val }, '*')
-    },
-    switchEnable(val) {
-      this.form.logEnable = val ? 'Yes' : 'No'
+    switchEnable() {
+      // todo
     },
     save() {
-      this.form.loglevelchange = '1'
-      this.loadingBeforeAction(() => {
-        this.submit('form')
-      })
+      // todo
     },
     backupSyslog() {
-      const cfg = '/syslog.txt'
-      if (this.form.enable) {
-        window.location.href = cfg
-      }
+      // todo
+      // const cfg = '/syslog.txt'
+      // if (this.form.enable) {
+      //   window.location.href = cfg
+      // }
     },
     reloadFrame() {
-      this.uploading = true
-      document.getElementById('syslog').contentWindow.location.reload()
+      // todo
     },
   },
 }

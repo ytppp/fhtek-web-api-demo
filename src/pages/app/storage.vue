@@ -249,7 +249,7 @@ const getUsbInfo = () => {
     hasUsbDevice.value = convertBooleanStatus(data.has_usb)
     if (hasUsbDevice.value) {
       getDownloadList()
-      getUsbServer()
+      getUsbServerData()
     }
   })
 }
@@ -263,7 +263,9 @@ const download = () => {
     password: clientForm.password,
     path: clientForm.path,
   }
-  usbDownload([data])
+  usbDownload([data]).then(() => {
+    getDownloadList()
+  })
 }
 const save = () => {
   if (!serverFormRef.value.validate()) return
@@ -274,10 +276,12 @@ const save = () => {
     password: serverForm.password,
     root_path: serverForm.rootPath,
   }
-  editUsbServer(data)
+  editUsbServer(data).then(() => {
+    getUsbServerData()
+  })
 }
 
-const getUsbServer = () => {
+const getUsbServerData = () => {
   getUsbServer().then(({ data }) => {
     serverForm.enable = convertBooleanStatus(data.enable)
     serverForm.username = data.username

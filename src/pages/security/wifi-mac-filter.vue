@@ -105,6 +105,7 @@ export default {
         id: '',
         index: -1,
         mac: '',
+        pre_id: '',
         pre_mac: '',
       },
       ssidOpts: [],
@@ -206,11 +207,14 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      setWifiMacFilterStatus(data)
+      setWifiMacFilterStatus(data).then(() => {
+        this.getWifiMacFilterStatusData()
+      })
     },
     openAddModal() {
       this.modalForm.id = this.ssidOpts[0].value
       this.modalForm.mac = ''
+      this.modalForm.pre_id = ''
       this.modalForm.pre_mac = ''
       this.modalForm.index = -1
       this.modalType = ModalType.add
@@ -219,6 +223,7 @@ export default {
     openEditModal(row) {
       this.modalForm.id = row.id
       this.modalForm.mac = row.mac
+      this.modalForm.pre_id = row.pre_id
       this.modalForm.pre_mac = row.pre_mac
       this.modalForm.index = row.index
       this.modalType = ModalType.edit
@@ -233,6 +238,7 @@ export default {
             tableData.push({
               ...item,
               idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
+              pre_id: item.id,
               pre_mac: item.mac,
               index: i,
             })
@@ -280,8 +286,10 @@ export default {
         })
       }
       if (this.isEdit) {
-        delWifiMacFilter(data).then(() => {
-          data.pre_mac = this.modalForm.pre_mac
+        delWifiMacFilter({
+          id: this.modalForm.pre_id,
+          mac: this.modalForm.pre_mac,
+        }).then(() => {
           editWifiMacFilter(data).then(() => {
             this.getWifiMacFilterList()
           })
