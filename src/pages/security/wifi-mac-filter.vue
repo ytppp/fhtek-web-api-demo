@@ -306,7 +306,7 @@ export default {
   mounted() {
     this.getWifiMacFilterStatusData()
     this.getSsidIndex()
-    this.getWifiMacFilterList(true)
+    this.getWifiMacFilterList()
   },
 }
 </script>

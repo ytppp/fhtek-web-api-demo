@@ -91,7 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref, inject } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   isValidInteger,
@@ -263,10 +263,9 @@ const download = () => {
     password: clientForm.password,
     path: clientForm.path,
   }
-  usbDownload([data])
-    .then(() => {
-      getDownloadList()
-    })
+  usbDownload([data]).then(() => {
+    getDownloadList()
+  })
 }
 const save = () => {
   if (!serverFormRef.value.validate()) return
@@ -291,19 +290,18 @@ const getUsbServerData = () => {
 }
 
 const getDownloadList = () => {
-  getUsbDownloadList()
-    .then(({ data }) => {
-      const { items } = data
-      const table = []
-      items.forEach((item, i) => {
-        table.push({
-          ...item,
-          index: i,
-          statusAilas: DownloadStatusText[item.status],
-        })
+  getUsbDownloadList().then(({ data }) => {
+    const { items } = data
+    const table = []
+    items.forEach((item, i) => {
+      table.push({
+        ...item,
+        index: i,
+        statusAilas: DownloadStatusText[item.status],
       })
-      Object.assign(tableData, table)
     })
+    Object.assign(tableData, table)
+  })
 }
 
 onMounted(() => {

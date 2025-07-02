@@ -116,35 +116,24 @@ export const getPortMapping = (): Promise<ApiResponse<any>> => {
 }
 
 export const setPortMapping = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'firewall.port_mapping:add',
-      data: params,
-    },
-    { loading: false },
-  )
+  return http.post(api, {
+    method: 'firewall.port_mapping:add',
+    data: params,
+  })
 }
 
 export const editPortMapping = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'firewall.port_mapping:edit',
-      data: params,
-    },
-    { loading: false },
-  )
+  return http.post(api, {
+    method: 'firewall.port_mapping:edit',
+    data: params,
+  })
 }
 
 export const delPortMapping = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'firewall.port_mapping:delete',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'firewall.port_mapping:delete',
+    data: params,
+  })
 }
 
 export const getDmz = (): Promise<ApiResponse<any>> => {
@@ -187,33 +176,24 @@ export const getStaticDnsList = (): Promise<ApiResponse<any>> => {
 }
 
 export const addStaticDns = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.static_dns:add',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'network.static_dns:add',
+    data: params,
+  })
 }
 
 export const editStaticDns = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.static_dns:edit',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'network.static_dns:edit',
+    data: params,
+  })
 }
 
 export const delStaticDns = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.static_dns:delete',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'network.static_dns:delete',
+    data: params,
+  })
 }
 
 export const getStaticRoute = (): Promise<ApiResponse<any>> => {
@@ -223,33 +203,24 @@ export const getStaticRoute = (): Promise<ApiResponse<any>> => {
 }
 
 export const addStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.static_route:add',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'network.static_route:add',
+    data: params,
+  })
 }
 
 export const editStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.static_route:edit',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'network.static_route:edit',
+    data: params,
+  })
 }
 
 export const delStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.static_route:delete',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'network.static_route:delete',
+    data: params,
+  })
 }
 
 export const getOntAuth = (): Promise<ApiResponse<any>> => {
@@ -320,33 +291,24 @@ export const getDdns = (): Promise<ApiResponse<any>> => {
 }
 
 export const addDdns = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.ddns:add',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'network.ddns:add',
+    data: params,
+  })
 }
 
 export const editDdns = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.ddns:edit',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'network.ddns:edit',
+    data: params,
+  })
 }
 
 export const delDdns = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'network.ddns:delete',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'network.ddns:delete',
+    data: params,
+  })
 }
 
 export const getWifiMacFilterStatus = (): Promise<ApiResponse<any>> => {
@@ -380,22 +342,16 @@ export const getUsb = (): Promise<ApiResponse<any>> => {
 }
 
 export const usbDownload = (params): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'storage.client.download:add',
-      data: params,
-    }
-  )
+  return http.post(api, {
+    method: 'storage.client.download:add',
+    data: params,
+  })
 }
 
 export const getUsbDownloadList = (): Promise<ApiResponse<any>> => {
-  return http.post(
-    api,
-    {
-      method: 'storage.client.download:get',
-    }
-  )
+  return http.post(api, {
+    method: 'storage.client.download:get',
+  })
 }
 
 export const editUsbServer = (params): Promise<ApiResponse<any>> => {
@@ -441,7 +397,7 @@ export const getMesh = (): Promise<ApiResponse<any>> => {
   return http.get('mesh.settings:get')
 }
 export const setMesh = (params): Promise<ApiResponse<any>> => {
-  return http.post('mesh.settings:edit', createData(params), { loading: false })
+  return http.post('mesh.settings:edit', createData(params))
 }
 export const triggerMesh = (params): Promise<ApiResponse<any>> => {
   return http.post('mesh.trigger:edit', createData(params))
