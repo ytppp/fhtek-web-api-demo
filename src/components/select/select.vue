@@ -1,5 +1,11 @@
 <template>
-  <div class="select" @click="open" v-clickoutside="close" ref="selectRef">
+  <div
+    class="select"
+    :class="{ 'is-disabled': selectDisabled }"
+    @click="open"
+    v-clickoutside="close"
+    ref="selectRef"
+  >
     <fh-input
       readonly
       :disabled="selectDisabled"
@@ -175,6 +181,13 @@ onMounted(() => {
 .select {
   position: relative;
   width: 100%;
+  &.is-disabled {
+    .input {
+      .input__inner {
+        cursor: not-allowed;
+      }
+    }
+  }
   .select__caret {
     transition: transform 0.2s linear;
     &.is-reverse {

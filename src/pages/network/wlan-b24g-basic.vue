@@ -8,7 +8,13 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0118') }}</h2>
       </div>
-      <fh-form class="form form--padding" ref="wifiFormRef" :model="wifi" :rules="rules">
+      <fh-form
+        class="form form--padding"
+        ref="wifiFormRef"
+        :model="wifi"
+        :rules="rules"
+        :disabled="!wifiEnable"
+      >
         <fh-form-item :label="$t('trans0711')">
           <fh-select @change="changeSsid" v-model="wifi.id" :options="ssidOpts"> </fh-select>
         </fh-form-item>
@@ -76,7 +82,7 @@ import { computed, reactive, ref, onMounted, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
-import { getWifi2g, setWifi2g, getWps, setWps } from '@/http/api'
+import { getWifi2g, setWifi2g, getWps, setWps, getWifi2gAdv } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
 import { StartAndStop, Encrypts, encrypts, WpsStatus, SsidText, Ssid1 } from '@/util/constant'
 
@@ -92,6 +98,7 @@ const timeout = 2 * 60 * 1000
 const interval = 5000
 const ssidOpts = reactive([])
 const ssidList = reactive([])
+const wifiEnable = ref(false)
 const encryptsOpts = [
   {
     value: Encrypts.none,
@@ -182,7 +189,7 @@ const isSsid1 = computed(() => {
   return wifi.id === Ssid1
 })
 const isEnableWps = computed(() => {
-  return wifi.enableWpsInitial && wifi.enableInitial && isSsid1.value
+  return wifi.enableWpsInitial && wifi.enableInitial && isSsid1.value && wifiEnable.value
 })
 
 const start = () => {
@@ -279,7 +286,13 @@ const save = () => {
     })
   }
 }
+const getWifi2gData = () => {
+  getWifi2gAdv().then(({ data }) => {
+    wifiEnable.value = convertBooleanStatus(data.enable)
+  })
+}
 onMounted(() => {
   getWifiData()
+  getWifi2gData()
 })
 </script>

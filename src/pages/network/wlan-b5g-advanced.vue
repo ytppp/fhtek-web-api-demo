@@ -99,6 +99,7 @@ const dialog = inject('dialog')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const channelCurrent = ref('0')
+const wifiEnableInitial = ref(false)
 const enableSteering = ref(false)
 const wifiFormRef = useTemplateRef('wifiFormRef')
 const modeOpts = [
@@ -255,7 +256,7 @@ const powerOpts = [
   },
 ]
 const wifi = reactive({
-  enable: true,
+  enable: false,
   mode: SelectMode5G.modeAonly,
   bw: BandWidths5G.b20,
   channel: Channels5G.auto,
@@ -347,19 +348,26 @@ const changeMode = () => {
 }
 
 const changeBw = () => {
-  if (wifi.bw !== BandWidths5G.b20 && (wifi.channel === Channels5G.ch116 || wifi.channel === Channels5G.ch165)) {
+  if (
+    wifi.bw !== BandWidths5G.b20 &&
+    (wifi.channel === Channels5G.ch116 || wifi.channel === Channels5G.ch165)
+  ) {
     wifi.channel = Channels5G.auto
   }
 }
 const switchEnable = (val) => {
-  if (!val) {
+  if (!val && wifiEnableInitial.value) {
     dialog
       .confirm({
         okText: t('trans0019'),
         cancelText: t('trans0020'),
         message: t('trans0025'),
       })
-      .then(() => {})
+      .then(() => {
+        setWifi5gAdvData({
+          enable: convertBooleanStatus(wifi.enable),
+        })
+      })
       .catch(() => {
         wifi.enable = true
       })
@@ -367,7 +375,7 @@ const switchEnable = (val) => {
 }
 const getWifi5gData = () => {
   getWifi5gAdv().then(({ data }) => {
-    wifi.enable = convertBooleanStatus(data.enable)
+    wifiEnableInitial.value = wifi.enable = convertBooleanStatus(data.enable)
     wifi.mode = data.mode
     wifi.bw = data.bw
     wifi.channel = data.channel
@@ -389,8 +397,13 @@ const save = () => {
       power: wifi.power,
       beacon_interval: wifi.beacon,
     }
-    setWifi5gAdv(data)
+    setWifi5gAdvData(data)
   }
+}
+const setWifi5gAdvData = (data) => {
+  setWifi5gAdv(data).then(() => {
+    getWifi5gData()
+  })
 }
 const getMeshData = () => {
   getMesh().then(({ data }) => {
