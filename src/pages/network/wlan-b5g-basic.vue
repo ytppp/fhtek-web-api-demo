@@ -12,7 +12,7 @@
         ref="wifiFormRef"
         :model="wifi"
         :rules="rules"
-        :disabled="enableSteering"
+        :disabled="formDisabled"
       >
         <fh-form-item :label="$t('trans0711')">
           <fh-select @change="changeSsid" v-model="wifi.id" :options="ssidOpts"> </fh-select>
@@ -27,7 +27,7 @@
           <fh-switch v-model="wifi.hide"> </fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0747')" prop="sta">
-          <fh-input v-model="wifi.sta" :not-disabled="true"> </fh-input>
+          <fh-input v-model="wifi.sta" :not-disabled="staNotDisabledProp"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0031')">
           <fh-select v-model="wifi.encrypt" :options="encryptsOpts"> </fh-select>
@@ -49,7 +49,7 @@
           <fh-switch v-model="wifi.enableWps"> </fh-switch>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
-          <fh-button @click="save" :not-disabled="true" block>
+          <fh-button @click="save" :not-disabled="staNotDisabledProp" block>
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
@@ -81,7 +81,7 @@ import { computed, reactive, ref, onMounted, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
-import { getWifi5g, setWifi5g, getWps, setWps, getMesh } from '@/http/api'
+import { getWifi5g, setWifi5g, getWps, setWps, getMesh, getWifi5gAdv } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
 import { StartAndStop, Encrypts, encrypts, WpsStatus, SsidText, Ssidac1 } from '@/util/constant'
 
@@ -98,6 +98,7 @@ const timeout = 2 * 60 * 1000
 const interval = 5000
 const ssidOpts = reactive([])
 const ssidList = reactive([])
+const wifiEnable = ref(false)
 const encryptsOpts = [
   {
     value: Encrypts.none,
@@ -188,7 +189,13 @@ const isSsidac1 = computed(() => {
   return wifi.id === Ssidac1
 })
 const isEnableWps = computed(() => {
-  return wifi.enableWpsInitial && wifi.enableInitial && isSsidac1.value
+  return wifi.enableWpsInitial && wifi.enableInitial && isSsidac1.value && wifiEnable.value
+})
+const formDisabled = computed(() => {
+  return enableSteering.value || !wifiEnable.value
+})
+const staNotDisabledProp = computed(() => {
+  return wifiEnable.value
 })
 
 const start = () => {
@@ -290,8 +297,14 @@ const getMeshData = () => {
     enableSteering.value = convertBooleanStatus(data.steering)
   })
 }
+const getWifi5gData = () => {
+  getWifi5gAdv().then(({ data }) => {
+    wifiEnable.value = convertBooleanStatus(data.enable)
+  })
+}
 onMounted(() => {
   getWifiData()
   getMeshData()
+  getWifi5gData()
 })
 </script>

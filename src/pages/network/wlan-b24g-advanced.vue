@@ -83,6 +83,7 @@ const dialog = inject('dialog')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const channelCurrent = ref('0')
+const wifiEnableInitial = ref(false)
 const wifiFormRef = useTemplateRef('wifiFormRef')
 const modeOpts = [
   {
@@ -211,7 +212,7 @@ const powerOpts = [
   },
 ]
 const wifi = reactive({
-  enable: true,
+  enable: false,
   mode: SelectMode24G.modeb,
   bw: BandWidths24G.b20,
   channel: Channels24G.auto,
@@ -236,14 +237,18 @@ const changeMode = () => {
   }
 }
 const switchEnable = (val) => {
-  if (!val) {
+  if (!val && wifiEnableInitial.value) {
     dialog
       .confirm({
         okText: t('trans0019'),
         cancelText: t('trans0020'),
         message: t('trans0025'),
       })
-      .then(() => {})
+      .then(() => {
+        setWifi2gAdvData({
+          enable: convertBooleanStatus(wifi.enable),
+        })
+      })
       .catch(() => {
         wifi.enable = true
       })
@@ -251,7 +256,7 @@ const switchEnable = (val) => {
 }
 const getWifi2gData = () => {
   getWifi2gAdv().then(({ data }) => {
-    wifi.enable = convertBooleanStatus(data.enable)
+    wifiEnableInitial.value = wifi.enable = convertBooleanStatus(data.enable)
     wifi.mode = data.mode
     wifi.bw = data.bw
     wifi.channel = data.channel
@@ -273,8 +278,13 @@ const save = () => {
       power: wifi.power,
       beacon_interval: wifi.beacon,
     }
-    setWifi2gAdv(data)
+    setWifi2gAdvData(data)
   }
+}
+const setWifi2gAdvData = (data) => {
+  setWifi2gAdv(data).then(() => {
+    getWifi2gData()
+  })
 }
 onMounted(() => {
   getWifi2gData()
