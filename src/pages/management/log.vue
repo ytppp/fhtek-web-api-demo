@@ -4,12 +4,12 @@
       <h1 class="page__title">{{ $t('trans0188') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form" ref="form" :model="form">
+      <fh-form class="form" :model="form">
         <fh-form-item :label="$t('trans0188')">
-          <fh-switch v-model="form.enable" @change="switchEnable" />
+          <fh-switch v-model="form.enable" />
         </fh-form-item>
         <fh-form-item :label="$t('trans0239')">
-          <fh-select v-model="form.writeLevel" :options="logLevelList" />
+          <fh-select v-model="form.level" :options="logLevelList" />
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
@@ -17,17 +17,18 @@
           </fh-button>
         </fh-form-item>
       </fh-form>
-      <div class="log">
+      <div class="log" v-if="enableInitial">
         <div class="log__header">
-          <fh-button @click="reloadFrame">
-            {{ $t('trans0240') }}
-          </fh-button>
           <fh-button @click="backupSyslog">
             {{ $t('trans0241') }}
           </fh-button>
+          <fh-button @click="reloadFrame">
+            {{ $t('trans0240') }}
+          </fh-button>
         </div>
         <div class="log__main">
-          <div style="width: 100%; height: 600px">log记录</div>
+          <pre>{{ previous }}</pre>
+          <pre class="increase" :class="{ 'not-empty': increase }">{{ increase }}</pre>
         </div>
       </div>
     </div>
@@ -35,6 +36,11 @@
 </template>
 
 <script>
+import { setLog, getLog, getSyslog, getLan } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
+import { http } from '@/http'
+
+const { convertBooleanStatus } = useDataClean()
 const LogLevel = {
   Emergency: '0',
   Alarm: '1',
@@ -50,9 +56,12 @@ export default {
     return {
       form: {
         enable: false,
-        writeLevel: LogLevel.Debug,
+        level: LogLevel.Debug,
       },
-      displayLevel: LogLevel.Debug,
+      enableInitial: false,
+      lanIp: '',
+      previousArray: [],
+      increaseArray: [],
       logLevelList: [
         {
           value: LogLevel.Emergency,
@@ -89,23 +98,123 @@ export default {
       ],
     }
   },
-  methods: {
-    switchEnable() {
-      // todo
+  computed: {
+    previous() {
+      return this.previousArray.join('\n')
     },
+    increase() {
+      return this.increaseArray.join('\n')
+    },
+  },
+  methods: {
     save() {
-      // todo
+      setLog({
+        enable: this.form.enable,
+        level: this.form.level,
+      })
+    },
+    getSyslogData() {
+      return getSyslog().then(({ data }) => {
+        if (data && data.cfg_name) {
+          return data.cfg_name
+        }
+        throw reject(new Error('No log file found'))
+      })
+    },
+    downloadFile(logFile, data) {
+      const blob = new Blob([data], { type: 'application/octet-stream' })
+      const downloadElement = document.createElement('a')
+      const href = window.URL.createObjectURL(blob)
+      downloadElement.href = href
+      downloadElement.download = logFile
+      downloadElement.click()
+      URL.revokeObjectURL(href)
     },
     backupSyslog() {
-      // todo
-      // const cfg = '/syslog.txt'
-      // if (this.form.enable) {
-      //   window.location.href = cfg
-      // }
+      this.$dialog
+        .confirm({
+          okText: this.$t('trans0019'),
+          cancelText: this.$t('trans0020'),
+          message: this.$t('trans0391'),
+        })
+        .then(() => {
+          this.getSyslogData().then((logFile) => {
+            http
+              .download(`/${logFile}?t=${Date.now()}`, undefined, { baseURL: '' })
+              .then((data) => {
+                this.downloadFile(logFile, data)
+              })
+          })
+        })
+        .catch(() => {})
     },
     reloadFrame() {
-      // todo
+      this.getSyslogData().then((logFile) => {
+        http.get(`/${logFile}?t=${Date.now()}`, undefined, { baseURL: '' }).then((data) => {
+          const preArray = [...this.previousArray, ...this.increaseArray]
+          this.getIncremental(preArray, data)
+        })
+      })
     },
+    getIncremental(preArray, nowStr) {
+      const nowArray = nowStr.split('\n').filter((n) => n !== '')
+      if (!preArray.length) {
+        this.previousArray = []
+        this.increaseArray = nowArray
+      } else {
+        const preStart = preArray[0]
+        const preEnd = preArray[preArray.length - 1]
+        // 全包含
+        if (nowArray.includes(preStart) && nowArray.includes(preEnd)) {
+          this.previousArray = preArray
+          const index = nowArray.lastIndexOf(preEnd)
+          this.increaseArray = nowArray.slice(index + 1)
+        } else {
+          // 部分包含,首先找到包含的起始位置
+          const index = nowArray.lastIndexOf(preEnd)
+          if (index === -1) {
+            this.previousArray = preArray
+            this.increaseArray = nowArray
+          } else {
+            this.previousArray = preArray
+            this.increaseArray = nowArray.slice(index + 1)
+          }
+        }
+      }
+      this.$nextTick(() => {
+        const el = this.$el.querySelector('.increase')
+        const wrap = this.$el.querySelector('.log__main')
+        if (el && wrap) this.scrollTo(wrap, 0, el.offsetTop)
+      })
+    },
+    scrollTo(el, x = 0, y = 0) {
+      if (el.scrollTo) {
+        el.scrollTo(x, y)
+      } else {
+        el.scrollLeft = x
+        el.scrollTop = y
+      }
+    },
+    getLogData() {
+      getLog().then(({ data }) => {
+        this.enableInitial = this.form.enable = convertBooleanStatus(data.enable)
+        this.form.level = data.level
+        if (this.form.enable) {
+          this.reloadFrame()
+        }
+      })
+    },
+    getLanData() {
+      getLan().then(({ data }) => {
+        const { lan } = data
+        const { ip } = lan
+        this.lanIp = ip
+      })
+    },
+  },
+  mounted() {
+    this.getLanData()
+    this.getLogData()
   },
 }
 </script>
@@ -131,6 +240,20 @@ export default {
   }
   .log__main {
     margin-top: 20px;
+    border-radius: 4px;
+    border: solid 1px #bdbdbd;
+    padding: 10px;
+    max-height: 600px;
+    overflow-x: hidden;
+    pre {
+      font-family: 'Courier New', Courier, monospace;
+      color: #000;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      &:first-child {
+        color: #ccc;
+      }
+    }
   }
 }
 </style>

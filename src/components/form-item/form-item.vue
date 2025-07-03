@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed, provide, inject, useSlots, useTemplateRef } from 'vue'
+import { ref, computed, provide, inject, useSlots, useTemplateRef, useId } from 'vue'
 import LabelWrap from './label-wrap.vue'
 
 defineOptions({
@@ -68,6 +68,7 @@ const props = defineProps({
     type: String,
   },
 })
+const id = useId()
 const slots = useSlots()
 const formItemRef = useTemplateRef('formItemRef')
 const validateMessage = ref('')
@@ -105,7 +106,7 @@ const contentStyle = computed(() => {
   return ret
 })
 const labelFor = computed(() => {
-  return props.for || props.prop
+  return props.for || id
 })
 const error = computed(() => {
   return result.value !== null && result.value === false
@@ -187,6 +188,7 @@ provide('formItem', {
   validate,
   updateComputedLabelWidth,
   label: computed(() => props.label),
+  id
 })
 defineExpose({
   extraValidate,

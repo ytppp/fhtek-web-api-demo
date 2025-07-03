@@ -32,6 +32,7 @@
         :multiple="multiple"
         :accept="accept"
         :name="name"
+        :id="id"
         :disabled="uploadDisabled"
         hidden="hidden"
       />
@@ -158,6 +159,9 @@ export default {
     }
   },
   computed: {
+    id() {
+      return this.formItem?.id
+    },
     uploadDisabled() {
       return this.disabled || this.form?.disabled.value || this.uploadLoading
     },

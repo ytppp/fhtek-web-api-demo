@@ -65,7 +65,9 @@ import {
   backup,
   uploadConfig,
   getLan,
+  logout,
 } from '@/http/api'
+import { router } from '@/router/index'
 import { useCountDown } from '@/hooks/countdown'
 
 defineOptions({
@@ -89,17 +91,45 @@ const toast = inject('toast')
 const uploader = useTemplateRef('uploader')
 const lanIp = ref('')
 
-const doingRebootHandle = () => {
-  checkRebootStatus()
+function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: () => void) {
+  return () => {
+    checkStatus().then((status) => {
+      if (status === Status.done || status === Status.fail) {
+        cleanCountDown()
+        handleLogout()
+      }
+    })
+  }
 }
-const doingResetHandle = () => {
-  checkResetStatus()
+function createDoneHandle(key: string) {
+  return () => {
+    sessionStorage.setItem(key, '0')
+    loading.close()
+  }
 }
-const doneRebootHandle = () => {
-  loading.close()
-}
-const doneResetHandle = () => {
-  loading.close()
+
+let cleanRebootCountDown: () => void
+let cleanResetCountDown: () => void
+const checkRebootStatus = () => rebootStatus().then(({ data }) => data.status)
+const checkResetStatus = () => resetStatus().then(({ data }) => data.status)
+const doingRebootHandle = createDoingHandle(checkRebootStatus, () => cleanRebootCountDown())
+const doingResetHandle = createDoingHandle(checkResetStatus, () => cleanResetCountDown())
+const doneRebootHandle = createDoneHandle('reboot')
+const doneResetHandle = createDoneHandle('reset')
+
+const { createCountDown: createRebootCountDown, cleanCountDown: _cleanRebootCountDown } =
+  useCountDown(timeout, interval, doingRebootHandle, doneRebootHandle)
+const { createCountDown: createResetCountDown, cleanCountDown: _cleanResetCountDown } =
+  useCountDown(timeout, interval, doingResetHandle, doneResetHandle)
+cleanRebootCountDown = _cleanRebootCountDown
+cleanResetCountDown = _cleanResetCountDown
+
+const handleReboot = () => {
+  loading.open({
+    tip: t('trans0229'),
+  })
+  sessionStorage.setItem('reboot', '1')
+  createRebootCountDown()
 }
 const reboot = () => {
   dialog
@@ -112,10 +142,7 @@ const reboot = () => {
       startReboot().then(({ data }) => {
         const status = data.status
         if (status === Status.doing) {
-          loading.open({
-            tip: t('trans0229'),
-          })
-          createRebootCountDown()
+          handleReboot()
         }
       })
     })
@@ -128,23 +155,8 @@ const reset = () => {
       loading.open({
         tip: t('trans0617'),
       })
+      sessionStorage.setItem('reset', '1')
       createResetCountDown()
-    }
-  })
-}
-const checkRebootStatus = () => {
-  rebootStatus().then(({ data }) => {
-    const status = data.status
-    if (status === Status.done || status === Status.fail) {
-      cleanRebootCountDown()
-    }
-  })
-}
-const checkResetStatus = () => {
-  resetStatus().then(({ data }) => {
-    const status = data.status
-    if (status === Status.done || status === Status.fail) {
-      cleanResetCountDown()
     }
   })
 }
@@ -165,16 +177,6 @@ const getBackupFile = () => {
     window.location.href = `${import.meta.env.DEV ? `http://${lanIp.value}` : location.origin}/${data.cfg_name}`
   })
 }
-// const beforeUpload = (files) => {
-//   this.isHasfile = files.length > 0
-//   const isValidFileName = !!files.find((file) => {
-//     return true // file.name.split('_')[0] === this.uploadFileName // eg: file name: FTG6214X-B4I_V1.0.0-rc.1.bin
-//   })
-//   if (!isValidFileName) {
-//     this.$toast({ text: this.$t('trans0366') })
-//   }
-//   return isValidFileName
-// }
 const backConfig = () => {
   dialog
     .confirm({
@@ -189,24 +191,28 @@ const backConfig = () => {
 }
 const handleUploadError = () => {
   saveBtnDisabled.value = true
-  console.log('handleUploadError', saveBtnDisabled.value)
 }
 const handleUploadsuccess = () => {
   saveBtnDisabled.value = false
-  console.log('handleUploadsuccess', saveBtnDisabled.value)
 }
 const handleUploadcancel = () => {
   saveBtnDisabled.value = false
-  console.log('handleUploadcancel', saveBtnDisabled.value)
 }
+// const beforeUpload = (files) => {
+//   this.isHasfile = files.length > 0
+//   const isValidFileName = !!files.find((file) => {
+//     return true // file.name.split('_')[0] === this.uploadFileName // eg: file name: FTG6214X-B4I_V1.0.0-rc.1.bin
+//   })
+//   if (!isValidFileName) {
+//     this.$toast({ text: this.$t('trans0366') })
+//   }
+//   return isValidFileName
+// }
 const save = () => {
   if (!uploader.value.files.length) {
     toast(t('trans0222'), 3000, 'error')
     return
   }
-  loading.open({
-    tip: t('trans0635'),
-  })
   saveBtnDisabled.value = true
   const fd = new FormData()
   fd.append('file', uploader.value.files[0])
@@ -222,34 +228,61 @@ const save = () => {
     }
   })
     .then(() => {
-      createRebootCountDown()
+      handleReboot()
     })
     .catch(() => {
-      saveBtnDisabled.value = false
       uploader.value.status = uploader.value.UploadStatus.fail
     })
     .finally(() => {
-      loading.close()
+      saveBtnDisabled.value = false
     })
 }
-function getLanData() {
-  getLan().then(({ data }) => {
+const getLanData = () => {
+  getLan(false, false).then(({ data }) => {
     const { lan } = data
     const { ip } = lan
     lanIp.value = ip
   })
 }
-const { createCountDown: createRebootCountDown, cleanCountDown: cleanRebootCountDown } =
-  useCountDown(timeout, interval, doingRebootHandle, doneRebootHandle)
-const { createCountDown: createResetCountDown, cleanCountDown: cleanResetCountDown } = useCountDown(
-  timeout,
-  interval,
-  doingResetHandle,
-  doneResetHandle,
-)
+const handleLogout = () => {
+  logout().then(() => {
+    sessionStorage.clear()
+    router.push('/login')
+  })
+}
 onMounted(() => {
-  createRebootCountDown()
-  createResetCountDown()
+  if (sessionStorage.getItem('reboot') === '1') {
+    loading.open({
+      tip: t('trans0229'),
+    })
+    checkRebootStatus()
+      .then((status) => {
+        if (status === Status.doing) {
+          createRebootCountDown()
+        } else if (status === Status.done) {
+          doneRebootHandle()
+        }
+      })
+      .catch(() => {
+        createRebootCountDown()
+      })
+  }
+  if (sessionStorage.getItem('reset') === '1') {
+    loading.open({
+      tip: t('trans0617'),
+    })
+    checkResetStatus()
+      .then((status) => {
+        if (status === Status.doing) {
+          createResetCountDown()
+        } else if (status === Status.done) {
+          doneResetHandle()
+        }
+      })
+      .catch(() => {
+        createResetCountDown()
+      })
+  }
   getLanData()
 })
 </script>

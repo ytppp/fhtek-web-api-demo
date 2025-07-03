@@ -37,6 +37,11 @@ export default defineConfig(async () => {
     },
     server: {
       proxy: {
+        '/sys_log.log': {
+          target: 'http://192.168.29.1',
+          changeOrigin: true,
+          rewrite: (path) => path,
+        },
         '/action': {
           target: 'http://192.168.29.1',
           changeOrigin: true,
