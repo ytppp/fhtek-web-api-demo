@@ -12,10 +12,14 @@ export const logout = (): Promise<ApiResponse<any>> => {
   return http.post('logout')
 }
 
-export const getLan = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'dhcp:get',
-  })
+export const getLan = (loading: boolean = true, toast = true): Promise<ApiResponse<any>> => {
+  return http.post(
+    api,
+    {
+      method: 'dhcp:get',
+    },
+    { loading, toast },
+  )
 }
 
 export const setLan = (params): Promise<ApiResponse<any>> => {
@@ -434,4 +438,16 @@ export const resetStatus = (): Promise<ApiResponse<any>> => {
 }
 export const backup = (): Promise<ApiResponse<any>> => {
   return http.get('getConfig', undefined)
+}
+
+export const setLog = (params): Promise<ApiResponse<any>> => {
+  return http.post('setLogSettings', createData(params))
+}
+
+export const getLog = (): Promise<ApiResponse<any>> => {
+  return http.get('getLogSettings')
+}
+
+export const getSyslog = (): Promise<ApiResponse<any>> => {
+  return http.get('getSyslog')
 }

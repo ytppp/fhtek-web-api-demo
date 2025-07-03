@@ -31,6 +31,7 @@
         :autocomplete="autocomplete"
         :placeholder="placeholder"
         :name="name"
+        :id="id"
         :aria-label="currentLabel"
         ref="input"
         @compositionstart="handleCompositionStart"
@@ -168,6 +169,9 @@ const inputDisabled = computed(() => {
 })
 const currentLabel = computed(() => {
   return props.label || formItem?.label.value || ''
+})
+const id = computed(() => {
+  return formItem?.id
 })
 const isWordLimitVisible = computed(() => {
   return (
