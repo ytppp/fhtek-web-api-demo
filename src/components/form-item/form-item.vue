@@ -143,8 +143,7 @@ const getValueByPath = (obj, path) => {
 const validate = () => {
   if (props.prop && formItemRef.value) {
     const rules = form.rules.value || {}
-    const prop = props.prop
-    let validators = rules[prop] || []
+    let validators = rules[props.prop] || []
     if (props.rules) {
       validators = validators.concat(props.rules)
     }

@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { computed, ref, useSlots, useAttrs, inject } from 'vue'
+import { computed, ref, useSlots, useAttrs, inject, useTemplateRef } from 'vue'
 
 defineOptions({
   name: 'FhButton',
@@ -163,6 +163,7 @@ const hovering = ref(false)
 const focused = ref(false)
 const isComposing = ref(false)
 const passwordVisible = ref(false)
+const input = useTemplateRef('input')
 const emits = defineEmits(['focus', 'blur', 'change', 'input', 'clear'])
 
 const inputDisabled = computed(() => {
@@ -228,19 +229,17 @@ const handleInput = (event) => {
 const handleFocus = (event) => {
   focused.value = true
   emits('focus', event)
-  formItem?.clearValidate()
+  if (!props.isSelectCompChildNode) formItem?.clearValidate()
 }
 const handleBlur = (event) => {
   focused.value = false
   emits('blur', event)
-  if (!props.isSelectCompChildNode) {
-    formItem?.validate()
-  }
+  if (!props.isSelectCompChildNode) formItem?.validate()
 }
 const handleChange = (event) => {
   model.value = event.target.value
   emits('change', model.value)
-  formItem?.clearValidate()
+  if (!props.isSelectCompChildNode) formItem?.clearValidate()
 }
 const clear = (event) => {
   model.value = ''
