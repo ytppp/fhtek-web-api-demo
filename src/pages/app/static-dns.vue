@@ -77,9 +77,9 @@ export default {
         id: '',
         domain: '',
         ip: '',
+        index: -1,
       },
       mask: '255.255.255.0',
-      index: -1,
       modalFormRules: {
         domain: [
           {
@@ -91,8 +91,19 @@ export default {
             message: this.$t('trans0116'),
           },
           {
-            rule: (value) =>
-              !this.data.some((item) => item.index !== this.index && item.domain === value),
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.domain === value
+              })
+              return flag
+            },
             message: this.$t('trans0405'),
           },
           // {
@@ -135,8 +146,19 @@ export default {
           //   message: this.$t('trans0117'),
           // },
           {
-            rule: (value) =>
-              !this.data.some((item) => item.index !== this.index && item.ip === value),
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.ip === value
+              })
+              return flag
+            },
             message: this.$t('trans0399'),
           },
         ],
@@ -173,20 +195,18 @@ export default {
       this.$refs.modalForm.clearValidate()
     },
     openAddModal() {
-      this.$refs.modalForm.clearValidate()
       this.modalForm.id = ''
       this.modalForm.domain = ''
       this.modalForm.ip = ''
-      this.index = -1
+      this.modalForm.index = -1
       this.modalType = ModalType.add
       this.visible = true
     },
     openEditModal(row) {
-      this.$refs.modalForm.clearValidate()
       this.modalForm.id = row.id
       this.modalForm.domain = row.domain
       this.modalForm.ip = row.ip
-      this.index = row.index
+      this.modalForm.index = row.index
       this.modalType = ModalType.edit
       this.visible = true
     },

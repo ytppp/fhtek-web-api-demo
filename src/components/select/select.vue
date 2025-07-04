@@ -11,9 +11,11 @@
       :disabled="selectDisabled"
       :placeholder="selectPlaceholder"
       :label="currentLabel"
+      :is-select-comp-child-node="true"
       v-model="selected.text"
       @blur="inputBlurHandler"
       @focus="inputFocusHandler"
+      ref="selectInputRef"
     >
       <template v-slot:prefix v-if="slots.prefix">
         <slot name="prefix"></slot>
@@ -52,7 +54,18 @@
 </template>
 
 <script setup>
-import { computed, inject, watch, nextTick, reactive, ref, onMounted, useSlots } from 'vue'
+import {
+  computed,
+  inject,
+  watch,
+  nextTick,
+  reactive,
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  useSlots,
+  useTemplateRef,
+} from 'vue'
 import { useI18n } from 'vue-i18n'
 import { scrollTo } from '@/util/tool'
 
@@ -95,7 +108,7 @@ const selected = reactive({
   text: '',
 })
 const opened = ref(false)
-const selectRef = ref(null)
+const selectRef = useTemplateRef('selectRef')
 
 const currentLabel = computed(() => {
   return props.label || formItem?.label.value || ''
@@ -153,17 +166,22 @@ const change = () => {
   if (props.beforeChange) props.beforeChange()
   model.value = selected.value
   emit('change', selected.value)
+  formItem?.validate()
 }
 const open = () => {
   if (!props.disabled) {
     opened.value = !opened.value
     if (opened.value) {
+      formItem?.clearValidate()
       scrollToSelect()
+    } else {
+      formItem?.validate()
     }
   }
 }
 const close = () => {
   opened.value = false
+  formItem?.validate()
 }
 const inputBlurHandler = () => {
   emit('blur')
