@@ -195,7 +195,6 @@ export default {
       this.$refs.modalForm.clearValidate()
     },
     openAddModal() {
-      // this.$refs.modalForm.clearValidate()
       this.modalForm.id = ''
       this.modalForm.domain = ''
       this.modalForm.ip = ''
@@ -204,7 +203,6 @@ export default {
       this.visible = true
     },
     openEditModal(row) {
-      // this.$refs.modalForm.clearValidate()
       this.modalForm.id = row.id
       this.modalForm.domain = row.domain
       this.modalForm.ip = row.ip
