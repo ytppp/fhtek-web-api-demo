@@ -109,7 +109,7 @@ export default {
   methods: {
     save() {
       setLog({
-        enable: this.form.enable,
+        enable: convertBooleanStatus(this.form.enable),
         level: this.form.level,
       }).then(() => {
         this.getLogData()

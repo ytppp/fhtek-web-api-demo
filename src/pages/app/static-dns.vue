@@ -170,11 +170,10 @@ export default {
   },
   methods: {
     handleBeforeClose() {
-      console.log('123123')
       this.$refs.modalForm.clearValidate()
     },
     openAddModal() {
-      // this.$refs.modalForm.clearValidate()
+      this.$refs.modalForm.clearValidate()
       this.modalForm.id = ''
       this.modalForm.domain = ''
       this.modalForm.ip = ''
@@ -183,7 +182,7 @@ export default {
       this.visible = true
     },
     openEditModal(row) {
-      // this.$refs.modalForm.clearValidate()
+      this.$refs.modalForm.clearValidate()
       this.modalForm.id = row.id
       this.modalForm.domain = row.domain
       this.modalForm.ip = row.ip
