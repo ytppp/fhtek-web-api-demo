@@ -109,7 +109,6 @@ const selected = reactive({
 })
 const opened = ref(false)
 const selectRef = useTemplateRef('selectRef')
-const selectInputRef = useTemplateRef('selectInputRef')
 
 const currentLabel = computed(() => {
   return props.label || formItem?.label.value || ''
