@@ -32,7 +32,7 @@
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleBeforeClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0256')" prop="domain">
@@ -169,10 +169,12 @@ export default {
     },
   },
   methods: {
-    handleClose() {
+    handleBeforeClose() {
+      console.log('123123')
       this.$refs.modalForm.clearValidate()
     },
     openAddModal() {
+      // this.$refs.modalForm.clearValidate()
       this.modalForm.id = ''
       this.modalForm.domain = ''
       this.modalForm.ip = ''
@@ -181,6 +183,7 @@ export default {
       this.visible = true
     },
     openEditModal(row) {
+      // this.$refs.modalForm.clearValidate()
       this.modalForm.id = row.id
       this.modalForm.domain = row.domain
       this.modalForm.ip = row.ip

@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, useSlots } from 'vue'
+import { ref, useSlots, watch } from 'vue'
 import FhPopup from '@/components/popup/popup.vue'
 
 defineOptions({
@@ -77,6 +77,14 @@ const model = defineModel({
 })
 const slots = useSlots()
 const popupRef = ref(null)
+watch(
+  () => model.value,
+  (val) => {
+    if (!val) {
+      close()
+    }
+  },
+)
 const close = () => {
   popupRef.value.close()
 }
