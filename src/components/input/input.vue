@@ -145,6 +145,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isSelectCompChildNode: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const slots = useSlots()
@@ -229,9 +233,9 @@ const handleFocus = (event) => {
 const handleBlur = (event) => {
   focused.value = false
   emits('blur', event)
-  setTimeout(() => {
+  if (!props.isSelectCompChildNode) {
     formItem?.validate()
-  }, 250)
+  }
 }
 const handleChange = (event) => {
   model.value = event.target.value

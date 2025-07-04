@@ -188,7 +188,7 @@ provide('formItem', {
   validate,
   updateComputedLabelWidth,
   label: computed(() => props.label),
-  id
+  id,
 })
 defineExpose({
   extraValidate,

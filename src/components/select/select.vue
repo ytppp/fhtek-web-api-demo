@@ -11,6 +11,7 @@
       :disabled="selectDisabled"
       :placeholder="selectPlaceholder"
       :label="currentLabel"
+      :is-select-comp-child-node="true"
       v-model="selected.text"
       @blur="inputBlurHandler"
       @focus="inputFocusHandler"
