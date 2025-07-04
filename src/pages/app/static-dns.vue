@@ -157,7 +157,6 @@ export default {
               flag = !tempData.some((item) => {
                 return item.ip === value
               })
-              console.log('flag', flag, value)
               return flag
             },
             message: this.$t('trans0399'),
