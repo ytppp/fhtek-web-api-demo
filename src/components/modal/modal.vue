@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, useSlots, watch } from 'vue'
+import { ref, useSlots } from 'vue'
 import FhPopup from '@/components/popup/popup.vue'
 
 defineOptions({
