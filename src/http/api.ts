@@ -451,3 +451,16 @@ export const getLog = (): Promise<ApiResponse<any>> => {
 export const getSyslog = (): Promise<ApiResponse<any>> => {
   return http.get('getSyslog')
 }
+
+export const getWanBinding = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wan.binding:get',
+  })
+}
+
+export const setWanBinding = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wan.binding:edit',
+    data: params,
+  })
+}
