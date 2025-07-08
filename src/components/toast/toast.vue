@@ -1,11 +1,11 @@
 <template>
-  <transition name="toast">
-    <teleport to="body">
+  <teleport to="body">
+    <transition name="toast" @after-leave="onAfterLeave">
       <div class="toast" :class="`toast--${type}`" v-show="visible" id="toastEl" ref="toastRef">
         <span>{{ text }}</span>
       </div>
-    </teleport>
-  </transition>
+    </transition>
+  </teleport>
 </template>
 
 <script>
@@ -37,10 +37,9 @@ export default defineComponent({
     startTimer() {
       this.timer = setTimeout(() => {
         this.visible = false
-        this.$refs.toastRef.addEventListener('transitionend', this.hide)
       }, this.duration)
     },
-    hide() {
+    onAfterLeave() {
       clearTimeout(this.timer)
       this.timer = null
       this.$emit('hide')
