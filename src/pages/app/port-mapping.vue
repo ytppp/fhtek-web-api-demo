@@ -35,7 +35,7 @@
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="onClose">
       <template #body>
         <fh-form
           class="form modal-form"
@@ -357,7 +357,7 @@ export default {
     },
   },
   methods: {
-    handleClose() {
+    onClose() {
       this.$refs.modalForm.clearValidate()
     },
     openAddModal() {
@@ -408,15 +408,13 @@ export default {
         ]
         if (this.isEdit) {
           data[0].id = this.modalForm.index
-          editPortMapping(data)
-            .then(() => {
-              this.getPortMappingData()
-            })
+          editPortMapping(data).then(() => {
+            this.getPortMappingData()
+          })
         } else {
-          setPortMapping(data)
-            .then(() => {
-              this.getPortMappingData()
-            })
+          setPortMapping(data).then(() => {
+            this.getPortMappingData()
+          })
         }
       }
     },

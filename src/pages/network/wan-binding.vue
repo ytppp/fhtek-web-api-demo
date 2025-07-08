@@ -135,7 +135,9 @@ const save = () => {
     type: form.mode,
     vlanpair: form.pair,
   }
-  setWanBinding([data])
+  setWanBinding([data]).then(() => {
+    getWanBindingData()
+  })
 }
 const getWanBindingData = () => {
   getWanBinding()

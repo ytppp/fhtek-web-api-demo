@@ -119,6 +119,13 @@ const selectDisabled = computed(() => {
   return props.disabled || form?.disabled.value
 })
 
+watch(opened, (val) => {
+  if (val) {
+    formItem?.clearValidate()
+  } else {
+    formItem?.validate()
+  }
+})
 watch(
   () => model.value,
   () => setSelected(),
@@ -165,22 +172,17 @@ const change = () => {
   if (props.beforeChange) props.beforeChange()
   model.value = selected.value
   emit('change', selected.value)
-  formItem?.validate()
 }
 const open = () => {
   if (!props.disabled) {
     opened.value = !opened.value
     if (opened.value) {
-      formItem?.clearValidate()
       scrollToSelect()
-    } else {
-      formItem?.validate()
     }
   }
 }
 const close = () => {
   opened.value = false
-  formItem?.validate()
 }
 const inputBlurHandler = () => {
   emit('blur')

@@ -1,16 +1,7 @@
 export default {
-  updated(el, binding) {
-    if (el.__vueClickOutside__) {
-      document.removeEventListener('click', el.__vueClickOutside__)
-      document.removeEventListener('touchstart', el.__vueClickOutside__)
-    }
-    let initialized = false
+  mounted(el, binding) {
     function documentHandler(e) {
-      if (!initialized) {
-        initialized = true
-        return
-      }
-      if (el.contains(e.target)) return
+      if (el === e.target || el.contains(e.target)) return
       if (typeof binding.value === 'function') {
         binding.value(e)
       }

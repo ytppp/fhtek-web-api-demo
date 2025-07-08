@@ -25,7 +25,7 @@
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model="visible" :title="modalTitle">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="onClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0770')">
@@ -220,6 +220,9 @@ export default {
     },
   },
   methods: {
+    onClose() {
+      this.$refs.modalForm.clearValidate()
+    },
     openAddModal() {
       this.modalForm.id = -1
       this.modalForm.type = IP.IPv4
