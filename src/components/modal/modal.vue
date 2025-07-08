@@ -2,8 +2,8 @@
   <fh-popup
     :close-on-click-wrap="closeOnClickWrap"
     :is-append-body="isAppendBody"
-    :before-close="beforeClose"
-    v-model:visible="model"
+    :before-close="onBeforeClose"
+    :wrap-bg-color="wrapBgColor"
     ref="popupRef"
   >
     <div
@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, useSlots } from 'vue'
+import { ref, useSlots, watch } from 'vue'
 import FhPopup from '@/components/popup/popup.vue'
 
 defineOptions({
@@ -66,10 +66,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   }, // When set to false, perent node must set position
-  // wrapBgColor: {
-  //   type: String,
-  //   default: 'rgba(0, 0, 0, 0.4)',
-  // },
+  wrapBgColor: {
+    type: String,
+    default: 'rgba(0, 0, 0, 0.4)',
+  },
 })
 const model = defineModel({
   type: Boolean,
@@ -77,8 +77,21 @@ const model = defineModel({
 })
 const slots = useSlots()
 const popupRef = ref(null)
+watch(model, (val) => {
+  if (val) {
+    popupRef.value.open()
+  } else {
+    popupRef.value.close()
+  }
+})
+const onBeforeClose = () => {
+  if (props.beforeClose) {
+    props.beforeClose()
+  }
+  model.value = false
+}
 const close = () => {
-  popupRef.value.close()
+  model.value = false
 }
 </script>
 

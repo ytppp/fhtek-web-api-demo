@@ -1,7 +1,7 @@
 <template>
   <transition name="wrap">
     <teleport to="body" :disabled="!isAppendBody">
-      <div v-bind="attrs" ref="wrapRef" class="wrap" v-show="model">
+      <div v-bind="attrs" ref="wrapRef" class="wrap" v-show="visible">
         <div class="wrap__mask" :style="wrapStyleObj" @click="close" @touchstart="close"></div>
         <slot></slot>
       </div>
@@ -38,10 +38,7 @@ const props = defineProps({
     default: false,
   }, // functional component must be set true
 })
-const model = defineModel('visible', {
-  type: Boolean,
-  default: false,
-})
+const visible = ref(false)
 const attrs = useAttrs()
 const overflow = ref('')
 const wrapRef = ref(null)
@@ -61,51 +58,53 @@ const parentNode = computed(() => {
   }
 })
 
-watch(
-  () => model.value,
-  (val) => {
-    if (val) {
-      wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
-      overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
-      if (parentNode.value) {
-        parentNode.value.style.overflow = 'hidden'
-        parentNode.value.addEventListener('touchmove', preventDefault, false)
-      }
-    } else {
-      if (parentNode.value) {
-        parentNode.value.style.overflow = overflow.value
-        parentNode.value.removeEventListener('touchmove', preventDefault, false)
-      }
+watch(visible, (val) => {
+  if (val) {
+    wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
+    overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
+    if (parentNode.value) {
+      parentNode.value.style.overflow = 'hidden'
+      parentNode.value.addEventListener('touchmove', preventDefault, false)
     }
-  },
-)
+  } else {
+    if (parentNode.value) {
+      parentNode.value.style.overflow = overflow.value
+      parentNode.value.removeEventListener('touchmove', preventDefault, false)
+    }
+  }
+})
 
 onMounted(() => {
   // prevent auto open
   if (props.isManual) {
-    model.value = true
+    visible.value = true
   }
 })
 
 onUnmounted(() => {
-  model.value = false
+  visible.value = false
 })
 
 const preventDefault = (e) => {
   e.preventDefault()
 }
 const close = () => {
+  if (!visible.value) return
   if (!props.closeOnClickWrap) {
     return
   }
   if (props.beforeClose) {
     props.beforeClose()
   }
-  model.value = false
+  visible.value = false
+}
+const open = () => {
+  visible.value = true
 }
 
 defineExpose({
   close,
+  open,
 })
 </script>
 
