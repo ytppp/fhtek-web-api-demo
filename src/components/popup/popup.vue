@@ -1,7 +1,7 @@
 <template>
   <teleport to="body" :disabled="!isAppendBody">
     <transition name="wrap">
-      <div v-bind="attrs" ref="wrapRef" class="wrap" v-show="visible">
+      <div ref="wrapRef" class="wrap" v-show="visible">
         <div
           class="wrap__mask"
           :style="wrapStyleObj"
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch, useAttrs, onMounted, onUnmounted } from 'vue'
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 
 defineOptions({
   name: 'FhPopup',
@@ -44,44 +44,43 @@ const props = defineProps({
   }, // functional component must be set true
 })
 const visible = ref(false)
-const attrs = useAttrs()
-const overflow = ref('')
 const wrapRef = ref(null)
+// const overflow = ref('')
 
 const wrapStyleObj = computed(() => {
   return {
     backgroundColor: props.wrapBgColor,
   }
 })
-const parentNode = computed(() => {
-  if (props.isAppendBody) {
-    return document.body
-  } else if (props.isManual) {
-    return wrapRef.value.parentNode.parentNode // mount-node's parent node
-  } else {
-    return wrapRef.value.parentNode
-  }
-})
+// const parentNode = computed(() => {
+//   if (props.isAppendBody) {
+//     return document.body
+//   } else if (props.isManual) {
+//     return wrapRef.value.parentNode.parentNode // mount-node's parent node
+//   } else {
+//     return wrapRef.value.parentNode
+//   }
+// })
 
 watch(visible, (val) => {
   if (val) {
     wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
-    overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
-    if (parentNode.value) {
-      parentNode.value.style.overflow = 'hidden'
-      parentNode.value.addEventListener('touchmove', preventDefault, false)
-    }
+    // overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
+    // if (parentNode.value) {
+    //   parentNode.value.style.overflow = 'hidden'
+    //   parentNode.value.addEventListener('touchmove', preventDefault, false)
+    // }
   } else {
-    if (parentNode.value) {
-      parentNode.value.style.overflow = overflow.value
-      parentNode.value.removeEventListener('touchmove', preventDefault, false)
-    }
+    // if (parentNode.value) {
+    //   parentNode.value.style.overflow = overflow.value
+    //   parentNode.value.removeEventListener('touchmove', preventDefault, false)
+    // }
   }
 })
 
-const preventDefault = (e) => {
-  e.preventDefault()
-}
+// const preventDefault = (e) => {
+//   e.preventDefault()
+// }
 const wrapClose = () => {
   if (!props.closeOnClickWrap) {
     return

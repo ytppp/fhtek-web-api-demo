@@ -7,6 +7,7 @@
     ref="popupRef"
   >
     <div
+      v-bind="$attrs"
       class="modal"
       :style="{ width: fullscreen ? '100%' : width, height: fullscreen ? '100%' : 'auto' }"
     >

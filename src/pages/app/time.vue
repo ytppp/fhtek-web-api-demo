@@ -28,7 +28,8 @@
             <fh-input v-model="form.otherSlaveSntpServer" :placeholder="$t('trans0356')"></fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0279')">
-            <fh-select v-model="form.timezone" :options="timezoneList"> </fh-select>
+            <fh-select v-model="form.timezone" :options="timezoneList" @change="changeTimezone">
+            </fh-select>
           </fh-form-item>
         </template>
         <fh-form-item class="form__submit-btn">
@@ -47,6 +48,9 @@
 <script>
 import { translate } from '@/i18n/index'
 import timezoneArr from '@/i18n/locales/timezone'
+import { getSysTime, getTime, setTime } from '@/http/api'
+import { Weeks } from '@/util/constant'
+import { useDataClean } from '@/hooks/data-clean'
 
 const ntpServers = [
   '0.openwrt.pool.ntp.org',
@@ -77,6 +81,7 @@ const timezoneList = timezoneArr.map((timezone) => {
     text: timezone[0],
   }
 })
+const { convertBooleanStatus } = useDataClean()
 export default {
   name: 'TimePage',
   data() {
@@ -87,6 +92,7 @@ export default {
         otherMasterSntpServer: '',
         slaveSntpServer: ntpServerList[0].value,
         otherSlaveSntpServer: '',
+        zonename: timezoneList[0].text,
         timezone: timezoneList[0].value,
       },
       systemTime: '',
@@ -120,6 +126,15 @@ export default {
         ],
       },
       currTime: '',
+      schedules: {
+        [Weeks.sun]: this.$t('trans0663'),
+        [Weeks.mon]: this.$t('trans0515'),
+        [Weeks.tue]: this.$t('trans0525'),
+        [Weeks.wed]: this.$t('trans0526'),
+        [Weeks.thu]: this.$t('trans0527'),
+        [Weeks.fri]: this.$t('trans0600'),
+        [Weeks.sat]: this.$t('trans0601'),
+      },
     }
   },
   computed: {
@@ -152,34 +167,84 @@ export default {
         } else {
           this.form.ntpServerOther2Flag = this.form.slaveSntpServer
         }
-        // todo
+        setTime({
+          enable: convertBooleanStatus(this.form.enable),
+          zonename: this.form.zonename,
+          timezone: this.form.timezone,
+          sntpServer: [
+            this.isOtherMaster ? this.form.otherMasterSntpServer : this.form.masterSntpServer,
+            this.isOtherSlave ? this.form.otherSlaveSntpServer : this.form.slaveSntpServer,
+          ],
+        })
       }
+    },
+    getTimeData() {
+      getTime().then(({ data }) => {
+        this.form.enable = convertBooleanStatus(data.enable)
+        this.form.zonename = data.zonename
+        this.form.timezone = data.timezone
+        let isExist = false
+        isExist = this.ntpServerList.some((item) => item.value === data.sntpServer[0])
+        if (isExist) {
+          this.form.masterSntpServer = data.sntpServer[0]
+        } else {
+          this.form.masterSntpServer = other
+          this.form.otherMasterSntpServer = data.sntpServer[0]
+        }
+        isExist = this.slaveNtpServerList.some((item) => item.value === data.sntpServer[1])
+        if (isExist) {
+          this.form.slaveSntpServer = data.sntpServer[1]
+        } else {
+          this.form.slaveSntpServer = other
+          this.form.otherSlaveSntpServer = data.sntpServer[1]
+        }
+      })
+    },
+    getSysTimeData() {
+      getSysTime().then(({ data }) => {
+        this.currTime = new Date(data.sysTime)
+        this.systemTime = this.formatTime(this.currTime)
+        this.timer = setInterval(() => {
+          this.currTime = new Date(this.currTime.getTime() + 1000)
+          this.systemTime = this.formatTime(this.currTime)
+        }, 1000)
+      })
+    },
+    appendZero(num) {
+      return num < 10 ? '0' + num : num
+    },
+    formatTime(now) {
+      const year = now.getFullYear()
+      const month = this.appendZero(now.getMonth() + 1)
+      const date = this.appendZero(now.getDate())
+      let day = now.getDay()
+      day = day === 0 ? 7 : day
+      const hours = this.appendZero(now.getHours())
+      const minutes = this.appendZero(now.getMinutes())
+      const seconds = this.appendZero(now.getSeconds())
+      return (
+        this.schedules[day] +
+        ', ' +
+        month +
+        '/' +
+        date +
+        '/' +
+        year +
+        ', ' +
+        hours +
+        ':' +
+        minutes +
+        ':' +
+        seconds
+      )
+    },
+    changeTimezone() {
+      this.form.zonename = this.timezoneList.find((item) => item.value === this.form.timezone).text
     },
   },
   created() {
-    this.form.enable = true
-    // this.form.timezone = ''
-    // let isExist = false
-    // isExist = !!this.ntpServerList.find((item) => item.value === ntpServerOther1Flag)
-    // if (isExist) {
-    //   this.form.masterSntpServer = ntpServerOther1Flag
-    // } else {
-    //   this.form.masterSntpServer = other
-    //   this.form.otherMasterSntpServer = ntpServerOther1Flag
-    // }
-    // isExist = !!this.slaveNtpServerList.find((item) => item.value === ntpServerOther2Flag)
-    // if (isExist) {
-    //   this.form.slaveSntpServer = ntpServerOther2Flag
-    // } else {
-    //   this.form.slaveSntpServer = other
-    //   this.form.otherSlaveSntpServer = ntpServerOther2Flag
-    // }
-    // this.currTime = new Date(currTime)
-    // this.systemTime = this.formatTime(this.currTime)
-    // this.timer = setInterval(() => {
-    //   this.currTime = new Date(this.currTime.getTime() + 1000)
-    //   this.systemTime = this.formatTime(this.currTime)
-    // }, 1000)
+    this.getSysTimeData()
+    this.getTimeData()
   },
   beforeUnmount() {
     clearInterval(this.timer)

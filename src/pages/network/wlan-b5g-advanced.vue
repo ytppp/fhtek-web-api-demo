@@ -39,7 +39,7 @@
 import { reactive, ref, inject, onMounted, computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, isValidInteger } from '@/util/tool'
-import { getWifi5gAdv, setWifi5gAdv, getMesh } from '@/http/api'
+import { getWifi5gAdv, setWifi5gAdv } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
 defineOptions({

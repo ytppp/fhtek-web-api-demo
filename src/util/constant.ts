@@ -1,3 +1,5 @@
+import { translate } from '@/i18n/index'
+
 export const customers = {
   demo: 'demo',
   fhtek: 'fhtek',
@@ -115,38 +117,54 @@ export enum MeshRole {
   agent = '2',
 }
 
+export const encryptsText = {
+  [Encrypts.none]: translate('trans0033'),
+  [Encrypts.wpa2PskCcmp]: 'WPA2-PSK(CCMP)',
+  [Encrypts.wpa2PskTkipCcmp]: 'WPA2-PSK(TKIP+CCMP)',
+  [Encrypts.wpa3SaeCcmp]: 'WPA3-SAE(CCMP)',
+  [Encrypts.wpaWpa2PskCcmp]: 'WPA/WPA2-PSK(CCMP)',
+  [Encrypts.wpaWpa2PskTkipCcmp]: 'WPA/WPA2-PSK(TKIP+CCMP)',
+  [Encrypts.wpa2PskWpa3SaeCcmp]: 'WPA2-PSK/WPA3-SAE(CCMP)',
+  [Encrypts.wpaPskCcmp]: 'WPA-PSK(CCMP)',
+  [Encrypts.wpaPskTkipCcmp]: 'WPA-PSK(TKIP+CCMP)',
+}
+
 export const encrypts = [
   {
+    value: Encrypts.none,
+    text: encryptsText[Encrypts.none],
+  },
+  {
     value: Encrypts.wpa2PskCcmp,
-    text: 'WPA2-PSK(CCMP)',
+    text: encryptsText[Encrypts.wpa2PskCcmp],
   },
   {
     value: Encrypts.wpa2PskTkipCcmp,
-    text: 'WPA2-PSK(TKIP+CCMP)',
+    text: encryptsText[Encrypts.wpa2PskTkipCcmp],
   },
   {
     value: Encrypts.wpa3SaeCcmp,
-    text: 'WPA3-SAE(CCMP)',
+    text: encryptsText[Encrypts.wpa3SaeCcmp],
   },
   {
     value: Encrypts.wpaWpa2PskCcmp,
-    text: 'WPA/WPA2-PSK(CCMP)',
+    text: encryptsText[Encrypts.wpaWpa2PskCcmp],
   },
   {
     value: Encrypts.wpaWpa2PskTkipCcmp,
-    text: 'WPA/WPA2-PSK(TKIP+CCMP)',
+    text: encryptsText[Encrypts.wpaWpa2PskTkipCcmp],
   },
   {
     value: Encrypts.wpa2PskWpa3SaeCcmp,
-    text: 'WPA2-PSK/WPA3-SAE(CCMP)',
+    text: encryptsText[Encrypts.wpa2PskWpa3SaeCcmp],
   },
   {
     value: Encrypts.wpaPskCcmp,
-    text: 'WPA-PSK(CCMP)',
+    text: encryptsText[Encrypts.wpaPskCcmp],
   },
   {
     value: Encrypts.wpaPskTkipCcmp,
-    text: 'WPA-PSK(TKIP+CCMP)',
+    text: encryptsText[Encrypts.wpaPskTkipCcmp],
   },
 ]
 
@@ -168,4 +186,28 @@ export enum NetType {
   slaac = 'slaac',
   hybrid = 'hybrid',
   none = 'none',
+  all = 'all',
+  b24g = '0',
+  b5g = '1',
+  ethernet = '2',
+}
+
+export const netTypeText = {
+  [NetType.hybrid]: 'Hybrid',
+  [NetType.none]: translate('trans0357'),
+  [NetType.slaac]: translate('trans0471'),
+  [NetType.dhcpv6]: translate('trans0408'),
+  [NetType.b24g]: translate('trans0049'),
+  [NetType.b5g]: translate('trans0050'),
+  [NetType.ethernet]: translate('trans0494'),
+}
+
+export const Weeks = {
+  mon: '1',
+  tue: '2',
+  wed: '3',
+  thu: '4',
+  fri: '5',
+  sat: '6',
+  sun: '7',
 }
