@@ -1,4 +1,4 @@
-import { createApp, h, type App, type Component } from 'vue'
+import { createApp, type App, type Component } from 'vue'
 
 const createMountRoot = () => {
   const el = document.createElement('div')
@@ -8,13 +8,12 @@ const createMountRoot = () => {
 export const usePopup = (content: Component, appendedEl = document.body) => {
   const el = createMountRoot()
 
-  const createPopupApp = () => createApp(h(content))
   let app: App<Element> | null = null
   let oldOverflow = ''
 
   // mount popup
   const show = () => {
-    app = createPopupApp()
+    app = createApp(content)
     app.mount(el)
     appendedEl.appendChild(el)
     oldOverflow = appendedEl.style.overflow

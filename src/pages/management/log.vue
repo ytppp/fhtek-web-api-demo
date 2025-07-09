@@ -249,6 +249,7 @@ export default {
     padding: 10px;
     max-height: 600px;
     overflow-x: hidden;
+    font-size: 14px;
     pre {
       font-family: 'Courier New', Courier, monospace;
       color: #000;

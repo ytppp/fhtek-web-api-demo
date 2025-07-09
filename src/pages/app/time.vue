@@ -49,6 +49,10 @@ import { translate } from '@/i18n/index'
 import timezoneArr from '@/i18n/locales/timezone'
 
 const ntpServers = [
+  '0.openwrt.pool.ntp.org',
+  '1.openwrt.pool.ntp.org',
+  '2.openwrt.pool.ntp.org',
+  '3.openwrt.pool.ntp.org',
   'clock.fmt.he.net',
   'clock.nyc.he.net',
   'clock.sjc.he.net',
@@ -67,29 +71,12 @@ ntpServerList.push({
   value: other,
   text: translate('trans0355'),
 })
-const timezoneObj = {
-  last: '', // 上一个时区,
-  index: 0, // 序号,相同时区时需要加上
-}
-const timezoneList = Object.entries(timezoneArr).map(([coutry, timezone]) => {
-  let value = ''
-  if (timezoneObj.last && timezoneObj.last === timezone) {
-    timezoneObj.index += 1
-    value = `${timezone}-${timezoneObj.index}`
-  } else {
-    timezoneObj.last = timezone
-    timezoneObj.index = 0
-    value = timezone
-  }
+const timezoneList = timezoneArr.map((timezone) => {
   return {
-    value,
-    text: `(${timezone}) ${translate(coutry)}`,
+    value: timezone[1],
+    text: timezone[0],
   }
 })
-const SntpServerType = {
-  master: 'master',
-  slave: 'slave',
-}
 export default {
   name: 'TimePage',
   data() {
@@ -104,7 +91,6 @@ export default {
       },
       systemTime: '',
       timer: null,
-      SntpServerType,
       timezoneList,
       ntpServerList,
       rules: {
@@ -153,11 +139,6 @@ export default {
       ]
     },
   },
-  watch: {
-    'form.enable': function (val) {
-      this.form.autotimeFlag = val ? '0' : '2'
-    },
-  },
   methods: {
     save() {
       if (this.$refs.form.validate()) {
@@ -171,10 +152,7 @@ export default {
         } else {
           this.form.ntpServerOther2Flag = this.form.slaveSntpServer
         }
-        this.form.SaveFlag = '1'
-        this.loadingBeforeAction(() => {
-          this.submit('form')
-        })
+        // todo
       }
     },
   },

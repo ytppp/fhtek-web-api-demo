@@ -1,18 +1,22 @@
 <template>
-  <div class="dialog">
-    <div v-if="title" class="dialog__title">{{ title }}</div>
-    <div class="dialog__message">{{ message }}</div>
-    <div class="dialog__buttons">
-      <fh-button size="small" v-if="dialogType !== DialogType.info" @click="cancel">
-        {{ cancelText }}
-      </fh-button>
-      <fh-button size="small" @click="ok">{{ okText }}</fh-button>
+  <fh-popup ref="popupRef" :is-manual="true">
+    <div class="dialog">
+      <div v-if="title" class="dialog__title">{{ title }}</div>
+      <div class="dialog__message">{{ message }}</div>
+      <div class="dialog__buttons">
+        <fh-button size="small" v-if="dialogType !== DialogType.info" @click="cancel">
+          {{ cancelText }}
+        </fh-button>
+        <fh-button size="small" @click="ok">{{ okText }}</fh-button>
+      </div>
     </div>
-  </div>
+  </fh-popup>
 </template>
 
 <script lang="ts" setup>
+import { ref, useTemplateRef } from 'vue'
 import FhButton from '@/components/button/button.vue'
+import FhPopup from '@/components/popup/popup.vue'
 import { DialogType } from './config'
 
 defineOptions({
@@ -40,13 +44,29 @@ defineProps({
     default: 'cancel',
   },
 })
+const timer = ref<number | undefined>(undefined)
+const popupRef = useTemplateRef('popupRef')
 const emits = defineEmits(['ok', 'cancel'])
 
 const ok = () => {
-  emits('ok')
+  startTimer(() => {
+    emits('ok')
+    clearTimer()
+  })
 }
 const cancel = () => {
-  emits('cancel')
+  startTimer(() => {
+    emits('cancel')
+    clearTimer()
+  })
+}
+const startTimer = (fn: () => void) => {
+  popupRef.value.close()
+  timer.value = setTimeout(fn, 310)
+}
+const clearTimer = () => {
+  clearTimeout(timer.value)
+  timer.value = undefined
 }
 </script>
 
@@ -58,6 +78,7 @@ const cancel = () => {
   border-radius: 5px;
   box-sizing: border-box;
   box-shadow: 0 2px 12px 0 @dialog-box-shadow-color;
+  transition: all 0.3s ease;
   .dialog__buttons {
     display: flex;
     justify-content: center;

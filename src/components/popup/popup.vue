@@ -1,12 +1,17 @@
 <template>
-  <transition name="wrap">
-    <teleport to="body" :disabled="!isAppendBody">
+  <teleport to="body" :disabled="!isAppendBody">
+    <transition name="wrap">
       <div v-bind="attrs" ref="wrapRef" class="wrap" v-show="visible">
-        <div class="wrap__mask" :style="wrapStyleObj" @click="close" @touchstart="close"></div>
+        <div
+          class="wrap__mask"
+          :style="wrapStyleObj"
+          @click="wrapClose"
+          @touchstart="wrapClose"
+        ></div>
         <slot></slot>
       </div>
-    </teleport>
-  </transition>
+    </transition>
+  </teleport>
 </template>
 
 <script lang="ts" setup>
@@ -74,6 +79,25 @@ watch(visible, (val) => {
   }
 })
 
+const preventDefault = (e) => {
+  e.preventDefault()
+}
+const wrapClose = () => {
+  if (!props.closeOnClickWrap) {
+    return
+  }
+  close()
+}
+const close = () => {
+  if (props.beforeClose) {
+    props.beforeClose()
+  }
+  visible.value = false
+}
+const open = () => {
+  visible.value = true
+}
+
 onMounted(() => {
   // prevent auto open
   if (props.isManual) {
@@ -84,23 +108,6 @@ onMounted(() => {
 onUnmounted(() => {
   visible.value = false
 })
-
-const preventDefault = (e) => {
-  e.preventDefault()
-}
-const close = () => {
-  if (!visible.value) return
-  if (!props.closeOnClickWrap) {
-    return
-  }
-  if (props.beforeClose) {
-    props.beforeClose()
-  }
-  visible.value = false
-}
-const open = () => {
-  visible.value = true
-}
 
 defineExpose({
   close,
@@ -118,16 +125,22 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 1;
-  &.wrap-enter-active {
-    transition: all 0.3s ease-in;
-  }
-  &.wrap-leave-active {
-    transition: all 0.3s ease-out;
-  }
+  transition: opacity 0.3s ease;
   &.wrap-enter-from,
   &.wrap-leave-to {
     opacity: 0;
+  }
+  &.wrap-enter-from .modal,
+  &.wrap-leave-to .modal {
+    transform: scale(1.1);
+  }
+  &.wrap-enter-from .dialog,
+  &.wrap-leave-to .dialog {
+    transform: scale(1.1);
+  }
+  &.wrap-enter-from .upgrade,
+  &.wrap-leave-to .upgrade {
+    transform: scale(1.1);
   }
   .wrap__mask {
     z-index: -1;

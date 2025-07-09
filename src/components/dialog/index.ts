@@ -3,30 +3,22 @@ import { mergeOptions } from '@/util/tool'
 import { usePopup } from '@/hooks/popup'
 import { DialogType, DefaultOpt, type IDialogOpt } from './config'
 import FhDialog from './dialog.vue'
-import Popup from '@/components/popup/popup.vue'
 
 const dialog = (options: IDialogOpt, type: DialogType = DialogType.info): Promise<void> => {
   const opt: IDialogOpt = mergeOptions(DefaultOpt[type], options)
   return new Promise((resolve, reject) => {
     const dialogInstance = usePopup(
-      h(
-        Popup,
-        {
-          isManual: true,
+      h(FhDialog, {
+        ...opt,
+        onOk: () => {
+          dialogInstance.close()
+          resolve()
         },
-        () =>
-          h(FhDialog, {
-            ...opt,
-            onOk: () => {
-              dialogInstance.close()
-              resolve()
-            },
-            onCancel: () => {
-              dialogInstance.close()
-              reject()
-            },
-          }),
-      ),
+        onCancel: () => {
+          dialogInstance.close()
+          reject()
+        },
+      }),
     )
     dialogInstance.show()
   })

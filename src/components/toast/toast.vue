@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { ref, defineComponent, onMounted } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'FhToast',
