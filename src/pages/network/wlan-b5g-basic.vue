@@ -240,11 +240,27 @@ const getWpsData = () => {
 }
 const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle)
 const getWifiData = (id?: string) => {
-  getWifi5g().then(({ data }) => {
-    const { items } = data
+  // getWifi5g().then(({ data }) => {
+  //   const { items } = data
+  //   if (items.length === 0) {
+  //     return
+  //   }
+  //   const ssidOptsList = items.map((item) => ({
+  //     value: item.id,
+  //     text: SsidText[item.id],
+  //   }))
+  //   Object.assign(ssidList, items)
+  //   Object.assign(ssidOpts, ssidOptsList)
+  //   wifi.id = id ? id : items[0].id
+  //   changeSsid()
+  // })
+
+  Promise.all([getWifi5g(), getWifi5gAdv()]).then(([res1, res2]) => {
+    const items = res1.data.items
     if (items.length === 0) {
       return
     }
+    wifiEnable.value = convertBooleanStatus(res2.data.enable)
     const ssidOptsList = items.map((item) => ({
       value: item.id,
       text: SsidText[item.id],
@@ -291,13 +307,7 @@ const getMeshData = () => {
     enableSteering.value = convertBooleanStatus(data.steering)
   })
 }
-const getWifi5gData = () => {
-  getWifi5gAdv().then(({ data }) => {
-    wifiEnable.value = convertBooleanStatus(data.enable)
-  })
-}
 onMounted(() => {
-  getWifi5gData()
   getWifiData()
   getMeshData()
 })

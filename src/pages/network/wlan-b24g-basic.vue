@@ -234,11 +234,12 @@ const getWpsData = () => {
 }
 const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle)
 const getWifiData = (id?: string) => {
-  getWifi2g().then(({ data }) => {
-    const { items } = data
+  Promise.all([getWifi2g(), getWifi2gAdv()]).then(([res1, res2]) => {
+    const items = res1.data.items
     if (items.length === 0) {
       return
     }
+    wifiEnable.value = convertBooleanStatus(res2.data.enable)
     const ssidOptsList = items.map((item) => ({
       value: item.id,
       text: SsidText[item.id],
@@ -280,13 +281,7 @@ const save = () => {
     })
   }
 }
-const getWifi2gData = () => {
-  getWifi2gAdv().then(({ data }) => {
-    wifiEnable.value = convertBooleanStatus(data.enable)
-  })
-}
 onMounted(() => {
-  getWifi2gData()
   getWifiData()
 })
 </script>

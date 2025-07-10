@@ -284,7 +284,7 @@ const b5gWlanColumns = reactive([
     title: t('trans0070'),
   },
   {
-    key: 'type',
+    key: 'typeAlias',
     title: t('trans0717'),
   },
 ])
