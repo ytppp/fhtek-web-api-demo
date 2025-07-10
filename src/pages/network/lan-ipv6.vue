@@ -36,7 +36,11 @@ const loading = inject('loading')
 const modes = [
   {
     value: NetType.hybrid,
-    text: netTypeText[NetType.hybrid],
+    text: 'SLAAC+Statefull DHCPv6',
+  },
+  {
+    value: 'lessdhcpv6',
+    text: 'SLAAC+Stateless DHCPv6',
   },
   {
     value: NetType.slaac,
@@ -44,7 +48,7 @@ const modes = [
   },
   {
     value: NetType.dhcpv6,
-    text: netTypeText[NetType.dhcpv6],
+    text: 'Statefull DHCPv6',
   },
   {
     value: NetType.none,
