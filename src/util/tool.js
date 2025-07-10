@@ -11,8 +11,7 @@ const IPBReg =
 const IPCReg =
   /^192\.168\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[0-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[0-9])$/
 
-export function getLangUsed() {
-  var lang = VITE_CUSTOMER_CONFIG.defaultLanguage
+export function getLangUsed(lang) {
   if (localStorage && localStorage.getItem('lang')) {
     lang = localStorage.getItem('lang')
   }

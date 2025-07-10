@@ -3,7 +3,7 @@ import { getLangUsed } from '../util/tool'
 import zhCN from './locales/zh-CN.json'
 import enUS from './locales/en-US.json'
 
-const locale = getLangUsed()
+const locale = getLangUsed(VITE_CUSTOMER_CONFIG.defaultLanguage)
 const i18n = createI18n({
   locale,
   fallbackLocale: 'en-US', // default locale env
