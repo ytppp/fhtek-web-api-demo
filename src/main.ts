@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import registerComponents from './register-components'
-import { setFavicon, getPublicFile, setDocTitle } from './util/tool'
 import registerI18n from './i18n/index'
 import registerRouter from './router'
+import { setFavicon, getPublicFile, setDocTitle } from './util/tool'
 import App from './App.vue'
 import '@/assets/style/main.less'
 
