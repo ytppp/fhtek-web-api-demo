@@ -51,6 +51,7 @@ import timezoneArr from '@/i18n/locales/timezone'
 import { getSysTime, getTime, setTime } from '@/http/api'
 import { Weeks } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
+import { locale } from '@/i18n/index'
 
 const ntpServers = [
   '0.openwrt.pool.ntp.org',
@@ -175,6 +176,8 @@ export default {
             this.isOtherMaster ? this.form.otherMasterSntpServer : this.form.masterSntpServer,
             this.isOtherSlave ? this.form.otherSlaveSntpServer : this.form.slaveSntpServer,
           ],
+        }).then(() => {
+          this.getTimeData()
         })
       }
     },
@@ -198,57 +201,38 @@ export default {
           this.form.slaveSntpServer = other
           this.form.otherSlaveSntpServer = data.sntpServer[1]
         }
+        this.getSysTimeData()
       })
     },
     getSysTimeData() {
+      const formatter = new Intl.DateTimeFormat(locale, {
+        timeZone: this.form.zonename,
+        dateStyle: 'full',
+        timeStyle: 'medium',
+      })
+      this.clearTimer()
       getSysTime().then(({ data }) => {
-        this.currTime = new Date(data.sysTime)
-        this.systemTime = this.formatTime(this.currTime)
+        this.currTime = Number(data.sysTime)
+        this.systemTime = formatter.format(this.currTime)
         this.timer = setInterval(() => {
-          this.currTime = new Date(this.currTime.getTime() + 1000)
-          this.systemTime = this.formatTime(this.currTime)
+          this.currTime += 1000
+          this.systemTime = formatter.format(this.currTime)
         }, 1000)
       })
     },
-    appendZero(num) {
-      return num < 10 ? '0' + num : num
-    },
-    formatTime(now) {
-      const year = now.getFullYear()
-      const month = this.appendZero(now.getMonth() + 1)
-      const date = this.appendZero(now.getDate())
-      let day = now.getDay()
-      day = day === 0 ? 7 : day
-      const hours = this.appendZero(now.getHours())
-      const minutes = this.appendZero(now.getMinutes())
-      const seconds = this.appendZero(now.getSeconds())
-      return (
-        this.schedules[day] +
-        ', ' +
-        month +
-        '/' +
-        date +
-        '/' +
-        year +
-        ', ' +
-        hours +
-        ':' +
-        minutes +
-        ':' +
-        seconds
-      )
+    clearTimer() {
+      clearInterval(this.timer)
+      this.timer = null
     },
     changeTimezone() {
       this.form.zonename = this.timezoneList.find((item) => item.value === this.form.timezone).text
     },
   },
   created() {
-    this.getSysTimeData()
     this.getTimeData()
   },
   beforeUnmount() {
-    clearInterval(this.timer)
-    this.timer = null
+    this.clearTimer()
   },
 }
 </script>

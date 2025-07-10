@@ -92,7 +92,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format } from '@/util/tool'
-import { getWifi2gAdv, getWifi5gAdv, getWifi2g, getWifi5g, getWlanDevice } from '@/http/api'
+import { getWifi2gAdv, getWifi5gAdv, getWifi2g, getWifi5g, getWlanDevices } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { encryptsText, NetType, netTypeText } from '@/util/constant'
 
@@ -336,7 +336,7 @@ const getWifi5gBasicData = () => {
   })
 }
 const getWlanDeviceData = () => {
-  getWlanDevice().then(({ data }) => {
+  getWlanDevices().then(({ data }) => {
     const { items } = data
     if (items.length === 0) {
       return
