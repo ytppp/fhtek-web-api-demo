@@ -153,7 +153,7 @@
             <div class="page__sub-header">
               <h2 class="page__title">{{ $t('trans0593').format($t('trans0457')) }}</h2>
             </div>
-            <template v-if="!isShowIpv6Pd">
+            <template v-if="isShowIpv6Pd">
               <fh-form-item :label="t('trans0782')">
                 <fh-switch v-model="wan.ipv6.pd.enable" />
               </fh-form-item>
@@ -554,9 +554,9 @@ const isHideEnableNat = computed(
 )
 const isShowIpv6Pd = computed(
   () =>
-    wan.serviceType === ServiceType.TR069 ||
-    wan.serviceType === ServiceType.IPTV ||
-    wan.serviceType === ServiceType.VOICE,
+    wan.serviceType === ServiceType.INTERNET ||
+    wan.serviceType === ServiceType.TR069_INTERNET ||
+    wan.serviceType === ServiceType.VOICE_INTERNET,
 )
 const serviceTypeOptions = computed(() => {
   if (isBridge.value) {
@@ -615,7 +615,7 @@ const versionText = computed(() => {
 watch(
   () => wan.serviceType,
   () => {
-    if (isShowIpv6Pd.value) wan.ipv6.pd.enable = true
+    if (!isShowIpv6Pd.value) wan.ipv6.pd.enable = false
   },
   { flush: 'pre' },
 )
