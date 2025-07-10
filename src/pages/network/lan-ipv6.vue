@@ -23,10 +23,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive, onMounted, inject } from 'vue'
-import { useI18n } from 'vue-i18n'
-import {
-  NetType,
-} from '@/util/constant'
+import { NetType, netTypeText } from '@/util/constant'
 import { getIpv6Lan, setIpv6Lan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -34,25 +31,24 @@ defineOptions({
   name: 'LanIpv6Page',
 })
 
-const { t } = useI18n()
 const { convertBooleanStatus } = useDataClean()
 const loading = inject('loading')
 const modes = [
   {
     value: NetType.hybrid,
-    text: 'Hybrid',
+    text: netTypeText[NetType.hybrid],
   },
   {
     value: NetType.slaac,
-    text: t('trans0471'),
+    text: netTypeText[NetType.slaac],
   },
   {
     value: NetType.dhcpv6,
-    text: t('trans0408'),
+    text: netTypeText[NetType.dhcpv6],
   },
   {
     value: NetType.none,
-    text: t('trans0357'),
+    text: netTypeText[NetType.none],
   },
 ]
 const formRef = ref(null)

@@ -13,7 +13,7 @@
           <div class="display-form__value">{{ b24gConnStatus }}</div>
         </div>
       </div>
-      <div class="page__table">
+      <!-- <div class="page__table">
         <fh-table
           :columns="b24gInterfaceColumns"
           :data-source="b24gInterfaceData"
@@ -21,13 +21,26 @@
           :show-index="false"
         >
         </fh-table>
-      </div>
+      </div> -->
       <div class="page__table">
         <fh-table
           :columns="b24gSsidColumns"
           :data-source="b24gSsidData"
           :show-row-checkbox="false"
           :show-index="false"
+          :show-header="false"
+          :border="true"
+        >
+        </fh-table>
+      </div>
+      <div class="page__table">
+        <fh-table
+          :columns="b24gWlanColumns"
+          :data-source="b24gWlanData"
+          :show-row-checkbox="false"
+          :show-index="false"
+          :show-header="false"
+          :border="true"
         >
         </fh-table>
       </div>
@@ -40,7 +53,7 @@
           <div class="display-form__value">{{ b5gConnStatus }}</div>
         </div>
       </div>
-      <div class="page__table">
+      <!-- <div class="page__table">
         <fh-table
           :columns="b5gInterfaceColumns"
           :data-source="b5gInterfaceData"
@@ -48,13 +61,26 @@
           :show-index="false"
         >
         </fh-table>
-      </div>
+      </div> -->
       <div class="page__table">
         <fh-table
           :columns="b5gSsidColumns"
           :data-source="b5gSsidData"
           :show-row-checkbox="false"
           :show-index="false"
+          :show-header="false"
+          :border="true"
+        >
+        </fh-table>
+      </div>
+      <div class="page__table">
+        <fh-table
+          :columns="b5gWlanColumns"
+          :data-source="b5gWlanData"
+          :show-row-checkbox="false"
+          :show-index="false"
+          :show-header="false"
+          :border="true"
         >
         </fh-table>
       </div>
@@ -62,13 +88,16 @@
   </div>
 </template>
 
-<script setup>
-import { ref, reactive } from 'vue'
+<script lang="ts" setup>
+import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format } from '@/util/tool'
+import { getWifi2gAdv, getWifi5gAdv, getWifi2g, getWifi5g, getWlanDevice } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
+import { encryptsText, NetType, netTypeText } from '@/util/constant'
 
 const { t } = useI18n()
-
+const { convertBooleanStatus } = useDataClean()
 const b24gConnStatus = ref('')
 const b5gConnStatus = ref('')
 const b24gInterfaceColumns = reactive([
@@ -131,16 +160,38 @@ const b24gSsidColumns = reactive([
     title: t('trans0712'),
   },
   {
-    key: 'security',
-    title: t('trans0713'),
+    key: 'enableAlias',
+    title: t('trans0796'),
   },
   {
-    key: 'auth',
-    title: t('trans0714'),
+    key: 'hideAlias',
+    title: t('trans0797'),
   },
   {
-    key: 'encrypt',
-    title: t('trans0536'),
+    key: 'encryptAlias',
+    title: t('trans0031'),
+  },
+])
+const b24gWlanColumns = reactive([
+  {
+    key: 'index',
+    title: t('trans0711'),
+  },
+  {
+    key: 'ip',
+    title: format(t('trans0598'), [t('trans0056')]),
+  },
+  {
+    key: 'mac',
+    title: format(t('trans0598'), [t('trans0057')]),
+  },
+  {
+    key: 'name',
+    title: t('trans0070'),
+  },
+  {
+    key: 'typeAlias',
+    title: t('trans0717'),
   },
 ])
 const b5gInterfaceColumns = reactive([
@@ -203,20 +254,118 @@ const b5gSsidColumns = reactive([
     title: t('trans0712'),
   },
   {
-    key: 'security',
-    title: t('trans0713'),
+    key: 'enableAlias',
+    title: t('trans0796'),
   },
   {
-    key: 'auth',
-    title: t('trans0714'),
+    key: 'hideAlias',
+    title: t('trans0797'),
   },
   {
-    key: 'encrypt',
-    title: t('trans0536'),
+    key: 'encryptAlias',
+    title: t('trans0031'),
+  },
+])
+const b5gWlanColumns = reactive([
+  {
+    key: 'index',
+    title: t('trans0711'),
+  },
+  {
+    key: 'ip',
+    title: format(t('trans0598'), [t('trans0056')]),
+  },
+  {
+    key: 'mac',
+    title: format(t('trans0598'), [t('trans0057')]),
+  },
+  {
+    key: 'name',
+    title: t('trans0070'),
+  },
+  {
+    key: 'type',
+    title: t('trans0717'),
   },
 ])
 const b24gInterfaceData = reactive([])
 const b24gSsidData = reactive([])
+const b24gWlanData = reactive([])
 const b5gInterfaceData = reactive([])
 const b5gSsidData = reactive([])
+const b5gWlanData = reactive([])
+
+const getWifi2gAdvData = () => {
+  getWifi2gAdv().then(({ data }) => {
+    b24gConnStatus.value = convertBooleanStatus(data.enable) ? t('trans0103') : t('trans0054')
+  })
+}
+const getWifi5gAdvData = () => {
+  getWifi5gAdv().then(({ data }) => {
+    b5gConnStatus.value = convertBooleanStatus(data.enable) ? t('trans0103') : t('trans0054')
+  })
+}
+const getWifi2gBasicData = () => {
+  getWifi2g().then(({ data }) => {
+    const { items } = data
+    if (items.length === 0) {
+      return
+    }
+    const tableData = items.map((item) => ({
+      ...item,
+      enableAlias: convertBooleanStatus(item.enable) ? t('trans0103') : t('trans0054'),
+      hideAlias: convertBooleanStatus(item.enable_hide) ? t('trans0103') : t('trans0054'),
+      encryptAlias: encryptsText[item.auth_mode],
+    }))
+    Object.assign(b24gSsidData, tableData)
+  })
+}
+const getWifi5gBasicData = () => {
+  getWifi5g().then(({ data }) => {
+    const { items } = data
+    if (items.length === 0) {
+      return
+    }
+    const tableData = items.map((item) => ({
+      ...item,
+      enableAlias: convertBooleanStatus(item.enable) ? t('trans0103') : t('trans0054'),
+      hideAlias: convertBooleanStatus(item.enable_hide) ? t('trans0103') : t('trans0054'),
+      encryptAlias: encryptsText[item.auth_mode],
+    }))
+    Object.assign(b5gSsidData, tableData)
+  })
+}
+const getWlanDeviceData = () => {
+  getWlanDevice().then(({ data }) => {
+    const { items } = data
+    if (items.length === 0) {
+      return
+    }
+    const b24gWlanTableData = []
+    const b5gWlanTableData = []
+    items.forEach((item) => {
+      if (item.type === NetType.b24g) {
+        b24gWlanTableData.push({
+          ...item,
+          typeAlias: netTypeText[item.type],
+        })
+      }
+      if (item.type === NetType.b5g) {
+        b5gWlanTableData.push({
+          ...item,
+          typeAlias: netTypeText[item.type],
+        })
+      }
+    })
+    Object.assign(b24gWlanData, b24gWlanTableData)
+    Object.assign(b5gWlanData, b5gWlanTableData)
+  })
+}
+onMounted(() => {
+  getWifi2gAdvData()
+  getWifi5gAdvData()
+  getWifi2gBasicData()
+  getWifi5gBasicData()
+  getWlanDeviceData()
+})
 </script>

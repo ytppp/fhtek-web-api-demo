@@ -59,7 +59,7 @@
         <div class="page__sub-header">
           <h2 class="page__title">{{ $t('trans0799') }}</h2>
         </div>
-        <fh-form class="form form--padding" :wps="wifi">
+        <fh-form class="form form--padding">
           <fh-form-item :label="$t('trans0800')">
             {{ wpsStatusText }}
           </fh-form-item>
@@ -99,13 +99,7 @@ const interval = 5000
 const ssidOpts = reactive([])
 const ssidList = reactive([])
 const wifiEnable = ref(false)
-const encryptsOpts = [
-  {
-    value: Encrypts.none,
-    text: t('trans0033'),
-  },
-  ...encrypts,
-]
+const encryptsOpts = encrypts
 const wifi = reactive({
   id: '',
   ssid: '',
@@ -292,7 +286,7 @@ const getWifi2gData = () => {
   })
 }
 onMounted(() => {
-  getWifiData()
   getWifi2gData()
+  getWifiData()
 })
 </script>

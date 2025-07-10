@@ -82,15 +82,15 @@ beautify_echo "completed copy all i18n files..." success
 # beautify_echo "complete copy error files..." success
 
 # 返回上级菜单
-cd ..
+# cd ..
 
 # 拷贝时区文件
-beautify_echo "copy timezone files..." info
-if ! cp -f timezone.json $project_dir/src/i18n/locales; then
-  beautify_echo "Failed to copy timezone files: ${source[i]}." error
-  exit -1
-fi
-beautify_echo "completed copy timezone files..." success
+# beautify_echo "copy timezone files..." info
+# if ! cp -f timezone.json $project_dir/src/i18n/locales; then
+#   beautify_echo "Failed to copy timezone files: ${source[i]}." error
+#   exit -1
+# fi
+# beautify_echo "completed copy timezone files..." success
 
 # 拷贝区域文件
 # beautify_echo "copy region files..." info

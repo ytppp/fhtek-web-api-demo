@@ -464,3 +464,19 @@ export const setWanBinding = (params): Promise<ApiResponse<any>> => {
     data: params,
   })
 }
+
+export const getWlanDevice = (): Promise<ApiResponse<any>> => {
+  return http.post('getWlanDevice')
+}
+
+export const getSysTime = (): Promise<ApiResponse<any>> => {
+  return http.get('getSysTime')
+}
+
+export const getTime = (): Promise<ApiResponse<any>> => {
+  return http.get('getTime')
+}
+
+export const setTime = (params): Promise<ApiResponse<any>> => {
+  return http.post('setTime', createData(params))
+}

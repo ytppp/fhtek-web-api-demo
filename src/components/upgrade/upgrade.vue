@@ -1,27 +1,32 @@
 <template>
-  <div class="upgrade">
-    <img v-if="url" class="upgrade__img" :src="url" alt="" />
-    <div v-if="title" class="upgrade__title">{{ title }}</div>
-    <div v-if="tip" class="upgrade__tip" v-html="tip"></div>
-    <!-- 升级进度条 -->
-    <div class="progress" v-if="progressVisible">
-      <div class="progress__main">
-        <div class="progress__bar" :style="styles">
-          <span class="progress__text">{{ percentText }}</span>
+  <fh-popup ref="popupRef" :is-manual="true">
+    <div class="upgrade">
+      <img v-if="url" class="upgrade__img" :src="url" alt="" />
+      <div v-if="title" class="upgrade__title">{{ title }}</div>
+      <div v-if="tip" class="upgrade__tip" v-html="tip"></div>
+      <!-- 升级进度条 -->
+      <div class="progress" v-if="progressVisible">
+        <div class="progress__main">
+          <div class="progress__bar" :style="styles">
+            <span class="progress__text">{{ percentText }}</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </fh-popup>
 </template>
 
 <script lang="ts">
 import { ref, reactive, computed, defineComponent, onMounted } from 'vue'
 import { useCountDown } from '@/hooks/countdown'
 import { getUpgradeStatus } from '@/http/api'
-import { router } from '@/router/index'
+import FhPopup from '@/components/popup/popup.vue'
 
 export default defineComponent({
   name: 'FhUpgrade',
+  components: {
+    FhPopup,
+  },
   props: {
     url: {
       type: String,
@@ -50,6 +55,7 @@ export default defineComponent({
   },
   emits: ['hide'],
   setup(props, { emit }) {
+    const timer = ref<number | undefined>(undefined)
     const average = 100 / (props.timeout / props.interval)
     const reqFreq = 5000
     const percent = ref(0)
@@ -70,8 +76,11 @@ export default defineComponent({
       }
     }
     const doneHandle = () => {
-      emit('hide')
-      router.push('/login')
+      timer.value = setTimeout(() => {
+        clearTimeout(timer.value)
+        timer.value = undefined
+        emit('hide')
+      }, 310)
     }
     const { createCountDown, cleanCountDown } = useCountDown(
       props.timeout,
@@ -98,6 +107,7 @@ export default defineComponent({
   padding: 20px 20px 30px 20px;
   border-radius: 5px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
   @media screen and (max-width: 768px) {
     width: 90%;
   }

@@ -99,13 +99,7 @@ const interval = 5000
 const ssidOpts = reactive([])
 const ssidList = reactive([])
 const wifiEnable = ref(false)
-const encryptsOpts = [
-  {
-    value: Encrypts.none,
-    text: t('trans0033'),
-  },
-  ...encrypts,
-]
+const encryptsOpts = encrypts
 const wifi = reactive({
   id: '',
   ssid: '',
@@ -303,8 +297,8 @@ const getWifi5gData = () => {
   })
 }
 onMounted(() => {
+  getWifi5gData()
   getWifiData()
   getMeshData()
-  getWifi5gData()
 })
 </script>

@@ -7,6 +7,7 @@
     ref="popupRef"
   >
     <div
+      v-bind="$attrs"
       class="modal"
       :style="{ width: fullscreen ? '100%' : width, height: fullscreen ? '100%' : 'auto' }"
     >
@@ -102,6 +103,7 @@ const close = () => {
   border-radius: 5px;
   box-shadow: 0 2px 12px 0 @modal-shadow-color;
   box-sizing: border-box;
+  transition: all 0.3s ease;
   .modal__header {
     font-size: 16px;
     font-weight: bold;
