@@ -78,7 +78,7 @@ ntpServerList.push({
 })
 const timezoneList = Object.entries(timezoneArr).map(([coutry, timezoneItem]) => {
   return {
-    value: timezoneItem.id,
+    value: `${timezoneItem.id}`,
     text: `(${timezoneItem.timezone}) ${translate(coutry)}`,
     zonename_openwrt: timezoneItem.zonename_openwrt,
     timezone_openwrt: timezoneItem.timezone_openwrt,
@@ -99,7 +99,9 @@ export default {
         zonename_openwrt: timezoneList[0].zonename_openwrt,
         timezone_openwrt: timezoneList[0].timezone_openwrt,
       },
+      zonename_openwrt_initial: timezoneList[0].zonename_openwrt,
       systemTime: '',
+      currTime: '',
       timer: null,
       timezoneList,
       ntpServerList,
@@ -129,7 +131,6 @@ export default {
           },
         ],
       },
-      currTime: '',
       schedules: {
         [Weeks.sun]: this.$t('trans0663'),
         [Weeks.mon]: this.$t('trans0515'),
@@ -190,6 +191,7 @@ export default {
         this.form.enable = convertBooleanStatus(data.enable)
         this.form.timezone = data.timezone_id
         this.changeTimezone()
+        this.zonename_openwrt_initial = this.form.zonename_openwrt
         let isExist = false
         isExist = this.ntpServerList.some((item) => item.value === data.sntpServer[0])
         if (isExist) {
@@ -210,7 +212,7 @@ export default {
     },
     getSysTimeData() {
       const formatter = new Intl.DateTimeFormat(locale, {
-        timeZone: this.form.zonename,
+        timeZone: this.zonename_openwrt_initial,
         dateStyle: 'full',
         timeStyle: 'medium',
       })

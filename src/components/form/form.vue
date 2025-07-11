@@ -1,11 +1,11 @@
 <template>
-  <form>
+  <form :id="id">
     <slot></slot>
   </form>
 </template>
 
 <script setup>
-import { ref, provide, computed, watch } from 'vue'
+import { ref, provide, computed, watch, useId } from 'vue'
 import { useIsMobile } from '@/hooks/is-mobile'
 
 defineOptions({
@@ -13,6 +13,7 @@ defineOptions({
   componentName: 'Form',
 })
 
+const id = useId()
 const { isMobile } = useIsMobile()
 
 const props = defineProps({
