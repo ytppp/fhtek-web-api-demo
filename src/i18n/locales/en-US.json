@@ -389,7 +389,7 @@
   "trans0388": "%s value is out of range %d - %d",
   "trans0389": "DHCP Static IP Configuration",
   "trans0390": "At this time, the network topo of the controller device shows that it has joined the agent device",
-  "trans0391": "trans0391",
+  "trans0391": "Are you sure to export the log file?",
   "trans0393": "IP Address",
   "trans0394": "The IP address of the device will be changed. Please relogin using the LAN IP after applying.",
   "trans0395": "Port settings",
