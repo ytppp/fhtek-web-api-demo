@@ -20,6 +20,7 @@
       <div class="input-group__prepend" v-if="slots.prepend">
         <slot name="prepend"></slot>
       </div>
+      <!-- :autocomplete="autocomplete" -->
       <input
         :tabindex="tabindex"
         v-bind="attrs"
@@ -28,7 +29,6 @@
         :type="showPassword ? (passwordVisible ? 'text' : 'password') : type"
         :disabled="inputDisabled"
         :readonly="readonly"
-        :autocomplete="autocomplete"
         :placeholder="placeholder"
         :name="name"
         :id="id"
@@ -234,7 +234,7 @@ const handleFocus = (event) => {
 const handleBlur = (event) => {
   focused.value = false
   emits('blur', event)
-  if (!props.isSelectCompChildNode) formItem?.validate()
+  if (!props.isSelectCompChildNode && !formItem?.cancelBlurValidate.value) formItem?.validate()
 }
 const handleChange = (event) => {
   model.value = event.target.value

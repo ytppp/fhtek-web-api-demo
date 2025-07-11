@@ -97,17 +97,20 @@ const form = reactive({
 const modalFormRules = reactive({
   pair: [
     {
-      rule: (value) => {
-        if (isVlan.value) {
-          return !/^\s*$/g.test(value)
-        }
-        return true
-      },
+      rule: (value) => !/^\s*$/g.test(value),
       message: t('trans0004'),
     },
     {
       rule: (value) => {
-        if (isVlan.value) return true
+        const multiPairRegex = /^(\d+\/\d+)(;\d+\/\d+)*$/
+        if (!multiPairRegex.test(value)) return false
+        const value2Arr = value.split(';').map((item) => item.split('/')).flat()
+        return value2Arr.length === new Set(value2Arr).size
+      },
+      message: t('trans0128').format(t('trans0753')),
+    },
+    {
+      rule: (value) => {
         const tempData = wanBindingData.filter((item) => item.index !== form.index)
         return !tempData.some((item) => {
           return item.vlanpair === value

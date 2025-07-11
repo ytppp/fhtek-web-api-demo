@@ -67,6 +67,10 @@ const props = defineProps({
   labelWidth: {
     type: String,
   },
+  cancelBlurValidate: {
+    type: Boolean,
+    default: false,
+  },
 })
 const id = useId()
 const slots = useSlots()
@@ -187,6 +191,7 @@ provide('formItem', {
   validate,
   updateComputedLabelWidth,
   label: computed(() => props.label),
+  cancelBlurValidate: computed(() => props.cancelBlurValidate),
   id,
 })
 defineExpose({

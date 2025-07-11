@@ -11,14 +11,14 @@
         :model="userinfo"
         :rules="rules"
       >
-        <fh-form-item prop="username">
+        <fh-form-item prop="username" :cancel-blur-validate="true">
           <fh-input :placeholder="$t('trans0621')" v-model="userinfo.username" clearable>
             <template #prefix>
               <fh-icon name="icon-user" class="input__icon"></fh-icon>
             </template>
           </fh-input>
         </fh-form-item>
-        <fh-form-item prop="password">
+        <fh-form-item prop="password" :cancel-blur-validate="true">
           <fh-input
             type="password"
             :placeholder="$t('trans0622')"
