@@ -76,10 +76,12 @@ ntpServerList.push({
   value: other,
   text: translate('trans0355'),
 })
-const timezoneList = timezoneArr.map((timezone) => {
+const timezoneList = Object.entries(timezoneArr).map(([coutry, timezoneItem]) => {
   return {
-    value: timezone[1],
-    text: timezone[0],
+    value: timezoneItem.id,
+    text: `(${timezoneItem.timezone}) ${translate(coutry)}`,
+    zonename_openwrt: timezoneItem.zonename_openwrt,
+    timezone_openwrt: timezoneItem.timezone_openwrt,
   }
 })
 const { convertBooleanStatus } = useDataClean()
@@ -93,8 +95,9 @@ export default {
         otherMasterSntpServer: '',
         slaveSntpServer: ntpServerList[0].value,
         otherSlaveSntpServer: '',
-        zonename: timezoneList[0].text,
         timezone: timezoneList[0].value,
+        zonename_openwrt: timezoneList[0].zonename_openwrt,
+        timezone_openwrt: timezoneList[0].timezone_openwrt,
       },
       systemTime: '',
       timer: null,
@@ -170,8 +173,9 @@ export default {
         }
         setTime({
           enable: convertBooleanStatus(this.form.enable),
-          zonename: this.form.zonename,
-          timezone: this.form.timezone,
+          timezone_id: this.form.timezone,
+          zonename: this.form.zonename_openwrt,
+          timezone: this.form.timezone_openwrt,
           sntpServer: [
             this.isOtherMaster ? this.form.otherMasterSntpServer : this.form.masterSntpServer,
             this.isOtherSlave ? this.form.otherSlaveSntpServer : this.form.slaveSntpServer,
@@ -184,8 +188,8 @@ export default {
     getTimeData() {
       getTime().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
-        this.form.zonename = data.zonename
-        this.form.timezone = data.timezone
+        this.form.timezone = data.timezone_id
+        this.changeTimezone()
         let isExist = false
         isExist = this.ntpServerList.some((item) => item.value === data.sntpServer[0])
         if (isExist) {
@@ -225,7 +229,9 @@ export default {
       this.timer = null
     },
     changeTimezone() {
-      this.form.zonename = this.timezoneList.find((item) => item.value === this.form.timezone).text
+      const thisTimezoneItem = this.timezoneList.find((item) => item.value === this.form.timezone)
+      this.form.zonename_openwrt = thisTimezoneItem.zonename_openwrt
+      this.form.timezone_openwrt = thisTimezoneItem.timezone_openwrt
     },
   },
   created() {
