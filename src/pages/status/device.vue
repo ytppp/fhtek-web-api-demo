@@ -23,10 +23,10 @@ import { useDataClean } from '@/hooks/data-clean'
 import { getDevInfo } from '@/http/api'
 
 const { t } = useI18n()
-const { cleanData, defaultVal } = useDataClean()
+const { defaultDataObj, defaultVal } = useDataClean()
 
 const basicInfo = reactive({
-  modelName: {
+  model: {
     label: t('trans0540'),
     value: defaultVal,
   },
@@ -44,21 +44,15 @@ const basicInfo = reactive({
   },
 })
 
-const defaultDataObj = (info) => {
-  cleanData(info)
-  Object.keys(info).forEach((key) => {
-    const val = info[key] || defaultVal
-    info[key].value = val
-    info[key].show = true
-  })
-}
 const getDevInfoData = () => {
   getDevInfo().then(({ data }) => {
-    basicInfo.modelName = data.model
-    basicInfo.xponsn = data.xponsn
-    basicInfo.hwver = data.hwver
-    basicInfo.softver = data.softver
-    defaultDataObj(basicInfo)
+    const thisBasicInfo = {
+      model: data.model,
+      sn: data.xponsn,
+      hwVersion: data.hwver,
+      swVersion: data.softver,
+    }
+    defaultDataObj(basicInfo, thisBasicInfo)
   })
 }
 

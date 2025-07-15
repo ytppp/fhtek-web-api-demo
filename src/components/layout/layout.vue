@@ -72,6 +72,7 @@
 <script>
 import { getMenu } from '@/util/menu'
 import { isMobileDevice, isObjArrHasVal } from '@/util/tool'
+import { getDevInfo } from '@/http/api'
 
 // 若多维对象数组中存在某个值，返回其顶级对象
 const getTopObjFromObjArr = (arr, val, childNodeName = 'children', keyName = 'url') => {
@@ -97,15 +98,9 @@ const getObjFromObjArr = (arr, childNodeName = 'children', keyName = 'url') => {
   return menu
 }
 export default {
-  props: {
-    title: String,
-    isStopRefresh: {
-      type: Boolean,
-      default: false,
-    },
-  },
   data() {
     return {
+      title: '',
       url: location.hash.replace('#', ''),
       layoutMainMarginTop: 30,
       layoutHeaderHeight: 70,
@@ -186,8 +181,14 @@ export default {
       this.setHeight()
       this.isMobile = isMobileDevice()
     },
+    getDevInfoData() {
+      getDevInfo().then(({ data }) => {
+        this.title = data.model
+      })
+    },
   },
   mounted() {
+    this.getDevInfoData()
     this.changeScreen()
     if (window.addEventListener) {
       window.addEventListener('resize', this.changeScreen)

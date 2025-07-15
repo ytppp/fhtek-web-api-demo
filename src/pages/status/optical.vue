@@ -45,10 +45,10 @@
 import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
-import { format } from '@/util/tool'
+import { getPonInfo } from '@/http/api'
 
 const { t } = useI18n()
-const { cleanData, defaultVal } = useDataClean()
+const { defaultDataObj, defaultVal, convertBooleanStatus } = useDataClean()
 
 const linkInfo = reactive({
   status: {
@@ -99,5 +99,34 @@ const opticalInfo = reactive({
     label: t('trans0731'),
     value: defaultVal,
   },
+})
+
+const getPonInfoData = () => {
+  getPonInfo().then(({ data }) => {
+    const thisLinkInfo = {
+      status: convertBooleanStatus(data.link_status) ? t('trans0654') : t('trans0655'),
+      fecEnable: convertBooleanStatus(data.fec_enable) ? t('trans0103') : t('trans0054'),
+      encrypt: convertBooleanStatus(data.encryption_mode) ? t('trans0103') : t('trans0054'),
+      alarm: convertBooleanStatus(data.alarm_info) ? t('trans0412') : t('trans0925'),
+    }
+    const thisPacketsInfo = {
+      send: data.packets_sent,
+      receive: data.packets_received,
+    }
+    const thisOpticalInfo = {
+      transmit: `${data.tx_light_power}dBm`,
+      receive: `${data.rx_light_power}dBm`,
+      voltage: `${data.voltage}mV`,
+      bias: `${data.bias}mA`,
+      temperature: `${data.temperature}℃`,
+    }
+    defaultDataObj(linkInfo, thisLinkInfo)
+    defaultDataObj(packetsInfo, thisPacketsInfo)
+    defaultDataObj(opticalInfo, thisOpticalInfo)
+  })
+}
+
+onMounted(() => {
+  getPonInfoData()
 })
 </script>

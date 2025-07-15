@@ -9,7 +9,7 @@
     <div class="header__center-wrap">
       <div class="logo">
         <img class="logo__img" v-show="isNoAuthPage || !isMobile" :src="logoSrc" alt="" />
-        <!-- <span class="logo__title" v-show="(isNoAuthPage || !isMobile) && title">{{ title }}</span> -->
+        <span class="logo__title" v-show="(isNoAuthPage || !isMobile) && title">{{ title }}</span>
         <fh-icon
           class="logo__drawer-toggle"
           :name="`icon-${drawer ? 'close' : 'menu'}`"
