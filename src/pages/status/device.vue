@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0070') }}</h1>
+      <h1 class="page__title">{{ $t('trans0482') }}</h1>
     </div>
     <div class="page__content">
       <div class="display-form">
@@ -20,6 +20,7 @@
 import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
+import { getDevInfo } from '@/http/api'
 
 const { t } = useI18n()
 const { cleanData, defaultVal } = useDataClean()
@@ -51,8 +52,17 @@ const defaultDataObj = (info) => {
     info[key].show = true
   })
 }
+const getDevInfoData = () => {
+  getDevInfo().then(({ data }) => {
+    basicInfo.modelName = data.model
+    basicInfo.xponsn = data.xponsn
+    basicInfo.hwver = data.hwver
+    basicInfo.softver = data.softver
+    defaultDataObj(basicInfo)
+  })
+}
 
 onMounted(() => {
-  // defaultDataObj(basicInfo)
+  getDevInfoData()
 })
 </script>

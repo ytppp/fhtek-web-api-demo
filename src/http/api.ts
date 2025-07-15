@@ -480,3 +480,7 @@ export const getTime = (): Promise<ApiResponse<any>> => {
 export const setTime = (params): Promise<ApiResponse<any>> => {
   return http.post('setTime', createData(params))
 }
+
+export const getDevInfo = (): Promise<ApiResponse<any>> => {
+  return http.post('getDevinfo')
+}
