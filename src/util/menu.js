@@ -39,7 +39,7 @@ let menus = [
     children: [
       {
         url: '/status/device',
-        text: 'trans0070',
+        text: 'trans0482',
         config,
       },
       {
