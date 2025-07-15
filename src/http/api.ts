@@ -482,5 +482,27 @@ export const setTime = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getDevInfo = (): Promise<ApiResponse<any>> => {
-  return http.post('getDevinfo')
+  return http.post('getDevinfo', undefined, { cancel: false })
+}
+
+export const getPonInfo = (): Promise<ApiResponse<any>> => {
+  return http.post('getPoninfo', undefined, { cancel: false })
+}
+
+export const getStaInfo = (): Promise<ApiResponse<any>> => {
+  return http.post('getStaInfo', undefined, { cancel: false })
+}
+
+export const getVoipBasicSettings = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'voip.basic.settings:get',
+    data: params,
+  })
+}
+
+export const setVoipBasicSettings = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'voip.basic.settings:set',
+    data: params,
+  })
 }

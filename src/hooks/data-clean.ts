@@ -11,6 +11,13 @@ export const useDataClean = () => {
       }
     })
   }
+  const defaultDataObj = (info, thisInfoKey) => {
+    cleanData(info)
+    Object.keys(info).forEach((key) => {
+      info[key].value = thisInfoKey[key] ?? defaultVal
+      info[key].show = true
+    })
+  }
   const convertBooleanStatus = (flag: string | boolean) => {
     if (typeof flag === 'string' && (flag === EnableStatus.yes || flag === EnableStatus.no)) {
       return flag === EnableStatus.yes
@@ -27,5 +34,6 @@ export const useDataClean = () => {
     defaultVal,
     cleanData,
     convertBooleanStatus,
+    defaultDataObj,
   }
 }

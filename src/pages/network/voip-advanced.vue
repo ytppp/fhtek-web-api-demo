@@ -252,7 +252,8 @@ import {
   isValidGatewayIP,
   getSubNetwork,
 } from '@/util/tool'
-// import { getLan, setLan } from '@/http/api'
+import { ServiceType } from '@/util/constant'
+import { getWan } from '@/http/api'
 
 defineOptions({
   name: 'VoipAdvancedPage',
@@ -601,6 +602,22 @@ const save = () => {
     // todo
   })
 }
+const getWanInfo = () => {
+  getWan().then(({ data }) => {
+    const { items } = data
+    hasVoipWan.value = items.some((item) => {
+      return (
+        item.serviceType === ServiceType.VOICE || item.serviceType === ServiceType.VOICE_INTERNET
+      )
+    })
+    if (hasVoipWan.value) {
+      // todo
+    }
+  })
+}
+onMounted(() => {
+  getWanInfo()
+})
 </script>
 
 <style lang="less">
