@@ -14,6 +14,9 @@
         <fh-form-item :label="$t('trans0135')" prop="register.protocol">
           <fh-select v-model="form.protocol" :options="voipProtocolOpts"></fh-select>
         </fh-form-item>
+        <fh-form-item :label="$t('trans0140')">
+          <fh-select v-model="form.interface" :options="voiceWanOpts"> </fh-select>
+        </fh-form-item>
         <fh-form-item :label="$t('trans0733')" prop="register.server">
           <fh-input v-model="form.register.server"> </fh-input>
         </fh-form-item>
@@ -124,16 +127,17 @@ defineOptions({
 enum VoipProtocol {
   SIP = '0',
 }
-const { convertBooleanStatus } = useDataClean()
+const { convertBooleanStatus, defaultVal } = useDataClean()
 const { t } = useI18n()
 const formRef = ref(null)
-const hasVoipWan = ref(true)
+const hasVoipWan = ref(false)
 const voipProtocolOpts = [
   {
     value: VoipProtocol.SIP,
     text: t('trans0923'),
   },
 ]
+const voiceWanOpts = reactive([])
 const form = reactive({
   protocol: VoipProtocol.SIP,
   interface: '', // VOICE wan id
@@ -297,18 +301,16 @@ const save = () => {
         secProxy: form.outboundProxy.secProxy,
         secPort: form.outboundProxy.secPort,
       },
-      line: [
-        {
-          enablePortSetting: convertBooleanStatus(form.line1.enablePortSetting),
-          account: form.line1.account,
-          password: form.line1.password,
-        },
-        {
-          enablePortSetting: convertBooleanStatus(form.line2.enablePortSetting),
-          account: form.line2.account,
-          password: form.line2.password,
-        },
-      ],
+      line1: {
+        enablePortSetting: convertBooleanStatus(form.line1.enablePortSetting),
+        account: form.line1.account,
+        password: form.line1.password,
+      },
+      line2: {
+        enablePortSetting: convertBooleanStatus(form.line2.enablePortSetting),
+        account: form.line2.account,
+        password: form.line2.password,
+      },
     }
     setVoipBasicSettings(data)
   })
@@ -330,25 +332,33 @@ const getVoipBasicSettingsData = () => {
     form.outboundProxy.port = data.outboundProxy.port
     form.outboundProxy.secProxy = data.outboundProxy.secProxy
     form.outboundProxy.secPort = data.outboundProxy.secPort
-    data.line.items.forEach((item, i) => {
-      form[`line${i + 1}`].enablePortSetting = convertBooleanStatus(
-        item.enablePortSetting,
-      ) as boolean
-      form[`line${i + 1}`].registrationStatus = item.registrationStatus
-      form[`line${i + 1}`].account = item.account
-      form[`line${i + 1}`].password = item.password
-    })
+    form.line1.enablePortSetting = convertBooleanStatus(data.line1.enablePortSetting) as boolean
+    form.line1.registrationStatus = data.line1.registrationStatus || defaultVal
+    form.line1.account = data.line1.account
+    form.line1.password = data.line1.password
+    form.line2.enablePortSetting = convertBooleanStatus(data.line2.enablePortSetting) as boolean
+    form.line2.registrationStatus = data.line2.registrationStatus || defaultVal
+    form.line2.account = data.line2.account
+    form.line2.password = data.line2.password
   })
 }
 const getWanInfo = () => {
   getWan().then(({ data }) => {
     const { items } = data
-    hasVoipWan.value = items.some((item) => {
+    const voiceWan = items.find((item) => {
       return (
         item.serviceType === ServiceType.VOICE || item.serviceType === ServiceType.VOICE_INTERNET
       )
     })
+    hasVoipWan.value = !!voiceWan
     if (hasVoipWan.value) {
+      const voiceWanList: any[] = [
+        {
+          value: voiceWan.id,
+          text: voiceWan.wanName,
+        },
+      ]
+      Object.assign(voiceWanOpts, voiceWanList)
       getVoipBasicSettingsData()
     }
   })

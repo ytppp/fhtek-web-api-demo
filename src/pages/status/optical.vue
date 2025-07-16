@@ -117,7 +117,7 @@ const getPonInfoData = () => {
       transmit: `${data.tx_light_power}dBm`,
       receive: `${data.rx_light_power}dBm`,
       voltage: `${data.voltage}mV`,
-      bias: `${data.bias}mA`,
+      bias: `${data.current}mA`,
       temperature: `${data.temperature}℃`,
     }
     defaultDataObj(linkInfo, thisLinkInfo)

@@ -493,10 +493,9 @@ export const getStaInfo = (): Promise<ApiResponse<any>> => {
   return http.post('getStaInfo', undefined, { cancel: false })
 }
 
-export const getVoipBasicSettings = (params): Promise<ApiResponse<any>> => {
+export const getVoipBasicSettings = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
     method: 'voip.basic.settings:get',
-    data: params,
   })
 }
 
