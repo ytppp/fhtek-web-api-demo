@@ -71,7 +71,7 @@
           <fh-input v-model="form.line1.account"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0841')" prop="password">
-          <fh-input v-model="form.line1.password"> </fh-input>
+          <fh-input v-model="form.line1.password" type="password" show-password> </fh-input>
         </fh-form-item>
         <div class="form__sub-header">
           <h2 class="page__title">{{ $t('trans0926').format(2) }}</h2>
@@ -86,7 +86,7 @@
           <fh-input v-model="form.line2.account"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0841')" prop="password">
-          <fh-input v-model="form.line2.password"> </fh-input>
+          <fh-input v-model="form.line2.password" type="password" show-password> </fh-input>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
@@ -278,42 +278,41 @@ const rules = reactive({
   ],
 })
 const save = () => {
-  formRef.value.validate().then(() => {
-    const data = {
-      protocol: form.protocol,
-      interface: form.interface,
-      register: {
-        server: form.register.server,
-        port: form.register.port,
-        secServer: form.register.secServer,
-        secPort: form.register.secPort,
-      },
-      proxy: {
-        server: form.proxy.server,
-        port: form.proxy.port,
-        secServer: form.proxy.secServer,
-        secPort: form.proxy.secPort,
-      },
-      outboundProxy: {
-        enable: convertBooleanStatus(form.outboundProxy.enable),
-        proxy: form.outboundProxy.proxy,
-        port: form.outboundProxy.port,
-        secProxy: form.outboundProxy.secProxy,
-        secPort: form.outboundProxy.secPort,
-      },
-      line1: {
-        enablePortSetting: convertBooleanStatus(form.line1.enablePortSetting),
-        account: form.line1.account,
-        password: form.line1.password,
-      },
-      line2: {
-        enablePortSetting: convertBooleanStatus(form.line2.enablePortSetting),
-        account: form.line2.account,
-        password: form.line2.password,
-      },
-    }
-    setVoipBasicSettings(data)
-  })
+  if (!formRef.value.validate()) return
+  const data = {
+    protocol: form.protocol,
+    interface: form.interface,
+    register: {
+      server: form.register.server,
+      port: form.register.port,
+      secServer: form.register.secServer,
+      secPort: form.register.secPort,
+    },
+    proxy: {
+      server: form.proxy.server,
+      port: form.proxy.port,
+      secServer: form.proxy.secServer,
+      secPort: form.proxy.secPort,
+    },
+    outboundProxy: {
+      enable: convertBooleanStatus(form.outboundProxy.enable),
+      proxy: form.outboundProxy.proxy,
+      port: form.outboundProxy.port,
+      secProxy: form.outboundProxy.secProxy,
+      secPort: form.outboundProxy.secPort,
+    },
+    line1: {
+      enablePortSetting: convertBooleanStatus(form.line1.enablePortSetting),
+      account: form.line1.account,
+      password: form.line1.password,
+    },
+    line2: {
+      enablePortSetting: convertBooleanStatus(form.line2.enablePortSetting),
+      account: form.line2.account,
+      password: form.line2.password,
+    },
+  }
+  setVoipBasicSettings(data)
 }
 const getVoipBasicSettingsData = () => {
   getVoipBasicSettings().then(({ data }) => {
