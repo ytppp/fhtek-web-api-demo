@@ -501,7 +501,14 @@ export const getVoipBasicSettings = (): Promise<ApiResponse<any>> => {
 
 export const setVoipBasicSettings = (params): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'voip.basic.settings:set',
+    method: 'voip.basic.settings:edit',
     data: params,
   })
 }
+
+export const getLanInfo = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'voip.basic.settings:get',
+  })
+}
+
