@@ -341,12 +341,12 @@ const getVoipBasicSettingsData = () => {
     form.line1.registrationStatus = data.line1.registrationStatus || defaultVal
     form.line1.account = data.line1.account
     form.line1.password = data.line1.password
-    form.line1.active = data.line1.active
+    form.line1.active = convertBooleanStatus(data.line1.active) as boolean
     form.line2.enablePortSetting = convertBooleanStatus(data.line2.enablePortSetting) as boolean
     form.line2.registrationStatus = data.line2.registrationStatus || defaultVal
     form.line2.account = data.line2.account
     form.line2.password = data.line2.password
-    form.line2.active = data.line2.active
+    form.line2.active = convertBooleanStatus(data.line2.active) as boolean
   })
 }
 const getWanInfo = () => {

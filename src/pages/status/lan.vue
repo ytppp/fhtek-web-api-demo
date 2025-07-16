@@ -8,12 +8,10 @@
         <h2 class="page__title">{{ $t('trans0716') }}</h2>
       </div>
       <div class="display-form">
-        <template v-for="(item, index) in basicInfo" :key="index">
-          <div class="display-form__item">
-            <div class="display-form__label">{{ item.label }}</div>
-            <div class="display-form__value">{{ item.value }}</div>
-          </div>
-        </template>
+        <div class="display-form__item" v-for="(item, index) in basicInfo" :key="index">
+          <div class="display-form__label">{{ item.label }}</div>
+          <div class="display-form__value">{{ item.value }}</div>
+        </div>
       </div>
       <div class="page__table">
         <fh-table
