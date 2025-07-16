@@ -19,11 +19,17 @@
           :data-source="lanListData"
           :show-row-checkbox="false"
           :show-index="false"
+          :border="true"
         >
         </fh-table>
       </div>
       <div class="page__table">
-        <fh-table :columns="lanColumns" :data-source="lanData" :show-row-checkbox="false">
+        <fh-table
+          :columns="lanColumns"
+          :data-source="lanData"
+          :show-row-checkbox="false"
+          :border="true"
+        >
         </fh-table>
       </div>
       <div class="page__table">
@@ -44,10 +50,12 @@ import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
 import { format } from '@/util/tool'
+import { getLanInfo, getWlanDevices } from '@/http/api'
+import { Lan1, Lan2, Lan3, Lan4, SsidText, NetType, netTypeText } from '@/util/constant'
 
 const { t } = useI18n()
-const { cleanData, defaultVal } = useDataClean()
-
+const { defaultDataObj, defaultVal } = useDataClean()
+const Down = 'down'
 const basicInfo = reactive({
   ip: {
     label: format(t('trans0598'), [t('trans0056')]),
@@ -64,20 +72,20 @@ const basicInfo = reactive({
 })
 const lanListColumns = reactive([
   {
-    key: 'lan1',
-    title: 'LAN1',
+    key: Lan1,
+    title: SsidText[Lan1],
   },
   {
-    key: 'lan2',
-    title: 'LAN2',
+    key: Lan2,
+    title: SsidText[Lan2],
   },
   {
-    key: 'lan3',
-    title: 'LAN3',
+    key: Lan3,
+    title: SsidText[Lan3],
   },
   {
-    key: 'lan4',
-    title: 'LAN4',
+    key: Lan4,
+    title: SsidText[Lan4],
   },
 ])
 const lanColumns = reactive([
@@ -90,7 +98,11 @@ const lanColumns = reactive([
     title: format(t('trans0598'), [t('trans0057')]),
   },
   {
-    key: 'type',
+    key: 'name',
+    title: t('trans0070'),
+  },
+  {
+    key: 'typeAlias',
     title: t('trans0717'),
   },
 ])
@@ -126,19 +138,19 @@ const interfaceColumns = reactive([
     title: t('trans0707'),
     children: [
       {
-        key: 'byte',
+        key: 'byte1',
         title: t('trans0708'),
       },
       {
-        key: 'package',
+        key: 'package1',
         title: t('trans0709'),
       },
       {
-        key: 'error',
+        key: 'error1',
         title: t('trans0234'),
       },
       {
-        key: 'abandon',
+        key: 'abandon1',
         title: t('trans0710'),
       },
     ],
@@ -147,4 +159,66 @@ const interfaceColumns = reactive([
 const lanListData = reactive([])
 const lanData = reactive([])
 const interfaceData = reactive([])
+
+const getLanInfoData = () => {
+  getLanInfo().then(({ data }) => {
+    const { ip, ipv6, mac, lan, datas } = data
+    const thisInterfaceData = []
+    const thisBasicInfo = {
+      ip,
+      ipv6,
+      mac,
+    }
+    const thisLanListData = [
+      {
+        [Lan1]: convertLan(lan[Lan1]),
+        [Lan2]: convertLan(lan[Lan2]),
+        [Lan3]: convertLan(lan[Lan3]),
+        [Lan4]: convertLan(lan[Lan4]),
+      },
+    ]
+    datas.forEach((item) => {
+      thisInterfaceData.push({
+        interface: item.ifname,
+        byte: item.receive.byte,
+        package: item.receive.package,
+        error: item.receive.error,
+        abandon: item.receive.abandon,
+        byte1: item.send.byte,
+        package1: item.send.package,
+        error1: item.send.error,
+        abandon1: item.send.abandon,
+      })
+    })
+    defaultDataObj(basicInfo, thisBasicInfo)
+    Object.assign(lanListData, thisLanListData)
+    Object.assign(interfaceData, thisInterfaceData)
+  })
+}
+const convertLan = (lanVal) => {
+  return lanVal === Down ? t('trans0653') : lanVal
+}
+const getLanDeviceData = () => {
+  getWlanDevices().then(({ data }) => {
+    const { items } = data
+    if (items.length === 0) {
+      return
+    }
+    const thisLanData = []
+    items.forEach((item) => {
+      if (item.type === NetType.ethernet) {
+        thisLanData.push({
+          ...item,
+          typeAlias: netTypeText[item.type],
+        })
+      }
+    })
+    Object.assign(lanData, thisLanData)
+  })
+}
+
+onMounted(() => {
+  getLanInfoData()
+  getLanDeviceData()
+})
 </script>

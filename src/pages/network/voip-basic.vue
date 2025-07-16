@@ -11,12 +11,12 @@
         :rules="rules"
         v-if="hasVoipWan"
       >
-        <fh-form-item :label="$t('trans0135')" prop="register.protocol">
+        <!-- <fh-form-item :label="$t('trans0135')" prop="register.protocol">
           <fh-select v-model="form.protocol" :options="voipProtocolOpts"></fh-select>
         </fh-form-item>
         <fh-form-item :label="$t('trans0140')">
           <fh-select v-model="form.interface" :options="voiceWanOpts"> </fh-select>
-        </fh-form-item>
+        </fh-form-item> -->
         <fh-form-item :label="$t('trans0733')" prop="register.server">
           <fh-input v-model="form.register.server"> </fh-input>
         </fh-form-item>
