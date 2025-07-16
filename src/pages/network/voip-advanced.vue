@@ -302,7 +302,7 @@ const generateNumberOpts = (max: number, start: number, step: number) => {
 
 const { t } = useI18n()
 const formRef = ref(null)
-const hasVoipWan = ref(true)
+const hasVoipWan = ref(false)
 const dmTModeOpts = [
   {
     value: DmTMode.dmShortTimer,
