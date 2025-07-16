@@ -118,7 +118,7 @@ const LinkStatusText = {
   [LinkStatus.offlineO2]: `${t('trans0655')}(O2)`,
   [LinkStatus.offlineO3]: `${t('trans0655')}(O3)`,
   [LinkStatus.offlineO4]: `${t('trans0655')}(O4)`,
-  [LinkStatus.onlineO5]: `${t('trans0654')}(O1)`,
+  [LinkStatus.onlineO5]: `${t('trans0654')}(O5)`,
 }
 
 const getPonInfoData = () => {
