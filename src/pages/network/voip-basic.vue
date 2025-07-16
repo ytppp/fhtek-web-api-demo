@@ -58,36 +58,40 @@
             <fh-input v-model="form.outboundProxy.secPort"> </fh-input>
           </fh-form-item>
         </template>
-        <div class="form__sub-header">
-          <h2 class="page__title">{{ $t('trans0926').format(1) }}</h2>
-        </div>
-        <fh-form-item :label="$t('trans0839')">
-          <fh-switch v-model="form.line1.enablePortSetting"></fh-switch>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0739')">
-          {{ form.line1.registrationStatus }}
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0840')" prop="account">
-          <fh-input v-model="form.line1.account"> </fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0841')" prop="password">
-          <fh-input v-model="form.line1.password" type="password" show-password> </fh-input>
-        </fh-form-item>
-        <div class="form__sub-header">
-          <h2 class="page__title">{{ $t('trans0926').format(2) }}</h2>
-        </div>
-        <fh-form-item :label="$t('trans0839')">
-          <fh-switch v-model="form.line2.enablePortSetting"></fh-switch>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0739')">
-          {{ form.line2.registrationStatus }}
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0840')" prop="account">
-          <fh-input v-model="form.line2.account"> </fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0841')" prop="password">
-          <fh-input v-model="form.line2.password" type="password" show-password> </fh-input>
-        </fh-form-item>
+        <template v-if="form.line1.active">
+          <div class="form__sub-header">
+            <h2 class="page__title">{{ $t('trans0926').format(1) }}</h2>
+          </div>
+          <fh-form-item :label="$t('trans0839')">
+            <fh-switch v-model="form.line1.enablePortSetting"></fh-switch>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0739')">
+            {{ form.line1.registrationStatus }}
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0840')" prop="account">
+            <fh-input v-model="form.line1.account"> </fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0841')" prop="password">
+            <fh-input v-model="form.line1.password" type="password" show-password> </fh-input>
+          </fh-form-item>
+        </template>
+        <template v-if="form.line2.active">
+          <div class="form__sub-header">
+            <h2 class="page__title">{{ $t('trans0926').format(2) }}</h2>
+          </div>
+          <fh-form-item :label="$t('trans0839')">
+            <fh-switch v-model="form.line2.enablePortSetting"></fh-switch>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0739')">
+            {{ form.line2.registrationStatus }}
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0840')" prop="account">
+            <fh-input v-model="form.line2.account"> </fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0841')" prop="password">
+            <fh-input v-model="form.line2.password" type="password" show-password> </fh-input>
+          </fh-form-item>
+        </template>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
             {{ $t('trans0002') }}
@@ -165,12 +169,14 @@ const form = reactive({
     registrationStatus: '',
     account: '',
     password: '',
+    active: false,
   },
   line2: {
     enablePortSetting: false,
     registrationStatus: '',
     account: '',
     password: '',
+    active: false,
   },
 })
 const rules = reactive({
@@ -335,10 +341,12 @@ const getVoipBasicSettingsData = () => {
     form.line1.registrationStatus = data.line1.registrationStatus || defaultVal
     form.line1.account = data.line1.account
     form.line1.password = data.line1.password
+    form.line1.active = data.line1.active
     form.line2.enablePortSetting = convertBooleanStatus(data.line2.enablePortSetting) as boolean
     form.line2.registrationStatus = data.line2.registrationStatus || defaultVal
     form.line2.account = data.line2.account
     form.line2.password = data.line2.password
+    form.line2.active = data.line2.active
   })
 }
 const getWanInfo = () => {
