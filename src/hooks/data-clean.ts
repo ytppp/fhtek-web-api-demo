@@ -14,7 +14,9 @@ export const useDataClean = () => {
   const defaultDataObj = (info, thisInfoKey) => {
     cleanData(info)
     Object.keys(info).forEach((key) => {
-      info[key].value = thisInfoKey[key] ?? defaultVal
+      info[key].value = thisInfoKey[key]
+        ? `${thisInfoKey[key]} ${info[key].unit || ''}`
+        : defaultVal
       info[key].show = true
     })
   }
