@@ -212,7 +212,7 @@ const getWanData = () => {
       }
       thisTableData.push({
         ...item,
-        wan: item.wanname,
+        wan: `${item.wanname}(${item.interface})`,
         statusAlias: StatusText[item.status],
         display,
         typeAlias: netTypeText[item.protocol],
