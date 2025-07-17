@@ -11,6 +11,9 @@
         <fh-form-item :label="$t('trans0489')">
           <fh-select v-model="form.mode" :options="modes"> </fh-select>
         </fh-form-item>
+        <fh-form-item :label="$t('trans0485')">
+          {{ form.pd_if }}
+        </fh-form-item>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
             {{ $t('trans0002') }}
@@ -31,7 +34,7 @@ defineOptions({
   name: 'LanIpv6Page',
 })
 
-const { convertBooleanStatus } = useDataClean()
+const { convertBooleanStatus, defaultVal } = useDataClean()
 const loading = inject('loading')
 const modes = [
   {
@@ -59,12 +62,14 @@ const formRef = ref(null)
 const form = reactive({
   enable: true,
   mode: NetType.slaac,
+  pd_if: defaultVal,
 })
 
 function getIpv6LanData() {
   getIpv6Lan().then(({ data }) => {
     form.enable = convertBooleanStatus(data.enabled)
     form.mode = data.address_mode
+    form.pd_if = data.pd_if || defaultVal
   })
 }
 const save = () => {

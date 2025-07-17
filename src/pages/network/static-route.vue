@@ -57,8 +57,14 @@
 
 <script>
 import { isIP, isMulticast, isLoopback, isNetworkIP, isBoardcastIP, format } from '@/util/tool'
-import { getWan, getStaticRoute, addStaticRoute, editStaticRoute, delStaticRoute } from '@/http/api'
-import { ModalType, IP } from '@/util/constant'
+import {
+  getWanInfo,
+  getStaticRoute,
+  addStaticRoute,
+  editStaticRoute,
+  delStaticRoute,
+} from '@/http/api'
+import { ModalType, IP, NetType } from '@/util/constant'
 
 const maxRuleNum = 16
 const all = 'all'
@@ -273,12 +279,21 @@ export default {
       })
     },
     getWanData() {
-      getWan().then(({ data }) => {
+      getWanInfo().then(({ data }) => {
         const { items } = data
-        this.wanList = items.map((item) => ({
-          value: item.id,
-          text: item.wanName,
-        }))
+        if (items.length === 0) {
+          return
+        }
+        const wanList = []
+        items.map((item) => {
+          if (item.protocol !== NetType.bridge) {
+            wanList.push({
+              value: item.interface,
+              text: `${item.wanname}(${item.interface})`,
+            })
+          }
+        })
+        this.wanList = wanList
       })
     },
     getStaticRouteListData() {
