@@ -158,9 +158,6 @@ export default {
 }
 .popover__trigger {
   cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .popover__wrap {
   position: absolute;
