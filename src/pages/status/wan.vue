@@ -10,12 +10,28 @@
             <fh-select v-model="display" :options="displayOptions"></fh-select>
           </template>
           <template #ip="scope">
-            <fh-popover :title="scope.row.ip">{{ scope.row.ip.split(' ').join('\n') }}</fh-popover>
+            <fh-popover>
+              <div style="width: 100px" class="ellipsis">
+                {{ scope.row.ip }}
+              </div>
+              <template #content>
+                <div style="white-space: pre-wrap">
+                  {{ scope.row.ip.split(' ').join('\n') }}
+                </div>
+              </template>
+            </fh-popover>
           </template>
           <template #gateway="scope">
-            <fh-popover :title="scope.row.gateway">{{
-              scope.row.gateway.split(' ').join('\n')
-            }}</fh-popover>
+            <fh-popover>
+              <div style="width: 100px" class="ellipsis">
+                {{ scope.row.gateway }}
+              </div>
+              <template #content>
+                <div style="white-space: pre-wrap">
+                  {{ scope.row.gateway.split(' ').join('\n') }}
+                </div>
+              </template>
+            </fh-popover>
           </template>
           <template #operation="scope">
             <fh-button type="text" @click="detail(scope.row)">
@@ -115,6 +131,7 @@ const columns = reactive([
   {
     key: 'gateway',
     title: t('trans0548'),
+    width: '200',
   },
   // {
   //   key: 'dns1',
