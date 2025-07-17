@@ -509,3 +509,7 @@ export const setVoipBasicSettings = (params): Promise<ApiResponse<any>> => {
 export const getLanInfo = (): Promise<ApiResponse<any>> => {
   return http.get('getLanInfo')
 }
+
+export const getWanInfo = (): Promise<ApiResponse<any>> => {
+  return http.get('getWaninfo')
+}
