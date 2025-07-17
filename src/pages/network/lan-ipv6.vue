@@ -12,7 +12,7 @@
           <fh-select v-model="form.mode" :options="modes"> </fh-select>
         </fh-form-item>
         <fh-form-item :label="$t('trans0485')">
-          {{ form.pd_if }}
+          <fh-select v-model="form.pd_if" :options="wanList"> </fh-select>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, inject } from 'vue'
 import { NetType, netTypeText } from '@/util/constant'
-import { getIpv6Lan, setIpv6Lan } from '@/http/api'
+import { getIpv6Lan, setIpv6Lan, getWanInfo } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
 defineOptions({
@@ -62,14 +62,33 @@ const formRef = ref(null)
 const form = reactive({
   enable: true,
   mode: NetType.slaac,
-  pd_if: defaultVal,
+  pd_if: '',
 })
+const wanList = reactive([])
 
+const getWanData = () => {
+  getWanInfo().then(({ data }) => {
+    const { items } = data
+    if (items.length === 0) {
+      return
+    }
+    const thisWanList = []
+    items.forEach((item) => {
+      if (item.protocol !== NetType.bridge && item.ipv6.length) {
+        thisWanList.push({
+          value: item.interface,
+          text: `${item.wanname}(${item.interface})`,
+        })
+      }
+    })
+    Object.assign(wanList, thisWanList)
+  })
+}
 function getIpv6LanData() {
   getIpv6Lan().then(({ data }) => {
     form.enable = convertBooleanStatus(data.enabled)
     form.mode = data.address_mode
-    form.pd_if = data.pd_if || defaultVal
+    form.pd_if = data.pd_if
   })
 }
 const save = () => {
@@ -78,6 +97,7 @@ const save = () => {
     setIpv6Lan({
       enabled: convertBooleanStatus(form.enable),
       address_mode: form.mode,
+      pd_if: form.pd_if,
     })
       .then(() => {})
       .catch(() => {})
@@ -89,6 +109,7 @@ const save = () => {
   }
 }
 onMounted(() => {
+  getWanData()
   getIpv6LanData()
 })
 </script>
