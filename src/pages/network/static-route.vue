@@ -285,7 +285,7 @@ export default {
           return
         }
         const wanList = []
-        items.map((item) => {
+        items.forEach((item) => {
           if (item.protocol !== NetType.bridge) {
             wanList.push({
               value: item.interface,
