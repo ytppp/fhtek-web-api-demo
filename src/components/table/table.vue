@@ -1,7 +1,7 @@
 <template>
   <div class="table">
     <div class="table__header" v-if="showHeader">
-      <div class="table__filter-group" v-if="$slots.operationgroup">
+      <div class="table__filter-group" v-if="$slots.filtergroup">
         <slot name="filtergroup"></slot>
       </div>
       <div class="table__title" v-if="title || $slots.title">

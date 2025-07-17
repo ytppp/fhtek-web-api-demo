@@ -196,7 +196,7 @@ const getLanInfoData = () => {
   })
 }
 const convertLan = (lanVal) => {
-  return lanVal === Down ? t('trans0653') : lanVal
+  return lanVal === Down ? t('trans0653') : `${lanVal} Mbps`
 }
 const getLanDeviceData = () => {
   getWlanDevices().then(({ data }) => {

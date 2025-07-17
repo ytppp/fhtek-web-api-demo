@@ -96,6 +96,10 @@ import { getWifi2gAdv, getWifi5gAdv, getWifi2g, getWifi5g, getWlanDevices } from
 import { useDataClean } from '@/hooks/data-clean'
 import { encryptsText, NetType, netTypeText } from '@/util/constant'
 
+defineOptions({
+  name: 'StatusWlanPage',
+})
+
 const { t } = useI18n()
 const { convertBooleanStatus } = useDataClean()
 const b24gConnStatus = ref('')

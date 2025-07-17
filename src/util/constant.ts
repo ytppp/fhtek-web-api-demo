@@ -185,6 +185,7 @@ export enum NetType {
   auto = 'auto',
   slaac = 'slaac',
   hybrid = 'hybrid',
+  bridge = 'bridge',
   none = 'none',
   all = 'all',
   b24g = '0',
@@ -200,6 +201,10 @@ export const netTypeText = {
   [NetType.b24g]: translate('trans0049'),
   [NetType.b5g]: translate('trans0050'),
   [NetType.ethernet]: translate('trans0494'),
+  [NetType.dhcp]: translate('trans0407'),
+  [NetType.static]: translate('trans0084'),
+  [NetType.pppoe]: translate('trans0081'),
+  [NetType.bridge]: translate('trans0083'),
 }
 
 export const Weeks = {
