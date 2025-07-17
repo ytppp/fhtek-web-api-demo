@@ -9,6 +9,14 @@
           <template #filtergroup>
             <fh-select v-model="display" :options="displayOptions"></fh-select>
           </template>
+          <template #ip="scope">
+            <fh-popover :title="scope.row.ip">{{ scope.row.ip.split(' ').join('\n') }}</fh-popover>
+          </template>
+          <template #gateway="scope">
+            <fh-popover :title="scope.row.gateway">{{
+              scope.row.gateway.split(' ').join('\n')
+            }}</fh-popover>
+          </template>
           <template #operation="scope">
             <fh-button type="text" @click="detail(scope.row)">
               {{ $t('trans0929') }}
@@ -188,10 +196,10 @@ const getWanData = () => {
         gateway = ipv4[0].gateway
       } else if (ipv6.length > 0) {
         display = IP.IPv6
-        ipv6.forEach((ipv6Item) => {
+        ipv6.forEach((ipv6Item, index) => {
           if (ipv6Item.hasOwnProperty('address')) {
-            ip += `${ipv6Item.address} `
-            gateway += `${ipv6Item.gateway} `
+            ip += `${ipv6Item.address}${index === ipv6.length - 1 ? '' : ' '}`
+            gateway += `${ipv6Item.gateway}${index === ipv6.length - 1 ? '' : ' '}`
           }
           if (ipv6Item.hasOwnProperty('prefix')) {
             prefix = ipv6Item.prefix
