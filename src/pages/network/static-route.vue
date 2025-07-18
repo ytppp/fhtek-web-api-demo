@@ -64,6 +64,8 @@ import {
   isBoardcastIP,
   format,
   cidrToSubnetMask,
+  isValidMask,
+  getIpAfter,
 } from '@/util/tool'
 import {
   getWanInfo,
@@ -76,6 +78,11 @@ import { ModalType, IP, NetType } from '@/util/constant'
 
 const maxRuleNum = 16
 const all = 'all'
+function isValidStaticRouteMask(ip, mask) {
+  if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
+  if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
+  return false
+}
 export default {
   data() {
     return {
@@ -134,19 +141,25 @@ export default {
               const parts = value.split('/')
               if (parts.length !== 2) return false
               const ip = parts[0]
-              const suffix = cidrToSubnetMask(parseInt(parts[1]))
-              if (!suffix) return false
+              let suffix = parts[1]
               if (this.isIpv4 && isIP(ip)) {
-                if (
-                  isMulticast(ip) ||
-                  isLoopback(ip) ||
-                  isNetworkIP(ip, suffix) ||
-                  isBoardcastIP(ip, suffix)
-                )
+                const flag = isValidMask(suffix)
+                const mask = cidrToSubnetMask(parseInt(suffix))
+                if (!flag && !mask) return false
+                const maskVal = flag ? suffix : mask
+                // console.log(
+                //   isMulticast(ip),
+                //   isLoopback(ip),
+                //   isNetworkIP(ip, maskVal),
+                //   isBoardcastIP(ip, maskVal),
+                //   isValidStaticRouteMask(ip, maskVal),
+                // )
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal))
                   return false
                 if (!this.lanIp && this.lanIp === ip) return false
               }
               if (this.isIpv6 && isIP(ip, IP.IPv6)) {
+                suffix = parseInt(suffix)
                 if (!isValidIpv6AddrExtra(ip) || (suffix < 0 && suffix > 128)) {
                   return false
                 }
@@ -264,29 +277,32 @@ export default {
     save() {
       if (this.$refs.modalForm.validate()) {
         const data = {}
+        const parts = this.modalForm.target.split('/')
         if (this.isAdd) {
           data.type = this.modalForm.type
-          data.target = this.modalForm.target
+          data.target = parts[0]
+          data.mask = parts[1]
           data.gateway = this.modalForm.gateway
           data.interface = this.modalForm.interface
-          addStaticRoute([data]).then((res) => {
+          addStaticRoute(data).then((res) => {
             this.getStaticRouteListData()
           })
         }
         if (this.isEdit) {
           data.id = this.modalForm.id
           data.type = this.modalForm.type
-          data.target = this.modalForm.target
+          data.target = parts[0]
+          data.mask = parts[1]
           data.gateway = this.modalForm.gateway
           data.interface = this.modalForm.interface
-          editStaticRoute([data]).then((res) => {
+          editStaticRoute(data).then((res) => {
             this.getStaticRouteListData()
           })
         }
       }
     },
     del(row) {
-      delStaticRoute({ id: row.id }).then((res) => {
+      delStaticRoute({ id: row.id, type: row.type }).then((res) => {
         this.getStaticRouteListData()
       })
     },
