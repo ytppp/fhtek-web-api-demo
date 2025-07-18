@@ -201,30 +201,19 @@ export const delStaticDns = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getStaticRoute = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:get',
-  })
+  return http.post('network.static_route:get')
 }
 
 export const addStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:add',
-    data: params,
-  })
+  return http.post('network.static_route:add', createData(params))
 }
 
 export const editStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:edit',
-    data: params,
-  })
+  return http.post('network.static_route:edit', createData(params))
 }
 
 export const delStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:delete',
-    data: params,
-  })
+  return http.post('network.static_route:delete', createData(params))
 }
 
 export const getOntAuth = (): Promise<ApiResponse<any>> => {
