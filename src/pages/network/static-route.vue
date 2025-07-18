@@ -147,13 +147,7 @@ export default {
                 const mask = cidrToSubnetMask(parseInt(suffix))
                 if (!flag && !mask) return false
                 const maskVal = flag ? suffix : mask
-                // console.log(
-                //   isMulticast(ip),
-                //   isLoopback(ip),
-                //   isNetworkIP(ip, maskVal),
-                //   isBoardcastIP(ip, maskVal),
-                //   isValidStaticRouteMask(ip, maskVal),
-                // )
+                // isNetworkIP(ip, maskVal) || sBoardcastIP(ip, maskVal)
                 if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal))
                   return false
                 if (!this.lanIp && this.lanIp === ip) return false
