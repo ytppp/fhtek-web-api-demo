@@ -29,7 +29,7 @@
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0770')">
-            <fh-radio-group v-model="modalForm.type">
+            <fh-radio-group v-model="modalForm.type" @change="changeIpType">
               <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
                 {{ item.text }}
               </fh-radio>
@@ -56,7 +56,15 @@
 </template>
 
 <script>
-import { isIP, isMulticast, isLoopback, isNetworkIP, isBoardcastIP, format } from '@/util/tool'
+import {
+  isIP,
+  isMulticast,
+  isLoopback,
+  isNetworkIP,
+  isBoardcastIP,
+  format,
+  cidrToSubnetMask,
+} from '@/util/tool'
 import {
   getWanInfo,
   getStaticRoute,
@@ -126,7 +134,8 @@ export default {
               const parts = value.split('/')
               if (parts.length !== 2) return false
               const ip = parts[0]
-              const suffix = parseInt(parts[1])
+              const suffix = cidrToSubnetMask(parseInt(parts[1]))
+              if (!suffix) return false
               if (this.isIpv4 && isIP(ip)) {
                 if (
                   isMulticast(ip) ||
@@ -209,7 +218,7 @@ export default {
       return this.modalForm.type === IP.IPv6
     },
     wanOptions() {
-      return this.wanList
+      return this.wanList.filter((item) => item.type === this.modalForm.type)
     },
     placeholderTips() {
       if (this.isIpv4) {
@@ -226,6 +235,9 @@ export default {
     },
   },
   methods: {
+    changeIpType() {
+      this.modalForm.interface = ''
+    },
     onClose() {
       this.$refs.modalForm.clearValidate()
     },
@@ -290,6 +302,7 @@ export default {
             wanList.push({
               value: item.interface,
               text: `${item.wanname}(${item.interface})`,
+              type: item.ipv4.length ? IP.IPv4 : item.ipv6.length ? IP.IPv6 : '',
             })
           }
         })

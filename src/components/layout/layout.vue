@@ -182,7 +182,9 @@ export default {
       this.isMobile = isMobileDevice()
     },
     getDevInfoData() {
-      getDevInfo().then(({ data }) => {
+      getDevInfo({
+        toast: false,
+      }).then(({ data }) => {
         this.title = data.model
       })
     },

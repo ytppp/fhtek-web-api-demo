@@ -16,7 +16,7 @@
               </div>
               <template #content>
                 <div style="white-space: pre-wrap">
-                  {{ scope.row.ip.split(' ').join('\n') }}
+                  {{ formatContent(scope.row.ip) }}
                 </div>
               </template>
             </fh-popover>
@@ -28,7 +28,7 @@
               </div>
               <template #content>
                 <div style="white-space: pre-wrap">
-                  {{ scope.row.gateway.split(' ').join('\n') }}
+                  {{ formatContent(scope.row.gateway) }}
                 </div>
               </template>
             </fh-popover>
@@ -44,7 +44,7 @@
         <template #body>
           <div class="display-form">
             <template v-for="(item, index) in displayInfo" :key="index">
-              <div class="display-form__item">
+              <div class="display-form__item" v-if="item.show">
                 <div class="display-form__label">{{ item.label }}</div>
                 <div class="display-form__value">{{ item.value }}</div>
               </div>
@@ -216,6 +216,8 @@ const getWanData = () => {
         ipv6.forEach((ipv6Item, index) => {
           if (ipv6Item.hasOwnProperty('address')) {
             ip += `${ipv6Item.address}${index === ipv6.length - 1 ? '' : ' '}`
+          }
+          if (ipv6Item.hasOwnProperty('gateway')) {
             gateway += `${ipv6Item.gateway}${index === ipv6.length - 1 ? '' : ' '}`
           }
           if (ipv6Item.hasOwnProperty('prefix')) {
@@ -243,20 +245,22 @@ const getWanData = () => {
     Object.assign(tableData, thisTableData)
   })
 }
-
+const formatContent = (value) => value.split(' ').join('\n')
 const detail = (row) => {
   visible.value = true
   const thisDisplayInfo = {
     wan: row.wan,
     statusAlias: row.statusAlias,
     typeAlias: row.typeAlias,
-    ip: row.ip,
-    gateway: row.gateway,
+    ip: formatContent(row.ip),
+    gateway: formatContent(row.gateway),
     dns1: row.dns1,
     dns2: row.dns2,
     prefix: row.prefix,
   }
-  defaultDataObj(displayInfo, thisDisplayInfo)
+  defaultDataObj(displayInfo, thisDisplayInfo, (key) => {
+    displayInfo[key].show = !(row.ipv4.length && key === 'prefix')
+  })
 }
 
 onMounted(() => {

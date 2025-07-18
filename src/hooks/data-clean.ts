@@ -11,13 +11,17 @@ export const useDataClean = () => {
       }
     })
   }
-  const defaultDataObj = (info, thisInfoKey) => {
+  const defaultDataObj = (info, thisInfoKey, fn?: (key: string) => {}) => {
     cleanData(info)
     Object.keys(info).forEach((key) => {
       info[key].value = thisInfoKey[key]
         ? `${thisInfoKey[key]} ${info[key].unit || ''}`
         : defaultVal
-      info[key].show = true
+      if (typeof fn === 'function') {
+        fn(key)
+      } else {
+        info[key].show = true
+      }
     })
   }
   const convertBooleanStatus = (flag: string | boolean) => {
