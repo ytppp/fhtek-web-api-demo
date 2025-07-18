@@ -83,6 +83,20 @@ function isValidStaticRouteMask(ip, mask) {
   if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
   return false
 }
+function isValidMask(ip) {
+  if (ip.split('.').filter((val) => val).length !== 4) return false
+  const i = ip2int(ip).toString(2).padStart(32, '0')
+  const result = i.split('10')
+  // result.length !== 2
+  if (result.length > 2) {
+    return false
+  }
+  // 有效mask
+  if (result[0].includes('0') || (result[1] && result[1].includes('1'))) {
+    return false
+  }
+  return true
+}
 export default {
   data() {
     return {
