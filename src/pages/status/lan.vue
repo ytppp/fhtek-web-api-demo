@@ -30,6 +30,13 @@
           :show-row-checkbox="false"
           :border="true"
         >
+          <template #name="scope">
+            <fh-popover v-if="scope.row.name" :content="scope.row.name">
+              <div style="width: 100px" class="ellipsis">
+                {{ scope.row.name }}
+              </div>
+            </fh-popover>
+          </template>
         </fh-table>
       </div>
       <div class="page__table">
