@@ -10,7 +10,7 @@
             <fh-select v-model="display" :options="displayOptions"></fh-select>
           </template>
           <template #ip="scope">
-            <fh-popover>
+            <fh-popover v-if="scope.row.ip">
               <div style="width: 100px" class="ellipsis">
                 {{ scope.row.ip }}
               </div>
@@ -22,7 +22,7 @@
             </fh-popover>
           </template>
           <template #gateway="scope">
-            <fh-popover>
+            <fh-popover v-if="scope.row.gateway">
               <div style="width: 100px" class="ellipsis">
                 {{ scope.row.gateway }}
               </div>
