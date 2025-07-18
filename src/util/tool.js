@@ -506,3 +506,23 @@ export const formatDuration = (value) => {
   timeArr.push(value)
   return timeArr
 }
+
+export function cidrToSubnetMask(prefixLength) {
+  if (typeof prefixLength !== 'number' || prefixLength < 0 || prefixLength > 32) {
+    return false
+  }
+
+  let binaryMask = ''
+  for (let i = 0; i < 32; i++) {
+    binaryMask += i < prefixLength ? '1' : '0'
+  }
+
+  const segments = []
+  for (let i = 0; i < 4; i++) {
+    const start = i * 8
+    const end = start + 8
+    segments.push(parseInt(binaryMask.substring(start, end), 2))
+  }
+
+  return segments.join('.')
+}

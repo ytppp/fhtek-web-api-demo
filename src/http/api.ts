@@ -1,5 +1,5 @@
 import { http } from './index'
-import type { ApiResponse } from './type'
+import type { ApiResponse, TAxiosRequestConfig } from './type'
 
 const api = 'api'
 const createData = (data: any) => ({ data })
@@ -481,8 +481,8 @@ export const setTime = (params): Promise<ApiResponse<any>> => {
   return http.post('setTime', createData(params))
 }
 
-export const getDevInfo = (): Promise<ApiResponse<any>> => {
-  return http.get('getDevinfo', undefined, { cancel: false })
+export const getDevInfo = (config?: TAxiosRequestConfig): Promise<ApiResponse<any>> => {
+  return http.get('getDevinfo', undefined, { cancel: false, ...config })
 }
 
 export const getPonInfo = (): Promise<ApiResponse<any>> => {
