@@ -4,13 +4,7 @@
       <h1 class="page__title">{{ $t('trans0546') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form
-        class="form form--small"
-        ref="formRef"
-        :model="form"
-        :rules="rules"
-        v-if="hasVoipWan"
-      >
+      <fh-form class="form form--small" ref="formRef" :model="form" v-if="hasVoipWan">
         <!-- <fh-form-item :label="$t('trans0135')" prop="register.protocol">
           <fh-select v-model="form.protocol" :options="voipProtocolOpts"></fh-select>
         </fh-form-item>
@@ -59,7 +53,7 @@
           </fh-form-item>
         </template>
         <template v-if="form.line1.active">
-          <div class="form__sub-header">
+          <div class="page__sub-header">
             <h2 class="page__title">{{ $t('trans0926').format(1) }}</h2>
           </div>
           <fh-form-item :label="$t('trans0839')">
@@ -76,7 +70,7 @@
           </fh-form-item>
         </template>
         <template v-if="form.line2.active">
-          <div class="form__sub-header">
+          <div class="page__sub-header">
             <h2 class="page__title">{{ $t('trans0926').format(2) }}</h2>
           </div>
           <fh-form-item :label="$t('trans0839')">

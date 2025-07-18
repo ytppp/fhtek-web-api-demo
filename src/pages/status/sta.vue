@@ -9,6 +9,13 @@
       </div>
       <div class="page__table">
         <fh-table :columns="dhcpColumn" :data-source="dhcpData" :show-row-checkbox="false">
+          <template #hostname="scope">
+            <fh-popover v-if="scope.row.hostname" :content="scope.row.hostname">
+              <div style="width: 100px" class="ellipsis">
+                {{ scope.row.hostname }}
+              </div>
+            </fh-popover>
+          </template>
         </fh-table>
       </div>
       <div class="page__sub-header">
@@ -16,6 +23,20 @@
       </div>
       <div class="page__table">
         <fh-table :columns="dhcpv6Column" :data-source="dhcpv6Data" :show-row-checkbox="false">
+          <template #duid="scope">
+            <fh-popover v-if="scope.row.duid" :content="scope.row.duid">
+              <div style="width: 100px" class="ellipsis">
+                {{ scope.row.duid }}
+              </div>
+            </fh-popover>
+          </template>
+          <template #hostname="scope">
+            <fh-popover v-if="scope.row.hostname" :content="scope.row.hostname">
+              <div style="width: 100px" class="ellipsis">
+                {{ scope.row.hostname }}
+              </div>
+            </fh-popover>
+          </template>
         </fh-table>
       </div>
     </div>
