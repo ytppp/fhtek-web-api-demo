@@ -64,7 +64,7 @@ import {
   isBoardcastIP,
   format,
   cidrToSubnetMask,
-  isValidMask,
+  ip2int,
   getIpAfter,
 } from '@/util/tool'
 import {
