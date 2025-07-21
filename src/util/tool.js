@@ -526,3 +526,24 @@ export function cidrToSubnetMask(prefixLength) {
 
   return segments.join('.')
 }
+
+// 格式化网络数据流量单位，value的初始单位应为B
+export const formatNetworkData = (value) => {
+  const units = ['KB', 'MB', 'GB', 'TB', 'PB']
+  let index = -1
+  value = Number(value)
+  if (!value) {
+    return { value, unit: '' }
+  }
+  if (!Number.isNaN(value)) {
+    do {
+      value /= 1000
+      index += 1
+    } while (value > 1000 && index < units.length - 1)
+    return {
+      value: value.toFixed(2),
+      unit: units[index],
+    }
+  }
+  return { value: '-', unit: '' }
+}

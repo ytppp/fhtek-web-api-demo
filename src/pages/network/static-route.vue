@@ -66,6 +66,7 @@ import {
   cidrToSubnetMask,
   ip2int,
   getIpAfter,
+  isValidIpv6AddrExtra,
 } from '@/util/tool'
 import {
   getWanInfo,
@@ -162,17 +163,22 @@ export default {
                 if (!flag && !mask) return false
                 const maskVal = flag ? suffix : mask
                 // isNetworkIP(ip, maskVal) || sBoardcastIP(ip, maskVal)
-                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal))
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal)) {
                   return false
-                if (!this.lanIp && this.lanIp === ip) return false
+                }
+                if (!this.lanIp && this.lanIp === ip) {
+                  return false
+                }
+                return true
               }
               if (this.isIpv6 && isIP(ip, IP.IPv6)) {
                 suffix = parseInt(suffix)
                 if (!isValidIpv6AddrExtra(ip) || (suffix < 0 && suffix > 128)) {
                   return false
                 }
+                return true
               }
-              return true
+              return false
             },
             message: this.$t('trans0397'),
           },
@@ -189,7 +195,6 @@ export default {
           },
           {
             rule: (value) => {
-              if (value.trim().length <= 255) return true
               if ((this.isIpv4 && isIP(value)) || (this.isIpv6 && isIP(value, IP.IPv6))) return true
               return false
             },
@@ -197,7 +202,7 @@ export default {
           },
           {
             rule: (value) =>
-              !this.data.some((item) => item.index !== this.index && item.domain === value),
+              !this.data.some((item) => item.index !== this.index && item.gateway === value),
             message: this.$t('trans0405'),
           },
         ],
@@ -285,11 +290,16 @@ export default {
     save() {
       if (this.$refs.modalForm.validate()) {
         const data = {}
-        const parts = this.modalForm.target.split('/')
-        if (this.isAdd) {
-          data.type = this.modalForm.type
+        if (this.isIpv4) {
+          const parts = this.modalForm.target.split('/')
           data.target = parts[0]
           data.mask = parts[1]
+        }
+        if (this.isIpv6) {
+          data.target = this.modalForm.target
+        }
+        if (this.isAdd) {
+          data.type = this.modalForm.type
           data.gateway = this.modalForm.gateway
           data.interface = this.modalForm.interface
           addStaticRoute(data).then((res) => {
@@ -299,8 +309,6 @@ export default {
         if (this.isEdit) {
           data.id = this.modalForm.id
           data.type = this.modalForm.type
-          data.target = parts[0]
-          data.mask = parts[1]
           data.gateway = this.modalForm.gateway
           data.interface = this.modalForm.interface
           editStaticRoute(data).then((res) => {
@@ -341,6 +349,7 @@ export default {
           items.forEach((item, i) => {
             tableData.push({
               ...item,
+              target: item.type === IP.IPv4 ? `${item.target}/${item.mask}` : item.target,
               index: i,
             })
           })

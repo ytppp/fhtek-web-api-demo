@@ -56,7 +56,7 @@
 import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
-import { format } from '@/util/tool'
+import { format, formatNetworkData } from '@/util/tool'
 import { getLanInfo, getWlanDevices } from '@/http/api'
 import { Lan1, Lan2, Lan3, Lan4, SsidText, NetType, netTypeText } from '@/util/constant'
 
@@ -185,13 +185,15 @@ const getLanInfoData = () => {
       },
     ]
     datas.forEach((item) => {
+      const receiveByte = formatNetworkData(item.receive.byte)
+      const sendByte = formatNetworkData(item.send.byte)
       thisInterfaceData.push({
         interface: item.ifname,
-        byte: item.receive.byte,
+        byte: `${receiveByte.value} ${receiveByte.unit}`,
         package: item.receive.package,
         error: item.receive.error,
         abandon: item.receive.abandon,
-        byte1: item.send.byte,
+        byte1: `${sendByte.value} ${sendByte.unit}`,
         package1: item.send.package,
         error1: item.send.error,
         abandon1: item.send.abandon,

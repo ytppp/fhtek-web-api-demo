@@ -9,6 +9,13 @@
           <template #filtergroup>
             <fh-select v-model="display" :options="displayOptions"></fh-select>
           </template>
+          <template #wan="scope">
+            <fh-popover v-if="scope.row.wan" :content="scope.row.wan">
+              <div style="width: 100px" class="ellipsis">
+                {{ scope.row.wan }}
+              </div>
+            </fh-popover>
+          </template>
           <template #ip="scope">
             <fh-popover v-if="scope.row.ip">
               <div style="width: 100px" class="ellipsis">
