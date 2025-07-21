@@ -188,7 +188,7 @@ const getLanInfoData = () => {
       const receiveByte = formatNetworkData(item.receive.byte)
       const sendByte = formatNetworkData(item.send.byte)
       thisInterfaceData.push({
-        interface: item.ifname,
+        interface: SsidText[item.ifname],
         byte: `${receiveByte.value} ${receiveByte.unit}`,
         package: item.receive.package,
         error: item.receive.error,
@@ -208,19 +208,19 @@ const convertLan = (lanVal) => {
   return lanVal === Down ? t('trans0653') : `${lanVal} Mbps`
 }
 const getLanDeviceData = () => {
-  getWlanDevices().then(({ data }) => {
+  getWlanDevices({
+    type: NetType.ethernet,
+  }).then(({ data }) => {
     const { items } = data
     if (items.length === 0) {
       return
     }
     const thisLanData = []
     items.forEach((item) => {
-      if (item.type === NetType.ethernet) {
-        thisLanData.push({
-          ...item,
-          typeAlias: netTypeText[item.type],
-        })
-      }
+      thisLanData.push({
+        ...item,
+        typeAlias: netTypeText[item.type],
+      })
     })
     Object.assign(lanData, thisLanData)
   })

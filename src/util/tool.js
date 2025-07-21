@@ -537,9 +537,9 @@ export const formatNetworkData = (value) => {
   }
   if (!Number.isNaN(value)) {
     do {
-      value /= 1000
+      value /= 1024
       index += 1
-    } while (value > 1000 && index < units.length - 1)
+    } while (value > 1024 && index < units.length - 1)
     return {
       value: value.toFixed(2),
       unit: units[index],
