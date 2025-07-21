@@ -10,17 +10,27 @@
             <fh-select v-model="display" :options="displayOptions"></fh-select>
           </template>
           <template #operationgroup>
-            <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
-              {{ $t('trans0164') }}
-            </fh-button>
+            <fh-icon
+              class="page__header-icon"
+              v-if="isShowAddBtn"
+              @click="openAddModal"
+              name="icon-add"
+              :title="$t('trans0164')"
+            />
           </template>
           <template #operation="scope">
-            <fh-button type="text" @click="openEditModal(scope.row)">
-              {{ $t('trans0165') }}
-            </fh-button>
-            <fh-button type="text" @click="del(scope.row)">
-              {{ $t('trans0111') }}
-            </fh-button>
+            <fh-icon
+              class="page__header-icon"
+              @click="openEditModal(scope.row)"
+              name="icon-edit-square"
+              :title="$t('trans0165')"
+            />
+            <fh-icon
+              class="page__header-icon"
+              @click="del(scope.row)"
+              name="icon-delete"
+              :title="$t('trans0111')"
+            />
           </template>
         </fh-table>
       </div>
@@ -134,6 +144,7 @@ export default {
       modalForm: {
         id: '',
         type: '',
+        type_pre: '',
         target: '',
         gateway: '',
         interface: '',
@@ -269,7 +280,7 @@ export default {
     },
     openAddModal() {
       this.modalForm.id = -1
-      this.modalForm.type = IP.IPv4
+      this.modalForm.type_pre = this.modalForm.type = IP.IPv4
       this.modalForm.target = ''
       this.modalForm.gateway = ''
       this.modalForm.interface = ''
@@ -279,7 +290,7 @@ export default {
     },
     openEditModal(row) {
       this.modalForm.id = row.id
-      this.modalForm.type = row.type
+      this.modalForm.type_pre = this.modalForm.type = row.type
       this.modalForm.target = row.target
       this.modalForm.gateway = row.gateway
       this.modalForm.interface = row.interface
@@ -307,6 +318,7 @@ export default {
           })
         }
         if (this.isEdit) {
+          data.type_pre = this.modalForm.type_pre
           data.id = this.modalForm.id
           data.type = this.modalForm.type
           data.gateway = this.modalForm.gateway

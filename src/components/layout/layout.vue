@@ -184,6 +184,7 @@ export default {
     getDevInfoData() {
       getDevInfo({
         toast: false,
+        loading: false,
       }).then(({ data }) => {
         this.title = data.model
       })
