@@ -586,17 +586,20 @@ const isEdit = computed(() => {
 })
 
 const type = computed(() => {
-  let text = ''
-  if (isIpv4.value) {
-    text = t('trans0375')
-  }
-  if (isIpv6.value) {
-    text = t('trans0376')
-  }
-  if (isIpMix.value) {
-    text = t('trans0377')
-  }
-  return text
+  // don't support 2022/07/21
+  // let text = ''
+  // if (isIpv4.value) {
+  //   text = t('trans0375')
+  // }
+  // if (isIpv6.value) {
+  //   text = t('trans0376')
+  // }
+  // if (isIpMix.value) {
+  //   text = t('trans0377')
+  // }
+  // return text
+  // don't support end
+  return t('trans0375')
 })
 const mode = computed(() => {
   let mode = ''
