@@ -45,7 +45,11 @@
             ></fh-select>
           </fh-form-item>
           <fh-form-item :label="t('trans0135')">
-            <fh-radio-group v-model="wan.protocol" class="wan-form__protocol-checkbox-group">
+            <fh-radio-group
+              @change="changeProtocol"
+              v-model="wan.protocol"
+              class="wan-form__protocol-checkbox-group"
+            >
               <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
                 {{ item.text }}
               </fh-radio>
@@ -619,13 +623,6 @@ watch(
   },
   { flush: 'pre' },
 )
-watch(
-  [() => wan.linkMode, () => wan.protocol],
-  () => {
-    initMtu()
-  },
-  { flush: 'pre' },
-)
 
 const beforeChangeWan = () => {
   lastWanId.value = wan.id
@@ -646,6 +643,10 @@ const changeLinkMode = () => {
   } else {
     wan.ipv4.netType = NetType.dhcp
   }
+  initMtu()
+}
+const changeProtocol = () => {
+  initMtu()
 }
 const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
 const isGatewaySameSegmentWithIp = (gateway, ip) =>

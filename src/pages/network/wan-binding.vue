@@ -32,7 +32,12 @@
             <fh-select v-model="form.mode" :options="modeList"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0753')" prop="pair" v-if="isVlan">
-            <fh-input v-model="form.pair"></fh-input>
+            <fh-input v-model="form.pair" placeholder="User VLAN/WAN VLAN"></fh-input>
+            <template #extra>
+              <span class="form__tips">
+                {{ $t('trans0930') }}
+              </span>
+            </template>
           </fh-form-item>
           <fh-form-item class="form__submit-btn">
             <fh-button @click="save" block>
@@ -100,27 +105,27 @@ const modalFormRules = reactive({
       rule: (value) => !/^\s*$/g.test(value),
       message: t('trans0004'),
     },
-    // {
-    //   rule: (value) => {
-    //     const multiPairRegex = /^(\d+\/\d+)(;\d+\/\d+)*$/
-    //     if (!multiPairRegex.test(value)) return false
-    //     const value2Arr = value
-    //       .split(';')
-    //       .map((item) => item.split('/'))
-    //       .flat()
-    //     return value2Arr.length === new Set(value2Arr).size
-    //   },
-    //   message: t('trans0128').format(t('trans0753')),
-    // },
-    // {
-    //   rule: (value) => {
-    //     const tempData = wanBindingData.filter((item) => item.index !== form.index)
-    //     return !tempData.some((item) => {
-    //       return item.vlanpair === value
-    //     })
-    //   },
-    //   message: t('trans0678').format(t('trans0753')),
-    // },
+    {
+      rule: (value) => {
+        const multiPairRegex = /^(\d+\/\d+)(;\d+\/\d+)*$/
+        if (!multiPairRegex.test(value)) return false
+        const value2Arr = value
+          .split(';')
+          .map((val) => val.split('/'))
+          .map((val) => val[0])
+        return value2Arr.length === new Set(value2Arr).size
+      },
+      message: t('trans0128').format(t('trans0753')),
+    },
+    {
+      rule: (value) => {
+        const tempData = wanBindingData.filter((item) => item.index !== form.index)
+        return !tempData.some((item) => {
+          return item.vlanpair === value
+        })
+      },
+      message: t('trans0678').format(t('trans0753')),
+    },
   ],
 })
 const isVlan = computed(() => form.mode === Mode.vlan)

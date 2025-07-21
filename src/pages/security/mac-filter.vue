@@ -5,7 +5,7 @@
     </div>
     <div class="page__content">
       <fh-form class="form" ref="formRef" :model="form">
-        <fh-form-item :label="$t('trans0058')">
+        <fh-form-item :label="$t('trans0833')">
           <fh-switch v-model="form.enable"></fh-switch>
         </fh-form-item>
         <template v-if="form.enable">

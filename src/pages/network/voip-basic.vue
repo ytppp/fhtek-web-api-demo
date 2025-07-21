@@ -4,7 +4,14 @@
       <h1 class="page__title">{{ $t('trans0546') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form form--small" ref="formRef" :model="form" v-if="hasVoipWan">
+      <fh-form
+        class="form form--small"
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        v-if="hasVoipWan"
+        label-width="260px"
+      >
         <!-- <fh-form-item :label="$t('trans0135')" prop="register.protocol">
           <fh-select v-model="form.protocol" :options="voipProtocolOpts"></fh-select>
         </fh-form-item>
@@ -102,18 +109,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-// import {
-//   getIpBefore,
-//   getIpAfter,
-//   isIP,
-//   ip2int,
-//   isMulticast,
-//   isLoopback,
-//   isNetworkIP,
-//   isBoardcastIP,
-//   isValidGatewayIP,
-//   getSubNetwork,
-// } from '@/util/tool'
+import { isValidInteger } from '@/util/tool'
 import { ServiceType } from '@/util/constant'
 import { getWan, getVoipBasicSettings, setVoipBasicSettings } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -174,108 +170,126 @@ const form = reactive({
   },
 })
 const rules = reactive({
-  protocol: [
-    {
-      rule: (value) => value,
-      message: t('trans0677').format(t('trans0135')),
-    },
-  ],
-  'register.server': [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-  ],
+  // protocol: [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0677').format(t('trans0135')),
+  //   },
+  // ],
+  // 'register.server': [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0004'),
+  //   },
+  // ],
   'register.port': [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidInteger(value, 0, 65535)
+      },
+      message: t('trans0567').format(0, 65535),
     },
   ],
-  'register.secServer': [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-  ],
+  // 'register.secServer': [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0004'),
+  //   },
+  // ],
   'register.secPort': [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidInteger(value, 0, 65535)
+      },
+      message: t('trans0567').format(0, 65535),
     },
   ],
-  'proxy.server': [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-  ],
+  // 'proxy.server': [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0004'),
+  //   },
+  // ],
   'proxy.port': [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidInteger(value, 0, 65535)
+      },
+      message: t('trans0567').format(0, 65535),
     },
   ],
-  'proxy.secServer': [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-  ],
+  // 'proxy.secServer': [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0004'),
+  //   },
+  // ],
   'proxy.secPort': [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidInteger(value, 0, 65535)
+      },
+      message: t('trans0567').format(0, 65535),
     },
   ],
-  'outboundProxy.proxy': [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-  ],
+  // 'outboundProxy.proxy': [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0004'),
+  //   },
+  // ],
   'outboundProxy.port': [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidInteger(value, 0, 65535)
+      },
+      message: t('trans0567').format(0, 65535),
     },
   ],
-  'outboundProxy.secProxy': [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-  ],
+  // 'outboundProxy.secProxy': [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0004'),
+  //   },
+  // ],
   'outboundProxy.secPort': [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidInteger(value, 0, 65535)
+      },
+      message: t('trans0567').format(0, 65535),
     },
   ],
-  'line1.account': [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-  ],
-  'line1.password': [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-  ],
-  'line2.account': [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-  ],
-  'line2.password': [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-  ],
+  // 'line1.account': [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0004'),
+  //   },
+  // ],
+  // 'line1.password': [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0004'),
+  //   },
+  // ],
+  // 'line2.account': [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0004'),
+  //   },
+  // ],
+  // 'line2.password': [
+  //   {
+  //     rule: (value) => value,
+  //     message: t('trans0004'),
+  //   },
+  // ],
 })
 const save = () => {
   if (!formRef.value.validate()) return
