@@ -46,13 +46,13 @@
           <fh-switch v-model="form.outboundProxy.enable"></fh-switch>
         </fh-form-item>
         <template v-if="form.outboundProxy.enable">
-          <fh-form-item :label="$t('trans0831')" prop="proxy.outboundProxy.proxy">
+          <fh-form-item :label="$t('trans0831')" prop="outboundProxy.proxy">
             <fh-input v-model="form.outboundProxy.proxy"> </fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0836')" prop="proxy.outboundProxy.port">
+          <fh-form-item :label="$t('trans0836')" prop="outboundProxy.port">
             <fh-input v-model="form.outboundProxy.port"> </fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0837')" prop="proxy.outboundProxy.secProxy">
+          <fh-form-item :label="$t('trans0837')" prop="outboundProxy.secProxy">
             <fh-input v-model="form.outboundProxy.secProxy"> </fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0838')" prop="outboundProxy.secPort">
@@ -69,10 +69,10 @@
           <fh-form-item :label="$t('trans0739')">
             {{ form.line1.registrationStatus }}
           </fh-form-item>
-          <fh-form-item :label="$t('trans0840')" prop="account">
+          <fh-form-item :label="$t('trans0840')" prop="line1.account">
             <fh-input v-model="form.line1.account"> </fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0841')" prop="password">
+          <fh-form-item :label="$t('trans0841')" prop="line1.password">
             <fh-input v-model="form.line1.password" type="password" show-password> </fh-input>
           </fh-form-item>
         </template>
@@ -86,10 +86,10 @@
           <fh-form-item :label="$t('trans0739')">
             {{ form.line2.registrationStatus }}
           </fh-form-item>
-          <fh-form-item :label="$t('trans0840')" prop="account">
+          <fh-form-item :label="$t('trans0840')" prop="line2.account">
             <fh-input v-model="form.line2.account"> </fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0841')" prop="password">
+          <fh-form-item :label="$t('trans0841')" prop="line2.password">
             <fh-input v-model="form.line2.password" type="password" show-password> </fh-input>
           </fh-form-item>
         </template>
@@ -109,7 +109,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isValidInteger } from '@/util/tool'
+import { isValidInteger, isValidSymbol, specialChar } from '@/util/tool'
 import { ServiceType } from '@/util/constant'
 import { getWan, getVoipBasicSettings, setVoipBasicSettings } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -176,12 +176,15 @@ const rules = reactive({
   //     message: t('trans0677').format(t('trans0135')),
   //   },
   // ],
-  // 'register.server': [
-  //   {
-  //     rule: (value) => value,
-  //     message: t('trans0004'),
-  //   },
-  // ],
+  'register.server': [
+    {
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0733'), t('trans0042').format(specialChar)),
+    },
+  ],
   'register.port': [
     {
       rule: (value) => {
@@ -191,12 +194,15 @@ const rules = reactive({
       message: t('trans0567').format(0, 65535),
     },
   ],
-  // 'register.secServer': [
-  //   {
-  //     rule: (value) => value,
-  //     message: t('trans0004'),
-  //   },
-  // ],
+  'register.secServer': [
+    {
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0735'), t('trans0042').format(specialChar)),
+    },
+  ],
   'register.secPort': [
     {
       rule: (value) => {
@@ -206,12 +212,15 @@ const rules = reactive({
       message: t('trans0567').format(0, 65535),
     },
   ],
-  // 'proxy.server': [
-  //   {
-  //     rule: (value) => value,
-  //     message: t('trans0004'),
-  //   },
-  // ],
+  'proxy.server': [
+    {
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0766'), t('trans0042').format(specialChar)),
+    },
+  ],
   'proxy.port': [
     {
       rule: (value) => {
@@ -221,12 +230,15 @@ const rules = reactive({
       message: t('trans0567').format(0, 65535),
     },
   ],
-  // 'proxy.secServer': [
-  //   {
-  //     rule: (value) => value,
-  //     message: t('trans0004'),
-  //   },
-  // ],
+  'proxy.secServer': [
+    {
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0770'), t('trans0042').format(specialChar)),
+    },
+  ],
   'proxy.secPort': [
     {
       rule: (value) => {
@@ -236,12 +248,15 @@ const rules = reactive({
       message: t('trans0567').format(0, 65535),
     },
   ],
-  // 'outboundProxy.proxy': [
-  //   {
-  //     rule: (value) => value,
-  //     message: t('trans0004'),
-  //   },
-  // ],
+  'outboundProxy.proxy': [
+    {
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0831'), t('trans0042').format(specialChar)),
+    },
+  ],
   'outboundProxy.port': [
     {
       rule: (value) => {
@@ -251,12 +266,15 @@ const rules = reactive({
       message: t('trans0567').format(0, 65535),
     },
   ],
-  // 'outboundProxy.secProxy': [
-  //   {
-  //     rule: (value) => value,
-  //     message: t('trans0004'),
-  //   },
-  // ],
+  'outboundProxy.secProxy': [
+    {
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0837'), t('trans0042').format(specialChar)),
+    },
+  ],
   'outboundProxy.secPort': [
     {
       rule: (value) => {
@@ -266,30 +284,42 @@ const rules = reactive({
       message: t('trans0567').format(0, 65535),
     },
   ],
-  // 'line1.account': [
-  //   {
-  //     rule: (value) => value,
-  //     message: t('trans0004'),
-  //   },
-  // ],
-  // 'line1.password': [
-  //   {
-  //     rule: (value) => value,
-  //     message: t('trans0004'),
-  //   },
-  // ],
-  // 'line2.account': [
-  //   {
-  //     rule: (value) => value,
-  //     message: t('trans0004'),
-  //   },
-  // ],
-  // 'line2.password': [
-  //   {
-  //     rule: (value) => value,
-  //     message: t('trans0004'),
-  //   },
-  // ],
+  'line1.account': [
+    {
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0840'), t('trans0042').format(specialChar)),
+    },
+  ],
+  'line1.password': [
+    {
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0841'), t('trans0042').format(specialChar)),
+    },
+  ],
+  'line2.account': [
+    {
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0840'), t('trans0042').format(specialChar)),
+    },
+  ],
+  'line2.password': [
+    {
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0841'), t('trans0042').format(specialChar)),
+    },
+  ],
 })
 const save = () => {
   if (!formRef.value.validate()) return

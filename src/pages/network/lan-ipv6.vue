@@ -8,11 +8,11 @@
         <fh-form-item :label="$t('trans0457')">
           <fh-switch v-model="form.enable"></fh-switch>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0489')">
-          <fh-select v-model="form.mode" :options="modes"> </fh-select>
-        </fh-form-item>
         <fh-form-item :label="$t('trans0485')">
           <fh-select v-model="form.pd_if" :options="wanList"> </fh-select>
+        </fh-form-item>
+        <fh-form-item :label="$t('trans0489')">
+          <fh-select v-model="form.mode" :options="modes"> </fh-select>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
@@ -29,11 +29,13 @@ import { ref, reactive, onMounted, inject } from 'vue'
 import { NetType, netTypeText } from '@/util/constant'
 import { getIpv6Lan, setIpv6Lan, getWanInfo } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'LanIpv6Page',
 })
 
+const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
 const loading = inject('loading')
 const modes = [
@@ -61,7 +63,7 @@ const modes = [
 const formRef = ref(null)
 const form = reactive({
   enable: true,
-  mode: NetType.slaac,
+  mode: '',
   pd_if: '',
 })
 const wanList = reactive([])
@@ -72,7 +74,12 @@ const getWanData = () => {
     if (items.length === 0) {
       return
     }
-    const thisWanList = []
+    const thisWanList = [
+      {
+        value: '',
+        text: t('trans0487'),
+      },
+    ]
     items.forEach((item) => {
       if (item.protocol !== NetType.bridge && item.ipv6.length) {
         thisWanList.push({
