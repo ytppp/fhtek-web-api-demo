@@ -211,11 +211,11 @@ export default {
             },
             message: this.$t('trans0116'),
           },
-          {
-            rule: (value) =>
-              !this.data.some((item) => item.index !== this.index && item.gateway === value),
-            message: this.$t('trans0405'),
-          },
+          // {
+          //   rule: (value) =>
+          //     !this.data.some((item) => item.index !== this.index && item.gateway === value),
+          //   message: this.$t('trans0405'),
+          // },
         ],
       },
       columns: [
