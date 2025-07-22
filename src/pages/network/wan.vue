@@ -36,6 +36,9 @@
         <fh-form-item :label="t('trans0763')" prop="serviceType">
           <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
         </fh-form-item>
+        <fh-form-item :label="t('trans0795')" v-if="isInternetWan">
+          <fh-switch v-model="wan.forceDefroute" />
+        </fh-form-item>
         <template v-if="isRoute">
           <fh-form-item :label="t('trans0848')">
             <fh-select
@@ -157,7 +160,7 @@
             <div class="page__sub-header">
               <h2 class="page__title">{{ $t('trans0593').format($t('trans0457')) }}</h2>
             </div>
-            <template v-if="isShowIpv6Pd">
+            <template v-if="isInternetWan">
               <fh-form-item :label="t('trans0782')">
                 <fh-switch v-model="wan.ipv6.pd.enable" />
               </fh-form-item>
@@ -483,6 +486,7 @@ const wanInitial = () => ({
   id: ModalType.add,
   enable: true,
   serviceType: ServiceType.INTERNET,
+  forceDefroute: false,
   linkMode: LinkMode.ip,
   lan: [],
   vlan: {
@@ -556,7 +560,7 @@ const isHidePortBinding = computed(
 const isHideEnableNat = computed(
   () => !(wan.serviceType === ServiceType.TR069 || wan.serviceType === ServiceType.VOICE),
 )
-const isShowIpv6Pd = computed(
+const isInternetWan = computed(
   () =>
     wan.serviceType === ServiceType.INTERNET ||
     wan.serviceType === ServiceType.TR069_INTERNET ||
@@ -622,7 +626,7 @@ const versionText = computed(() => {
 watch(
   () => wan.serviceType,
   () => {
-    if (!isShowIpv6Pd.value) wan.ipv6.pd.enable = false
+    if (!isInternetWan.value) wan.ipv6.pd.enable = false
   },
   { flush: 'pre' },
 )
@@ -757,6 +761,7 @@ const initWan = () => {
   const thisWan = wanList.find((item) => item.id === wan.id)
   wan.enable = convertBooleanStatus(thisWan.enable)
   wan.serviceType = thisWan.serviceType
+  wan.forceDefroute = convertBooleanStatus(thisWan.forceDefroute)
   wan.lan = thisWan.lan
   wan.vlan.mode = thisWan.vlan.mode
   wan.vlan.id = thisWan.vlan.id
@@ -824,6 +829,7 @@ const save = () => {
     const newWan = {
       enable: convertBooleanStatus(wan.enable),
       serviceType: wan.serviceType,
+      forceDefroute: convertBooleanStatus(wan.forceDefroute),
       lan: wan.lan,
       vlan: {
         mode: wan.vlan.mode,

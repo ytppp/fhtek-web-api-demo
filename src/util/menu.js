@@ -158,11 +158,11 @@ let menus = [
         text: 'trans0793',
         config,
       },
-      {
-        url: '/network/default-route',
-        text: 'trans0795',
-        config,
-      },
+      // {
+      //   url: '/network/default-route',
+      //   text: 'trans0795',
+      //   config,
+      // },
       {
         url: '/network/mesh',
         text: 'trans0568',
