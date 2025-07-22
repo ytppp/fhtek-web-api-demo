@@ -22,25 +22,25 @@
           <fh-input v-model="form.register.server"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0734')" prop="register.port">
-          <fh-input v-model="form.register.port"> </fh-input>
+          <fh-input v-model="form.register.port" :placeholder="numPlaceholder"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0735')" prop="register.secServer">
           <fh-input v-model="form.register.secServer"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0736')" prop="register.secPort">
-          <fh-input v-model="form.register.secPort"> </fh-input>
+          <fh-input v-model="form.register.secPort" :placeholder="numPlaceholder"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0766')" prop="proxy.server">
           <fh-input v-model="form.proxy.server"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0767')" prop="proxy.port">
-          <fh-input v-model="form.proxy.port"> </fh-input>
+          <fh-input v-model="form.proxy.port" :placeholder="numPlaceholder"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0770')" prop="proxy.secServer">
           <fh-input v-model="form.proxy.secServer"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0786')" prop="proxy.secPort">
-          <fh-input v-model="form.proxy.secPort"> </fh-input>
+          <fh-input v-model="form.proxy.secPort" :placeholder="numPlaceholder"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0817')">
           <fh-switch v-model="form.outboundProxy.enable"></fh-switch>
@@ -50,13 +50,13 @@
             <fh-input v-model="form.outboundProxy.proxy"> </fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0836')" prop="outboundProxy.port">
-            <fh-input v-model="form.outboundProxy.port"> </fh-input>
+            <fh-input v-model="form.outboundProxy.port" :placeholder="numPlaceholder"> </fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0837')" prop="outboundProxy.secProxy">
             <fh-input v-model="form.outboundProxy.secProxy"> </fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0838')" prop="outboundProxy.secPort">
-            <fh-input v-model="form.outboundProxy.secPort"> </fh-input>
+            <fh-input v-model="form.outboundProxy.secPort" :placeholder="numPlaceholder"> </fh-input>
           </fh-form-item>
         </template>
         <template v-if="form.line1.active">
@@ -169,6 +169,7 @@ const form = reactive({
     active: false,
   },
 })
+const numPlaceholder = '0-65535'
 const rules = reactive({
   // protocol: [
   //   {

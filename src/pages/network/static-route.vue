@@ -191,7 +191,7 @@ export default {
               }
               return false
             },
-            message: this.$t('trans0397'),
+            message: this.$t('trans0566').format(this.$t('trans0792')),
           },
           {
             rule: (value) =>
@@ -209,7 +209,7 @@ export default {
               if ((this.isIpv4 && isIP(value)) || (this.isIpv6 && isIP(value, IP.IPv6))) return true
               return false
             },
-            message: this.$t('trans0116'),
+            message: this.$t('trans0566').format(this.$t('trans0656')),
           },
           // {
           //   rule: (value) =>
