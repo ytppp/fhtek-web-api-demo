@@ -1,17 +1,19 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0628') }}</h1>
+      <h1 class="page__title">{{ $t('trans0931') }}</h1>
     </div>
     <div class="page__content">
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0702') }}</h2>
       </div>
-      <div class="display-form">
-        <div class="display-form__item">
-          <div class="display-form__label">{{ $t('trans0705') }}</div>
-          <div class="display-form__value">{{ b24gConnStatus }}</div>
-        </div>
+      <div class="display-form display-form-has-border">
+        <template v-for="(item, index) in b24gInfo" :key="index">
+          <div class="display-form__item">
+            <div class="display-form__label">{{ item.label }}</div>
+            <div class="display-form__value">{{ item.value }}</div>
+          </div>
+        </template>
       </div>
       <!-- <div class="page__table">
         <fh-table
@@ -33,32 +35,16 @@
         >
         </fh-table>
       </div>
-      <div class="page__table">
-        <fh-table
-          :columns="b24gWlanColumns"
-          :data-source="b24gWlanData"
-          :show-row-checkbox="false"
-          :show-index="false"
-          :show-header="false"
-          :border="true"
-        >
-          <template #name="scope">
-            <fh-popover v-if="scope.row.name" :content="scope.row.name">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.name }}
-              </div>
-            </fh-popover>
-          </template>
-        </fh-table>
-      </div>
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0704') }}</h2>
       </div>
-      <div class="display-form">
-        <div class="display-form__item">
-          <div class="display-form__label">{{ $t('trans0705') }}</div>
-          <div class="display-form__value">{{ b5gConnStatus }}</div>
-        </div>
+      <div class="display-form display-form-has-border">
+        <template v-for="(item, index) in b24gInfo" :key="index">
+          <div class="display-form__item">
+            <div class="display-form__label">{{ item.label }}</div>
+            <div class="display-form__value">{{ item.value }}</div>
+          </div>
+        </template>
       </div>
       <!-- <div class="page__table">
         <fh-table
@@ -80,24 +66,6 @@
         >
         </fh-table>
       </div>
-      <div class="page__table">
-        <fh-table
-          :columns="b5gWlanColumns"
-          :data-source="b5gWlanData"
-          :show-row-checkbox="false"
-          :show-index="false"
-          :show-header="false"
-          :border="true"
-        >
-          <template #name="scope">
-            <fh-popover v-if="scope.row.name" :content="scope.row.name">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.name }}
-              </div>
-            </fh-popover>
-          </template>
-        </fh-table>
-      </div>
     </div>
   </div>
 </template>
@@ -108,16 +76,34 @@ import { useI18n } from 'vue-i18n'
 import { format } from '@/util/tool'
 import { getWifi2gAdv, getWifi5gAdv, getWifi2g, getWifi5g, getWlanDevices } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
-import { encryptsText, NetType, netTypeText } from '@/util/constant'
+import { encryptsText, NetType, netTypeText, SsidText } from '@/util/constant'
 
 defineOptions({
-  name: 'StatusWlanPage',
+  name: 'StatusWlanInfoPage',
 })
 
 const { t } = useI18n()
-const { convertBooleanStatus } = useDataClean()
-const b24gConnStatus = ref('')
-const b5gConnStatus = ref('')
+const { convertBooleanStatus, defaultVal, defaultDataObj } = useDataClean()
+const b24gInfo = reactive({
+  status: {
+    label: t('trans0705'),
+    value: defaultVal,
+  },
+  channel: {
+    label: t('trans0507'),
+    value: defaultVal,
+  },
+})
+const b5gInfo = reactive({
+  status: {
+    label: t('trans0705'),
+    value: defaultVal,
+  },
+  channel: {
+    label: t('trans0507'),
+    value: defaultVal,
+  },
+})
 const b24gInterfaceColumns = reactive([
   {
     key: 'interface',
@@ -170,12 +156,12 @@ const b24gInterfaceColumns = reactive([
 ])
 const b24gSsidColumns = reactive([
   {
-    key: 'index',
-    title: t('trans0711'),
+    key: 'ssid',
+    title: t('trans0454'),
   },
   {
     key: 'name',
-    title: t('trans0712'),
+    title: t('trans0051'),
   },
   {
     key: 'enableAlias',
@@ -188,88 +174,16 @@ const b24gSsidColumns = reactive([
   {
     key: 'encryptAlias',
     title: t('trans0031'),
-  },
-])
-const b24gWlanColumns = reactive([
-  {
-    key: 'index',
-    title: t('trans0711'),
-  },
-  {
-    key: 'ip',
-    title: format(t('trans0598'), [t('trans0056')]),
-  },
-  {
-    key: 'mac',
-    title: format(t('trans0598'), [t('trans0057')]),
-  },
-  {
-    key: 'name',
-    title: t('trans0070'),
-  },
-  {
-    key: 'typeAlias',
-    title: t('trans0717'),
-  },
-])
-const b5gInterfaceColumns = reactive([
-  {
-    key: 'interface',
-    title: t('trans0140'),
-  },
-  {
-    key: 'receive',
-    title: t('trans0706'),
-    children: [
-      {
-        key: 'byte',
-        title: t('trans0708'),
-      },
-      {
-        key: 'package',
-        title: t('trans0709'),
-      },
-      {
-        key: 'error',
-        title: t('trans0234'),
-      },
-      {
-        key: 'abandon',
-        title: t('trans0710'),
-      },
-    ],
-  },
-  {
-    key: 'send',
-    title: t('trans0707'),
-    children: [
-      {
-        key: 'byte',
-        title: t('trans0708'),
-      },
-      {
-        key: 'package',
-        title: t('trans0709'),
-      },
-      {
-        key: 'error',
-        title: t('trans0234'),
-      },
-      {
-        key: 'abandon',
-        title: t('trans0710'),
-      },
-    ],
   },
 ])
 const b5gSsidColumns = reactive([
   {
-    key: 'index',
-    title: t('trans0711'),
+    key: 'ssid',
+    title: t('trans0454'),
   },
   {
     key: 'name',
-    title: t('trans0712'),
+    title: t('trans0051'),
   },
   {
     key: 'enableAlias',
@@ -284,43 +198,27 @@ const b5gSsidColumns = reactive([
     title: t('trans0031'),
   },
 ])
-const b5gWlanColumns = reactive([
-  {
-    key: 'index',
-    title: t('trans0711'),
-  },
-  {
-    key: 'ip',
-    title: format(t('trans0598'), [t('trans0056')]),
-  },
-  {
-    key: 'mac',
-    title: format(t('trans0598'), [t('trans0057')]),
-  },
-  {
-    key: 'name',
-    title: t('trans0070'),
-  },
-  {
-    key: 'typeAlias',
-    title: t('trans0717'),
-  },
-])
 const b24gInterfaceData = reactive([])
 const b24gSsidData = reactive([])
-const b24gWlanData = reactive([])
 const b5gInterfaceData = reactive([])
 const b5gSsidData = reactive([])
-const b5gWlanData = reactive([])
 
 const getWifi2gAdvData = () => {
   getWifi2gAdv().then(({ data }) => {
-    b24gConnStatus.value = convertBooleanStatus(data.enable) ? t('trans0103') : t('trans0054')
+    const thisB24gInfo = {
+      status: convertBooleanStatus(data.enable) ? t('trans0103') : t('trans0054'),
+      channel: data.channel_current,
+    }
+    defaultDataObj(b24gInfo, thisB24gInfo)
   })
 }
 const getWifi5gAdvData = () => {
   getWifi5gAdv().then(({ data }) => {
-    b5gConnStatus.value = convertBooleanStatus(data.enable) ? t('trans0103') : t('trans0054')
+    const thisB5gInfo = {
+      status: convertBooleanStatus(data.enable) ? t('trans0103') : t('trans0054'),
+      channel: data.channel_current,
+    }
+    defaultDataObj(b5gInfo, thisB5gInfo)
   })
 }
 const getWifi2gBasicData = () => {
@@ -331,6 +229,7 @@ const getWifi2gBasicData = () => {
     }
     const tableData = items.map((item) => ({
       ...item,
+      ssid: SsidText[item.id],
       enableAlias: convertBooleanStatus(item.enable) ? t('trans0103') : t('trans0054'),
       hideAlias: convertBooleanStatus(item.enable_hide) ? t('trans0103') : t('trans0054'),
       encryptAlias: encryptsText[item.auth_mode],
@@ -346,6 +245,7 @@ const getWifi5gBasicData = () => {
     }
     const tableData = items.map((item) => ({
       ...item,
+      ssid: SsidText[item.id],
       enableAlias: convertBooleanStatus(item.enable) ? t('trans0103') : t('trans0054'),
       hideAlias: convertBooleanStatus(item.enable_hide) ? t('trans0103') : t('trans0054'),
       encryptAlias: encryptsText[item.auth_mode],
@@ -353,37 +253,10 @@ const getWifi5gBasicData = () => {
     Object.assign(b5gSsidData, tableData)
   })
 }
-const getWlanDeviceData = () => {
-  getWlanDevices().then(({ data }) => {
-    const { items } = data
-    if (items.length === 0) {
-      return
-    }
-    const b24gWlanTableData = []
-    const b5gWlanTableData = []
-    items.forEach((item) => {
-      if (item.type === NetType.b24g) {
-        b24gWlanTableData.push({
-          ...item,
-          typeAlias: netTypeText[item.type],
-        })
-      }
-      if (item.type === NetType.b5g) {
-        b5gWlanTableData.push({
-          ...item,
-          typeAlias: netTypeText[item.type],
-        })
-      }
-    })
-    Object.assign(b24gWlanData, b24gWlanTableData)
-    Object.assign(b5gWlanData, b5gWlanTableData)
-  })
-}
 onMounted(() => {
   getWifi2gAdvData()
   getWifi5gAdvData()
   getWifi2gBasicData()
   getWifi5gBasicData()
-  getWlanDeviceData()
 })
 </script>

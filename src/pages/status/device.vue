@@ -4,7 +4,7 @@
       <h1 class="page__title">{{ $t('trans0482') }}</h1>
     </div>
     <div class="page__content">
-      <div class="display-form">
+      <div class="display-form display-form-has-border">
         <template v-for="(item, index) in basicInfo" :key="index">
           <div class="display-form__item">
             <div class="display-form__label">{{ item.label }}</div>

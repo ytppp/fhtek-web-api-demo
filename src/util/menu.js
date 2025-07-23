@@ -51,11 +51,35 @@ let menus = [
         url: '/status/wlan',
         text: 'trans0628',
         config,
+        children: [
+          {
+            url: '/status/wlan/info',
+            text: 'trans0931',
+            config,
+          },
+          {
+            url: '/status/wlan/devices',
+            text: 'trans0932',
+            config,
+          },
+        ],
       },
       {
         url: '/status/lan',
         text: 'trans0715',
         config,
+        children: [
+          {
+            url: '/status/lan/info',
+            text: 'trans0936',
+            config,
+          },
+          {
+            url: '/status/lan/devices',
+            text: 'trans0495',
+            config,
+          },
+        ],
       },
       {
         url: '/status/optical',

@@ -36,10 +36,10 @@
         <fh-form-item :label="t('trans0763')" prop="serviceType">
           <fh-select v-model="wan.serviceType" :options="serviceTypeOptions"></fh-select>
         </fh-form-item>
-        <fh-form-item :label="t('trans0795')" v-if="isInternetWan">
-          <fh-switch v-model="wan.forceDefroute" />
-        </fh-form-item>
         <template v-if="isRoute">
+          <fh-form-item :label="t('trans0795')" v-if="isInternetWan">
+            <fh-switch v-model="wan.forceDefroute" />
+          </fh-form-item>
           <fh-form-item :label="t('trans0848')">
             <fh-select
               @change="changeLinkMode"

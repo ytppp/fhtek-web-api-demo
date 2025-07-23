@@ -22,6 +22,10 @@
 </template>
 
 <script>
+import { getUpnpConfig, setUpnpConfig, getUpnpList } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
+
+const { convertBooleanStatus } = useDataClean()
 export default {
   data() {
     return {
@@ -51,7 +55,7 @@ export default {
           title: this.$t('trans0179'),
         },
         {
-          key: 'status',
+          key: 'statusAlias',
           title: this.$t('trans0166'),
         },
       ],
@@ -59,9 +63,34 @@ export default {
     }
   },
   methods: {
-    switchEnable(val) {
-      // todo
+    switchEnable() {
+      setUpnpConfig({
+        enable: convertBooleanStatus(this.form.enable),
+      })
     },
+    getUpnpConfigData() {
+      getUpnpConfig().then(({ data }) => {
+        this.form.enable = convertBooleanStatus(data.enable)
+      })
+    },
+    getUpnpListData() {
+      getUpnpList().then(({ data }) => {
+        const { items } = data
+        const newItems = items.map((item) => {
+          return {
+            ...item,
+            statusAlias: convertBooleanStatus(item.status)
+              ? this.$t('trans0103')
+              : this.$t('trans0054'),
+          }
+        })
+        this.data = newItems
+      })
+    },
+  },
+  mounted() {
+    this.getUpnpConfigData()
+    this.getUpnpListData()
   },
 }
 </script>
