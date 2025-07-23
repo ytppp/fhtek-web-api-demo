@@ -197,7 +197,7 @@ export default {
         })
     },
     getWifiMacFilterStatusData() {
-      getWifiMacFilterStatus().then(({ data }) => {
+      return getWifiMacFilterStatus().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
         this.form.mode = data.mode
       })
@@ -228,7 +228,7 @@ export default {
       this.visible = true
     },
     getWifiMacFilterList() {
-      getWifiMacFilter()
+      return getWifiMacFilter()
         .then(({ data }) => {
           const tableData = []
           const { items } = data
@@ -252,7 +252,7 @@ export default {
       this.$refs.modalFormRef.clearValidate()
     },
     getSsidIndex() {
-      Promise.all([getWifi2g(), getWifi5g()]).then(([res1, res2]) => {
+      return Promise.all([getWifi2g(), getWifi5g()]).then(([res1, res2]) => {
         const wifi2g = res1.data.items
         const wifi5g = res2.data.items
         const ssidOpts = [
@@ -302,11 +302,23 @@ export default {
         this.getWifiMacFilterList()
       })
     },
+    init() {
+      if (this.$route.query.mac) {
+        if (!this.form.enable) {
+          this.form.enable = true
+          this.form.mode = FilteringModes.blackList
+          this.save()
+        }
+        this.openAddModal()
+        this.modalForm.mac = this.$route.query.mac
+      }
+    },
   },
-  mounted() {
-    this.getWifiMacFilterStatusData()
-    this.getSsidIndex()
-    this.getWifiMacFilterList()
+  async mounted() {
+    await this.getWifiMacFilterStatusData()
+    await this.getSsidIndex()
+    await this.getWifiMacFilterList()
+    await this.init()
   },
 }
 </script>

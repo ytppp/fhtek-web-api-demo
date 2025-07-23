@@ -4,8 +4,9 @@ import { http } from '@/http'
 import login from '../pages/login/index.vue'
 import home from '../pages/home/index.vue'
 import deviceStatus from '../pages/status/device.vue'
-import wan from '../pages/status/wan.vue'
-import wlan from '../pages/status/wlan.vue'
+import wanStatus from '../pages/status/wan.vue'
+import wlanInfo from '../pages/status/wlan-info.vue'
+import wlanDevices from '../pages/status/wlan-devices.vue'
 import lanStatus from '../pages/status/lan.vue'
 import optical from '../pages/status/optical.vue'
 import voip from '../pages/status/voip.vue'
@@ -81,13 +82,18 @@ export const router = createRouter({
     },
     {
       path: '/status/wan',
-      name: 'wan',
-      component: wan,
+      name: 'wanStatus',
+      component: wanStatus,
     },
     {
-      path: '/status/wlan',
-      name: 'wlan',
-      component: wlan,
+      path: '/status/wlan/info',
+      name: 'wlanInfo',
+      component: wlanInfo,
+    },
+    {
+      path: '/status/wlan/devices',
+      name: 'wlanDevices',
+      component: wlanDevices,
     },
     {
       path: '/status/lan',
