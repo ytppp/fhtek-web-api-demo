@@ -7,7 +7,8 @@ import deviceStatus from '../pages/status/device.vue'
 import wanStatus from '../pages/status/wan.vue'
 import wlanInfo from '../pages/status/wlan-info.vue'
 import wlanDevices from '../pages/status/wlan-devices.vue'
-import lanStatus from '../pages/status/lan.vue'
+import lanInfo from '../pages/status/lan-info.vue'
+import lanDevices from '../pages/status/lan-devices.vue'
 import optical from '../pages/status/optical.vue'
 import voip from '../pages/status/voip.vue'
 import cwmpStatus from '../pages/status/cwmp.vue'
@@ -96,9 +97,14 @@ export const router = createRouter({
       component: wlanDevices,
     },
     {
-      path: '/status/lan',
-      name: 'lanStatus',
-      component: lanStatus,
+      path: '/status/lan/info',
+      name: 'lanInfo',
+      component: lanInfo,
+    },
+    {
+      path: '/status/lan/devices',
+      name: 'lanDevices',
+      component: lanDevices,
     },
     {
       path: '/status/optical',

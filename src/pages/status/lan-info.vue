@@ -1,13 +1,13 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0715') }}</h1>
+      <h1 class="page__title">{{ $t('trans0936') }}</h1>
     </div>
     <div class="page__content">
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0716') }}</h2>
       </div>
-      <div class="display-form">
+      <div class="display-form display-form-has-border">
         <div class="display-form__item" v-for="(item, index) in basicInfo" :key="index">
           <div class="display-form__label">{{ item.label }}</div>
           <div class="display-form__value">{{ item.value }}</div>
@@ -19,24 +19,9 @@
           :data-source="lanListData"
           :show-row-checkbox="false"
           :show-index="false"
+          :show-header="false"
           :border="true"
         >
-        </fh-table>
-      </div>
-      <div class="page__table">
-        <fh-table
-          :columns="lanColumns"
-          :data-source="lanData"
-          :show-row-checkbox="false"
-          :border="true"
-        >
-          <template #name="scope">
-            <fh-popover v-if="scope.row.name" :content="scope.row.name">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.name }}
-              </div>
-            </fh-popover>
-          </template>
         </fh-table>
       </div>
       <div class="page__table">
@@ -45,6 +30,7 @@
           :data-source="interfaceData"
           :show-row-checkbox="false"
           :show-index="false"
+          :show-header="false"
         >
         </fh-table>
       </div>
@@ -57,8 +43,8 @@ import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
 import { format, formatNetworkData } from '@/util/tool'
-import { getLanInfo, getWlanDevices } from '@/http/api'
-import { Lan1, Lan2, Lan3, Lan4, SsidText, NetType, netTypeText } from '@/util/constant'
+import { getLanInfo } from '@/http/api'
+import { Lan1, Lan2, Lan3, Lan4, SsidText } from '@/util/constant'
 
 const { t } = useI18n()
 const { defaultDataObj, defaultVal } = useDataClean()
@@ -93,24 +79,6 @@ const lanListColumns = reactive([
   {
     key: Lan4,
     title: SsidText[Lan4],
-  },
-])
-const lanColumns = reactive([
-  {
-    key: 'ip',
-    title: format(t('trans0598'), [t('trans0056')]),
-  },
-  {
-    key: 'mac',
-    title: format(t('trans0598'), [t('trans0057')]),
-  },
-  {
-    key: 'name',
-    title: t('trans0070'),
-  },
-  {
-    key: 'typeAlias',
-    title: t('trans0717'),
   },
 ])
 const interfaceColumns = reactive([
@@ -164,7 +132,6 @@ const interfaceColumns = reactive([
   },
 ])
 const lanListData = reactive([])
-const lanData = reactive([])
 const interfaceData = reactive([])
 
 const getLanInfoData = () => {
@@ -207,27 +174,8 @@ const getLanInfoData = () => {
 const convertLan = (lanVal) => {
   return lanVal === Down ? t('trans0653') : `${lanVal} Mbps`
 }
-const getLanDeviceData = () => {
-  getWlanDevices({
-    type: NetType.ethernet,
-  }).then(({ data }) => {
-    const { items } = data
-    if (items.length === 0) {
-      return
-    }
-    const thisLanData = []
-    items.forEach((item) => {
-      thisLanData.push({
-        ...item,
-        typeAlias: netTypeText[item.type],
-      })
-    })
-    Object.assign(lanData, thisLanData)
-  })
-}
 
 onMounted(() => {
   getLanInfoData()
-  getLanDeviceData()
 })
 </script>

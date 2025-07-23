@@ -502,3 +502,15 @@ export const getLanInfo = (): Promise<ApiResponse<any>> => {
 export const getWanInfo = (): Promise<ApiResponse<any>> => {
   return http.get('getWaninfo')
 }
+
+export const getUpnpConfig = (): Promise<ApiResponse<any>> => {
+  return http.get('getUpnpConfig')
+}
+
+export const setUpnpConfig = (params): Promise<ApiResponse<any>> => {
+  return http.post('setUpnpConfig', createData(params))
+}
+
+export const getUpnpList = (): Promise<ApiResponse<any>> => {
+  return http.get('getUpnpList')
+}

@@ -83,12 +83,12 @@ const wlanDevicesColumns = reactive([
     title: t('trans0051'),
   },
   {
-    key: 'ip',
-    title: format(t('trans0598'), [t('trans0056')]),
+    key: 'name',
+    title: t('trans0935'),
   },
   {
-    key: 'name',
-    title: t('trans0070'),
+    key: 'ip',
+    title: format(t('trans0598'), [t('trans0056')]),
   },
   {
     key: 'mac',
