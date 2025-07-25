@@ -16,11 +16,6 @@
           :show-header="false"
           :border="true"
         >
-          <template #ip="scope">
-            <div style="white-space: pre-wrap" class="ellipsis" v-if="scope.row.ip">
-              {{ scope.row.ip }}
-            </div>
-          </template>
         </fh-table>
       </div>
       <div class="page__sub-header">
@@ -35,11 +30,6 @@
           :show-header="false"
           :border="true"
         >
-          <template #ip="scope">
-            <div style="white-space: pre-wrap" class="ellipsis" v-if="scope.row.ip">
-              {{ scope.row.ip }}
-            </div>
-          </template>
         </fh-table>
       </div>
       <fh-modal v-model="visible" :title="$t('trans0929')">
@@ -54,7 +44,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { format } from '@/util/tool'
+import { format, cidrToSubnetMask } from '@/util/tool'
 import { getWanInfo } from '@/http/api'
 import { IP, NetType, netTypeText } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
@@ -79,7 +69,7 @@ const columns = reactive([
   {
     key: 'wan',
     title: t('trans0140'),
-    width: '200',
+    width: '240',
   },
   {
     key: 'statusAlias',
@@ -101,12 +91,37 @@ const columns = reactive([
     title: format(t('trans0598'), [t('trans0057')]),
     width: '200',
   },
+  {
+    key: 'mask',
+    title: t('trans0459'),
+    width: '150',
+  },
+  {
+    key: 'mode',
+    title: t('trans0080'),
+    width: '100',
+  },
+  {
+    key: 'gateway',
+    title: t('trans0548'),
+    width: '200',
+  },
+  {
+    key: 'dns1',
+    title: t('trans0496'),
+    width: '200',
+  },
+  {
+    key: 'dns2',
+    title: t('trans0497'),
+    width: '200',
+  },
 ])
 const ipv6Columns = reactive([
   {
     key: 'wan',
     title: t('trans0140'),
-    width: '200',
+    width: '240',
   },
   {
     key: 'statusAlias',
@@ -116,7 +131,7 @@ const ipv6Columns = reactive([
   {
     key: 'prefix',
     title: t('trans0476'),
-    width: '300',
+    width: '220',
   },
   {
     key: 'ip',
@@ -131,6 +146,26 @@ const ipv6Columns = reactive([
   {
     key: 'mac',
     title: format(t('trans0598'), [t('trans0057')]),
+    width: '200',
+  },
+  {
+    key: 'gateway',
+    title: t('trans0548'),
+    width: '200',
+  },
+  {
+    key: 'mode',
+    title: t('trans0080'),
+    width: '100',
+  },
+  {
+    key: 'dns1',
+    title: t('trans0496'),
+    width: '200',
+  },
+  {
+    key: 'dns2',
+    title: t('trans0497'),
     width: '200',
   },
 ])
@@ -215,6 +250,8 @@ const getWanData = () => {
         ...item,
         wan: item.wanname,
         ip: ipArr.map((val) => val.split('/')[0]).join(' '),
+        mask: ipArr.map((val) => cidrToSubnetMask(Number(val.split('/')[1]))).join(' '),
+        mode: netTypeText[item.protocol],
         gateway: gatewayArr.join(' '),
         prefix: prefixArr.join(''),
         dns1,
@@ -223,12 +260,12 @@ const getWanData = () => {
         mac: item.macaddr,
         statusAlias,
       }
-      if (ipv4.length > 0) {
+      if (ipv4.length > 0 || item.protocol === NetType.dhcp) {
         thisIpv4Data.push(tableItem)
-      } else if (ipv6.length > 0) {
+      } else if (ipv6.length > 0 || item.protocol === NetType.dhcpv6) {
         thisIpv6Data.push(tableItem)
       }
-      if (item.protocol === 'bridge') {
+      if (item.protocol === NetType.bridge) {
         thisIpv4Data.push(tableItem)
         thisIpv6Data.push(tableItem)
       }
@@ -263,7 +300,7 @@ onMounted(() => {
 <style lang="less">
 .wan-status {
   .table-main {
-    width: 980px;
+    max-width: 980px;
   }
 }
 </style>

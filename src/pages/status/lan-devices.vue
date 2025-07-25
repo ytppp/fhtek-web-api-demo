@@ -12,16 +12,9 @@
           :show-header="false"
           :border="true"
         >
-          <template #name="scope">
-            <fh-popover v-if="scope.row.name" :content="scope.row.name">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.name }}
-              </div>
-            </fh-popover>
-          </template>
           <template #blacklist="scope">
             <fh-icon
-              @click="goWifiMacFilter(scope.row.mac)"
+              @click="goMacFilter(scope.row.mac)"
               class="page__header-icon"
               name="icon-add"
               :title="$t('trans0164')"
@@ -45,12 +38,12 @@ const { t } = useI18n()
 const dialog = inject('dialog')
 const lanColumns = reactive([
   {
-    key: 'ip',
-    title: format(t('trans0598'), [t('trans0056')]),
-  },
-  {
     key: 'name',
     title: t('trans0935'),
+  },
+  {
+    key: 'ip',
+    title: format(t('trans0598'), [t('trans0056')]),
   },
   {
     key: 'mac',
@@ -74,7 +67,7 @@ const getLanDeviceData = () => {
     Object.assign(lanData, items)
   })
 }
-const goWifiMacFilter = (mac) => {
+const goMacFilter = (mac) => {
   dialog
     .confirm({
       okText: t('trans0019'),
@@ -83,7 +76,7 @@ const goWifiMacFilter = (mac) => {
     })
     .then(() => {
       router.push({
-        name: 'wifiMacFilter',
+        name: 'macFilter',
         query: { t: Date.now(), mac },
       })
     })

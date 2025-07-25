@@ -117,15 +117,6 @@ const modalFormRules = reactive({
       },
       message: t('trans0128').format(t('trans0753')),
     },
-    {
-      rule: (value) => {
-        const tempData = wanBindingData.filter((item) => item.index !== form.index)
-        return !tempData.some((item) => {
-          return item.vlanpair === value
-        })
-      },
-      message: t('trans0678').format(t('trans0753')),
-    },
   ],
 })
 const isVlan = computed(() => form.mode === Mode.vlan)

@@ -400,7 +400,8 @@ export default {
       return this.dataSource.length
         ? {
             width: col.width && `${col.width}px`,
-            maxWidth: col.width && `${col.width}px`,
+            // minWidth: col.width && `${col.width}px`,
+            // maxWidth: col.width && `${col.width}px`,
           }
         : {}
     },
