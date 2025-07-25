@@ -213,7 +213,7 @@ export function isPrivateIP(ip) {
 // eg:
 //  ip: 192.168.110.0 mask: 255.255.255.0 true
 //  ip: 192.168.0.0 mask: 255.255.0.0 true
-export function isNetworkIP(ip, mask) {
+export function isNetworkIP(ip, mask = '255.255.255.0') {
   const bip = ip2int(ip)
   const bmask = ip2int(mask)
   const r = (bip & bmask) >>> 0 // >>>0去掉符号位

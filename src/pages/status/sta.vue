@@ -67,7 +67,7 @@ const dhcpColumn = reactive([
   },
   {
     key: 'hostname',
-    title: t('trans0747'),
+    title: t('trans0935'),
   },
   {
     key: 'lease',

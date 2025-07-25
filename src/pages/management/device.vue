@@ -131,6 +131,13 @@ const handleReboot = () => {
   sessionStorage.setItem('reboot', '1')
   createRebootCountDown()
 }
+const handleReset = () => {
+  loading.open({
+    tip: t('trans0617'),
+  })
+  sessionStorage.setItem('reset', '1')
+  createResetCountDown()
+}
 const reboot = () => {
   dialog
     .confirm({
@@ -152,11 +159,7 @@ const reset = () => {
   startReset().then(({ data }) => {
     const status = data.status
     if (status === Status.doing) {
-      loading.open({
-        tip: t('trans0617'),
-      })
-      sessionStorage.setItem('reset', '1')
-      createResetCountDown()
+      handleReset()
     }
   })
 }

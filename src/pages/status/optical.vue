@@ -7,36 +7,15 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0719') }}</h2>
       </div>
-      <div class="display-form">
-        <template v-for="(item, index) in linkInfo" :key="index">
-          <div class="display-form__item">
-            <div class="display-form__label">{{ item.label }}</div>
-            <div class="display-form__value">{{ item.value }}</div>
-          </div>
-        </template>
-      </div>
+      <fh-descriptions :data="linkInfo"></fh-descriptions>
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0720') }}</h2>
       </div>
-      <div class="display-form">
-        <template v-for="(item, index) in packetsInfo" :key="index">
-          <div class="display-form__item">
-            <div class="display-form__label">{{ item.label }}</div>
-            <div class="display-form__value">{{ item.value }}</div>
-          </div>
-        </template>
-      </div>
+      <fh-descriptions :data="packetsInfo"></fh-descriptions>
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0721') }}</h2>
       </div>
-      <div class="display-form">
-        <template v-for="(item, index) in opticalInfo" :key="index">
-          <div class="display-form__item">
-            <div class="display-form__label">{{ item.label }}</div>
-            <div class="display-form__value">{{ item.value }}</div>
-          </div>
-        </template>
-      </div>
+      <fh-descriptions :data="opticalInfo"></fh-descriptions>
     </div>
   </div>
 </template>

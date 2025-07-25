@@ -7,33 +7,32 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0749') }}</h2>
       </div>
-      <div class="display-form">
-        <div class="display-form__item">
-          <div class="display-form__label">{{ $t('trans0813') }}</div>
-          <div class="display-form__value">{{ usbText }}</div>
-        </div>
-      </div>
+      <fh-descriptions :data="usbInfo"></fh-descriptions>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getUsb } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
 const { t } = useI18n()
-const { convertBooleanStatus } = useDataClean()
-const hasUsbDevice = ref(false)
+const { convertBooleanStatus, defaultDataObj, defaultVal } = useDataClean()
 
-const usbText = computed(() => {
-  return hasUsbDevice.value ? t('trans0652') : t('trans0653')
+const usbInfo = reactive({
+  status: {
+    label: t('trans0813'),
+    value: defaultVal,
+  },
 })
 
 const getUsbInfo = () => {
   getUsb().then(({ data }) => {
-    hasUsbDevice.value = convertBooleanStatus(data.has_usb)
+    defaultDataObj(usbInfo, {
+      status: convertBooleanStatus(data.has_usb) ? t('trans0652') : t('trans0653'),
+    })
   })
 }
 

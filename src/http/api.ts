@@ -216,6 +216,22 @@ export const delStaticRoute = (params): Promise<ApiResponse<any>> => {
   return http.post('network.static_route:delete', createData(params))
 }
 
+export const getDhcpStaticIp = (): Promise<ApiResponse<any>> => {
+  return http.post('getDhcpStaticIp')
+}
+
+export const addDhcpStaticIp = (params): Promise<ApiResponse<any>> => {
+  return http.post('addDhcpStaticIp', createData(params))
+}
+
+export const editDhcpStaticIp = (params): Promise<ApiResponse<any>> => {
+  return http.post('editDhcpStaticIp', createData(params))
+}
+
+export const delDhcpStaticIp = (params): Promise<ApiResponse<any>> => {
+  return http.post('delDhcpStaticIp', createData(params))
+}
+
 export const getOntAuth = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
     method: 'management.ont_auth:get',
@@ -416,6 +432,30 @@ export const startReboot = (): Promise<ApiResponse<any>> => {
 
 export const rebootStatus = (): Promise<ApiResponse<any>> => {
   return http.get('getRebootStatus', undefined, { loading: false, toast: false })
+}
+
+export const startPing = (params): Promise<ApiResponse<any>> => {
+  return http.post('startPing', createData(params))
+}
+
+export const pingStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getPingStatus', undefined, { loading: false, toast: false })
+}
+
+export const getPingResults = (): Promise<ApiResponse<any>> => {
+  return http.get('getPingResults')
+}
+
+export const startTraceroute = (params): Promise<ApiResponse<any>> => {
+  return http.post('startTraceroute', createData(params))
+}
+
+export const tracerouteStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getTracerouteStatus', undefined, { loading: false, toast: false })
+}
+
+export const getTracerouteResults = (): Promise<ApiResponse<any>> => {
+  return http.get('getTracerouteResults')
 }
 
 export const startReset = (): Promise<ApiResponse<any>> => {

@@ -10,17 +10,27 @@
             <fh-select v-model="display" :options="displayOptions"></fh-select>
           </template>
           <template #operationgroup>
-            <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
-              {{ $t('trans0164') }}
-            </fh-button>
+            <fh-icon
+              class="page__header-icon"
+              v-if="isShowAddBtn"
+              @click="openAddModal"
+              name="icon-add"
+              :title="$t('trans0164')"
+            />
           </template>
           <template #operation="scope">
-            <fh-button type="text" @click="openEditModal(scope.row)">
-              {{ $t('trans0165') }}
-            </fh-button>
-            <fh-button type="text" @click="del(scope.row)">
-              {{ $t('trans0111') }}
-            </fh-button>
+            <fh-icon
+              class="page__header-icon"
+              @click="openEditModal(scope.row)"
+              name="icon-edit-square"
+              :title="$t('trans0165')"
+            />
+            <fh-icon
+              class="page__header-icon"
+              @click="del(scope.row)"
+              name="icon-delete"
+              :title="$t('trans0111')"
+            />
           </template>
         </fh-table>
       </div>
@@ -28,7 +38,7 @@
     <fh-modal v-model="visible" :title="modalTitle">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
-          <fh-form-item :label="$t('trans0770')">
+          <fh-form-item :label="$t('trans0135')">
             <fh-radio-group v-model="modalForm.type">
               <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
                 {{ item.text }}
@@ -53,8 +63,22 @@
 </template>
 
 <script>
-import { isIP, isMulticast, isLoopback, isNetworkIP, isBoardcastIP, format } from '@/util/tool'
-import { getWan, getStaticRoute, addStaticRoute, editStaticRoute, delStaticRoute } from '@/http/api'
+import {
+  isIP,
+  isMulticast,
+  isLoopback,
+  getIpBefore,
+  isMac,
+  isNetworkIP,
+  isBoardcastIP,
+} from '@/util/tool'
+import {
+  getLan,
+  getDhcpStaticIp,
+  addDhcpStaticIp,
+  editDhcpStaticIp,
+  delDhcpStaticIp,
+} from '@/http/api'
 import { ModalType, IP } from '@/util/constant'
 
 const maxRuleNum = 16
@@ -66,6 +90,7 @@ export default {
       maxRuleNum,
       modalType: ModalType.add,
       visible: false,
+      lanIp: '',
       display: all,
       displayOptions: [
         {
@@ -104,11 +129,81 @@ export default {
             rule: (value) => value,
             message: this.$t('trans0004'),
           },
+          {
+            rule: (value) => {
+              if (this.isIpv4) {
+                if (isIP(value, IP.IPv4)) {
+                  // if (isMulticast(value) || isLoopback(value)) {
+                  //   return false
+                  // }
+                  return true
+                }
+                return false
+              }
+              if (this.isIpv6) {
+                return isIP(value, IP.IPv6)
+              }
+            },
+            message: this.$t('trans0397'),
+          },
+          // {
+          //   rule: (value) => {
+          //     if (this.isIpv6) {
+          //       return true
+          //     }
+          //     if (!this.lanIp) {
+          //       return true
+          //     }
+          //     const lanIpBefore = getIpBefore(this.lanIp)
+          //     const ipBefore = getIpBefore(value)
+          //     if (ipBefore !== lanIpBefore || this.lanIp === value) {
+          //       return false
+          //     }
+          //     return true
+          //   },
+          //   message: this.$t('trans0397'),
+          // },
+          {
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.ip === value
+              })
+              return flag
+            },
+            message: this.$t('trans0399'),
+          },
         ],
         mac: [
           {
             rule: (value) => value.trim(),
             message: this.$t('trans0004'),
+          },
+          {
+            rule: (value) => isMac(value),
+            message: this.$t('trans0566').format(this.$t('trans0097')),
+          },
+          {
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.mac === value
+              })
+              return flag
+            },
+            message: this.$t('trans0400'),
           },
         ],
       },
@@ -158,9 +253,8 @@ export default {
     openAddModal() {
       this.modalForm.id = -1
       this.modalForm.type = IP.IPv4
-      this.modalForm.target = ''
-      this.modalForm.gateway = ''
-      this.modalForm.interface = ''
+      this.modalForm.ip = ''
+      this.modalForm.mac = ''
       this.index = -1
       this.modalType = ModalType.add
       this.visible = true
@@ -168,9 +262,8 @@ export default {
     openEditModal(row) {
       this.modalForm.id = row.id
       this.modalForm.type = row.type
-      this.modalForm.target = row.target
-      this.modalForm.gateway = row.gateway
-      this.modalForm.interface = row.interface
+      this.modalForm.ip = row.ip
+      this.modalForm.mac = row.mac
       this.index = row.index
       this.modalType = ModalType.edit
       this.visible = true
@@ -180,32 +273,30 @@ export default {
         const data = {}
         if (this.isAdd) {
           data.type = this.modalForm.type
-          data.target = this.modalForm.target
-          data.gateway = this.modalForm.gateway
-          data.interface = this.modalForm.interface
-          addStaticRoute([data]).then((res) => {
-            this.getStaticRouteListData()
+          data.ip = this.modalForm.ip
+          data.mac = this.modalForm.mac
+          addDhcpStaticIp(data).then(() => {
+            this.getDhcpStaticIpData()
           })
         }
         if (this.isEdit) {
           data.id = this.modalForm.id
           data.type = this.modalForm.type
-          data.target = this.modalForm.target
-          data.gateway = this.modalForm.gateway
-          data.interface = this.modalForm.interface
-          editStaticRoute([data]).then((res) => {
-            this.getStaticRouteListData()
+          data.ip = this.modalForm.ip
+          data.mac = this.modalForm.mac
+          editDhcpStaticIp(data).then(() => {
+            this.getDhcpStaticIpData()
           })
         }
       }
     },
     del(row) {
-      delStaticRoute({ id: row.id }).then((res) => {
-        this.getStaticRouteListData()
+      delDhcpStaticIp({ id: row.id }).then(() => {
+        this.getDhcpStaticIpData()
       })
     },
-    getStaticRouteListData() {
-      getStaticRoute()
+    getDhcpStaticIpData() {
+      getDhcpStaticIp()
         .then(({ data }) => {
           const tableData = []
           const { items } = data
@@ -222,9 +313,15 @@ export default {
           this.visible = false
         })
     },
+    getLanData() {
+      getLan().then(({ data }) => {
+        this.lanIp = data.lan.ip
+      })
+    },
   },
   created() {
-    this.getStaticRouteListData()
+    this.getLanData()
+    this.getDhcpStaticIpData()
   },
 }
 </script>

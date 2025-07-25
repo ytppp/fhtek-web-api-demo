@@ -7,12 +7,7 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0716') }}</h2>
       </div>
-      <div class="display-form display-form-has-border">
-        <div class="display-form__item" v-for="(item, index) in basicInfo" :key="index">
-          <div class="display-form__label">{{ item.label }}</div>
-          <div class="display-form__value">{{ item.value }}</div>
-        </div>
-      </div>
+      <fh-descriptions :data="basicInfo" :border="true"></fh-descriptions>
       <div class="page__table">
         <fh-table
           :columns="lanListColumns"
@@ -45,8 +40,9 @@ import { useDataClean } from '@/hooks/data-clean'
 import { format, formatNetworkData } from '@/util/tool'
 import { getLanInfo } from '@/http/api'
 import { Lan1, Lan2, Lan3, Lan4, SsidText } from '@/util/constant'
+import { number } from 'echarts'
 
-const { t } = useI18n()
+const { t, n } = useI18n()
 const { defaultDataObj, defaultVal } = useDataClean()
 const Down = 'down'
 const basicInfo = reactive({
@@ -157,13 +153,13 @@ const getLanInfoData = () => {
       thisInterfaceData.push({
         interface: SsidText[item.ifname],
         byte: `${receiveByte.value} ${receiveByte.unit}`,
-        package: item.receive.package,
-        error: item.receive.error,
-        abandon: item.receive.abandon,
+        package: n(Number(item.receive.package)),
+        error: n(Number(item.receive.error)),
+        abandon: n(Number(item.receive.abandon)),
         byte1: `${sendByte.value} ${sendByte.unit}`,
-        package1: item.send.package,
-        error1: item.send.error,
-        abandon1: item.send.abandon,
+        package1: n(Number(item.send.package)),
+        error1: n(Number(item.send.error)),
+        abandon1: n(Number(item.send.abandon)),
       })
     })
     defaultDataObj(basicInfo, thisBasicInfo)
