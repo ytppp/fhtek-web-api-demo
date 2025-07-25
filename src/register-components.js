@@ -1,4 +1,5 @@
 import FhButton from './components/button/button.vue'
+import FhDescriptions from './components/descriptions/descriptions.vue'
 import FhIcon from './components/icon/icon.vue'
 import FhInput from './components/input/input.vue'
 import FhForm from './components/form/form.vue'
@@ -55,6 +56,7 @@ const registerComponents = (app) => {
   app.component('FhTimePicker', FhTimePicker)
   app.component('FhStep', FhStep)
   app.component('FhTable', FhTable)
+  app.component('FhDescriptions', FhDescriptions)
 
   app.directive('clickoutside', clickoutside)
   app.directive('loading', vloading)

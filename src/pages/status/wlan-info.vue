@@ -7,14 +7,7 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0702') }}</h2>
       </div>
-      <div class="display-form display-form-has-border">
-        <template v-for="(item, index) in b24gInfo" :key="index">
-          <div class="display-form__item">
-            <div class="display-form__label">{{ item.label }}</div>
-            <div class="display-form__value">{{ item.value }}</div>
-          </div>
-        </template>
-      </div>
+      <fh-descriptions :data="b24gInfo" :border="true"></fh-descriptions>
       <!-- <div class="page__table">
         <fh-table
           :columns="b24gInterfaceColumns"
@@ -38,14 +31,7 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0704') }}</h2>
       </div>
-      <div class="display-form display-form-has-border">
-        <template v-for="(item, index) in b24gInfo" :key="index">
-          <div class="display-form__item">
-            <div class="display-form__label">{{ item.label }}</div>
-            <div class="display-form__value">{{ item.value }}</div>
-          </div>
-        </template>
-      </div>
+      <fh-descriptions :data="b5gInfo" :border="true"></fh-descriptions>
       <!-- <div class="page__table">
         <fh-table
           :columns="b5gInterfaceColumns"

@@ -1,62 +1,50 @@
 <template>
-  <div class="page">
+  <div class="page wan-status">
     <div class="page__header">
       <h1 class="page__title">{{ $t('trans0140') }}</h1>
     </div>
     <div class="page__content">
+      <div class="page__sub-header">
+        <h2 class="page__title">{{ $t('trans0593').format($t('trans0456')) }}</h2>
+      </div>
       <div class="page__table">
-        <fh-table :columns="columns" :data-source="displayData" :show-row-checkbox="false">
-          <template #filtergroup>
-            <fh-select v-model="display" :options="displayOptions"></fh-select>
-          </template>
-          <template #wan="scope">
-            <fh-popover v-if="scope.row.wan" :content="scope.row.wan">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.wan }}
-              </div>
-            </fh-popover>
-          </template>
+        <fh-table
+          :columns="columns"
+          :data-source="ipv4Data"
+          :show-index="false"
+          :show-row-checkbox="false"
+          :show-header="false"
+          :border="true"
+        >
           <template #ip="scope">
-            <fh-popover v-if="scope.row.ip">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.ip }}
-              </div>
-              <template #content>
-                <div style="white-space: pre-wrap">
-                  {{ formatContent(scope.row.ip) }}
-                </div>
-              </template>
-            </fh-popover>
+            <div style="white-space: pre-wrap" class="ellipsis" v-if="scope.row.ip">
+              {{ scope.row.ip }}
+            </div>
           </template>
-          <template #gateway="scope">
-            <fh-popover v-if="scope.row.gateway">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.gateway }}
-              </div>
-              <template #content>
-                <div style="white-space: pre-wrap">
-                  {{ formatContent(scope.row.gateway) }}
-                </div>
-              </template>
-            </fh-popover>
-          </template>
-          <template #operation="scope">
-            <fh-button type="text" @click="detail(scope.row)">
-              {{ $t('trans0929') }}
-            </fh-button>
+        </fh-table>
+      </div>
+      <div class="page__sub-header">
+        <h2 class="page__title">{{ $t('trans0593').format($t('trans0457')) }}</h2>
+      </div>
+      <div class="page__table">
+        <fh-table
+          :columns="ipv6Columns"
+          :data-source="ipv6Data"
+          :show-index="false"
+          :show-row-checkbox="false"
+          :show-header="false"
+          :border="true"
+        >
+          <template #ip="scope">
+            <div style="white-space: pre-wrap" class="ellipsis" v-if="scope.row.ip">
+              {{ scope.row.ip }}
+            </div>
           </template>
         </fh-table>
       </div>
       <fh-modal v-model="visible" :title="$t('trans0929')">
         <template #body>
-          <div class="display-form">
-            <template v-for="(item, index) in displayInfo" :key="index">
-              <div class="display-form__item" v-if="item.show">
-                <div class="display-form__label">{{ item.label }}</div>
-                <div class="display-form__value">{{ item.value }}</div>
-              </div>
-            </template>
-          </div>
+          <fh-descriptions :data="displayInfo"></fh-descriptions>
         </template>
       </fh-modal>
     </div>
@@ -82,76 +70,69 @@ enum Status {
 
 const { t } = useI18n()
 const { defaultDataObj, defaultVal } = useDataClean()
-const all = 'all'
 const StatusText = {
   [Status.UP]: t('trans0652'),
   [Status.DOWN]: t('trans0653'),
 }
-const display = ref(all)
 const visible = ref(false)
-const displayOptions = [
-  {
-    value: all,
-    text: t('trans0537'),
-  },
-  {
-    value: IP.IPv4,
-    text: t('trans0456'),
-  },
-  {
-    value: IP.IPv6,
-    text: t('trans0457'),
-  },
-  {
-    value: NetType.bridge,
-    text: t('trans0083'),
-  },
-]
-const ipAndMaskText = `${format(t('trans0598'), [t('trans0056')])}/${t('trans0459')}`
 const columns = reactive([
   {
     key: 'wan',
     title: t('trans0140'),
+    width: '200',
   },
   {
     key: 'statusAlias',
     title: t('trans0166'),
+    width: '100',
   },
   {
     key: 'ip',
-    title: ipAndMaskText,
+    title: format(t('trans0598'), [t('trans0056')]),
+    width: '150',
   },
   {
-    key: 'typeAlias',
-    title: t('trans0080'),
+    key: 'vlanPriority',
+    title: t('trans0450'),
+    width: '120',
   },
-  // no data support
-  // {
-  //   key: 'vlanPriority',
-  //   title: t('trans0450'),
-  // },
-  // {
-  //   key: 'mac',
-  //   title: format(t('trans0598'), [t('trans0057')]),
-  // },
-  // no data support end
   {
-    key: 'gateway',
-    title: t('trans0548'),
+    key: 'mac',
+    title: format(t('trans0598'), [t('trans0057')]),
     width: '200',
   },
-  // {
-  //   key: 'dns1',
-  //   title: t('trans0496'),
-  // },
-  // {
-  //   key: 'dns2',
-  //   title: t('trans0497'),
-  // },
-  // {
-  //   key: 'prefix',
-  //   title: t('trans0476'),
-  // },
+])
+const ipv6Columns = reactive([
+  {
+    key: 'wan',
+    title: t('trans0140'),
+    width: '200',
+  },
+  {
+    key: 'statusAlias',
+    title: t('trans0166'),
+    width: '100',
+  },
+  {
+    key: 'prefix',
+    title: t('trans0476'),
+    width: '300',
+  },
+  {
+    key: 'ip',
+    title: format(t('trans0598'), [t('trans0056')]),
+    width: '300',
+  },
+  {
+    key: 'vlanPriority',
+    title: t('trans0450'),
+    width: '120',
+  },
+  {
+    key: 'mac',
+    title: format(t('trans0598'), [t('trans0057')]),
+    width: '200',
+  },
 ])
 const displayInfo = reactive({
   wan: {
@@ -167,7 +148,7 @@ const displayInfo = reactive({
     value: defaultVal,
   },
   ip: {
-    label: ipAndMaskText,
+    label: format(t('trans0598'), [t('trans0056')]),
     value: defaultVal,
   },
   gateway: {
@@ -187,14 +168,8 @@ const displayInfo = reactive({
     value: defaultVal,
   },
 })
-const tableData = reactive([])
-
-const displayData = computed(() => {
-  if (display.value === all) {
-    return tableData
-  }
-  return tableData.filter((item) => item.display === display.value)
-})
+const ipv4Data = reactive([])
+const ipv6Data = reactive([])
 
 const getWanData = () => {
   getWanInfo().then(({ data }) => {
@@ -202,54 +177,64 @@ const getWanData = () => {
     if (items.length === 0) {
       return
     }
-    const thisTableData = []
+    const thisIpv4Data = []
+    const thisIpv6Data = []
     items.forEach((item) => {
       const ipv4 = item.ipv4
       const ipv6 = item.ipv6
-      let ip = ''
-      let gateway = ''
-      let display = ''
-      let prefix = ''
       let dns1 = ''
       let dns2 = ''
-      if (item.protocol === 'bridge') {
-        display = NetType.bridge
-      } else if (ipv4.length > 0) {
-        display = IP.IPv4
-        ip = ipv4[0].address
-        gateway = ipv4[0].gateway
-      } else if (ipv6.length > 0) {
-        display = IP.IPv6
-        ipv6.forEach((ipv6Item, index) => {
-          if (ipv6Item.hasOwnProperty('address')) {
-            ip += `${ipv6Item.address}${index === ipv6.length - 1 ? '' : ' '}`
-          }
-          if (ipv6Item.hasOwnProperty('gateway')) {
-            gateway += `${ipv6Item.gateway}${index === ipv6.length - 1 ? '' : ' '}`
-          }
-          if (ipv6Item.hasOwnProperty('prefix')) {
-            prefix = ipv6Item.prefix
-          }
-        })
-      }
+      const statusAlias = StatusText[item.status]
       if (item.dns_servers.length > 0) {
         dns1 = item.dns_servers[0]
         dns2 = item.dns_servers.length === 2 && item.dns_servers[1]
       }
-      thisTableData.push({
+      const ipArr: string[] = []
+      const gatewayArr: string[] = []
+      const prefixArr: string[] = []
+      ipv4.forEach((ipv4Item) => {
+        if (ipv4Item.hasOwnProperty('address')) {
+          ipArr.push(ipv4Item.address)
+        }
+        if (ipv4Item.hasOwnProperty('gateway')) {
+          gatewayArr.push(ipv4Item.gateway)
+        }
+      })
+      ipv6.forEach((ipv6Item) => {
+        if (ipv6Item.hasOwnProperty('address')) {
+          ipArr.push(ipv6Item.address)
+        }
+        if (ipv6Item.hasOwnProperty('gateway')) {
+          gatewayArr.push(ipv6Item.gateway)
+        }
+        if (ipv6Item.hasOwnProperty('prefix')) {
+          prefixArr.push(ipv6Item.prefix)
+        }
+      })
+      const tableItem = {
         ...item,
-        wan: `${item.wanname}(${item.interface})`,
-        statusAlias: StatusText[item.status],
-        display,
-        typeAlias: netTypeText[item.protocol],
-        ip,
-        gateway,
-        prefix,
+        wan: item.wanname,
+        ip: ipArr.map((val) => val.split('/')[0]).join(' '),
+        gateway: gatewayArr.join(' '),
+        prefix: prefixArr.join(''),
         dns1,
         dns2,
-      })
+        vlanPriority: `${item.vid}/${item.p8021}`,
+        mac: item.macaddr,
+        statusAlias,
+      }
+      if (ipv4.length > 0) {
+        thisIpv4Data.push(tableItem)
+      } else if (ipv6.length > 0) {
+        thisIpv6Data.push(tableItem)
+      }
+      if (item.protocol === 'bridge') {
+        thisIpv4Data.push(tableItem)
+        thisIpv6Data.push(tableItem)
+      }
     })
-    Object.assign(tableData, thisTableData)
+    Object.assign(ipv4Data, thisIpv4Data)
+    Object.assign(ipv6Data, thisIpv6Data)
   })
 }
 const formatContent = (value) => value.split(' ').join('\n')
@@ -274,3 +259,11 @@ onMounted(() => {
   getWanData()
 })
 </script>
+
+<style lang="less">
+.wan-status {
+  .table-main {
+    width: 980px;
+  }
+}
+</style>

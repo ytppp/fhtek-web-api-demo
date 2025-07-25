@@ -5,32 +5,9 @@
     </div>
     <div class="page__content">
       <template v-if="hasVoipWan">
-        <div class="display-form">
-          <template v-for="(item, index) in registerInfo" :key="index">
-            <div class="display-form__item">
-              <div class="display-form__label">{{ item.label }}</div>
-              <div class="display-form__value">{{ item.value }}</div>
-            </div>
-          </template>
-        </div>
-        <div class="display-form">
-          <template v-if="isLine1Active">
-            <template v-for="(item, index) in line1Info" :key="index">
-              <div class="display-form__item">
-                <div class="display-form__label">{{ item.label }}</div>
-                <div class="display-form__value">{{ item.value }}</div>
-              </div>
-            </template>
-          </template>
-          <template v-if="isLine2Active">
-            <template v-for="(item, index) in line2Info" :key="index">
-              <div class="display-form__item">
-                <div class="display-form__label">{{ item.label }}</div>
-                <div class="display-form__value">{{ item.value }}</div>
-              </div>
-            </template>
-          </template>
-        </div>
+        <fh-descriptions :data="registerInfo"></fh-descriptions>
+        <fh-descriptions :data="line1Info" v-if="isLine1Active"></fh-descriptions>
+        <fh-descriptions :data="line2Info" v-if="isLine2Active"></fh-descriptions>
       </template>
       <div style="padding-left: 20px; font-size: 16px" v-else>
         {{ $t('trans0604') }}

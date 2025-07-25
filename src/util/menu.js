@@ -49,7 +49,7 @@ let menus = [
       },
       {
         url: '/status/wlan',
-        text: 'trans0628',
+        text: 'trans0017',
         config,
         children: [
           {
@@ -66,7 +66,7 @@ let menus = [
       },
       {
         url: '/status/lan',
-        text: 'trans0715',
+        text: 'trans0156',
         config,
         children: [
           {
@@ -76,7 +76,7 @@ let menus = [
           },
           {
             url: '/status/lan/devices',
-            text: 'trans0495',
+            text: 'trans0628',
             config,
           },
         ],

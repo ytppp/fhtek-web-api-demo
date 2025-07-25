@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format } from '@/util/tool'
 import { getWlanDevices } from '@/http/api'
@@ -77,6 +77,7 @@ defineOptions({
 })
 
 const { t } = useI18n()
+const dialog = inject('dialog')
 const wlanDevicesColumns = reactive([
   {
     key: 'ssid',
@@ -129,10 +130,19 @@ const getWlanDeviceData = () => {
   })
 }
 const goWifiMacFilter = (mac) => {
-  router.push({
-    name: 'wifiMacFilter',
-    query: { t: Date.now(), mac },
-  })
+  dialog
+    .confirm({
+      okText: t('trans0019'),
+      cancelText: t('trans0020'),
+      message: t('trans0937'),
+    })
+    .then(() => {
+      router.push({
+        name: 'wifiMacFilter',
+        query: { t: Date.now(), mac },
+      })
+    })
+    .catch(() => {})
 }
 onMounted(() => {
   getWlanDeviceData()
