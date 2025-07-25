@@ -68,15 +68,19 @@
             <fh-input v-model="wan.multiVlanId"></fh-input>
             <template #extra>{{ rangeTips(t('trans0777'), '1', '4094') }}</template>
           </fh-form-item>
-          <fh-form-item :label="statusText">
-            <fh-switch v-model="wan.igmpEnable"></fh-switch>
-          </fh-form-item>
-          <fh-form-item
-            :label="versionText"
-            v-if="!(isBridge || (isRoute && wan.protocol === IP.IPv6))"
-          >
-            <fh-select v-model="wan.igmpVersion" :options="igmpVersionOptions"></fh-select>
-          </fh-form-item>
+          <template v-if="isBridge">
+            <fh-form-item :label="statusText">
+              <fh-switch v-model="wan.igmpEnable"></fh-switch>
+            </fh-form-item>
+          </template>
+          <template v-if="isRoute">
+            <fh-form-item :label="statusText">
+              <fh-switch v-model="wan.igmpProxyEnable"></fh-switch>
+            </fh-form-item>
+            <fh-form-item :label="versionText" v-if="wan.protocol === IP.IPv6">
+              <fh-select v-model="wan.igmpVersion" :options="igmpVersionOptions"></fh-select>
+            </fh-form-item>
+          </template>
         </template>
         <fh-form-item :label="t('trans0771')">
           <fh-select v-model="wan.vlan.mode" :options="vlanModeOptions"></fh-select>
@@ -497,6 +501,7 @@ const wanInitial = () => ({
   protocol: IP.IPv4,
   multiVlanId: '',
   igmpEnable: false,
+  igmpProxyEnable: false,
   igmpVersion: IgmpVersion.v2,
   mtu: MtuRange.ipAndIpv4[1],
   wanMode: WanMode.route,
@@ -643,6 +648,7 @@ const changeWanMode = () => {
   } else if (isBridge.value) {
     wan.protocol = IP.mix
   }
+  wan.igmpEnable = wan.igmpProxyEnable = false
 }
 const changeLinkMode = () => {
   if (isLinkModePPP.value) {
@@ -769,6 +775,7 @@ const initWan = () => {
   wan.protocol = thisWan.protocol
   wan.multiVlanId = thisWan.multiVlanId
   wan.igmpEnable = convertBooleanStatus(thisWan.igmpEnable)
+  wan.igmpProxyEnable = convertBooleanStatus(thisWan.igmpProxyEnable)
   wan.igmpVersion = thisWan.igmpversion
   wan.linkMode = thisWan.linkMode
   wan.mtu = thisWan.mtu
@@ -839,6 +846,7 @@ const save = () => {
       protocol: wan.protocol,
       multiVlanId: wan.multiVlanId,
       igmpEnable: convertBooleanStatus(wan.igmpEnable),
+      igmpProxyEnable: convertBooleanStatus(wan.igmpProxyEnable),
       igmpversion: wan.igmpVersion,
       linkMode: wan.linkMode,
       enableNat: convertBooleanStatus(wan.ipv4.enableNat),
