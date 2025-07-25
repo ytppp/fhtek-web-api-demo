@@ -8,7 +8,7 @@
         <h2 class="page__title">{{ $t('trans0132') }}</h2>
       </div>
       <fh-form class="form form--padding" ref="form" :model="form" :rules="rules">
-        <fh-form-item :label="$t('trans0058')">
+        <fh-form-item :label="$t('trans0132')">
           <fh-switch v-model="form.enable" @change="switchEnable"></fh-switch>
         </fh-form-item>
         <template v-if="form.enable">

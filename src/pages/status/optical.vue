@@ -46,10 +46,10 @@ const linkInfo = reactive({
     label: t('trans0723'),
     value: defaultVal,
   },
-  encrypt: {
-    label: t('trans0536'),
-    value: defaultVal,
-  },
+  // encrypt: {
+  //   label: t('trans0536'),
+  //   value: defaultVal,
+  // },
   alarm: {
     label: t('trans0724'),
     value: defaultVal,

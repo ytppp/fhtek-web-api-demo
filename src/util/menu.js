@@ -26,12 +26,12 @@ const strategyB = {
   meshRole: [MeshRole.controller],
 }
 let menus = [
-  {
-    url: '/home',
-    text: 'trans0006',
-    icon: 'icon-home',
-    config,
-  },
+  // {
+  //   url: '/home',
+  //   text: 'trans0006',
+  //   icon: 'icon-home',
+  //   config,
+  // },
   {
     url: '/status',
     text: 'trans0166',
@@ -98,7 +98,7 @@ let menus = [
       },
       {
         url: '/status/sta',
-        text: 'trans0747',
+        text: 'trans0938',
         config,
       },
       {

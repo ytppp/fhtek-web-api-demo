@@ -15,13 +15,6 @@
           :show-header="false"
           :border="true"
         >
-          <template #name="scope">
-            <fh-popover v-if="scope.row.name" :content="scope.row.name">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.name }}
-              </div>
-            </fh-popover>
-          </template>
           <template #blacklist="scope">
             <fh-icon
               @click="goWifiMacFilter(scope.row.mac)"
@@ -43,13 +36,6 @@
           :show-header="false"
           :border="true"
         >
-          <template #name="scope">
-            <fh-popover v-if="scope.row.name" :content="scope.row.name">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.name }}
-              </div>
-            </fh-popover>
-          </template>
           <template #blacklist="scope">
             <fh-icon
               @click="goWifiMacFilter(scope.row.mac)"
@@ -80,12 +66,12 @@ const { t } = useI18n()
 const dialog = inject('dialog')
 const wlanDevicesColumns = reactive([
   {
-    key: 'ssid',
-    title: t('trans0051'),
-  },
-  {
     key: 'name',
     title: t('trans0935'),
+  },
+  {
+    key: 'ssid',
+    title: t('trans0051'),
   },
   {
     key: 'ip',

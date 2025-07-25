@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0747') }}</h1>
+      <h1 class="page__title">{{ $t('trans0938') }}</h1>
     </div>
     <div class="page__content">
       <div class="page__sub-header">
@@ -28,13 +28,6 @@
           :show-row-checkbox="false"
           :border="true"
         >
-          <template #duid="scope">
-            <fh-popover v-if="scope.row.duid" :content="scope.row.duid">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.duid }}
-              </div>
-            </fh-popover>
-          </template>
         </fh-table>
       </div>
     </div>
@@ -56,6 +49,10 @@ const { t } = useI18n()
 const { defaultVal } = useDataClean()
 const dhcpColumn = reactive([
   {
+    key: 'hostname',
+    title: t('trans0747'),
+  },
+  {
     key: 'ip',
     title: format(t('trans0598'), [t('trans0056')]),
   },
@@ -64,15 +61,15 @@ const dhcpColumn = reactive([
     title: format(t('trans0598'), [t('trans0057')]),
   },
   {
-    key: 'hostname',
-    title: t('trans0935'),
-  },
-  {
     key: 'lease',
     title: t('trans0745'),
   },
 ])
 const dhcpv6Column = reactive([
+  {
+    key: 'hostname',
+    title: t('trans0747'),
+  },
   {
     key: 'ipv6',
     title: format(t('trans0598'), [t('trans0457')]),
@@ -80,10 +77,6 @@ const dhcpv6Column = reactive([
   {
     key: 'duid',
     title: t('trans0746'),
-  },
-  {
-    key: 'hostname',
-    title: t('trans0747'),
   },
   {
     key: 'lease',
