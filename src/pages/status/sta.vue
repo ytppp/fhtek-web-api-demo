@@ -8,32 +8,30 @@
         <h2 class="page__title">{{ $t('trans0593').format($t('trans0407')) }}</h2>
       </div>
       <div class="page__table">
-        <fh-table :columns="dhcpColumn" :data-source="dhcpData" :show-row-checkbox="false">
-          <template #hostname="scope">
-            <fh-popover v-if="scope.row.hostname" :content="scope.row.hostname">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.hostname }}
-              </div>
-            </fh-popover>
-          </template>
+        <fh-table
+          :columns="dhcpColumn"
+          :data-source="dhcpData"
+          :show-header="false"
+          :show-row-checkbox="false"
+          :border="true"
+        >
         </fh-table>
       </div>
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0593').format($t('trans0408')) }}</h2>
       </div>
       <div class="page__table">
-        <fh-table :columns="dhcpv6Column" :data-source="dhcpv6Data" :show-row-checkbox="false">
+        <fh-table
+          :columns="dhcpv6Column"
+          :data-source="dhcpv6Data"
+          :show-header="false"
+          :show-row-checkbox="false"
+          :border="true"
+        >
           <template #duid="scope">
             <fh-popover v-if="scope.row.duid" :content="scope.row.duid">
               <div style="width: 100px" class="ellipsis">
                 {{ scope.row.duid }}
-              </div>
-            </fh-popover>
-          </template>
-          <template #hostname="scope">
-            <fh-popover v-if="scope.row.hostname" :content="scope.row.hostname">
-              <div style="width: 100px" class="ellipsis">
-                {{ scope.row.hostname }}
               </div>
             </fh-popover>
           </template>
@@ -149,23 +147,25 @@ const transformDuration = (zone) => {
 const getStaInfoData = () => {
   getStaInfo().then(({ data }) => {
     const { items } = data
+    const thisDhcpData = []
+    const thisDhcpv6Data = []
     items.forEach((item) => {
       const lease = transformDuration(item.lease)
       if (item.type === IpType.v4) {
-        dhcpData.push({
-          ip: item.ip,
-          mac: item.mac,
+        thisDhcpData.push({
+          ...item,
           lease,
         })
       }
       if (item.type === IpType.v6) {
-        dhcpv6Data.push({
-          duid: item.duid,
-          ipv6: item.ipv6,
+        thisDhcpv6Data.push({
+          ...item,
           lease,
         })
       }
     })
+    Object.assign(dhcpData, thisDhcpData)
+    Object.assign(dhcpv6Data, thisDhcpv6Data)
   })
 }
 
