@@ -70,7 +70,7 @@
           </fh-form-item>
           <template v-if="isBridge">
             <fh-form-item :label="statusText">
-              <fh-switch v-model="wan.igmpProxyEnable"></fh-switch>
+              <fh-switch v-model="wan.igmpEnable"></fh-switch>
             </fh-form-item>
           </template>
           <template v-if="isRoute">
@@ -500,6 +500,7 @@ const wanInitial = () => ({
   },
   protocol: IP.IPv4,
   multiVlanId: '',
+  igmpEnable: false,
   igmpProxyEnable: false,
   igmpVersion: IgmpVersion.v2,
   mtu: MtuRange.ipAndIpv4[1],
@@ -594,10 +595,30 @@ const isEdit = computed(() => {
 })
 
 const type = computed(() => {
+  // don't support 2022/07/21
+  // let text = ''
+  // if (isIpv4.value) {
+  //   text = t('trans0375')
+  // }
+  // if (isIpv6.value) {
+  //   text = t('trans0376')
+  // }
+  // if (isIpMix.value) {
+  //   text = t('trans0377')
+  // }
+  // return text
+  // don't support end
   return t('trans0375')
 })
 const mode = computed(() => {
-  return t('trans0386')
+  let mode = ''
+  if (isBridge.value) {
+    mode = t('trans0387') // snopp
+  }
+  if (isRoute.value) {
+    mode = t('trans0386') // proxy
+  }
+  return mode
 })
 
 const statusText = computed(() => {
@@ -627,6 +648,7 @@ const changeWanMode = () => {
   } else if (isBridge.value) {
     wan.protocol = IP.mix
   }
+  wan.igmpEnable = wan.igmpProxyEnable = false
 }
 const changeLinkMode = () => {
   if (isLinkModePPP.value) {
@@ -752,6 +774,7 @@ const initWan = () => {
   wan.vlan.p8021 = thisWan.vlan.p8021
   wan.protocol = thisWan.protocol
   wan.multiVlanId = thisWan.multiVlanId
+  wan.igmpEnable = convertBooleanStatus(thisWan.igmpEnable)
   wan.igmpProxyEnable = convertBooleanStatus(thisWan.igmpProxyEnable)
   wan.igmpVersion = thisWan.igmpversion
   wan.linkMode = thisWan.linkMode
@@ -822,6 +845,7 @@ const save = () => {
       },
       protocol: wan.protocol,
       multiVlanId: wan.multiVlanId,
+      igmpEnable: convertBooleanStatus(wan.igmpEnable),
       igmpProxyEnable: convertBooleanStatus(wan.igmpProxyEnable),
       igmpversion: wan.igmpVersion,
       linkMode: wan.linkMode,
