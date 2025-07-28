@@ -115,7 +115,7 @@ const modalFormRules = reactive({
           .map((val) => val[0])
         return value2Arr.length === new Set(value2Arr).size
       },
-      message: t('trans0128').format(t('trans0753')),
+      message: t('trans0566').format(t('trans0753')),
     },
   ],
 })

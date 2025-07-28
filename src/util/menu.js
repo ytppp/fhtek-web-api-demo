@@ -35,7 +35,7 @@ let menus = [
   {
     url: '/status',
     text: 'trans0166',
-    icon: 'icon-ellipsis',
+    icon: 'icon-applications',
     children: [
       {
         url: '/status/device',
@@ -219,7 +219,7 @@ let menus = [
   {
     url: '/security',
     text: 'trans0031',
-    icon: 'icon-earth',
+    icon: 'icon-anquan',
     children: [
       {
         url: '/security/firewall',
@@ -261,7 +261,7 @@ let menus = [
   {
     url: '/app',
     text: 'trans0244',
-    icon: 'icon-earth',
+    icon: 'icon-applications',
     children: [
       {
         url: '/app/port-mapping',
@@ -333,7 +333,7 @@ let menus = [
   {
     url: '/management',
     text: 'trans0183',
-    icon: 'icon-ellipsis',
+    icon: 'icon-setting',
     children: [
       {
         url: '/management/upgrade',
