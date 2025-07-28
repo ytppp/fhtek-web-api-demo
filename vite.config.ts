@@ -58,5 +58,14 @@ export default defineConfig(async () => {
         },
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          entryFileNames: 'js/[name].js',
+          chunkFileNames: 'js/[name].js',
+          assetFileNames: '[ext]/[name].[ext]',
+        },
+      },
+    },
   }
 })
