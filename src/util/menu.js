@@ -35,7 +35,7 @@ let menus = [
   {
     url: '/status',
     text: 'trans0166',
-    icon: 'icon-applications',
+    icon: 'icon-xitongzhuangtai',
     children: [
       {
         url: '/status/device',
@@ -261,7 +261,7 @@ let menus = [
   {
     url: '/app',
     text: 'trans0244',
-    icon: 'icon-applications',
+    icon: 'icon-yingyong',
     children: [
       {
         url: '/app/port-mapping',

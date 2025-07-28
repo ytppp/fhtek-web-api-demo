@@ -78,6 +78,9 @@ const colonText = computed(() => {
     padding: 20px;
   }
   &.display-form-has-border {
+    @media screen and (max-width: 768px) {
+      padding: 0;
+    }
     .display-form__item {
       + .display-form__item {
         margin-top: 0;
