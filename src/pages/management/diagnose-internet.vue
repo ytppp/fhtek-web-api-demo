@@ -16,6 +16,9 @@
         :rules="rules"
         :disabled="pingFormDisabled"
       >
+        <fh-form-item :label="$t('trans0140')">
+          <fh-select name="interface" v-model="pingForm.interface" :options="wanList"></fh-select>
+        </fh-form-item>
         <fh-form-item prop="repetitions" :label="$t('trans0555')">
           <fh-input name="repetitions" v-model="pingForm.repetitions"></fh-input>
           <template #extra>
@@ -30,14 +33,13 @@
             {{ $t('trans0557') }}
           </fh-button>
         </fh-form-item>
+        <fh-form-item v-if="pingResult && !pingSuccessFlag">
+          <fh-alert :title="pingResult" type="error"> </fh-alert>
+        </fh-form-item>
       </fh-form>
-      <div class="diagnose__result" v-if="pingResult">
+      <div class="diagnose__result" v-if="pingResult && pingSuccessFlag">
         <pre>{{ pingResult }}</pre>
       </div>
-      <!-- <div v-if="pingResult" style="padding: 20px">
-        <div v-if="isPingPass" width="100%" height="300px">{{ pingResult }}</div>
-        <fh-alert v-else :title="$t('trans0558')" type="error"> </fh-alert>
-      </div> -->
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0560') }}</h2>
       </div>
@@ -49,6 +51,13 @@
         :rules="rules"
         :disabled="tracerouteFormDisabled"
       >
+        <fh-form-item :label="$t('trans0140')">
+          <fh-select
+            name="interface"
+            v-model="tracerouteForm.interface"
+            :options="wanList"
+          ></fh-select>
+        </fh-form-item>
         <fh-form-item prop="destination" :label="$t('trans0556')">
           <fh-input name="destination" v-model="tracerouteForm.destination"></fh-input>
         </fh-form-item>
@@ -57,14 +66,13 @@
             {{ $t('trans0557') }}
           </fh-button>
         </fh-form-item>
+        <fh-form-item v-if="tracerouteResult && !tracerouteSuccessFlag">
+          <fh-alert :title="tracerouteResult" type="error"> </fh-alert>
+        </fh-form-item>
       </fh-form>
-      <div class="diagnose__result" v-if="tracerouteResult">
+      <div class="diagnose__result" v-if="tracerouteResult && tracerouteSuccessFlag">
         <pre>{{ tracerouteResult }}</pre>
       </div>
-      <!-- <div style="padding: 20px" v-if="tracertResult">
-        <div v-if="isTracertPass" width="100%" height="300px"></div>
-        <fh-alert v-else :title="$t('trans0561')" type="error"> </fh-alert>
-      </div> -->
     </div>
   </div>
 </template>
@@ -72,7 +80,7 @@
 <script setup lang="ts">
 import { reactive, computed, useTemplateRef, ref, inject, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IP } from '@/util/constant'
+import { IP, NetType } from '@/util/constant'
 import { isIP, isValidInteger, isValidDomain } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { useCountDown } from '@/hooks/countdown'
@@ -83,7 +91,10 @@ import {
   startTraceroute,
   tracerouteStatus,
   getTracerouteResults,
+  getWanInfo,
 } from '@/http/api'
+
+type OperateType = 'ping' | 'traceroute'
 
 enum Order {
   start = '1',
@@ -109,6 +120,7 @@ const FormDataRange = {
     label: 'trans0555',
   },
 }
+const wanList = reactive([])
 const rules = reactive({
   repetitions: [
     {
@@ -146,7 +158,7 @@ function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: (
     })
   }
 }
-function createDoneHandle(key: string, getResults: () => void) {
+function createDoneHandle(key: OperateType, getResults: () => void) {
   return () => {
     sessionStorage.setItem(key, '0')
     loading.close()
@@ -154,10 +166,36 @@ function createDoneHandle(key: string, getResults: () => void) {
   }
 }
 
+const getWanData = () => {
+  getWanInfo().then(({ data }) => {
+    const { items } = data
+    if (items.length === 0) {
+      return
+    }
+    const thisWanList = [
+      {
+        value: '',
+        text: t('trans0537'),
+      },
+    ]
+    items.forEach((item) => {
+      if (item.protocol !== NetType.bridge) {
+        thisWanList.push({
+          value: item.device,
+          text: `${item.wanname}(${item.interface})`,
+        })
+      }
+    })
+    Object.assign(wanList, thisWanList)
+  })
+}
+
 const pingResult = ref('')
 const pingRef = useTemplateRef('pingRef')
 const pingFormDisabled = ref(false)
+const pingSuccessFlag = ref(false)
 const pingForm = reactive({
+  interface: '',
   repetitions: '',
   destination: '',
 })
@@ -180,9 +218,15 @@ let cleanPingCountDown: () => void
 const checkPingStatus = () => pingStatus().then(({ data }) => data.status)
 const doingPingHandle = createDoingHandle(checkPingStatus, () => cleanPingCountDown())
 const donePingHandle = createDoneHandle('ping', () =>
-  getPingResults().then(({ data }) => {
-    pingResult.value = data.result
-  }),
+  getPingResults()
+    .then(({ data }) => {
+      pingResult.value = data.result
+      pingSuccessFlag.value = true
+    })
+    .catch(() => {
+      pingResult.value = t('trans0558')
+      pingSuccessFlag.value = false
+    }),
 )
 const { createCountDown: createPingCountDown, cleanCountDown: _cleanPingCountDown } = useCountDown(
   timeout,
@@ -194,6 +238,7 @@ cleanPingCountDown = _cleanPingCountDown
 const ping = () => {
   if (!pingRef.value.validate()) return
   startPing({
+    interface: pingForm.interface,
     order: Order.start,
     repetitions: pingForm.repetitions,
     destination: pingForm.destination,
@@ -215,7 +260,9 @@ const handlePing = () => {
 const tracerouteResult = ref('')
 const tracerouteRef = useTemplateRef('tracerouteRef')
 const tracerouteFormDisabled = ref(false)
+const tracerouteSuccessFlag = ref(false)
 const tracerouteForm = reactive({
+  interface: '',
   destination: '',
 })
 let cleanTracerouteCountDown: () => void
@@ -224,9 +271,15 @@ const doingTracerouteHandle = createDoingHandle(checkTracerouteStatus, () =>
   cleanTracerouteCountDown(),
 )
 const doneTracerouteHandle = createDoneHandle('traceroute', () =>
-  getTracerouteResults().then(({ data }) => {
-    tracerouteResult.value = data.result
-  }),
+  getTracerouteResults()
+    .then(({ data }) => {
+      tracerouteResult.value = data.result
+      tracerouteSuccessFlag.value = true
+    })
+    .catch(() => {
+      tracerouteResult.value = t('trans0561')
+      tracerouteSuccessFlag.value = false
+    }),
 )
 const { createCountDown: createTracerouteCountDown, cleanCountDown: _cleanTracerouteCountDown } =
   useCountDown(timeout, interval, doingTracerouteHandle, doneTracerouteHandle)
@@ -234,6 +287,7 @@ cleanTracerouteCountDown = _cleanTracerouteCountDown
 const traceroute = () => {
   if (!tracerouteRef.value.validate()) return
   startTraceroute({
+    interface: tracerouteForm.interface,
     order: Order.start,
     destination: tracerouteForm.destination,
   }).then(({ data }) => {
@@ -252,6 +306,7 @@ const handleTraceroute = () => {
 }
 
 onMounted(() => {
+  getWanData()
   if (sessionStorage.getItem('ping') === '1') {
     loading.open({
       tip: t('trans0559'),
