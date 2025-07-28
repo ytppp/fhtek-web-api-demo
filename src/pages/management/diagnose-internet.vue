@@ -33,9 +33,8 @@
             {{ $t('trans0557') }}
           </fh-button>
         </fh-form-item>
-        <fh-form-item>
-          <fh-alert v-if="pingResult && !pingSuccessFlag" :title="$t('trans0558')" type="error">
-          </fh-alert>
+        <fh-form-item v-if="pingResult && !pingSuccessFlag">
+          <fh-alert :title="pingResult" type="error"> </fh-alert>
         </fh-form-item>
       </fh-form>
       <div class="diagnose__result" v-if="pingResult && pingSuccessFlag">
@@ -67,13 +66,8 @@
             {{ $t('trans0557') }}
           </fh-button>
         </fh-form-item>
-        <fh-form-item>
-          <fh-alert
-            v-if="tracerouteResult && !tracerouteSuccessFlag"
-            :title="$t('trans0558')"
-            type="error"
-          >
-          </fh-alert>
+        <fh-form-item v-if="tracerouteResult && !tracerouteSuccessFlag">
+          <fh-alert :title="tracerouteResult" type="error"> </fh-alert>
         </fh-form-item>
       </fh-form>
       <div class="diagnose__result" v-if="tracerouteResult && tracerouteSuccessFlag">
@@ -101,6 +95,7 @@ import {
 } from '@/http/api'
 
 type OperateType = 'ping' | 'traceroute'
+
 enum Order {
   start = '1',
   stop = '2',
@@ -154,22 +149,16 @@ const rules = reactive({
   ],
 })
 
-function createDoingHandle(
-  type: OperateType,
-  checkStatus: () => Promise<string>,
-  cleanCountDown: () => void,
-) {
+function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: () => void) {
   return () => {
     checkStatus().then((status) => {
       if (status === Status.done) {
         cleanCountDown()
-        if (type === 'ping') pingSuccessFlag.value = true
-        if (type === 'traceroute') pingSuccessFlag.value = true
       }
     })
   }
 }
-function createDoneHandle(key: string, getResults: () => void) {
+function createDoneHandle(key: OperateType, getResults: () => void) {
   return () => {
     sessionStorage.setItem(key, '0')
     loading.close()
@@ -227,11 +216,17 @@ const repetitionsTips = computed(() => {
 })
 let cleanPingCountDown: () => void
 const checkPingStatus = () => pingStatus().then(({ data }) => data.status)
-const doingPingHandle = createDoingHandle('ping', checkPingStatus, () => cleanPingCountDown())
+const doingPingHandle = createDoingHandle(checkPingStatus, () => cleanPingCountDown())
 const donePingHandle = createDoneHandle('ping', () =>
-  getPingResults().then(({ data }) => {
-    pingResult.value = data.result
-  }),
+  getPingResults()
+    .then(({ data }) => {
+      pingResult.value = data.result
+      pingSuccessFlag.value = true
+    })
+    .catch(() => {
+      pingResult.value = t('trans0558')
+      pingSuccessFlag.value = false
+    }),
 )
 const { createCountDown: createPingCountDown, cleanCountDown: _cleanPingCountDown } = useCountDown(
   timeout,
@@ -272,13 +267,19 @@ const tracerouteForm = reactive({
 })
 let cleanTracerouteCountDown: () => void
 const checkTracerouteStatus = () => tracerouteStatus().then(({ data }) => data.status)
-const doingTracerouteHandle = createDoingHandle('traceroute', checkTracerouteStatus, () =>
+const doingTracerouteHandle = createDoingHandle(checkTracerouteStatus, () =>
   cleanTracerouteCountDown(),
 )
 const doneTracerouteHandle = createDoneHandle('traceroute', () =>
-  getTracerouteResults().then(({ data }) => {
-    tracerouteResult.value = data.result
-  }),
+  getTracerouteResults()
+    .then(({ data }) => {
+      tracerouteResult.value = data.result
+      tracerouteSuccessFlag.value = true
+    })
+    .catch(() => {
+      tracerouteResult.value = t('trans0561')
+      tracerouteSuccessFlag.value = false
+    }),
 )
 const { createCountDown: createTracerouteCountDown, cleanCountDown: _cleanTracerouteCountDown } =
   useCountDown(timeout, interval, doingTracerouteHandle, doneTracerouteHandle)
