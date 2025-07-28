@@ -46,9 +46,6 @@
             :model="modalForm"
             :rules="modalRules"
           >
-            <fh-form-item :label="$t('trans0711')">
-              <fh-select v-model="modalForm.id" :options="ssidOpts"> </fh-select>
-            </fh-form-item>
             <fh-form-item :label="$t('trans0097')" prop="mac">
               <fh-input v-model="modalForm.mac" :placeholder="$t('trans0396')"> </fh-input>
             </fh-form-item>
@@ -66,23 +63,21 @@
 
 <script>
 import { isMac, format } from '@/util/tool'
-import { FilteringModes, ModalType, SsidText } from '@/util/constant'
+import { FilteringModes, ModalType } from '@/util/constant'
 import {
-  getWifiMacFilterStatus,
-  setWifiMacFilterStatus,
-  getWifiMacFilter,
-  addWifiMacFilter,
-  editWifiMacFilter,
-  delWifiMacFilter,
-  getWifi2g,
-  getWifi5g,
+  getMacFilterStatus,
+  editMacFilterStatus,
+  getMacFilterItems,
+  addMacFilterItem,
+  editMacFilterItem,
+  delMacFilterItem,
 } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
 const { convertBooleanStatus } = useDataClean()
 const maxRuleNum = 16
 export default {
-  name: 'WifiMacFilterPage',
+  name: 'MacFilterPage',
   data() {
     return {
       form: {
@@ -90,17 +85,11 @@ export default {
         mode: FilteringModes.blackList,
       },
       modalForm: {
-        id: '',
         index: -1,
         mac: '',
-        pre_mac: '',
+        id: '',
       },
-      ssidOpts: [],
       columns: [
-        {
-          key: 'idAlias',
-          title: this.$t('trans0711'),
-        },
         {
           key: 'mac',
           title: this.$t('trans0097'),
@@ -109,7 +98,6 @@ export default {
       data: [],
       visible: false,
       modalType: ModalType.add,
-      all: 'all',
       modalRules: {
         mac: [
           {
@@ -130,7 +118,7 @@ export default {
                 tempData = this.data.filter((item) => item.index !== this.modalForm.index)
               }
               flag = !tempData.some((item) => {
-                return item.id === this.modalForm.id && item.mac === value
+                return item.mac === value
               })
               return flag
             },
@@ -168,7 +156,7 @@ export default {
     },
   },
   methods: {
-    changeFilterMode(val) {
+    changeFilterMode() {
       const message = this.$t('trans0125').format(
         this.isBlackList ? this.$t('trans0105') : this.$t('trans0106'),
       )
@@ -184,7 +172,7 @@ export default {
         })
     },
     getWifiMacFilterStatusData() {
-      getWifiMacFilterStatus().then(({ data }) => {
+      getMacFilterStatus().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
         this.form.mode = data.mode
       })
@@ -194,12 +182,11 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      setWifiMacFilterStatus(data)
+      editMacFilterStatus(data)
     },
     openAddModal() {
-      this.modalForm.id = this.ssidOpts[0].value
+      this.modalForm.id = ''
       this.modalForm.mac = ''
-      this.modalForm.pre_mac = ''
       this.modalForm.index = -1
       this.modalType = ModalType.add
       this.visible = true
@@ -207,21 +194,18 @@ export default {
     openEditModal(row) {
       this.modalForm.id = row.id
       this.modalForm.mac = row.mac
-      this.modalForm.pre_mac = row.pre_mac
       this.modalForm.index = row.index
       this.modalType = ModalType.edit
       this.visible = true
     },
     getWifiMacFilterList() {
-      getWifiMacFilter()
+      getMacFilterItems()
         .then(({ data }) => {
           const tableData = []
           const { items } = data
           items.forEach((item, i) => {
             tableData.push({
               ...item,
-              idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
-              pre_mac: item.mac,
               index: i,
             })
           })
@@ -235,59 +219,36 @@ export default {
     handleClose() {
       this.$refs.modalFormRef.clearValidate()
     },
-    getSsidIndex() {
-      Promise.all([getWifi2g(), getWifi5g()]).then(([res1, res2]) => {
-        const wifi2g = res1.data.items
-        const wifi5g = res2.data.items
-        const ssidOpts = [
-          {
-            value: this.all,
-            text: this.$t('trans0537'),
-          },
-        ]
-        ;[...wifi2g, ...wifi5g].forEach((item) => {
-          if (convertBooleanStatus(item.enable)) {
-            ssidOpts.push({
-              value: item.id,
-              text: SsidText[item.id],
-            })
-          }
-        })
-        this.ssidOpts = ssidOpts
-      })
-    },
     saveItem() {
       if (!this.$refs.modalFormRef.validate()) return
       const data = {
-        id: this.modalForm.id,
         mac: this.modalForm.mac,
       }
       if (this.isAdd) {
-        addWifiMacFilter(data).then(() => {
+        addMacFilterItem({
+          mac: this.modalForm.mac,
+        }).then(() => {
           this.getWifiMacFilterList()
         })
       }
       if (this.isEdit) {
-        data.pre_mac = this.modalForm.pre_mac
-        editWifiMacFilter(data).then(() => {
+        data.id = this.modalForm.id
+        editMacFilterItem(data).then(() => {
           this.getWifiMacFilterList()
         })
       }
     },
     del(row) {
-      console.log(row)
       const data = {
         id: row.id,
-        mac: row.mac,
       }
-      delWifiMacFilter(data).then(() => {
+      delMacFilterItem(data).then(() => {
         this.getWifiMacFilterList()
       })
     },
   },
   mounted() {
     this.getWifiMacFilterStatusData()
-    this.getSsidIndex()
     this.getWifiMacFilterList()
   },
 }

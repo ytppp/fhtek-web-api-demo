@@ -98,7 +98,7 @@ export default {
               if (!value) return true
               return isValidUrlName(value)
             },
-            message: this.$t('trans0128').format(this.$t('trans0110')),
+            message: this.$t('trans0566').format(this.$t('trans0110')),
           },
           {
             rule: (value) => {

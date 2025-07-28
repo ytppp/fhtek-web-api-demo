@@ -344,6 +344,54 @@ export const delWifiMacFilter = (params): Promise<ApiResponse<any>> => {
   return http.post('security.wifi_mac_filter.items:delete', createData(params))
 }
 
+export const getMacFilterStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getMacFilterStatus')
+}
+
+export const editMacFilterStatus = (params): Promise<ApiResponse<any>> => {
+  return http.post('editMacFilterStatus', createData(params))
+}
+
+export const getMacFilterItems = (): Promise<ApiResponse<any>> => {
+  return http.get('getMacFilterItems')
+}
+
+export const addMacFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('addMacFilterItem', createData(params))
+}
+
+export const editMacFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('editMacFilterItem', createData(params))
+}
+
+export const delMacFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('delMacFilterItem', createData(params))
+}
+
+export const getUrlFilterStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getUrlFilterStatus')
+}
+
+export const editUrlFilterStatus = (params): Promise<ApiResponse<any>> => {
+  return http.post('editUrlFilterStatus', createData(params))
+}
+
+export const getUrlFilterItems = (): Promise<ApiResponse<any>> => {
+  return http.get('getUrlFilterItems')
+}
+
+export const addUrlFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('addUrlFilterItem', createData(params))
+}
+
+export const editUrlFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('editUrlFilterItem', createData(params))
+}
+
+export const delUrlFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('delUrlFilterItem', createData(params))
+}
+
 export const getUsb = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
     method: 'storage.usb.status:get',
