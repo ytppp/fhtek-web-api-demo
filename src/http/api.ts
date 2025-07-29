@@ -583,6 +583,19 @@ export const setVoipBasicSettings = (params): Promise<ApiResponse<any>> => {
   })
 }
 
+export const getVoipAdvancedSettings = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'voip.advanced.settings:get',
+  })
+}
+
+export const setVoipAdvancedSettings = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'voip.advanced.settings:edit',
+    data: params,
+  })
+}
+
 export const getLanInfo = (): Promise<ApiResponse<any>> => {
   return http.get('getLanInfo')
 }
