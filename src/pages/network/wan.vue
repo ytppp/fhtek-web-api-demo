@@ -70,14 +70,14 @@
           </fh-form-item>
           <template v-if="isBridge">
             <fh-form-item :label="statusText">
-              <fh-switch v-model="wan.igmpEnable"></fh-switch>
+              <fh-switch @change="changeIgmp" v-model="wan.igmpEnable"></fh-switch>
             </fh-form-item>
           </template>
           <template v-if="isRoute">
             <fh-form-item :label="statusText">
-              <fh-switch v-model="wan.igmpProxyEnable"></fh-switch>
+              <fh-switch @change="changeIgmp" v-model="wan.igmpProxyEnable"></fh-switch>
             </fh-form-item>
-            <fh-form-item :label="versionText" v-if="wan.protocol === IP.IPv6">
+            <fh-form-item :label="versionText" v-if="isIpv4">
               <fh-select v-model="wan.igmpVersion" :options="igmpVersionOptions"></fh-select>
             </fh-form-item>
           </template>
@@ -501,7 +501,7 @@ const wanInitial = () => ({
   protocol: IP.IPv4,
   multiVlanId: '',
   igmpEnable: false,
-  igmpProxyEnable: false,
+  igmpProxyEnable: true,
   igmpVersion: IgmpVersion.v2,
   mtu: MtuRange.ipAndIpv4[1],
   wanMode: WanMode.route,
@@ -636,6 +636,14 @@ watch(
   { flush: 'pre' },
 )
 
+const changeIgmp = () => {
+  if (wan.igmpEnable) {
+    wan.igmpProxyEnable = false
+  }
+  if (wan.igmpProxyEnable) {
+    wan.igmpEnable = false
+  }
+}
 const beforeChangeWan = () => {
   lastWanId.value = wan.id
 }
