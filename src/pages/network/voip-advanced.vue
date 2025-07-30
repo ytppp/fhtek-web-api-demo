@@ -23,7 +23,7 @@
         <fh-form-item :label="$t('trans0853')">
           <fh-select v-model="form.dtmfRelay" :options="dtmfRelayOpts"></fh-select>
         </fh-form-item>
-        <fh-form-item label="HeartbeatOPTIONSmode">
+        <fh-form-item label="Heartbeat Options mode">
           <fh-select v-model="form.optionsSericeMode" :options="optionsSericeModeOpts"></fh-select>
         </fh-form-item>
         <fh-form-item :label="$t('trans0854')">
@@ -35,34 +35,34 @@
         <fh-form-item label="RTP Redundancy">
           <fh-switch v-model="form.rtpRedundantEnable"></fh-switch>
         </fh-form-item>
-        <fh-form-item label="RTP paylod type" prop="rtpRedundantPT">
+        <fh-form-item label="RTP Paylod Type" prop="rtpRedundantPT">
           <fh-input v-model="form.rtpRedundantPT" placeholder="96-127"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="Message contains user=phone or not">
+        <fh-form-item label="Message Contains User=phone Or Not">
           <fh-select v-model="form.msgWithUserEnable" :options="msgWithUserOpts"></fh-select>
         </fh-form-item>
-        <fh-form-item label="VoiceCodecPriorityCtrl">
+        <fh-form-item label="Voice Codec Priority Control">
           <fh-select
             v-model="form.voiceCodecPriorityCtrl"
             :options="voiceCodecPriorityCtrlOpts"
           ></fh-select>
         </fh-form-item>
-        <fh-form-item label="NumberMatchMode">
+        <fh-form-item label="Number Match Mode">
           <fh-select v-model="form.numberMatchMode" :options="numberMatchModeOpts"></fh-select>
         </fh-form-item>
-        <fh-form-item label="DivSupplementServiceType">
+        <fh-form-item label="Div Supplement Service Type">
           <fh-select
             v-model="form.actLocalSupplementService"
             :options="actLocalSupplementServiceOpts"
           ></fh-select>
         </fh-form-item>
-        <fh-form-item label="EndCharacterHandleMode">
+        <fh-form-item label="End Character Handle Mode">
           <fh-select v-model="form.endCharHandleMode" :options="endCharHandleModeOpts"></fh-select>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0858')">
+        <fh-form-item label="Support#transfer%23">
           <fh-switch v-model="form.supportTransferHash"></fh-switch>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0859')">
+        <fh-form-item label="Support@transfer%40">
           <fh-switch v-model="form.supportTransferAt"></fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0866')">
@@ -75,15 +75,15 @@
         >
           <fh-input v-model="form.jitterBufferMax"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="autoSynPhoneDateSwitch">
+        <fh-form-item label="Auto Synchronize Phone Date Switch">
           <fh-switch v-model="form.callSynEnAutoSwitch"></fh-switch>
         </fh-form-item>
-        <fh-form-item label="if sync System Date">
+        <fh-form-item label="If Synchronize System Date">
           <fh-switch v-model="form.syncSysTimeEnable"></fh-switch>
         </fh-form-item>
         <!-- basic_common start -->
         <div class="page__sub-header">
-          <h2 class="page__title">basic_common</h2>
+          <h2 class="page__title">Basic Common Setting</h2>
         </div>
         <fh-form-item
           label="Telephone Event Payload Type"
@@ -91,10 +91,10 @@
         >
           <fh-input v-model="form.basic_common.TelephoneEventPayloadType"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="natKeepAliveMessage">
+        <fh-form-item label="Nat Keep Alive Message">
           <fh-switch v-model="form.basic_common.HeartbeatSwitch"></fh-switch>
         </fh-form-item>
-        <fh-form-item label="natKeepAliveTime(s)" prop="basic_common.HeartbeatCycle">
+        <fh-form-item label="Nat Keep Alive Time(s)" prop="basic_common.HeartbeatCycle">
           <fh-input v-model="form.basic_common.HeartbeatCycle"> </fh-input>
         </fh-form-item>
         <fh-form-item label="Enable 802.1p">
@@ -108,23 +108,23 @@
             <fh-input v-model="form.basic_common.RTP8021PMark"> </fh-input>
           </fh-form-item>
         </template>
-        <fh-form-item label="sessiontimerEnable">
+        <fh-form-item label="Enable Session Timer">
           <fh-switch v-model="form.basic_common.SC_ACCT_SIP_SESSION_FLAG"></fh-switch>
         </fh-form-item>
         <template v-if="form.basic_common.SC_ACCT_SIP_SESSION_FLAG">
-          <fh-form-item label="sessionTimer(s)" prop="basic_common.SC_ACCT_SIP_SESSION_TIMER">
+          <fh-form-item label="Session Timer(s)" prop="basic_common.SC_ACCT_SIP_SESSION_TIMER">
             <fh-input v-model="form.basic_common.SC_ACCT_SIP_SESSION_TIMER"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="MinsessionTimer(s)" prop="basic_common.SC_ACCT_SIP_SESSION_MIN_EXP">
+          <fh-form-item label="Min Session Timer(s)" prop="basic_common.SC_ACCT_SIP_SESSION_MIN_EXP">
             <fh-input v-model="form.basic_common.SC_ACCT_SIP_SESSION_MIN_EXP"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="sessionRefresherrule">
+          <fh-form-item label="Session Refresher Rule">
             <fh-select
               v-model="form.basic_common.SC_ACCT_SIP_SESSION_REFRESHER"
               :options="sessionRefresherRuleOpts"
             ></fh-select>
           </fh-form-item>
-          <fh-form-item label="sessionUpdateMethod">
+          <fh-form-item label="Session Update Method">
             <fh-select
               v-model="form.basic_common.SC_ACCT_SIP_SESSION_METHOD"
               :options="sessionUpdateMethodOpts"
@@ -140,15 +140,15 @@
         <fh-form-item label="TOS/DSCP Priority(RTP)" prop="basic_common.RTPDSCPMark">
           <fh-input v-model="form.basic_common.RTPDSCPMark"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="SupportPrack">
+        <fh-form-item label="Support Prack">
           <fh-switch v-model="form.basic_common.PRACKEnable"></fh-switch>
         </fh-form-item>
         <!-- basic_common end -->
         <!-- VoIPMedia_Common start -->
         <div class="page__sub-header">
-          <h2 class="page__title">VoIPMedia_Common</h2>
+          <h2 class="page__title">VoIP Media Common Setting</h2>
         </div>
-        <fh-form-item label="SupportT38">
+        <fh-form-item label="Support T38">
           <fh-switch v-model="form.VoIPMedia_Common.FaxCodec"></fh-switch>
         </fh-form-item>
         <fh-form-item label="G.723 Speed">
@@ -169,7 +169,7 @@
             :options="polarityReversalModeOpts"
           ></fh-select>
         </fh-form-item>
-        <fh-form-item label="Rev cancel Type">
+        <fh-form-item label="Rev Cancel Type">
           <fh-switch v-model="form.VoIPMedia_Common.EchoCancellationEnable"></fh-switch>
         </fh-form-item>
         <!-- VoIPMedia_Common end -->
@@ -177,25 +177,25 @@
         <div class="page__sub-header">
           <h2 class="page__title">{{ $t('trans0898') }}</h2>
         </div>
-        <fh-form-item label="StartDigitTimer(s)" prop="digit_map.StartDigitTimer">
+        <fh-form-item label="Start Digit Timer(s)" prop="digit_map.StartDigitTimer">
           <fh-input v-model="form.digit_map.StartDigitTimer"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="InterDigitTimerShort(s)" prop="digit_map.InterDigitTimerShort">
+        <fh-form-item label="Inter Digit Timer Short(s)" prop="digit_map.InterDigitTimerShort">
           <fh-input v-model="form.digit_map.InterDigitTimerShort"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="InterDigitTimerLong(s)" prop="digit_map.InterDigitTimerLong">
+        <fh-form-item label="Inter Digit Timer Long(s)" prop="digit_map.InterDigitTimerLong">
           <fh-input v-model="form.digit_map.InterDigitTimerLong"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="InterDigitTimerT(s)" prop="digit_map.InterDigitTimerT">
+        <fh-form-item label="Inter Digit Timer T(s)" prop="digit_map.InterDigitTimerT">
           <fh-input v-model="form.digit_map.InterDigitTimerT"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="BusyToneTimer(s)" prop="digit_map.BusyToneTimer">
+        <fh-form-item label="Busy Tone Timer(s)" prop="digit_map.BusyToneTimer">
           <fh-input v-model="form.digit_map.BusyToneTimer"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="HangingReminderToneTimer(s)" prop="digit_map.HangingReminderToneTimer">
+        <fh-form-item label="Hanging Reminder Tone Timer(s)" prop="digit_map.HangingReminderToneTimer">
           <fh-input v-model="form.digit_map.HangingReminderToneTimer"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="NoAnswerTimer(s)" prop="digit_map.NoAnswerTimer">
+        <fh-form-item label="No Answer Timer(s)" prop="digit_map.NoAnswerTimer">
           <fh-input v-model="form.digit_map.NoAnswerTimer"> </fh-input>
         </fh-form-item>
         <fh-form-item label="DM TMode">
@@ -238,12 +238,12 @@
         <!-- VoIPMedia_line1 start -->
         <template v-if="form.VoIPMedia_line1.active">
           <div class="page__sub-header">
-            <h2 class="page__title">VoIPMedia_line1</h2>
+            <h2 class="page__title">Line1 of VoIP Media</h2>
           </div>
-          <fh-form-item label="comfortnoiseEnable">
+          <fh-form-item label="Enable Comfortnoise">
             <fh-switch v-model="form.VoIPMedia_line1.VAD"></fh-switch>
           </fh-form-item>
-          <fh-form-item label="SilenceCompressionEnable">
+          <fh-form-item label="Enable Silence Compression">
             <fh-switch v-model="form.VoIPMedia_line1.SilenceCompressionEnable"></fh-switch>
           </fh-form-item>
         </template>
@@ -251,12 +251,12 @@
         <!-- VoIPMedia_line2 start -->
         <template v-if="form.VoIPMedia_line2.active">
           <div class="page__sub-header">
-            <h2 class="page__title">VoIPMedia_line2</h2>
+            <h2 class="page__title">Line2 of VoIP Media</h2>
           </div>
-          <fh-form-item label="comfortnoiseEnable">
+          <fh-form-item label="Enable Comfortnoise">
             <fh-switch v-model="form.VoIPMedia_line2.VAD"></fh-switch>
           </fh-form-item>
-          <fh-form-item label="SilenceCompressionEnable">
+          <fh-form-item label="Enable Silence Compression">
             <fh-switch v-model="form.VoIPMedia_line2.SilenceCompressionEnable"></fh-switch>
           </fh-form-item>
         </template>
@@ -264,18 +264,18 @@
         <!-- call_ctrl_line1 start -->
         <template v-if="form.call_ctrl_line1.active">
           <div class="page__sub-header">
-            <h2 class="page__title">call_ctrl_line1</h2>
+            <h2 class="page__title">Line1 of Call Control</h2>
           </div>
-          <fh-form-item label="ptime setup">
+          <fh-form-item label="Ptime Setup">
             <fh-select
               v-model="form.call_ctrl_line1.SIPPacketizationTime"
               :options="ptimeSetupOpts"
             ></fh-select>
           </fh-form-item>
-          <fh-form-item label="send volume(0.1db)" prop="call_ctrl_line1.VoiceVolumeSpeak">
+          <fh-form-item label="Send Volume(0.1db)" prop="call_ctrl_line1.VoiceVolumeSpeak">
             <fh-input v-model="form.call_ctrl_line1.VoiceVolumeSpeak"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="sreceive volume(0.1db)" prop="call_ctrl_line1.VoiceVolumeListen">
+          <fh-form-item label="Sreceive Volume(0.1db)" prop="call_ctrl_line1.VoiceVolumeListen">
             <fh-input v-model="form.call_ctrl_line1.VoiceVolumeListen"> </fh-input>
           </fh-form-item>
           <fh-form-item label="Warm Line">
@@ -287,13 +287,13 @@
           <fh-form-item label="Warm Line Timeout(sec)" prop="call_ctrl_line1.HotLineDelayTime">
             <fh-input v-model="form.call_ctrl_line1.HotLineDelayTime"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="Call waiting">
+          <fh-form-item label="Call Waiting">
             <fh-switch v-model="form.call_ctrl_line1.SIPCallWaitingEnable"> </fh-switch>
           </fh-form-item>
-          <fh-form-item label="Call transfer">
+          <fh-form-item label="Call Transfer">
             <fh-switch v-model="form.call_ctrl_line1.SIPCallTransfer"> </fh-switch>
           </fh-form-item>
-          <fh-form-item label="Three party service">
+          <fh-form-item label="Three Party Service">
             <fh-switch v-model="form.call_ctrl_line1.SIP3wayConf"></fh-switch>
           </fh-form-item>
           <fh-form-item label="Enable Server Mix">
@@ -305,7 +305,7 @@
           >
             <fh-input v-model="form.call_ctrl_line1.SIP3wayConfServAddr"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="Caller id mode">
+          <fh-form-item label="Caller Id Mode">
             <fh-select
               v-model="form.call_ctrl_line1.ComingCallDisplayMode"
               :options="comingCallDisplayModeOpts"
@@ -321,24 +321,24 @@
             <fh-input v-model="form.call_ctrl_line1.SubscribeExpire"> </fh-input>
           </fh-form-item>
           <fh-form-item
-            label="Min flash hook time interval(ms)"
+            label="Min Flash Hook Time Interval(ms)"
             prop="call_ctrl_line1.HookMinInterval"
           >
             <fh-input v-model="form.call_ctrl_line1.HookMinInterval"> </fh-input>
           </fh-form-item>
           <fh-form-item
-            label="Max flash hook time interval(ms)"
+            label="Max Flash Hook Time Interval(ms)"
             prop="call_ctrl_line1.HookMaxInterval"
           >
             <fh-input v-model="form.call_ctrl_line1.HookMaxInterval"> </fh-input>
           </fh-form-item>
           <fh-form-item
-            label="Min flash hook time release(ms)"
+            label="Min Flash Hook Time Release(ms)"
             prop="call_ctrl_line1.HookReleaseMin"
           >
             <fh-input v-model="form.call_ctrl_line1.HookReleaseMin"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="Synchronize phone date time">
+          <fh-form-item label="Synchronize Phone Date Time">
             <fh-switch v-model="form.call_ctrl_line1.SyncCallerTimeEnable"></fh-switch>
           </fh-form-item>
           <fh-form-item label="G.722 Priority">
@@ -376,18 +376,18 @@
         <!-- call_ctrl_line2 start -->
         <template v-if="form.call_ctrl_line2.active">
           <div class="page__sub-header">
-            <h2 class="page__title">call_ctrl_line2</h2>
+            <h2 class="page__title">Line2 of Call Control</h2>
           </div>
-          <fh-form-item label="ptime setup">
+          <fh-form-item label="Ptime Setup">
             <fh-select
               v-model="form.call_ctrl_line2.SIPPacketizationTime"
               :options="ptimeSetupOpts"
             ></fh-select>
           </fh-form-item>
-          <fh-form-item label="send volume(0.1db)" prop="call_ctrl_line2.VoiceVolumeSpeak">
+          <fh-form-item label="Send Volume(0.1db)" prop="call_ctrl_line2.VoiceVolumeSpeak">
             <fh-input v-model="form.call_ctrl_line2.VoiceVolumeSpeak"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="sreceive volume(0.1db)" prop="call_ctrl_line2.VoiceVolumeListen">
+          <fh-form-item label="Sreceive Volume(0.1db)" prop="call_ctrl_line2.VoiceVolumeListen">
             <fh-input v-model="form.call_ctrl_line2.VoiceVolumeListen"> </fh-input>
           </fh-form-item>
           <fh-form-item label="Warm Line">
@@ -417,7 +417,7 @@
           >
             <fh-input v-model="form.call_ctrl_line2.SIP3wayConfServAddr"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="Caller id mode">
+          <fh-form-item label="Caller Id Mode">
             <fh-select
               v-model="form.call_ctrl_line2.ComingCallDisplayMode"
               :options="comingCallDisplayModeOpts"
@@ -433,24 +433,24 @@
             <fh-input v-model="form.call_ctrl_line2.SubscribeExpire"> </fh-input>
           </fh-form-item>
           <fh-form-item
-            label="Min flash hook time interval(ms)"
+            label="Min Flash Hook Time Interval(ms)"
             prop="call_ctrl_line2.HookMinInterval"
           >
             <fh-input v-model="form.call_ctrl_line2.HookMinInterval"> </fh-input>
           </fh-form-item>
           <fh-form-item
-            label="Max flash hook time interval(ms)"
+            label="Max Flash Hook Time Interval(ms)"
             prop="call_ctrl_line2.HookMaxInterval"
           >
             <fh-input v-model="form.call_ctrl_line2.HookMaxInterval"> </fh-input>
           </fh-form-item>
           <fh-form-item
-            label="Min flash hook time release(ms)"
+            label="Min Flash Hook Time Release(ms)"
             prop="call_ctrl_line2.HookReleaseMin"
           >
             <fh-input v-model="form.call_ctrl_line2.HookReleaseMin"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="Synchronize phone date time">
+          <fh-form-item label="Synchronize Phone Date Time">
             <fh-switch v-model="form.call_ctrl_line2.SyncCallerTimeEnable"></fh-switch>
           </fh-form-item>
           <fh-form-item label="G.722 Priority">
@@ -501,18 +501,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  getIpBefore,
-  getIpAfter,
-  isIP,
-  ip2int,
-  isMulticast,
-  isLoopback,
-  isNetworkIP,
-  isBoardcastIP,
-  isValidGatewayIP,
-  getSubNetwork,
-} from '@/util/tool'
+import { isValidInteger } from '@/util/tool'
 import { ServiceType } from '@/util/constant'
 import { getWan, getVoipAdvancedSettings, setVoipBasicSettings } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -558,21 +547,21 @@ const generateNumberOpts = (max: number, start: number, step: number) => {
 }
 
 const { t } = useI18n()
-const { convertBooleanStatus, defaultVal } = useDataClean()
+const { convertBooleanStatus } = useDataClean()
 const formRef = ref(null)
 const hasVoipWan = ref(false)
 const dmTModeOpts = [
   {
     value: DmTMode.dmShortTimer,
-    text: 'InterDigitTimerShort',
+    text: 'Inter Digit Timer Short',
   },
   {
     value: DmTMode.dmLongTimer,
-    text: 'InterDigitTimerLong',
+    text: 'Inter Digit Timer Long',
   },
   {
     value: DmTMode.dmTTimer,
-    text: 'InterDigitTimerT',
+    text: 'Inter Digit Timer T',
   },
 ]
 const dtmfRelayOpts = [
@@ -592,15 +581,15 @@ const dtmfRelayOpts = [
 const optionsSericeModeOpts = [
   {
     value: OptionsSericeMode.register,
-    text: 'RegisterServerMode',
+    text: 'Register Server Mode',
   },
   {
     value: OptionsSericeMode.proxy,
-    text: 'ProxyServerMode',
+    text: 'Proxy Server Mode',
   },
   {
     value: OptionsSericeMode.outband,
-    text: 'OutboundMode',
+    text: 'Outbound Mode',
   },
 ]
 const faxctrlModeOpts = [
@@ -646,15 +635,15 @@ const voiceCodecPriorityCtrlOpts = [
 const numberMatchModeOpts = [
   {
     value: '0',
-    text: 'MinMatch',
+    text: 'Min Match',
   },
   {
     value: '1',
-    text: 'BlurMaxMatch',
+    text: 'Blur Max Match',
   },
   {
     value: '2',
-    text: 'MaxMatch',
+    text: 'Max Match',
   },
 ]
 const actLocalSupplementServiceOpts = [
@@ -678,11 +667,11 @@ const actLocalSupplementServiceOpts = [
 const endCharHandleModeOpts = [
   {
     value: '0',
-    text: 'EndMode',
+    text: 'End Mode',
   },
   {
     value: '1',
-    text: 'RuleMode',
+    text: 'Rule Mode',
   },
 ]
 const polarityReversalModeOpts = [
@@ -743,8 +732,8 @@ const lowSpeedFaxEchoCancelOpts = [
     text: 'Open',
   },
   {
-    value: '',
-    text: 'Auro',
+    value: '2',
+    text: 'Auto',
   },
 ]
 const subscribeTypeOpts = [
@@ -783,7 +772,7 @@ const priorityOpts = generateNumberOpts(5, numMin, 1)
 const form = reactive({
   registrationExpireTimer: '', // registrationExpireTimer, RegistrationExpireTimer(s)
   maxStartDelay: '', // maxStartDelay MaxStartDelayTimer(s)
-  registerRetryInterval: '', // RegisterRetryInterval RegisterRetryIntervalTimer(s)
+  registerRetryInterval: '', // registerRetryInterval RegisterRetryIntervalTimer(s)
   dtmfRelay: DtmfRelay.sipInfo, //  DTMFTransportMode, Dtmf Relay
   optionsSericeMode: OptionsSericeMode.register, // OptionsSericeMode, HeartbeatOPTIONSmode, 值：register=0;proxy=1;outband=2
   faxCtrlMode: FaxctrlMode.passThru, // FaxCtrlMode, Faxctrlmode, 值：Passthru:other;T30:all
@@ -820,7 +809,6 @@ const form = reactive({
     enablePBXDialSecondary: true, // PBXDialSecondaryEnable, PBXDialSecondaryEnable, 值: 0:1
   },
   basic_common: {
-    // comcom是Common，底层写错了
     TelephoneEventPayloadType: '', // TelephoneEventPayloadType, Telephone Event Payload Type
     HeartbeatSwitch: true, // HeartbeatSwitch, natKeepAliveMessage, 值: 1:0
     HeartbeatCycle: '', // HeartbeatCycle, natKeepAliveTime(s)
@@ -949,6 +937,10 @@ const rules = reactive({
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidInteger(value, 96, 127),
+      message: t('trans0567').format(96, 127),
     },
   ],
   jitterBufferMax: [
@@ -1175,160 +1167,155 @@ const rules = reactive({
   ],
 })
 const save = () => {
-  formRef.value.validate().then(() => {
-    const data = {
-      registrationExpireTimer: form.registrationExpireTimer,
-      maxStartDelay: form.maxStartDelay,
-      RegisterRetryInterval: form.registerRetryInterval,
-      DTMFTransportMode: form.dtmfRelay,
-      OptionsSericeMode: form.optionsSericeMode,
-      FaxCtrlMode: form.faxCtrlMode,
-      FaxPassThruCodec: form.faxpassthru,
-      rtpRedundantEnable: convertBooleanStatus(form.rtpRedundantEnable),
-      rtpRedundantPT: form.rtpRedundantPT,
-      MsgWithUserEnable: form.msgWithUserEnable,
-      VoiceCodecPriorityCtrl: form.voiceCodecPriorityCtrl,
-      NumberMatchMode: form.numberMatchMode,
-      ActLocalSupplementService: form.actLocalSupplementService,
-      EndCharHandleMode: form.endCharHandleMode,
-      SupportSpecCharTransfer: convertBooleanStatus(form.supportTransferHash),
-      SupReferSpecCharTrans: convertBooleanStatus(form.supportTransferAt),
-      SC_SYS_VOICE_JB_TYPE: convertBooleanStatus(form.enableAdaptiveJitterBuffer),
-      SC_SYS_VOICE_JB_LEN: form.jitterBufferMax,
-      PolarityReversalMode: form.polarityReversalMode,
-      CallSynEnAutoSwitch: convertBooleanStatus(form.callSynEnAutoSwitch),
-      SyncSysTimeEnable: convertBooleanStatus(form.syncSysTimeEnable),
-      digit_map: {
-        InterDigitTimerShort: form.digit_map.InterDigitTimerShort,
-        StartDigitTimer: form.digit_map.StartDigitTimer,
-        InterDigitTimerLong: form.digit_map.InterDigitTimerLong,
-        InterDigitTimerT: form.digit_map.InterDigitTimerT,
-        BusyToneTimer: form.digit_map.BusyToneTimer,
-        HangingReminderToneTimer: form.digit_map.HangingReminderToneTimer,
-        NoAnswerTimer: form.digit_map.NoAnswerTimer,
-        TMode: form.digit_map.TMode,
-        DigitMapEnable: convertBooleanStatus(form.digit_map.enableDigitMap),
-        DigitMap1: form.digit_map.digitMap,
-        DigitMapSpecialEnable: convertBooleanStatus(form.digit_map.enableDigitMapSpecial),
-        digitMapSpecial: form.digit_map.digitMapSpecial,
-        PBXPrefixEnable: convertBooleanStatus(form.digit_map.enablePBXPrefix),
-        PBXPrefix: form.digit_map.pbxPrefix,
-        PBXDialSecondaryEnable: convertBooleanStatus(form.digit_map.enablePBXDialSecondary),
+  if (!formRef.value.validate()) return
+  const data = {
+    registrationExpireTimer: form.registrationExpireTimer,
+    maxStartDelay: form.maxStartDelay,
+    registerRetryInterval: form.registerRetryInterval,
+    DTMFTransportMode: form.dtmfRelay,
+    OptionsSericeMode: form.optionsSericeMode,
+    FaxCtrlMode: form.faxCtrlMode,
+    FaxPassThruCodec: form.faxpassthru,
+    rtpRedundantEnable: convertBooleanStatus(form.rtpRedundantEnable),
+    rtpRedundantPT: form.rtpRedundantPT,
+    MsgWithUserEnable: form.msgWithUserEnable,
+    VoiceCodecPriorityCtrl: form.voiceCodecPriorityCtrl,
+    NumberMatchMode: form.numberMatchMode,
+    ActLocalSupplementService: form.actLocalSupplementService,
+    EndCharHandleMode: form.endCharHandleMode,
+    SupportSpecCharTransfer: convertBooleanStatus(form.supportTransferHash),
+    SupReferSpecCharTrans: convertBooleanStatus(form.supportTransferAt),
+    SC_SYS_VOICE_JB_TYPE: convertBooleanStatus(form.enableAdaptiveJitterBuffer),
+    SC_SYS_VOICE_JB_LEN: form.jitterBufferMax,
+    PolarityReversalMode: form.polarityReversalMode,
+    CallSynEnAutoSwitch: convertBooleanStatus(form.callSynEnAutoSwitch),
+    SyncSysTimeEnable: convertBooleanStatus(form.syncSysTimeEnable),
+    digit_map: {
+      InterDigitTimerShort: form.digit_map.InterDigitTimerShort,
+      StartDigitTimer: form.digit_map.StartDigitTimer,
+      InterDigitTimerLong: form.digit_map.InterDigitTimerLong,
+      InterDigitTimerT: form.digit_map.InterDigitTimerT,
+      BusyToneTimer: form.digit_map.BusyToneTimer,
+      HangingReminderToneTimer: form.digit_map.HangingReminderToneTimer,
+      NoAnswerTimer: form.digit_map.NoAnswerTimer,
+      TMode: form.digit_map.TMode,
+      DigitMapEnable: convertBooleanStatus(form.digit_map.enableDigitMap),
+      DigitMap1: form.digit_map.digitMap,
+      DigitMapSpecialEnable: convertBooleanStatus(form.digit_map.enableDigitMapSpecial),
+      digitMapSpecial: form.digit_map.digitMapSpecial,
+      PBXPrefixEnable: convertBooleanStatus(form.digit_map.enablePBXPrefix),
+      PBXPrefix: form.digit_map.pbxPrefix,
+      PBXDialSecondaryEnable: convertBooleanStatus(form.digit_map.enablePBXDialSecondary),
+    },
+    basic_commom: {
+      TelephoneEventPayloadType: form.basic_common.TelephoneEventPayloadType,
+      HeartbeatSwitch: convertBooleanStatus(form.basic_common.HeartbeatSwitch),
+      HeartbeatCycle: form.basic_common.HeartbeatCycle,
+      VoIP8021PMarkEnable: convertBooleanStatus(form.basic_common.VoIP8021PMarkEnable),
+      SIP8021PMark: form.basic_common.SIP8021PMark,
+      RTP8021PMark: form.basic_common.RTP8021PMark,
+      SC_ACCT_SIP_SESSION_FLAG: convertBooleanStatus(form.basic_common.SC_ACCT_SIP_SESSION_FLAG),
+      SC_ACCT_SIP_SESSION_TIMER: form.basic_common.SC_ACCT_SIP_SESSION_TIMER,
+      SC_ACCT_SIP_SESSION_MIN_EXP: form.basic_common.SC_ACCT_SIP_SESSION_MIN_EXP,
+      SC_ACCT_SIP_SESSION_REFRESHER: form.basic_common.SC_ACCT_SIP_SESSION_REFRESHER,
+      SC_ACCT_SIP_SESSION_METHOD: form.basic_common.SC_ACCT_SIP_SESSION_METHOD,
+      LogOffMsgSendEnable: convertBooleanStatus(form.basic_common.ifSendUnregisterMsg),
+      SIPDSCPMark: form.basic_common.SIPDSCPMark,
+      RTPDSCPMark: form.basic_common.RTPDSCPMark,
+      PRACKEnable: convertBooleanStatus(form.basic_common.PRACKEnable),
+    },
+    VoIPMedia_Common: {
+      FaxCodec: convertBooleanStatus(form.VoIPMedia_Common.FaxCodec),
+      SC_ACCT_MEDIA_G723_RATE: form.VoIPMedia_Common.SC_ACCT_MEDIA_G723_RATE,
+      EchoCancellationLowSpeedFax: form.VoIPMedia_Common.EchoCancellationLowSpeedFax,
+      EchoCancellationEnable: convertBooleanStatus(form.VoIPMedia_Common.EchoCancellationEnable),
+    },
+    VoIPMedia_line1: {
+      VAD: convertBooleanStatus(form.VoIPMedia_line1.VAD),
+      SilenceCompressionEnable: convertBooleanStatus(form.VoIPMedia_line1.SilenceCompressionEnable),
+    },
+    VoIPMedia_line2: {
+      VAD: convertBooleanStatus(form.VoIPMedia_line2.VAD),
+      SilenceCompressionEnable: convertBooleanStatus(form.VoIPMedia_line2.SilenceCompressionEnable),
+    },
+    call_ctrl_line1: {
+      SyncCallerTimeEnable: convertBooleanStatus(form.call_ctrl_line1.SyncCallerTimeEnable),
+      HookReleaseMin: form.call_ctrl_line1.HookReleaseMin,
+      HookMaxInterval: form.call_ctrl_line1.HookMaxInterval,
+      HookMinInterval: form.call_ctrl_line1.HookMinInterval,
+      SubscribeExpire: form.call_ctrl_line1.SubscribeExpire,
+      SubscribeType: form.call_ctrl_line1.SubscribeType,
+      ComingCallDisplayMode: form.call_ctrl_line1.ComingCallDisplayMode,
+      SIP3wayConfServAddr: form.call_ctrl_line1.SIP3wayConfServAddr,
+      SIP3wayConfServerMix: convertBooleanStatus(form.call_ctrl_line1.SIP3wayConfServerMix),
+      SIP3wayConf: convertBooleanStatus(form.call_ctrl_line1.SIP3wayConf),
+      SIPCallTransfer: convertBooleanStatus(form.call_ctrl_line1.SIPCallTransfer),
+      SIPCallWaitingEnable: convertBooleanStatus(form.call_ctrl_line1.SIPCallWaitingEnable),
+      HotLineDelayTime: form.call_ctrl_line1.HotLineDelayTime,
+      HotLineNumber: form.call_ctrl_line1.HotLineNumber,
+      HotLineEnable: convertBooleanStatus(form.call_ctrl_line1.HotLineEnable),
+      VoiceVolumeListen: form.call_ctrl_line1.VoiceVolumeListen,
+      VoiceVolumeSpeak: form.call_ctrl_line1.VoiceVolumeSpeak,
+      SIPPacketizationTime: form.call_ctrl_line1.SIPPacketizationTime,
+      G722: {
+        priority: form.call_ctrl_line1.G722.priority,
       },
-      basic_comcom: {
-        TelephoneEventPayloadType: form.basic_common.TelephoneEventPayloadType,
-        HeartbeatSwitch: convertBooleanStatus(form.basic_common.HeartbeatSwitch),
-        HeartbeatCycle: form.basic_common.HeartbeatCycle,
-        VoIP8021PMarkEnable: convertBooleanStatus(form.basic_common.VoIP8021PMarkEnable),
-        SIP8021PMark: form.basic_common.SIP8021PMark,
-        RTP8021PMark: form.basic_common.RTP8021PMark,
-        SC_ACCT_SIP_SESSION_FLAG: convertBooleanStatus(form.basic_common.SC_ACCT_SIP_SESSION_FLAG),
-        SC_ACCT_SIP_SESSION_TIMER: form.basic_common.SC_ACCT_SIP_SESSION_TIMER,
-        SC_ACCT_SIP_SESSION_MIN_EXP: form.basic_common.SC_ACCT_SIP_SESSION_MIN_EXP,
-        SC_ACCT_SIP_SESSION_REFRESHER: form.basic_common.SC_ACCT_SIP_SESSION_REFRESHER,
-        SC_ACCT_SIP_SESSION_METHOD: form.basic_common.SC_ACCT_SIP_SESSION_METHOD,
-        LogOffMsgSendEnable: convertBooleanStatus(form.basic_common.ifSendUnregisterMsg),
-        SIPDSCPMark: form.basic_common.SIPDSCPMark,
-        RTPDSCPMark: form.basic_common.RTPDSCPMark,
-        PRACKEnable: convertBooleanStatus(form.basic_common.PRACKEnable),
+      G711a: {
+        priority: form.call_ctrl_line1.G711a.priority,
       },
-      VoIPMedia_Common: {
-        FaxCodec: convertBooleanStatus(form.VoIPMedia_Common.FaxCodec),
-        SC_ACCT_MEDIA_G723_RATE: form.VoIPMedia_Common.SC_ACCT_MEDIA_G723_RATE,
-        EchoCancellationLowSpeedFax: form.VoIPMedia_Common.EchoCancellationLowSpeedFax,
-        EchoCancellationEnable: convertBooleanStatus(form.VoIPMedia_Common.EchoCancellationEnable),
+      G711u: {
+        priority: form.call_ctrl_line1.G711u.priority,
       },
-      VoIPMedia_line1: {
-        VAD: convertBooleanStatus(form.VoIPMedia_line1.VAD),
-        SilenceCompressionEnable: convertBooleanStatus(
-          form.VoIPMedia_line1.SilenceCompressionEnable,
-        ),
+      G729: {
+        priority: form.call_ctrl_line1.G729.priority,
       },
-      VoIPMedia_line2: {
-        VAD: convertBooleanStatus(form.VoIPMedia_line2.VAD),
-        SilenceCompressionEnable: convertBooleanStatus(
-          form.VoIPMedia_line2.SilenceCompressionEnable,
-        ),
+      G723: {
+        priority: form.call_ctrl_line1.G723.priority,
       },
-      call_ctrl_line1: {
-        SyncCallerTimeEnable: convertBooleanStatus(form.call_ctrl_line1.SyncCallerTimeEnable),
-        HookReleaseMin: form.call_ctrl_line1.HookReleaseMin,
-        HookMaxInterval: form.call_ctrl_line1.HookMaxInterval,
-        HookMinInterval: form.call_ctrl_line1.HookMinInterval,
-        SubscribeExpire: form.call_ctrl_line1.SubscribeExpire,
-        SubscribeType: form.call_ctrl_line1.SubscribeType,
-        ComingCallDisplayMode: form.call_ctrl_line1.ComingCallDisplayMode,
-        SIP3wayConfServAddr: form.call_ctrl_line1.SIP3wayConfServAddr,
-        SIP3wayConfServerMix: convertBooleanStatus(form.call_ctrl_line1.SIP3wayConfServerMix),
-        SIP3wayConf: convertBooleanStatus(form.call_ctrl_line1.SIP3wayConf),
-        SIPCallTransfer: convertBooleanStatus(form.call_ctrl_line1.SIPCallTransfer),
-        SIPCallWaitingEnable: convertBooleanStatus(form.call_ctrl_line1.SIPCallWaitingEnable),
-        HotLineDelayTime: form.call_ctrl_line1.HotLineDelayTime,
-        HotLineNumber: form.call_ctrl_line1.HotLineNumber,
-        HotLineEnable: convertBooleanStatus(form.call_ctrl_line1.HotLineEnable),
-        VoiceVolumeListen: form.call_ctrl_line1.VoiceVolumeListen,
-        VoiceVolumeSpeak: form.call_ctrl_line1.VoiceVolumeSpeak,
-        SIPPacketizationTime: form.call_ctrl_line1.SIPPacketizationTime,
-        G722: {
-          priority: form.call_ctrl_line1.G722.priority,
-        },
-        G711a: {
-          priority: form.call_ctrl_line1.G711a.priority,
-        },
-        G711u: {
-          priority: form.call_ctrl_line1.G711u.priority,
-        },
-        G729: {
-          priority: form.call_ctrl_line1.G729.priority,
-        },
-        G723: {
-          priority: form.call_ctrl_line1.G723.priority,
-        },
+    },
+    call_ctrl_line2: {
+      SyncCallerTimeEnable: convertBooleanStatus(form.call_ctrl_line2.SyncCallerTimeEnable),
+      HookReleaseMin: form.call_ctrl_line2.HookReleaseMin,
+      HookMaxInterval: form.call_ctrl_line2.HookMaxInterval,
+      HookMinInterval: form.call_ctrl_line2.HookMinInterval,
+      SubscribeExpire: form.call_ctrl_line2.SubscribeExpire,
+      SubscribeType: form.call_ctrl_line2.SubscribeType,
+      ComingCallDisplayMode: form.call_ctrl_line2.ComingCallDisplayMode,
+      SIP3wayConfServAddr: form.call_ctrl_line2.SIP3wayConfServAddr,
+      SIP3wayConfServerMix: convertBooleanStatus(form.call_ctrl_line2.SIP3wayConfServerMix),
+      SIP3wayConf: convertBooleanStatus(form.call_ctrl_line2.SIP3wayConf),
+      SIPCallTransfer: convertBooleanStatus(form.call_ctrl_line2.SIPCallTransfer),
+      SIPCallWaitingEnable: convertBooleanStatus(form.call_ctrl_line2.SIPCallWaitingEnable),
+      HotLineDelayTime: form.call_ctrl_line2.HotLineDelayTime,
+      HotLineNumber: form.call_ctrl_line2.HotLineNumber,
+      HotLineEnable: convertBooleanStatus(form.call_ctrl_line2.HotLineEnable),
+      VoiceVolumeListen: form.call_ctrl_line2.VoiceVolumeListen,
+      VoiceVolumeSpeak: form.call_ctrl_line2.VoiceVolumeSpeak,
+      SIPPacketizationTime: form.call_ctrl_line2.SIPPacketizationTime,
+      G722: {
+        priority: form.call_ctrl_line2.G722.priority,
       },
-      call_ctrl_line2: {
-        SyncCallerTimeEnable: convertBooleanStatus(form.call_ctrl_line2.SyncCallerTimeEnable),
-        HookReleaseMin: form.call_ctrl_line2.HookReleaseMin,
-        HookMaxInterval: form.call_ctrl_line2.HookMaxInterval,
-        HookMinInterval: form.call_ctrl_line2.HookMinInterval,
-        SubscribeExpire: form.call_ctrl_line2.SubscribeExpire,
-        SubscribeType: form.call_ctrl_line2.SubscribeType,
-        ComingCallDisplayMode: form.call_ctrl_line2.ComingCallDisplayMode,
-        SIP3wayConfServAddr: form.call_ctrl_line2.SIP3wayConfServAddr,
-        SIP3wayConfServerMix: convertBooleanStatus(form.call_ctrl_line2.SIP3wayConfServerMix),
-        SIP3wayConf: convertBooleanStatus(form.call_ctrl_line2.SIP3wayConf),
-        SIPCallTransfer: convertBooleanStatus(form.call_ctrl_line2.SIPCallTransfer),
-        SIPCallWaitingEnable: convertBooleanStatus(form.call_ctrl_line2.SIPCallWaitingEnable),
-        HotLineDelayTime: form.call_ctrl_line2.HotLineDelayTime,
-        HotLineNumber: form.call_ctrl_line2.HotLineNumber,
-        HotLineEnable: convertBooleanStatus(form.call_ctrl_line2.HotLineEnable),
-        VoiceVolumeListen: form.call_ctrl_line2.VoiceVolumeListen,
-        VoiceVolumeSpeak: form.call_ctrl_line2.VoiceVolumeSpeak,
-        SIPPacketizationTime: form.call_ctrl_line2.SIPPacketizationTime,
-        G722: {
-          priority: form.call_ctrl_line2.G722.priority,
-        },
-        G711a: {
-          priority: form.call_ctrl_line2.G711a.priority,
-        },
-        G711u: {
-          priority: form.call_ctrl_line2.G711u.priority,
-        },
-        G729: {
-          priority: form.call_ctrl_line2.G729.priority,
-        },
-        G723: {
-          priority: form.call_ctrl_line2.G723.priority,
-        },
+      G711a: {
+        priority: form.call_ctrl_line2.G711a.priority,
       },
-    }
-    setVoipBasicSettings(data)
-  })
+      G711u: {
+        priority: form.call_ctrl_line2.G711u.priority,
+      },
+      G729: {
+        priority: form.call_ctrl_line2.G729.priority,
+      },
+      G723: {
+        priority: form.call_ctrl_line2.G723.priority,
+      },
+    },
+  }
+  setVoipBasicSettings(data)
 }
 const getVoipAdvancedSettingsData = () => {
   getVoipAdvancedSettings().then(({ data }) => {
     form.registrationExpireTimer = data.registrationExpireTimer
     form.maxStartDelay = data.maxStartDelay
-    form.registerRetryInterval = data.RegisterRetryInterval
+    form.registerRetryInterval = data.registerRetryInterval
     form.dtmfRelay = data.DTMFTransportMode
     form.optionsSericeMode = data.OptionsSericeMode
     form.faxCtrlMode = data.FaxCtrlMode
@@ -1348,56 +1335,57 @@ const getVoipAdvancedSettingsData = () => {
     form.callSynEnAutoSwitch = convertBooleanStatus(data.CallSynEnAutoSwitch) as boolean
     form.syncSysTimeEnable = convertBooleanStatus(data.SyncSysTimeEnable) as boolean
 
-    form.digit_map.InterDigitTimerShort = data.InterDigitTimerShort
-    form.digit_map.StartDigitTimer = data.StartDigitTimer
-    form.digit_map.InterDigitTimerLong = data.InterDigitTimerLong
-    form.digit_map.InterDigitTimerT = data.InterDigitTimerT
-    form.digit_map.BusyToneTimer = data.BusyToneTimer
-    form.digit_map.HangingReminderToneTimer = data.HangingReminderToneTimer
-    form.digit_map.NoAnswerTimer = data.NoAnswerTimer
-    form.digit_map.TMode = data.TMode
-    form.digit_map.enableDigitMap = convertBooleanStatus(data.DigitMapEnable) as boolean
-    form.digit_map.digitMap = data.DigitMap1
+    form.digit_map.InterDigitTimerShort = data.digit_map.InterDigitTimerShort
+    form.digit_map.StartDigitTimer = data.digit_map.StartDigitTimer
+    form.digit_map.InterDigitTimerLong = data.digit_map.InterDigitTimerLong
+    form.digit_map.InterDigitTimerT = data.digit_map.InterDigitTimerT
+    form.digit_map.BusyToneTimer = data.digit_map.BusyToneTimer
+    form.digit_map.HangingReminderToneTimer = data.digit_map.HangingReminderToneTimer
+    form.digit_map.NoAnswerTimer = data.digit_map.NoAnswerTimer
+    form.digit_map.TMode = data.digit_map.TMode
+    form.digit_map.enableDigitMap = convertBooleanStatus(data.digit_map.DigitMapEnable) as boolean
+    form.digit_map.digitMap = data.digit_map.DigitMap1
     form.digit_map.enableDigitMapSpecial = convertBooleanStatus(
-      data.DigitMapSpecialEnable,
+      data.digit_map.DigitMapSpecialEnable,
     ) as boolean
-    form.digit_map.digitMapSpecial = data.DigitMapSpecial
-    form.digit_map.enablePBXPrefix = convertBooleanStatus(data.PBXPrefixEnable) as boolean
-    form.digit_map.pbxPrefix = data.PBXPrefix
+    form.digit_map.digitMapSpecial = data.digit_map.DigitMapSpecial
+    form.digit_map.enablePBXPrefix = convertBooleanStatus(data.digit_map.PBXPrefixEnable) as boolean
+    form.digit_map.pbxPrefix = data.digit_map.PBXPrefix
     form.digit_map.enablePBXDialSecondary = convertBooleanStatus(
-      data.PBXDialSecondaryEnable,
+      data.digit_map.PBXDialSecondaryEnable,
     ) as boolean
 
-    form.basic_common.TelephoneEventPayloadType = data.basic_comcom.TelephoneEventPayloadType
+    form.basic_common.TelephoneEventPayloadType = data.basic_common.TelephoneEventPayloadType
     form.basic_common.HeartbeatSwitch = convertBooleanStatus(
-      data.basic_comcom.HeartbeatSwitch,
+      data.basic_common.HeartbeatSwitch,
     ) as boolean
-    form.basic_common.HeartbeatCycle = data.basic_comcom.HeartbeatCycle
+    form.basic_common.HeartbeatCycle = data.basic_common.HeartbeatCycle
     form.basic_common.VoIP8021PMarkEnable = convertBooleanStatus(
-      data.basic_comcom.VoIP8021PMarkEnable,
+      data.basic_common.VoIP8021PMarkEnable,
     ) as boolean
-    form.basic_common.SIP8021PMark = data.basic_comcom.SIP8021PMark
-    form.basic_common.RTP8021PMark = data.basic_comcom.RTP8021PMark
+    form.basic_common.SIP8021PMark = data.basic_common.SIP8021PMark
+    form.basic_common.RTP8021PMark = data.basic_common.RTP8021PMark
     form.basic_common.SC_ACCT_SIP_SESSION_FLAG = convertBooleanStatus(
-      data.basic_comcom.SC_ACCT_SIP_SESSION_FLAG,
+      data.basic_common.SC_ACCT_SIP_SESSION_FLAG,
     ) as boolean
-    form.basic_common.SC_ACCT_SIP_SESSION_TIMER = data.basic_comcom.SC_ACCT_SIP_SESSION_TIMER
-    form.basic_common.SC_ACCT_SIP_SESSION_MIN_EXP = data.basic_comcom.SC_ACCT_SIP_SESSION_MIN_EXP
+    form.basic_common.SC_ACCT_SIP_SESSION_TIMER = data.basic_common.SC_ACCT_SIP_SESSION_TIMER
+    form.basic_common.SC_ACCT_SIP_SESSION_MIN_EXP = data.basic_common.SC_ACCT_SIP_SESSION_MIN_EXP
     form.basic_common.SC_ACCT_SIP_SESSION_REFRESHER =
-      data.basic_comcom.SC_ACCT_SIP_SESSION_REFRESHER
-    form.basic_common.SC_ACCT_SIP_SESSION_METHOD = data.basic_comcom.SC_ACCT_SIP_SESSION_METHOD
+      data.basic_common.SC_ACCT_SIP_SESSION_REFRESHER
+    form.basic_common.SC_ACCT_SIP_SESSION_METHOD = data.basic_common.SC_ACCT_SIP_SESSION_METHOD
     form.basic_common.ifSendUnregisterMsg = convertBooleanStatus(
-      data.basic_comcom.LogOffMsgSendEnable,
+      data.basic_common.LogOffMsgSendEnable,
     ) as boolean
-    form.basic_common.SIPDSCPMark = data.basic_comcom.SIPDSCPMark
-    form.basic_common.RTPDSCPMark = data.basic_comcom.RTPDSCPMark
-    form.basic_common.PRACKEnable = convertBooleanStatus(data.basic_comcom.SupportPrack) as boolean
+    form.basic_common.SIPDSCPMark = data.basic_common.SIPDSCPMark
+    form.basic_common.RTPDSCPMark = data.basic_common.RTPDSCPMark
+    form.basic_common.PRACKEnable = convertBooleanStatus(data.basic_common.SupportPrack) as boolean
 
     form.VoIPMedia_Common.FaxCodec = convertBooleanStatus(data.VoIPMedia_Common.FaxCodec) as boolean
-    form.VoIPMedia_Common.SC_ACCT_MEDIA_G723_RATE = data.SC_ACCT_MEDIA_G723_RATE
-    form.VoIPMedia_Common.EchoCancellationLowSpeedFax = data.EchoCancellationLowSpeedFax
+    form.VoIPMedia_Common.SC_ACCT_MEDIA_G723_RATE = data.VoIPMedia_Common.SC_ACCT_MEDIA_G723_RATE
+    form.VoIPMedia_Common.EchoCancellationLowSpeedFax =
+      data.VoIPMedia_Common.EchoCancellationLowSpeedFax
     form.VoIPMedia_Common.EchoCancellationEnable = convertBooleanStatus(
-      data.EchoCancellationEnable,
+      data.VoIPMedia_Common.EchoCancellationEnable,
     ) as boolean
 
     form.VoIPMedia_line1.active = convertBooleanStatus(data.VoIPMedia_line1.active) as boolean

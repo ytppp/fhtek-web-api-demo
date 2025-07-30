@@ -25,8 +25,11 @@ export const useDataClean = () => {
     })
   }
   const convertBooleanStatus = (flag: string | boolean) => {
-    if (typeof flag === 'string' && (flag === EnableStatus.yes || flag === EnableStatus.no)) {
-      return flag === EnableStatus.yes
+    if (typeof flag === 'string') {
+      if (flag === EnableStatus.yes || flag === EnableStatus.no) {
+        return flag === EnableStatus.yes
+      }
+      if (flag === '') return false
     }
     if (typeof flag === 'boolean') {
       if (flag) return EnableStatus.yes
