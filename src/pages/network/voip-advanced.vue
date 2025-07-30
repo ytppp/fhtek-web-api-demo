@@ -4,10 +4,10 @@
       <h1 class="page__title">{{ $t('trans0579') }}</h1>
     </div>
     <div class="page__content">
+      <!-- :rules="rules" -->
       <fh-form
         class="form form--small"
         ref="formRef"
-        :rules="rules"
         :model="form"
         v-if="hasVoipWan"
       >
@@ -503,7 +503,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { isValidInteger } from '@/util/tool'
 import { ServiceType } from '@/util/constant'
-import { getWan, getVoipAdvancedSettings, setVoipBasicSettings } from '@/http/api'
+import { getWan, getVoipAdvancedSettings, setVoipAdvancedSettings } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
 defineOptions({
@@ -1309,7 +1309,7 @@ const save = () => {
       },
     },
   }
-  setVoipBasicSettings(data)
+  setVoipAdvancedSettings(data)
 }
 const getVoipAdvancedSettingsData = () => {
   getVoipAdvancedSettings().then(({ data }) => {
