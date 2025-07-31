@@ -10,10 +10,11 @@
       <div class="page__table">
         <fh-table
           :columns="wlanDevicesColumns"
-          :data-source="b24gWlanData"
+          :data-source="b24gWlanDataDisplay"
           :show-row-checkbox="false"
           :show-header="false"
           :border="true"
+          :show-index="false"
         >
           <template #blacklist="scope">
             <fh-icon
@@ -22,6 +23,16 @@
               name="icon-add"
               :title="$t('trans0164')"
             />
+          </template>
+          <template #footer>
+            <div class="page__table-footer">
+              <fh-pagination
+                @change="b24gChangeCurrent"
+                :total="b24gWlanTotal"
+                :default-current="b24gCurrent"
+                :defaultPageSize="b24gPageSize"
+              ></fh-pagination>
+            </div>
           </template>
         </fh-table>
       </div>
@@ -31,10 +42,11 @@
       <div class="page__table">
         <fh-table
           :columns="wlanDevicesColumns"
-          :data-source="b5gWlanData"
+          :data-source="b5gWlanDataDisplay"
           :show-row-checkbox="false"
           :show-header="false"
           :border="true"
+          :show-index="false"
         >
           <template #blacklist="scope">
             <fh-icon
@@ -44,6 +56,16 @@
               :title="$t('trans0164')"
             />
           </template>
+          <template #footer>
+            <div class="page__table-footer">
+              <fh-pagination
+                @change="b5gChangeCurrent"
+                :total="b5gWlanTotal"
+                :default-current="b5gCurrent"
+                :defaultPageSize="b5gPageSize"
+              ></fh-pagination>
+            </div>
+          </template>
         </fh-table>
       </div>
     </div>
@@ -51,7 +73,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted, inject } from 'vue'
+import { reactive, onMounted, inject, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format } from '@/util/tool'
 import { getWlanDevices } from '@/http/api'
@@ -65,6 +87,10 @@ defineOptions({
 const { t } = useI18n()
 const dialog = inject('dialog')
 const wlanDevicesColumns = reactive([
+  {
+    key: 'id',
+    title: t('trans0454'),
+  },
   {
     key: 'name',
     title: t('trans0935'),
@@ -88,6 +114,23 @@ const wlanDevicesColumns = reactive([
 ])
 const b24gWlanData = reactive([])
 const b5gWlanData = reactive([])
+const b24gWlanTotal = ref(0)
+const b5gWlanTotal = ref(0)
+const b24gCurrent = ref(1)
+const b24gPageSize = ref(10)
+const b5gCurrent = ref(1)
+const b5gPageSize = ref(10)
+
+const b24gWlanDataDisplay = computed(() => {
+  const start = (b24gCurrent.value - 1) * b24gPageSize.value
+  const end = start + b24gPageSize.value
+  return b24gWlanData.slice(start, end)
+})
+const b5gWlanDataDisplay = computed(() => {
+  const start = (b5gCurrent.value - 1) * b5gPageSize.value
+  const end = start + b5gPageSize.value
+  return b5gWlanData.slice(start, end)
+})
 
 const getWlanDeviceData = () => {
   getWlanDevices().then(({ data }) => {
@@ -97,20 +140,46 @@ const getWlanDeviceData = () => {
     }
     const b24gWlanTableData = []
     const b5gWlanTableData = []
+    let b24gIndex = 0
+    let b5gIndex = 0
     items.forEach((item) => {
       if (item.type === NetType.b24g) {
+        b24gIndex++
         b24gWlanTableData.push({
           ...item,
+          id: b24gIndex,
           typeAlias: netTypeText[item.type],
         })
       }
       if (item.type === NetType.b5g) {
+        b5gIndex++
         b5gWlanTableData.push({
           ...item,
+          id: b5gIndex,
           typeAlias: netTypeText[item.type],
         })
       }
     })
+    // for (let i = 0; i < 100; i++) {
+    //   b24gWlanTableData.push({
+    //     id: i + 1,
+    //     name: `name${i}`,
+    //     ssid: `ssid${i}`,
+    //     ip: `192.168.1.${i}`,
+    //     mac: `00:00:00:00:00:${i}`,
+    //   })
+    // }
+    // for (let i = 0; i < 100; i++) {
+    //   b5gWlanTableData.push({
+    //     id: i + 1,
+    //     name: `name${i}`,
+    //     ssid: `ssid${i}`,
+    //     ip: `192.168.1.${i}`,
+    //     mac: `00:00:00:00:00:${i}`,
+    //   })
+    // }
+    b24gWlanTotal.value = b24gWlanTableData.length
+    b5gWlanTotal.value = b5gWlanTableData.length
     Object.assign(b24gWlanData, b24gWlanTableData)
     Object.assign(b5gWlanData, b5gWlanTableData)
   })
@@ -129,6 +198,12 @@ const goWifiMacFilter = (mac) => {
       })
     })
     .catch(() => {})
+}
+const b24gChangeCurrent = (current) => {
+  b24gCurrent.value = current
+}
+const b5gChangeCurrent = (current) => {
+  b5gCurrent.value = current
 }
 onMounted(() => {
   getWlanDeviceData()

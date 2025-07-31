@@ -400,8 +400,8 @@ export default {
       return this.dataSource.length
         ? {
             width: col.width && `${col.width}px`,
-            // minWidth: col.width && `${col.width}px`,
-            // maxWidth: col.width && `${col.width}px`,
+            minWidth: col.width && `${col.width}px`,
+            maxWidth: col.width && `${col.width}px`,
           }
         : {}
     },
@@ -507,7 +507,7 @@ export default {
     overflow-y: hidden;
   }
   .table__footer {
-    padding: 10px;
+    padding: 10px 0;
   }
   .table-main {
     table-layout: fixed;

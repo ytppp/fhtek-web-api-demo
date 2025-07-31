@@ -182,7 +182,7 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      editMacFilterStatus(data)
+      return editMacFilterStatus(data)
     },
     openAddModal() {
       this.modalForm.id = ''
@@ -246,10 +246,39 @@ export default {
         this.getWifiMacFilterList()
       })
     },
+    init() {
+      if (this.$route.query.mac) {
+        if (!this.form.enable) {
+          this.$dialog
+            .confirm({
+              okText: this.$t('trans0019'),
+              cancelText: this.$t('trans0020'),
+              message: this.$t('trans0941'),
+            })
+            .then(() => {
+              this.form.enable = true
+              this.form.mode = FilteringModes.blackList
+              this.save().then(() => {
+                this.openAddModal()
+                this.modalForm.mac = this.$route.query.mac
+              })
+            })
+            .catch(() => {})
+        }
+        if (!this.isBlackList) {
+          this.form.mode = FilteringModes.blackList
+          this.save().then(() => {
+            this.openAddModal()
+            this.modalForm.mac = this.$route.query.mac
+          })
+        }
+      }
+    },
   },
-  mounted() {
-    this.getWifiMacFilterStatusData()
-    this.getWifiMacFilterList()
+  async mounted() {
+    await this.getWifiMacFilterStatusData()
+    await this.getWifiMacFilterList()
+    await this.init()
   },
 }
 </script>

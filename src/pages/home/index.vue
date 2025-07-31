@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div style="width: 300px">
+    <!-- style="width: 300px" -->
+    <div>
+      <fh-pagination></fh-pagination>
       <fh-table :columns="columns" :data-source="tableData">
         <template #title> 标题 </template>
         <template #operationgroup>

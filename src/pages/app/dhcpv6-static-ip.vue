@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0250') }}</h1>
+      <h1 class="page__title">{{ $t('trans0806') }}</h1>
     </div>
     <div class="page__content">
       <div class="page__table">
@@ -38,8 +38,11 @@
           <fh-form-item :label="$t('trans0097')" prop="mac">
             <fh-input v-model="modalForm.mac" :placeholder="$t('trans0217')"></fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0393')" prop="ip">
-            <fh-input v-model="modalForm.ip"></fh-input>
+          <fh-form-item :label="$t('trans0414')" prop="ip">
+            <fh-input v-model="modalForm.ip" :placeholder="$t('trans0413')"></fh-input>
+            <template #extra>
+              {{ $t('trans0942') }}
+            </template>
           </fh-form-item>
           <fh-form-item class="form__submit-btn">
             <fh-button @click="save" block>
@@ -53,15 +56,7 @@
 </template>
 
 <script>
-import {
-  isIP,
-  isMulticast,
-  isLoopback,
-  getIpBefore,
-  isMac,
-  isNetworkIP,
-  isBoardcastIP,
-} from '@/util/tool'
+import { isIP, isMac, isValidIpv6AddrExtra } from '@/util/tool'
 import {
   getLan,
   getDhcpStaticIp,
@@ -92,27 +87,8 @@ export default {
             message: this.$t('trans0004'),
           },
           {
-            rule: (value) =>
-              isIP(value, IP.IPv4) &&
-              !isMulticast(value) &&
-              !isLoopback(value) &&
-              !isNetworkIP(value) &&
-              !isBoardcastIP(value),
-            message: this.$t('trans0397'),
-          },
-          {
-            rule: (value) => {
-              if (!this.lanIp) {
-                return true
-              }
-              const lanIpBefore = getIpBefore(this.lanIp)
-              const ipBefore = getIpBefore(value)
-              if (ipBefore !== lanIpBefore || this.lanIp === value) {
-                return false
-              }
-              return true
-            },
-            message: this.$t('trans0397'),
+            rule: (value) => isIP(value, IP.IPv6) && isValidIpv6AddrExtra(value),
+            message: this.$t('trans0566').format(this.$t('trans0414')),
           },
           {
             rule: (value) => {
@@ -128,7 +104,7 @@ export default {
               })
               return flag
             },
-            message: this.$t('trans0399'),
+            message: this.$t('trans0421'),
           },
         ],
         mac: [
@@ -165,7 +141,7 @@ export default {
         },
         {
           key: 'ip',
-          title: this.$t('trans0393'),
+          title: this.$t('trans0414'),
         },
       ],
       data: [],
@@ -215,7 +191,7 @@ export default {
       if (this.$refs.modalForm.validate()) {
         const data = {}
         if (this.isAdd) {
-          data.type = IP.IPv4
+          data.type = IP.IPv6
           data.ip = this.modalForm.ip
           data.mac = this.modalForm.mac
           addDhcpStaticIp(data).then(() => {
@@ -224,7 +200,7 @@ export default {
         }
         if (this.isEdit) {
           data.id = this.modalForm.id
-          data.type = IP.IPv4
+          data.type = IP.IPv6
           data.ip = this.modalForm.ip
           data.mac = this.modalForm.mac
           editDhcpStaticIp(data).then(() => {

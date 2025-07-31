@@ -36,7 +36,7 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const { convertBooleanStatus, defaultVal } = useDataClean()
+const { convertBooleanStatus } = useDataClean()
 const loading = inject('loading')
 const modes = [
   {
@@ -81,7 +81,11 @@ const getWanData = () => {
       },
     ]
     items.forEach((item) => {
-      if (item.protocol !== NetType.bridge && item.ipv6.length) {
+      if (
+        item.protocol !== NetType.bridge &&
+        item.ipv6.length &&
+        item.interface.startsWith('inet6')
+      ) {
         thisWanList.push({
           value: item.interface,
           text: `${item.wanname}(${item.interface})`,

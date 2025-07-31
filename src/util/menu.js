@@ -44,7 +44,7 @@ let menus = [
       },
       {
         url: '/status/wan',
-        text: 'trans0155',
+        text: 'trans0715',
         config,
       },
       {
@@ -310,7 +310,12 @@ let menus = [
       },
       {
         url: '/app/dhcp-static-ip',
-        text: 'trans0806',
+        text: 'trans0250',
+        config,
+      },
+      {
+        url: '/app/dhcpv6-static-ip',
+        text: 'trans0251',
         config,
       },
       {

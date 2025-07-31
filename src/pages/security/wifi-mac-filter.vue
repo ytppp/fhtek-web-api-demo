@@ -207,7 +207,7 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      setWifiMacFilterStatus(data)
+      return setWifiMacFilterStatus(data)
     },
     openAddModal() {
       this.modalForm.id = this.ssidOpts[0].value
@@ -305,12 +305,29 @@ export default {
     init() {
       if (this.$route.query.mac) {
         if (!this.form.enable) {
-          this.form.enable = true
-          this.form.mode = FilteringModes.blackList
-          this.save()
+          this.$dialog
+            .confirm({
+              okText: this.$t('trans0019'),
+              cancelText: this.$t('trans0020'),
+              message: this.$t('trans0940'),
+            })
+            .then(() => {
+              this.form.enable = true
+              this.form.mode = FilteringModes.blackList
+              this.save().then(() => {
+                this.openAddModal()
+                this.modalForm.mac = this.$route.query.mac
+              })
+            })
+            .catch(() => {})
         }
-        this.openAddModal()
-        this.modalForm.mac = this.$route.query.mac
+        if (!this.isBlackList) {
+          this.form.mode = FilteringModes.blackList
+          this.save().then(() => {
+            this.openAddModal()
+            this.modalForm.mac = this.$route.query.mac
+          })
+        }
       }
     },
   },
