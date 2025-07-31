@@ -70,12 +70,12 @@
           </fh-form-item>
           <template v-if="isBridge">
             <fh-form-item :label="statusText">
-              <fh-switch @change="changeIgmp" v-model="wan.igmpEnable"></fh-switch>
+              <fh-switch v-model="wan.igmpEnable"></fh-switch>
             </fh-form-item>
           </template>
           <template v-if="isRoute">
             <fh-form-item :label="statusText">
-              <fh-switch @change="changeIgmp" v-model="wan.igmpProxyEnable"></fh-switch>
+              <fh-switch v-model="wan.igmpProxyEnable"></fh-switch>
             </fh-form-item>
             <fh-form-item :label="versionText" v-if="isIpv4">
               <fh-select v-model="wan.igmpVersion" :options="igmpVersionOptions"></fh-select>

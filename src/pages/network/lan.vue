@@ -276,6 +276,7 @@ const save = () => {
           loading.close()
           if (isIpChanged.value) {
             if (!import.meta.env.DEV) {
+              sessionStorage.clear()
               window.location.href = `http://${form.ip}/index.html#/login`
             }
           }

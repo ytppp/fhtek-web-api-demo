@@ -23,6 +23,7 @@ export default {
           ...opt,
           onHide: () => {
             this.close()
+            sessionStorage.clear()
             router.push('/login')
           },
         }),

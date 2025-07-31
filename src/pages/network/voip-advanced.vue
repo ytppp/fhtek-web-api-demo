@@ -5,12 +5,7 @@
     </div>
     <div class="page__content">
       <!-- :rules="rules" -->
-      <fh-form
-        class="form form--small"
-        ref="formRef"
-        :model="form"
-        v-if="hasVoipWan"
-      >
+      <fh-form class="form form--small" ref="formRef" :model="form" v-if="hasVoipWan">
         <fh-form-item :label="$t('trans0842')" prop="registrationExpireTimer">
           <fh-input v-model="form.registrationExpireTimer"> </fh-input>
         </fh-form-item>
@@ -115,7 +110,10 @@
           <fh-form-item label="Session Timer(s)" prop="basic_common.SC_ACCT_SIP_SESSION_TIMER">
             <fh-input v-model="form.basic_common.SC_ACCT_SIP_SESSION_TIMER"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="Min Session Timer(s)" prop="basic_common.SC_ACCT_SIP_SESSION_MIN_EXP">
+          <fh-form-item
+            label="Min Session Timer(s)"
+            prop="basic_common.SC_ACCT_SIP_SESSION_MIN_EXP"
+          >
             <fh-input v-model="form.basic_common.SC_ACCT_SIP_SESSION_MIN_EXP"> </fh-input>
           </fh-form-item>
           <fh-form-item label="Session Refresher Rule">
@@ -192,7 +190,10 @@
         <fh-form-item label="Busy Tone Timer(s)" prop="digit_map.BusyToneTimer">
           <fh-input v-model="form.digit_map.BusyToneTimer"> </fh-input>
         </fh-form-item>
-        <fh-form-item label="Hanging Reminder Tone Timer(s)" prop="digit_map.HangingReminderToneTimer">
+        <fh-form-item
+          label="Hanging Reminder Tone Timer(s)"
+          prop="digit_map.HangingReminderToneTimer"
+        >
           <fh-input v-model="form.digit_map.HangingReminderToneTimer"> </fh-input>
         </fh-form-item>
         <fh-form-item label="No Answer Timer(s)" prop="digit_map.NoAnswerTimer">
@@ -764,7 +765,7 @@ const comingCallDisplayModeOpts = [
     text: 'DTMF',
   },
 ]
-const numMin = 1
+const numMin = 0
 const ptimeSetupMin = 10
 const ptimeSetupOpts = generateNumberOpts(30, ptimeSetupMin, 10)
 const priorityOpts = generateNumberOpts(5, numMin, 1)

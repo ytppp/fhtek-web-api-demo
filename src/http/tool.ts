@@ -146,10 +146,12 @@ export function handleBusinessError(response: any): boolean {
       break
     case ResultEnum.OVERDUE:
       message = translate('trans0697') // data.msg || translate('trans0697')
+      sessionStorage.clear()
       router.push('/login')
       break
     case ResultEnum.INVALIDSESSION:
       message = translate('trans0698') // data.msg || translate('trans0698')
+      sessionStorage.clear()
       router.push('/login')
       break
     case ResultEnum.INVALIDJSON:
