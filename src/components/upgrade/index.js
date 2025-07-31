@@ -1,8 +1,7 @@
 import { h } from 'vue'
 import FhUpgrade from './upgrade.vue'
-import { mergeOptions } from '@/util/tool'
+import { mergeOptions, handleLogout } from '@/util/tool'
 import { usePopup } from '@/hooks/popup'
-import { router } from '@/router/index'
 
 const defaultOptions = {
   url: '',
@@ -23,8 +22,7 @@ export default {
           ...opt,
           onHide: () => {
             this.close()
-            sessionStorage.clear()
-            router.push('/login')
+            handleLogout()
           },
         }),
       )

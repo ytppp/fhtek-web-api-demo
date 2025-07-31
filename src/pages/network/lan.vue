@@ -52,6 +52,7 @@ import {
 } from '@/util/tool'
 import { getLan, setLan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { loginPath } from '@/router'
 
 defineOptions({
   name: 'LanPage',
@@ -277,7 +278,7 @@ const save = () => {
           if (isIpChanged.value) {
             if (!import.meta.env.DEV) {
               sessionStorage.clear()
-              window.location.href = `http://${form.ip}/index.html#/login`
+              window.location.href = `http://${form.ip}/index.html#${loginPath}`
             }
           }
         }, 5000)

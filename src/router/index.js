@@ -1,8 +1,5 @@
 import { createWebHashHistory, createRouter } from 'vue-router'
 import { http } from '@/http'
-import { translate } from '@/i18n/index'
-import { logout } from '@/http/api'
-import dialog from '@/components/dialog/index.js'
 
 import login from '../pages/login/index.vue'
 import home from '../pages/home/index.vue'
@@ -63,13 +60,7 @@ import ontAuth from '../pages/management/ont-auth.vue'
 import internetDiagnose from '../pages/management/diagnose-internet.vue'
 import remoteDiagnose from '../pages/management/diagnose-remote.vue'
 
-const handleNotMatchRoute = () => {
-  if (sessionStorage.getItem('login_user')) {
-    return '/home'
-  } else {
-    return '/login'
-  }
-}
+export const loginPath = '/login' 
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -79,7 +70,7 @@ export const router = createRouter({
       redirect: '/home',
     },
     {
-      path: '/login',
+      path: loginPath,
       name: 'login',
       component: login,
     },
@@ -397,38 +388,20 @@ export const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  if (to.path !== '/login') {
-    http.cancelAllRequests()
+  if (to.path !== loginPath) {
+    if (sessionStorage.getItem('login_user')) {
+      http.cancelAllRequests()
+      next()
+    } else {
+      next(loginPath)
+    }
+  } else {
+    if (sessionStorage.getItem('login_user')) {
+      next('/home')
+    } else {
+      next()
+    }
   }
-  next()
-  // if (to.path !== '/login') {
-  //   if (sessionStorage.getItem('login_user')) {
-  //     http.cancelAllRequests()
-  //     next()
-  //   } else {
-  //     next('/login')
-  //   }
-  // } else {
-  //   if (sessionStorage.getItem('login_user')) {
-  //     dialog
-  //       .confirm({
-  //         okText: translate('trans0019'),
-  //         cancelText: translate('trans0020'),
-  //         message: translate('trans0021'),
-  //       })
-  //       .then(() => {
-  //         logout().then(() => {
-  //           sessionStorage.clear()
-  //           next('/login')
-  //         })
-  //       })
-  //       .catch(() => {
-  //         next()
-  //       })
-  //   } else {
-  //     next()
-  //   }
-  // }
 })
 
 function registerRouter(app) {
