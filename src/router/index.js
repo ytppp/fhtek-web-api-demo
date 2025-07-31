@@ -47,6 +47,7 @@ import cwmp from '../pages/app/cwmp.vue'
 import time from '../pages/app/time.vue'
 import igmpMld from '../pages/app/igmp-mld.vue'
 import dhcpStaticIp from '../pages/app/dhcp-static-ip.vue'
+import dhcpv6StaticIp from '../pages/app/dhcpv6-static-ip.vue'
 import storage from '../pages/app/storage.vue'
 import mediaSharing from '../pages/app/media-sharing.vue'
 import samba from '../pages/app/samba.vue'
@@ -295,6 +296,11 @@ export const router = createRouter({
       path: '/app/dhcp-static-ip',
       name: 'dhcp-static-ip',
       component: dhcpStaticIp,
+    },
+    {
+      path: '/app/dhcpv6-static-ip',
+      name: 'dhcpv6-static-ip',
+      component: dhcpv6StaticIp,
     },
     {
       path: '/app/storage',

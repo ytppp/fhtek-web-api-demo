@@ -1,7 +1,7 @@
 <template>
   <div class="page wan-status">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0140') }}</h1>
+      <h1 class="page__title">{{ $t('trans0715') }}</h1>
     </div>
     <div class="page__content">
       <div class="page__sub-header">
@@ -30,23 +30,23 @@
           :show-header="false"
           :border="true"
         >
+          <template #ip="scope">
+            <div v-if="scope.row.ip" style="white-space: pre-wrap">
+              {{ formatContent(scope.row.ip) }}
+            </div>
+          </template>
         </fh-table>
       </div>
-      <fh-modal v-model="visible" :title="$t('trans0929')">
-        <template #body>
-          <fh-descriptions :data="displayInfo"></fh-descriptions>
-        </template>
-      </fh-modal>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, cidrToSubnetMask } from '@/util/tool'
 import { getWanInfo } from '@/http/api'
-import { IP, NetType, netTypeText } from '@/util/constant'
+import { NetType, netTypeText } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
 
 defineOptions({
@@ -59,12 +59,11 @@ enum Status {
 }
 
 const { t } = useI18n()
-const { defaultDataObj, defaultVal } = useDataClean()
+const { defaultVal } = useDataClean()
 const StatusText = {
   [Status.UP]: t('trans0652'),
   [Status.DOWN]: t('trans0653'),
 }
-const visible = ref(false)
 const columns = reactive([
   {
     key: 'wan',
@@ -92,14 +91,9 @@ const columns = reactive([
     width: '200',
   },
   {
-    key: 'mask',
-    title: t('trans0459'),
-    width: '150',
-  },
-  {
     key: 'mode',
     title: t('trans0080'),
-    width: '100',
+    width: '150',
   },
   {
     key: 'gateway',
@@ -136,7 +130,7 @@ const ipv6Columns = reactive([
   {
     key: 'ip',
     title: format(t('trans0598'), [t('trans0056')]),
-    width: '300',
+    width: '330',
   },
   {
     key: 'vlanPriority',
@@ -149,14 +143,14 @@ const ipv6Columns = reactive([
     width: '200',
   },
   {
+    key: 'mode',
+    title: t('trans0080'),
+    width: '150',
+  },
+  {
     key: 'gateway',
     title: t('trans0548'),
     width: '200',
-  },
-  {
-    key: 'mode',
-    title: t('trans0080'),
-    width: '100',
   },
   {
     key: 'dns1',
@@ -169,40 +163,6 @@ const ipv6Columns = reactive([
     width: '200',
   },
 ])
-const displayInfo = reactive({
-  wan: {
-    label: t('trans0140'),
-    value: defaultVal,
-  },
-  statusAlias: {
-    label: t('trans0166'),
-    value: defaultVal,
-  },
-  typeAlias: {
-    label: t('trans0080'),
-    value: defaultVal,
-  },
-  ip: {
-    label: format(t('trans0598'), [t('trans0056')]),
-    value: defaultVal,
-  },
-  gateway: {
-    label: t('trans0548'),
-    value: defaultVal,
-  },
-  dns1: {
-    label: t('trans0496'),
-    value: defaultVal,
-  },
-  dns2: {
-    label: t('trans0497'),
-    value: defaultVal,
-  },
-  prefix: {
-    label: t('trans0476'),
-    value: defaultVal,
-  },
-})
 const ipv4Data = reactive([])
 const ipv6Data = reactive([])
 
@@ -219,10 +179,11 @@ const getWanData = () => {
       const ipv6 = item.ipv6
       let dns1 = ''
       let dns2 = ''
+      let vlanPriority = ''
       const statusAlias = StatusText[item.status]
       if (item.dns_servers.length > 0) {
         dns1 = item.dns_servers[0]
-        dns2 = item.dns_servers.length === 2 && item.dns_servers[1]
+        dns2 = item.dns_servers.length >= 2 && item.dns_servers[1]
       }
       const ipArr: string[] = []
       const gatewayArr: string[] = []
@@ -246,17 +207,19 @@ const getWanData = () => {
           prefixArr.push(ipv6Item.prefix)
         }
       })
+      item.vid = item.vid || defaultVal
+      item.p8021 = item.p8021 || defaultVal
+      vlanPriority = `${item.vid}/${item.p8021}`
       const tableItem = {
         ...item,
         wan: item.wanname,
-        ip: ipArr.map((val) => val.split('/')[0]).join(' '),
-        mask: ipArr.map((val) => cidrToSubnetMask(Number(val.split('/')[1]))).join(' '),
+        ip: ipArr.join(' '),
         mode: netTypeText[item.protocol],
         gateway: gatewayArr.join(' '),
         prefix: prefixArr.join(''),
         dns1,
         dns2,
-        vlanPriority: `${item.vid}/${item.p8021}`,
+        vlanPriority,
         mac: item.macaddr,
         statusAlias,
       }
@@ -275,22 +238,6 @@ const getWanData = () => {
   })
 }
 const formatContent = (value) => value.split(' ').join('\n')
-const detail = (row) => {
-  visible.value = true
-  const thisDisplayInfo = {
-    wan: row.wan,
-    statusAlias: row.statusAlias,
-    typeAlias: row.typeAlias,
-    ip: formatContent(row.ip),
-    gateway: formatContent(row.gateway),
-    dns1: row.dns1,
-    dns2: row.dns2,
-    prefix: row.prefix,
-  }
-  defaultDataObj(displayInfo, thisDisplayInfo, (key) => {
-    displayInfo[key].show = !(row.ipv4.length && key === 'prefix')
-  })
-}
 
 onMounted(() => {
   getWanData()
