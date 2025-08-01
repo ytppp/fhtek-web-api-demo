@@ -117,9 +117,9 @@ const b5gWlanData = reactive([])
 const b24gWlanTotal = ref(0)
 const b5gWlanTotal = ref(0)
 const b24gCurrent = ref(1)
-const b24gPageSize = ref(10)
+const b24gPageSize = ref(20)
 const b5gCurrent = ref(1)
-const b5gPageSize = ref(10)
+const b5gPageSize = ref(20)
 
 const b24gWlanDataDisplay = computed(() => {
   const start = (b24gCurrent.value - 1) * b24gPageSize.value

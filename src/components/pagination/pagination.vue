@@ -1,5 +1,5 @@
 <template>
-  <div class="pagination" :class="{ 'pagination--disabled': disabled }" v-if="pages > 1">
+  <div class="pagination" :class="{ 'pagination--disabled': disabled }" v-if="isShowOnlyOnePage">
     <div class="pagination__total" v-if="slots.total || showTotal">
       <slot name="total" v-if="slots.total"></slot>
       <template v-else-if="showTotal && total">
@@ -99,6 +99,10 @@ const currentPage = ref(props.defaultCurrent || 1)
 const currentPageSize = ref(props.defaultPageSize || 10)
 
 const pages = computed(() => Math.ceil(props.total / currentPageSize.value))
+const isShowOnlyOnePage = computed(() => {
+  if (props.showSizeChanger) return true
+  return pages.value > 1
+})
 const pageSizeOpt = computed(() => {
   const result = []
   for (let i = 0; i < props.pageSizeOptions.length; i++) {

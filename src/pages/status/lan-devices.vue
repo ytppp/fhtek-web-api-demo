@@ -95,14 +95,14 @@ const getLanDeviceData = () => {
         id: index + 1,
       })
     })
-    for (let i = 0; i < 100; i++) {
-      lanTableData.push({
-        id: i + 1,
-        name: `name${i}`,
-        ip: `192.168.1.${i}`,
-        mac: `00:00:00:00:00:${i}`,
-      })
-    }
+    // for (let i = 0; i < 100; i++) {
+    //   lanTableData.push({
+    //     id: i + 1,
+    //     name: `name${i}`,
+    //     ip: `192.168.1.${i}`,
+    //     mac: `00:00:00:00:00:${i}`,
+    //   })
+    // }
     lanTotal.value = lanTableData.length
     Object.assign(lanData, lanTableData)
   })
