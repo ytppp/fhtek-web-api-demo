@@ -101,7 +101,7 @@ const currentPageSize = ref(props.defaultPageSize || 10)
 const pages = computed(() => Math.ceil(props.total / currentPageSize.value))
 const isShowOnlyOnePage = computed(() => {
   if (!props.total) return false
-  if (props.showSizeChanger) return true
+  if (props.showSizeChanger && pages.value > 1) return true
   return pages.value > 1
 })
 const pageSizeOpt = computed(() => {
