@@ -118,9 +118,9 @@ const dhcpv6Data = reactive([])
 const dhcpTotal = ref(0)
 const dhcpv6Total = ref(0)
 const dhcpCurrent = ref(1)
-const dhcpPageSize = ref(10)
+const dhcpPageSize = ref(20)
 const dhcpv6Current = ref(1)
-const dhcpv6PageSize = ref(10)
+const dhcpv6PageSize = ref(20)
 
 const dhcpDataDisplay = computed(() => {
   const start = (dhcpCurrent.value - 1) * dhcpPageSize.value
@@ -234,11 +234,13 @@ const getStaInfoData = () => {
     Object.assign(dhcpv6Data, thisDhcpv6Data)
   })
 }
-const dhcpChangeCurrent = (current) => {
+const dhcpChangeCurrent = (current, currentPageSize) => {
   dhcpCurrent.value = current
+  dhcpPageSize.value = currentPageSize
 }
-const dhcpv6ChangeCurrent = (current) => {
+const dhcpv6ChangeCurrent = (current, currentPageSize) => {
   dhcpv6Current.value = current
+  dhcpv6PageSize.value = currentPageSize
 }
 onMounted(() => {
   getStaInfoData()

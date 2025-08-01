@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0806') }}</h1>
+      <h1 class="page__title">{{ $t('trans0251') }}</h1>
     </div>
     <div class="page__content">
       <div class="page__table">
@@ -220,10 +220,12 @@ export default {
           const tableData = []
           const { items } = data
           items.forEach((item, i) => {
-            tableData.push({
-              ...item,
-              index: i,
-            })
+            if (item.type === IP.IPv6) {
+              tableData.push({
+                ...item,
+                index: i,
+              })
+            }
           })
           this.data = tableData
         })

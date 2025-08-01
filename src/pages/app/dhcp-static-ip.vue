@@ -244,10 +244,12 @@ export default {
           const tableData = []
           const { items } = data
           items.forEach((item, i) => {
-            tableData.push({
-              ...item,
-              index: i,
-            })
+            if (item.type === IP.IPv4) {
+              tableData.push({
+                ...item,
+                index: i,
+              })
+            }
           })
           this.data = tableData
         })

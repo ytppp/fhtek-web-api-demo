@@ -60,7 +60,7 @@ import ontAuth from '../pages/management/ont-auth.vue'
 import internetDiagnose from '../pages/management/diagnose-internet.vue'
 import remoteDiagnose from '../pages/management/diagnose-remote.vue'
 
-export const loginPath = '/login' 
+export const loginPath = '/login'
 
 export const router = createRouter({
   history: createWebHashHistory(),

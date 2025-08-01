@@ -72,7 +72,7 @@ const lanColumns = reactive([
 const lanData = reactive([])
 const lanTotal = ref(0)
 const lanCurrent = ref(1)
-const lanPageSize = ref(10)
+const lanPageSize = ref(20)
 
 const lanDataDisplay = computed(() => {
   const start = (lanCurrent.value - 1) * lanPageSize.value
@@ -122,8 +122,9 @@ const goMacFilter = (mac) => {
     })
     .catch(() => {})
 }
-const lanChangeCurrent = (current) => {
+const lanChangeCurrent = (current, currentPageSize) => {
   lanCurrent.value = current
+  lanPageSize.value = currentPageSize
 }
 
 onMounted(() => {

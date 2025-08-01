@@ -1,7 +1,10 @@
 <template>
   <div v-bind="$attrs" class="display-form" :class="{ 'display-form-has-border': border }">
-    <template v-for="(item, index) in data" :key="index">
-      <div class="display-form__item">
+    <template v-for="(item, key, index) in data" :key="index">
+      <div
+        class="display-form__item"
+        :class="{ 'is-stripe': hasStripe && (index + 1) % 2 === 0, 'is-hover': hasHover }"
+      >
         <div class="display-form__label">{{ item.label }}{{ colonText }}</div>
         <div class="display-form__value">{{ item.value }}</div>
       </div>
@@ -46,6 +49,12 @@ const hasColon = computed(() => {
 const colonText = computed(() => {
   return hasColon.value ? t('trans0182') : ''
 })
+const hasStripe = computed(() => {
+  return border && stripe
+})
+const hasHover = computed(() => {
+  return border && hover
+})
 </script>
 
 <style lang="less">
@@ -89,6 +98,14 @@ const colonText = computed(() => {
       padding: 0;
     }
     .display-form__item {
+      &.is-stripe {
+        background-color: #fafafa;
+      }
+      &.is-hover {
+        &:hover {
+          background-color: #f5f7fa;
+        }
+      }
       + .display-form__item {
         margin-top: 0;
         .display-form__label,
