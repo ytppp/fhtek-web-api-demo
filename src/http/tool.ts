@@ -1,10 +1,9 @@
 import { ResultEnum } from './config'
 import type { TAxiosRequestConfig, TAxiosError } from './type'
-import { router } from '@/router/index'
 import { translate } from '@/i18n/index'
 import loading from '@/components/loading/index.js'
 import toast from '@/components/toast/index.js'
-import { format } from '@/util/tool'
+import { format, handleLogout } from '@/util/tool'
 
 // 获取token
 export function getToken(): string {
@@ -146,11 +145,11 @@ export function handleBusinessError(response: any): boolean {
       break
     case ResultEnum.OVERDUE:
       message = translate('trans0697') // data.msg || translate('trans0697')
-      router.push('/login')
+      handleLogout(false)
       break
     case ResultEnum.INVALIDSESSION:
       message = translate('trans0698') // data.msg || translate('trans0698')
-      router.push('/login')
+      handleLogout(false)
       break
     case ResultEnum.INVALIDJSON:
       message = translate('trans0699') // data.msg || translate('trans0699')

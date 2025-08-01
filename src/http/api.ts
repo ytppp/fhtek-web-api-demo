@@ -45,6 +45,14 @@ export const getUpgradeStatus = (): Promise<ApiResponse<any>> => {
   return http.get('ChkUpgradeStatus', undefined, { loading: false, toast: false })
 }
 
+export const getLanSpeed = (): Promise<ApiResponse<any>> => {
+  return http.get(`GetLanSpeed`)
+}
+
+export const setLanSpeed = (params): Promise<ApiResponse<any>> => {
+  return http.post(`SetLanSpeed`, createData(params))
+}
+
 export const getWan = (): Promise<ApiResponse<any>> => {
   return http.get(`GetWan`)
 }

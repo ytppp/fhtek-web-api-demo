@@ -73,6 +73,7 @@
 import { getMenu } from '@/util/menu'
 import { isMobileDevice, isObjArrHasVal } from '@/util/tool'
 import { getDevInfo } from '@/http/api'
+import { loginPath } from '@/router'
 
 // 若多维对象数组中存在某个值，返回其顶级对象
 const getTopObjFromObjArr = (arr, val, childNodeName = 'children', keyName = 'url') => {
@@ -112,7 +113,7 @@ export default {
   },
   computed: {
     isNoAuthPage() {
-      return ['/login', '/guide'].includes(this.url)
+      return [loginPath, '/guide'].includes(this.url)
     },
     hasChildPage() {
       return this.childMenus.length > 0

@@ -75,9 +75,8 @@
 </template>
 
 <script>
-import { getPublicFile } from '@/util/tool'
+import { getPublicFile, handleLogout } from '@/util/tool'
 import { changeLanguage } from '@/i18n'
-import { logout } from '@/http/api'
 
 const LanguagesArr = [
   {
@@ -208,10 +207,7 @@ export default {
           message: this.$t('trans0021'),
         })
         .then(() => {
-          logout().then(() => {
-            sessionStorage.clear()
-            this.$router.push('/login')
-          })
+          handleLogout()
         })
         .catch(() => {})
     },

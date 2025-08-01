@@ -131,7 +131,7 @@ export default {
             const role = Role.super
             sessionStorage.setItem('role', role)
             sessionStorage.setItem('login_user', this.userinfo.username)
-            this.$router.push('/status/device')
+            this.$router.push('/home')
           })
           .finally(() => {
             this.formDisabled = false

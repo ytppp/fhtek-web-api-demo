@@ -5,22 +5,37 @@
     </div>
     <div class="page__content">
       <fh-form class="form" ref="formRef" :model="form">
-        <fh-form-item label="LAN1">
-          <fh-select v-model="form.lan1" :options="modeList"> </fh-select>
+        <fh-form-item :label="SsidText[Lan1]">
+          <fh-select
+            @change="(val: string) => changePort(val, Lan1)"
+            v-model="form[Lan1]"
+            :options="modeList"
+          >
+          </fh-select>
         </fh-form-item>
-        <fh-form-item label="LAN2">
-          <fh-select v-model="form.lan2" :options="modeList"> </fh-select>
+        <fh-form-item :label="SsidText[Lan2]">
+          <fh-select
+            @change="(val: string) => changePort(val, Lan2)"
+            v-model="form[Lan2]"
+            :options="modeList"
+          >
+          </fh-select>
         </fh-form-item>
-        <fh-form-item label="LAN3">
-          <fh-select v-model="form.lan3" :options="modeList"> </fh-select>
+        <fh-form-item :label="SsidText[Lan3]">
+          <fh-select
+            @change="(val: string) => changePort(val, Lan3)"
+            v-model="form[Lan3]"
+            :options="modeList"
+          >
+          </fh-select>
         </fh-form-item>
-        <fh-form-item label="LAN4">
-          <fh-select v-model="form.lan4" :options="modeList"> </fh-select>
-        </fh-form-item>
-        <fh-form-item class="form__submit-btn">
-          <fh-button @click="save" block>
-            {{ $t('trans0002') }}
-          </fh-button>
+        <fh-form-item :label="SsidText[Lan4]">
+          <fh-select
+            @change="(val: string) => changePort(val, Lan4)"
+            v-model="form[Lan4]"
+            :options="modeList"
+          >
+          </fh-select>
         </fh-form-item>
       </fh-form>
     </div>
@@ -28,27 +43,26 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useDataClean } from '@/hooks/data-clean'
-import { format } from '@/util/tool'
+import { getLanSpeed, setLanSpeed } from '@/http/api'
+import { Lan1, Lan2, Lan3, Lan4, SsidText } from '@/util/constant'
 
 enum Mode {
-  auto = 'auto/auto',
-  h10 = '10M/Half',
-  f10 = '10M/Full',
-  h100 = '100M/Half',
-  f100 = '100M/Full',
-  f1000 = '1000M/Full',
+  auto = 'auto',
+  h10 = '10half',
+  f10 = '10full',
+  h100 = '100half',
+  f100 = '100full',
+  f1000 = '1000full',
 }
 const { t } = useI18n()
-const { cleanData, defaultVal } = useDataClean()
 const formRef = ref(null)
 const form = reactive({
-  lan1: '',
-  lan2: '',
-  lan3: '',
-  lan4: '',
+  [Lan1]: '',
+  [Lan2]: '',
+  [Lan3]: '',
+  [Lan4]: '',
 })
 const modeList = reactive([
   {
@@ -76,7 +90,23 @@ const modeList = reactive([
     value: Mode.f1000,
   },
 ])
-const save = () => {
-  // todo
+const changePort = (val: string, type: string) => {
+  setLanSpeed({
+    ifname: type,
+    speed: val,
+  })
 }
+const getLanSpeedData = () => {
+  getLanSpeed().then(({ data }) => {
+    const { items } = data
+    form[Lan1] = items.find((item) => item.ifname === Lan1).speed
+    form[Lan2] = items.find((item) => item.ifname === Lan2).speed
+    form[Lan3] = items.find((item) => item.ifname === Lan3).speed
+    form[Lan4] = items.find((item) => item.ifname === Lan4).speed
+  })
+}
+
+onMounted(() => {
+  getLanSpeedData()
+})
 </script>

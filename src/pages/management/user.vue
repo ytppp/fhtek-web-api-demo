@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import { isValidLength, isValidSymbol, specialChar } from '@/util/tool'
-import { getAccount, setAccount, logout } from '@/http/api'
+import { isValidLength, isValidSymbol, specialChar, handleLogout } from '@/util/tool'
+import { getAccount, setAccount } from '@/http/api'
 
 export default {
   data() {
@@ -110,10 +110,7 @@ export default {
         ]
         setAccount(data).then(() => {
           if (this.form.username === this.usernameStoraged) {
-            logout().then(() => {
-              sessionStorage.clear()
-              this.$router.push('/login')
-            })
+            handleLogout()
           }
         })
       }

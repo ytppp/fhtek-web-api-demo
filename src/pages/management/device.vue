@@ -65,10 +65,9 @@ import {
   backup,
   uploadConfig,
   getLan,
-  logout,
 } from '@/http/api'
-import { router } from '@/router/index'
 import { useCountDown } from '@/hooks/countdown'
+import { handleLogout } from '@/util/tool'
 
 defineOptions({
   name: 'DevicePage',
@@ -96,7 +95,7 @@ function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: (
     checkStatus().then((status) => {
       if (status === Status.done || status === Status.fail) {
         cleanCountDown()
-        handleLogout()
+        handleLogout(false)
       }
     })
   }
@@ -245,12 +244,6 @@ const getLanData = () => {
     const { lan } = data
     const { ip } = lan
     lanIp.value = ip
-  })
-}
-const handleLogout = () => {
-  logout().then(() => {
-    sessionStorage.clear()
-    router.push('/login')
   })
 }
 onMounted(() => {

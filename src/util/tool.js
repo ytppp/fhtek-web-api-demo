@@ -1,3 +1,5 @@
+import { logout } from '@/http/api'
+import { router, loginPath } from '@/router/index'
 import { IP } from './constant'
 const domainReg = /^(https?:\/\/)?([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
 const ipReg =
@@ -546,4 +548,16 @@ export const formatNetworkData = (value) => {
     }
   }
   return { value: '-', unit: '' }
+}
+
+export const handleLogout = (isLogout = true) => {
+  if (isLogout) {
+    logout().then(() => {
+      sessionStorage.clear()
+      router.push(loginPath)
+    })
+  } else {
+    sessionStorage.clear()
+    router.push(loginPath)
+  }
 }

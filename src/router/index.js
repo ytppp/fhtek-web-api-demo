@@ -60,22 +60,29 @@ import ontAuth from '../pages/management/ont-auth.vue'
 import internetDiagnose from '../pages/management/diagnose-internet.vue'
 import remoteDiagnose from '../pages/management/diagnose-remote.vue'
 
+export const loginPath = '/login' 
+
 export const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
       path: '/',
-      redirect: '/login',
+      redirect: '/home',
     },
     {
-      path: '/login',
+      path: loginPath,
       name: 'login',
       component: login,
     },
     {
       path: '/home',
-      name: 'home',
-      component: home,
+      // name: 'home',
+      // component: home,
+      redirect: '/status/device',
+    },
+    {
+      path: '/status',
+      redirect: '/status/device',
     },
     {
       path: '/status/device',
@@ -131,6 +138,10 @@ export const router = createRouter({
       path: '/status/usb',
       name: 'usb',
       component: usb,
+    },
+    {
+      path: '/network',
+      redirect: '/network/wan',
     },
     {
       path: '/network/wan',
@@ -213,6 +224,10 @@ export const router = createRouter({
       component: advancedVoip,
     },
     {
+      path: '/security',
+      redirect: '/security/firewall',
+    },
+    {
       path: '/security/firewall',
       name: 'firewall',
       component: firewall,
@@ -246,6 +261,10 @@ export const router = createRouter({
       path: '/security/dos',
       name: 'dos',
       component: dos,
+    },
+    {
+      path: '/app',
+      redirect: '/app/static-dns',
     },
     {
       path: '/app/static-dns',
@@ -318,6 +337,10 @@ export const router = createRouter({
       component: samba,
     },
     {
+      path: '/management',
+      redirect: '/management/upgrade',
+    },
+    {
       path: '/management/upgrade',
       name: 'upgrade',
       component: upgrade,
@@ -357,14 +380,28 @@ export const router = createRouter({
       name: 'oremote-diagnose',
       component: remoteDiagnose,
     },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/home',
+    },
   ],
 })
 
 router.beforeEach(async (to, from, next) => {
-  if (to.path !== '/login') {
-    http.cancelAllRequests()
+  if (to.path !== loginPath) {
+    if (sessionStorage.getItem('login_user')) {
+      http.cancelAllRequests()
+      next()
+    } else {
+      next(loginPath)
+    }
+  } else {
+    if (sessionStorage.getItem('login_user')) {
+      next('/home')
+    } else {
+      next()
+    }
   }
-  next()
 })
 
 function registerRouter(app) {

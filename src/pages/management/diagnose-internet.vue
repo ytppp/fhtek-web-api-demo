@@ -175,7 +175,7 @@ const getWanData = () => {
     const thisWanList = [
       {
         value: '',
-        text: t('trans0537'),
+        text: t('trans0487'),
       },
     ]
     items.forEach((item) => {
