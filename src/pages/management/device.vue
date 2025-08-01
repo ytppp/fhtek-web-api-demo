@@ -95,7 +95,7 @@ function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: (
     checkStatus().then((status) => {
       if (status === Status.done || status === Status.fail) {
         cleanCountDown()
-        handleLogout()
+        handleLogout(false)
       }
     })
   }

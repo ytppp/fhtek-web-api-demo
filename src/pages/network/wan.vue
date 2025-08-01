@@ -249,6 +249,7 @@ import {
   Ssidac3,
   Ssidac4,
   NetType,
+  netTypeText
 } from '@/util/constant'
 import {
   format,
@@ -379,25 +380,25 @@ const wanModeOptions = [
 const ipv4NetTypesOptions = [
   {
     value: NetType.dhcp,
-    text: t('trans0082'),
+    text: netTypeText[NetType.dhcp],
   },
   {
     value: NetType.static,
-    text: t('trans0084'),
+    text: netTypeText[NetType.static],
   },
 ]
 const ipv6NetTypesOptions = [
   {
     value: NetType.auto,
-    text: t('trans0487'),
+    text: netTypeText[NetType.auto],
   },
   {
     value: NetType.dhcpv6,
-    text: t('trans0408'),
+    text: netTypeText[NetType.dhcpv6],
   },
   {
     value: NetType.static,
-    text: t('trans0084'),
+    text: netTypeText[NetType.static],
   },
 ]
 const vlanModeOptions = [
@@ -636,14 +637,6 @@ watch(
   { flush: 'pre' },
 )
 
-const changeIgmp = () => {
-  if (wan.igmpEnable) {
-    wan.igmpProxyEnable = false
-  }
-  if (wan.igmpProxyEnable) {
-    wan.igmpEnable = false
-  }
-}
 const beforeChangeWan = () => {
   lastWanId.value = wan.id
 }

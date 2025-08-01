@@ -550,9 +550,14 @@ export const formatNetworkData = (value) => {
   return { value: '-', unit: '' }
 }
 
-export const handleLogout = () => {
-  logout().then(() => {
+export const handleLogout = (isLogout = true) => {
+  if (isLogout) {
+    logout().then(() => {
+      sessionStorage.clear()
+      router.push(loginPath)
+    })
+  } else {
     sessionStorage.clear()
     router.push(loginPath)
-  })
+  }
 }

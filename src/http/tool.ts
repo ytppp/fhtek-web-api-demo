@@ -145,11 +145,11 @@ export function handleBusinessError(response: any): boolean {
       break
     case ResultEnum.OVERDUE:
       message = translate('trans0697') // data.msg || translate('trans0697')
-      handleLogout()
+      handleLogout(false)
       break
     case ResultEnum.INVALIDSESSION:
       message = translate('trans0698') // data.msg || translate('trans0698')
-      handleLogout()
+      handleLogout(false)
       break
     case ResultEnum.INVALIDJSON:
       message = translate('trans0699') // data.msg || translate('trans0699')

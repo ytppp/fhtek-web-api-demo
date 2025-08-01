@@ -22,7 +22,7 @@ export default {
           ...opt,
           onHide: () => {
             this.close()
-            handleLogout()
+            handleLogout(false)
           },
         }),
       )
