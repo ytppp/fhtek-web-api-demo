@@ -27,10 +27,17 @@ interface IDescriptionsProps {
     }
   }
   colon?: boolean
+  stripe?: boolean
+  hover?: boolean
 }
 
 const { t } = useI18n()
-const { border = false, colon = true } = defineProps<IDescriptionsProps>()
+const {
+  border = false,
+  colon = true,
+  stripe = true,
+  hover = true,
+} = defineProps<IDescriptionsProps>()
 
 const hasColon = computed(() => {
   if (border) return false

@@ -5,7 +5,13 @@
     </div>
     <div class="page__content">
       <!-- :rules="rules" -->
-      <fh-form class="form form--small" ref="formRef" :model="form" v-if="hasVoipWan">
+      <fh-form
+        class="form form--small"
+        label-width="370px"
+        ref="formRef"
+        :model="form"
+        v-if="hasVoipWan"
+      >
         <fh-form-item label="RegistrationExpireTimer(s)" prop="registrationExpireTimer">
           <fh-input v-model="form.registrationExpireTimer"> </fh-input>
         </fh-form-item>
@@ -235,13 +241,13 @@
           <fh-form-item label="receive volume(0.1db)" prop="call_ctrl_line1.VoiceVolumeListen">
             <fh-input v-model="form.call_ctrl_line1.VoiceVolumeListen"> </fh-input>
           </fh-form-item> -->
-          <fh-form-item label="Warm Line">
+          <fh-form-item label="Hot Line">
             <fh-switch v-model="form.call_ctrl_line1.HotLineEnable"></fh-switch>
           </fh-form-item>
-          <fh-form-item label="Warm Line Number" prop="call_ctrl_line1.HotLineNumber">
+          <fh-form-item label="Hot Line Number" prop="call_ctrl_line1.HotLineNumber">
             <fh-input v-model="form.call_ctrl_line1.HotLineNumber"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="Warm Line Timeout(sec)" prop="call_ctrl_line1.HotLineDelayTime">
+          <fh-form-item label="Hot Line Timeout(s)" prop="call_ctrl_line1.HotLineDelayTime">
             <fh-input v-model="form.call_ctrl_line1.HotLineDelayTime"> </fh-input>
           </fh-form-item>
           <fh-form-item label="Call waiting">
@@ -273,6 +279,12 @@
             prop="call_ctrl_line1.MTKSIPNCFNumber"
           >
             <fh-input v-model="form.call_ctrl_line1.MTKSIPNCFNumber"> </fh-input>
+          </fh-form-item>
+          <fh-form-item
+            label="NoAnswerCallForwardingWaitTimer(s)"
+            prop="call_ctrl_line1.NoAnswerNCFWaitTime"
+          >
+            <fh-input v-model="form.call_ctrl_line1.NoAnswerNCFWaitTime"> </fh-input>
           </fh-form-item>
           <fh-form-item label="Three party service">
             <fh-switch v-model="form.call_ctrl_line1.SIP3wayConf"></fh-switch>
@@ -377,13 +389,13 @@
           <fh-form-item label="receive volume(0.1db)" prop="call_ctrl_line2.VoiceVolumeListen">
             <fh-input v-model="form.call_ctrl_line2.VoiceVolumeListen"> </fh-input>
           </fh-form-item> -->
-          <fh-form-item label="Warm Line">
+          <fh-form-item label="Hot Line">
             <fh-switch v-model="form.call_ctrl_line2.HotLineEnable"></fh-switch>
           </fh-form-item>
-          <fh-form-item label="Warm Line Number" prop="call_ctrl_line2.HotLineNumber">
+          <fh-form-item label="Hot Line Number" prop="call_ctrl_line2.HotLineNumber">
             <fh-input v-model="form.call_ctrl_line2.HotLineNumber"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="Warm Line Timeout(sec)" prop="call_ctrl_line2.HotLineDelayTime">
+          <fh-form-item label="Hot Line Timeout(s)" prop="call_ctrl_line2.HotLineDelayTime">
             <fh-input v-model="form.call_ctrl_line2.HotLineDelayTime"> </fh-input>
           </fh-form-item>
           <fh-form-item label="Call waiting">
@@ -415,6 +427,12 @@
             prop="call_ctrl_line2.MTKSIPNCFNumber"
           >
             <fh-input v-model="form.call_ctrl_line2.MTKSIPNCFNumber"> </fh-input>
+          </fh-form-item>
+          <fh-form-item
+            label="NoAnswerCallForwardingWaitTimer(s)"
+            prop="call_ctrl_line2.NoAnswerNCFWaitTime"
+          >
+            <fh-input v-model="form.call_ctrl_line2.NoAnswerNCFWaitTime"> </fh-input>
           </fh-form-item>
           <fh-form-item label="Three party service">
             <fh-switch v-model="form.call_ctrl_line2.SIP3wayConf"></fh-switch>
@@ -875,9 +893,9 @@ const form = reactive({
     SIP3wayConf: true, // SIP3wayConf, Three party service, 值: 1/0
     SIPCallTransfer: true, // SIPCallTransfer, Call transfer, 值: 1/0
     SIPCallWaitingEnable: true, // SIPCallWaitingEnable, Call waiting, 值: 0:1
-    HotLineDelayTime: '', // HotLineDelayTime, Warm Line Timeout(sec)
-    HotLineNumber: '', // HotLineNumber, Warm Line Number
-    HotLineEnable: true, // HotLineEnable, Warm Line, 值: 0:1
+    HotLineDelayTime: '', // HotLineDelayTime, Hot Line Timeout(sec)
+    HotLineNumber: '', // HotLineNumber, Hot Line Number
+    HotLineEnable: true, // HotLineEnable, Hot Line, 值: 0:1
     VoiceVolumeListen: '', // VoiceVolumeListen, sreceive volume(0.1db)
     VoiceVolumeSpeak: '', // VoiceVolumeSpeak, send volume(0.1db)
     SIPPacketizationTime: `${ptimeSetupMin}`, // SIPPacketizationTime, ptime setup, 值: 10:20:30
@@ -887,6 +905,7 @@ const form = reactive({
     MTKSIPUCFNumber: '', // MTKSIPUCFNumber, Call Forwarding Unconditional Number  （UI）, 值 电话号码字符串
     MTKSIPBCFNumber: '', // MTKSIPBCFNumber, Call Forwarding Busy Number （UI）, 值 电话号码字符串
     MTKSIPNCFNumber: '', // MTKSIPNCFNumber, Call Forwarding No Reply Number （UI）, 值 电话号码字符
+    NoAnswerNCFWaitTime: '',  // NoAnswerNCFWaitTime, NoAnswerCallForwardingWaitTimer(s)
     G722: {
       priority: `${numMin}`, // priority, G.722 Priority, 值: 0~5
     },
@@ -917,9 +936,9 @@ const form = reactive({
     SIP3wayConf: true, // SIP3wayConf, Three party service, 值: 1/0
     SIPCallTransfer: true, // SIPCallTransfer, Call transfer, 值: 1/0
     SIPCallWaitingEnable: true, // SIPCallWaitingEnable, Call waiting, 值: 0:1
-    HotLineDelayTime: '', // HotLineDelayTime, Warm Line Timeout(sec)
-    HotLineNumber: '', // HotLineNumber, Warm Line Number
-    HotLineEnable: true, // HotLineEnable, Warm Line, 值: 0:1
+    HotLineDelayTime: '', // HotLineDelayTime, Hot Line Timeout(sec)
+    HotLineNumber: '', // HotLineNumber, Hot Line Number
+    HotLineEnable: true, // HotLineEnable, Hot Line, 值: 0:1
     VoiceVolumeListen: '', // VoiceVolumeListen, sreceive volume(0.1db)
     VoiceVolumeSpeak: '', // VoiceVolumeSpeak, send volume(0.1db)
     SIPPacketizationTime: `${ptimeSetupMin}`, // SIPPacketizationTime, ptime setup, 值: 10:20:30
@@ -929,6 +948,7 @@ const form = reactive({
     MTKSIPUCFNumber: '', // MTKSIPUCFNumber, Call Forwarding Unconditional Number  （UI）, 值 电话号码字符串
     MTKSIPBCFNumber: '', // MTKSIPBCFNumber, Call Forwarding Busy Number （UI）, 值 电话号码字符串
     MTKSIPNCFNumber: '', // MTKSIPNCFNumber, Call Forwarding No Reply Number （UI）, 值 电话号码字符
+    NoAnswerNCFWaitTime: '',  // NoAnswerNCFWaitTime, NoAnswerCallForwardingWaitTimer(s)
     G722: {
       priority: `${numMin}`, // priority, G.722 Priority, 值: 0~5
     },
@@ -1161,6 +1181,12 @@ const rules = reactive({
       message: t('trans0004'),
     },
   ],
+  'call_ctrl_line1.NoAnswerNCFWaitTime': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
   'call_ctrl_line2.HookReleaseMin': [
     {
       rule: (value) => !!value.trim(),
@@ -1228,6 +1254,12 @@ const rules = reactive({
     },
   ],
   'call_ctrl_line2.MTKSIPNCFNumber': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
+  'call_ctrl_line2.NoAnswerNCFWaitTime': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
@@ -1346,6 +1378,7 @@ const save = () => {
       MTKSIPUCFNumber: form.call_ctrl_line1.MTKSIPUCFNumber,
       MTKSIPBCFNumber: form.call_ctrl_line1.MTKSIPBCFNumber,
       MTKSIPNCFNumber: form.call_ctrl_line1.MTKSIPNCFNumber,
+      NoAnswerNCFWaitTime: form.call_ctrl_line1.NoAnswerNCFWaitTime,
     },
     call_ctrl_line2: {
       SyncCallerTimeEnable: convertBooleanStatus(form.call_ctrl_line2.SyncCallerTimeEnable),
@@ -1387,6 +1420,7 @@ const save = () => {
       MTKSIPUCFNumber: form.call_ctrl_line2.MTKSIPUCFNumber,
       MTKSIPBCFNumber: form.call_ctrl_line2.MTKSIPBCFNumber,
       MTKSIPNCFNumber: form.call_ctrl_line2.MTKSIPNCFNumber,
+      NoAnswerNCFWaitTime: form.call_ctrl_line2.NoAnswerNCFWaitTime,
     },
   }
   setVoipAdvancedSettings(data)
@@ -1528,6 +1562,7 @@ const getVoipAdvancedSettingsData = () => {
     form.call_ctrl_line1.MTKSIPUCFNumber = data.call_ctrl_line1.MTKSIPUCFNumber
     form.call_ctrl_line1.MTKSIPBCFNumber = data.call_ctrl_line1.MTKSIPBCFNumber
     form.call_ctrl_line1.MTKSIPNCFNumber = data.call_ctrl_line1.MTKSIPNCFNumber
+    form.call_ctrl_line1.NoAnswerNCFWaitTime = data.call_ctrl_line1.NoAnswerNCFWaitTime
 
     form.call_ctrl_line2.active = convertBooleanStatus(data.call_ctrl_line2.active) as boolean
     form.call_ctrl_line2.SyncCallerTimeEnable = convertBooleanStatus(
@@ -1577,6 +1612,7 @@ const getVoipAdvancedSettingsData = () => {
     form.call_ctrl_line2.MTKSIPUCFNumber = data.call_ctrl_line2.MTKSIPUCFNumber
     form.call_ctrl_line2.MTKSIPBCFNumber = data.call_ctrl_line2.MTKSIPBCFNumber
     form.call_ctrl_line2.MTKSIPNCFNumber = data.call_ctrl_line2.MTKSIPNCFNumber
+    form.call_ctrl_line2.NoAnswerNCFWaitTime = data.call_ctrl_line2.NoAnswerNCFWaitTime
   })
 }
 const getWanInfo = () => {

@@ -4,7 +4,7 @@
       <h1 class="page__title">{{ $t('trans0482') }}</h1>
     </div>
     <div class="page__content">
-      <fh-descriptions :data="basicInfo" :border="true"></fh-descriptions>
+      <fh-descriptions :data="basicInfo"></fh-descriptions>
     </div>
   </div>
 </template>
