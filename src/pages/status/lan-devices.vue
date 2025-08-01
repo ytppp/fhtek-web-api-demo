@@ -72,7 +72,7 @@ const lanColumns = reactive([
 const lanData = reactive([])
 const lanTotal = ref(0)
 const lanCurrent = ref(1)
-const lanPageSize = ref(10)
+const lanPageSize = ref(20)
 
 const lanDataDisplay = computed(() => {
   const start = (lanCurrent.value - 1) * lanPageSize.value
@@ -95,14 +95,14 @@ const getLanDeviceData = () => {
         id: index + 1,
       })
     })
-    // for (let i = 0; i < 100; i++) {
-    //   lanTableData.push({
-    //     id: i + 1,
-    //     name: `name${i}`,
-    //     ip: `192.168.1.${i}`,
-    //     mac: `00:00:00:00:00:${i}`,
-    //   })
-    // }
+    for (let i = 0; i < 100; i++) {
+      lanTableData.push({
+        id: i + 1,
+        name: `name${i}`,
+        ip: `192.168.1.${i}`,
+        mac: `00:00:00:00:00:${i}`,
+      })
+    }
     lanTotal.value = lanTableData.length
     Object.assign(lanData, lanTableData)
   })
@@ -122,8 +122,9 @@ const goMacFilter = (mac) => {
     })
     .catch(() => {})
 }
-const lanChangeCurrent = (current) => {
+const lanChangeCurrent = (current, currentPageSize) => {
   lanCurrent.value = current
+  lanPageSize.value = currentPageSize
 }
 
 onMounted(() => {

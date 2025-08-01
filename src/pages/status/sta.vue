@@ -234,11 +234,13 @@ const getStaInfoData = () => {
     Object.assign(dhcpv6Data, thisDhcpv6Data)
   })
 }
-const dhcpChangeCurrent = (current) => {
+const dhcpChangeCurrent = (current, currentPageSize) => {
   dhcpCurrent.value = current
+  dhcpPageSize.value = currentPageSize
 }
-const dhcpv6ChangeCurrent = (current) => {
+const dhcpv6ChangeCurrent = (current, currentPageSize) => {
   dhcpv6Current.value = current
+  dhcpv6PageSize.value = currentPageSize
 }
 onMounted(() => {
   getStaInfoData()

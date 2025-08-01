@@ -199,11 +199,13 @@ const goWifiMacFilter = (mac) => {
     })
     .catch(() => {})
 }
-const b24gChangeCurrent = (current) => {
+const b24gChangeCurrent = (current, currentPageSize) => {
   b24gCurrent.value = current
+  b24gPageSize.value = currentPageSize
 }
-const b5gChangeCurrent = (current) => {
+const b5gChangeCurrent = (current, currentPageSize) => {
   b5gCurrent.value = current
+  b5gPageSize.value = currentPageSize
 }
 onMounted(() => {
   getWlanDeviceData()

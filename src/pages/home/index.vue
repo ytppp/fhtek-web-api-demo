@@ -2,7 +2,7 @@
   <div>
     <!-- style="width: 300px" -->
     <div>
-      <fh-pagination></fh-pagination>
+      <fh-pagination :total="paginationTotal"></fh-pagination>
       <fh-table :columns="columns" :data-source="tableData">
         <template #title> 标题 </template>
         <template #operationgroup>
@@ -96,6 +96,7 @@ defineOptions({
 
 const { t } = useI18n()
 const dialog = inject('dialog')
+const paginationTotal = 100
 const uploading = ref(false)
 const visible = ref(false)
 const checkAll = ref(true)
