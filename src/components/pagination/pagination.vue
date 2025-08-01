@@ -76,7 +76,7 @@ const props = defineProps({
   },
   showSizeChanger: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   showQuickJumper: {
     type: Boolean,
@@ -100,6 +100,7 @@ const currentPageSize = ref(props.defaultPageSize || 10)
 
 const pages = computed(() => Math.ceil(props.total / currentPageSize.value))
 const isShowOnlyOnePage = computed(() => {
+  if (!props.total) return false
   if (props.showSizeChanger) return true
   return pages.value > 1
 })
