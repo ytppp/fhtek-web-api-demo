@@ -76,7 +76,7 @@ const props = defineProps({
   },
   showSizeChanger: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   showQuickJumper: {
     type: Boolean,
