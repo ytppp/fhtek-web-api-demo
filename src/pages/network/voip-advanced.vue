@@ -6,95 +6,114 @@
     <div class="page__content">
       <!-- :rules="rules" -->
       <fh-form class="form form--small" ref="formRef" :model="form" v-if="hasVoipWan">
-        <fh-form-item :label="$t('trans0842')" prop="registrationExpireTimer">
+        <fh-form-item label="RegistrationExpireTimer(s)" prop="registrationExpireTimer">
           <fh-input v-model="form.registrationExpireTimer"> </fh-input>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0843')" prop="maxStartDelay">
+        <fh-form-item label="MaxStartDelayTimer(s)" prop="maxStartDelay">
           <fh-input v-model="form.maxStartDelay"> </fh-input>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0844')" prop="registerRetryInterval">
+        <fh-form-item label="RegisterRetryIntervalTimer(s)" prop="registerRetryInterval">
           <fh-input v-model="form.registerRetryInterval"> </fh-input>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0853')">
+        <fh-form-item label="Dtmf Relay">
           <fh-select v-model="form.dtmfRelay" :options="dtmfRelayOpts"></fh-select>
         </fh-form-item>
-        <fh-form-item label="Heartbeat Options mode">
+        <fh-form-item label="StartDigitTimer(s)" prop="digit_map.StartDigitTimer">
+          <fh-input v-model="form.digit_map.StartDigitTimer"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="InterDigitTimerShort(s)" prop="digit_map.InterDigitTimerShort">
+          <fh-input v-model="form.digit_map.InterDigitTimerShort"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="InterDigitTimerLong(s)" prop="digit_map.InterDigitTimerLong">
+          <fh-input v-model="form.digit_map.InterDigitTimerLong"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="InterDigitTimerT(s)" prop="digit_map.InterDigitTimerT">
+          <fh-input v-model="form.digit_map.InterDigitTimerT"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="BusyToneTimer(s)" prop="digit_map.BusyToneTimer">
+          <fh-input v-model="form.digit_map.BusyToneTimer"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="HangingReminderToneTimer(s)" prop="digit_map.HangingReminderToneTimer">
+          <fh-input v-model="form.digit_map.HangingReminderToneTimer"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="NoAnswerTimer(s)" prop="digit_map.NoAnswerTimer">
+          <fh-input v-model="form.digit_map.NoAnswerTimer"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="DM TMode">
+          <fh-select v-model="form.digit_map.TMode" :options="dmTModeOpts"></fh-select>
+        </fh-form-item>
+        <!-- <fh-form-item
+          label="Telephone Event Payload Type"
+          prop="basic_common.TelephoneEventPayloadType"
+        >
+          <fh-input v-model="form.basic_common.TelephoneEventPayloadType"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="natKeepAliveMessage">
+          <fh-switch v-model="form.basic_common.HeartbeatSwitch"></fh-switch>
+        </fh-form-item>
+        <fh-form-item label="natKeepAliveTime(s)" prop="basic_common.HeartbeatCycle">
+          <fh-input v-model="form.basic_common.HeartbeatCycle"> </fh-input>
+        </fh-form-item> -->
+        <fh-form-item label="HeartbeatOPTIONSmode">
           <fh-select v-model="form.optionsSericeMode" :options="optionsSericeModeOpts"></fh-select>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0854')">
+        <fh-form-item label="FaxCtrlMode">
           <fh-select v-model="form.faxCtrlMode" :options="faxctrlModeOpts"></fh-select>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0855')">
+        <fh-form-item label="Faxpassthru">
           <fh-select v-model="form.faxpassthru" :options="faxpassthruOpts"></fh-select>
         </fh-form-item>
-        <fh-form-item label="RTP Redundancy">
+        <!-- <fh-form-item label="RTP Redundancy">
           <fh-switch v-model="form.rtpRedundantEnable"></fh-switch>
         </fh-form-item>
-        <fh-form-item label="RTP Paylod Type" prop="rtpRedundantPT">
+        <fh-form-item label="RTP paylod type" prop="rtpRedundantPT">
           <fh-input v-model="form.rtpRedundantPT" placeholder="96-127"> </fh-input>
-        </fh-form-item>
-        <fh-form-item label="Message Contains User=phone Or Not">
+        </fh-form-item> -->
+        <fh-form-item label="Message contains user=phone or not">
           <fh-select v-model="form.msgWithUserEnable" :options="msgWithUserOpts"></fh-select>
         </fh-form-item>
-        <fh-form-item label="Voice Codec Priority Control">
+        <!-- <fh-form-item label="VoiceCodecPriorityCtrl">
           <fh-select
             v-model="form.voiceCodecPriorityCtrl"
             :options="voiceCodecPriorityCtrlOpts"
           ></fh-select>
-        </fh-form-item>
-        <fh-form-item label="Number Match Mode">
+        </fh-form-item> -->
+        <fh-form-item label="NumberMatchMode">
           <fh-select v-model="form.numberMatchMode" :options="numberMatchModeOpts"></fh-select>
         </fh-form-item>
-        <fh-form-item label="Div Supplement Service Type">
+        <!-- <fh-form-item label="DivSupplementServiceType">
           <fh-select
             v-model="form.actLocalSupplementService"
             :options="actLocalSupplementServiceOpts"
           ></fh-select>
         </fh-form-item>
-        <fh-form-item label="End Character Handle Mode">
+        <fh-form-item label="EndCharacterHandleMode">
           <fh-select v-model="form.endCharHandleMode" :options="endCharHandleModeOpts"></fh-select>
-        </fh-form-item>
+        </fh-form-item> -->
         <fh-form-item label="Support#transfer%23">
           <fh-switch v-model="form.supportTransferHash"></fh-switch>
         </fh-form-item>
         <fh-form-item label="Support@transfer%40">
           <fh-switch v-model="form.supportTransferAt"></fh-switch>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0866')">
-          <fh-switch v-model="form.enableAdaptiveJitterBuffer"></fh-switch>
+        <fh-form-item label="SupportT38">
+          <fh-switch v-model="form.VoIPMedia_Common.FaxCodec"></fh-switch>
         </fh-form-item>
-        <fh-form-item
-          :label="$t('trans0867')"
-          prop="jitterBufferMax"
-          v-if="form.enableAdaptiveJitterBuffer"
-        >
-          <fh-input v-model="form.jitterBufferMax"> </fh-input>
+        <!-- <fh-form-item label="SupportPrack">
+          <fh-switch v-model="form.basic_common.PRACKEnable"></fh-switch>
+        </fh-form-item> -->
+        <fh-form-item label="if send Unregister message">
+          <fh-switch v-model="form.basic_common.ifSendUnregisterMsg"></fh-switch>
         </fh-form-item>
-        <fh-form-item label="Auto Synchronize Phone Date Switch">
+        <fh-form-item label="autoSynPhoneDateSwitch">
           <fh-switch v-model="form.callSynEnAutoSwitch"></fh-switch>
         </fh-form-item>
-        <fh-form-item label="If Synchronize System Date">
+        <!-- <fh-form-item label="if sync System Date">
           <fh-switch v-model="form.syncSysTimeEnable"></fh-switch>
-        </fh-form-item>
-        <!-- basic_common start -->
-        <div class="page__sub-header">
-          <h2 class="page__title">Basic Common Setting</h2>
-        </div>
-        <fh-form-item
-          label="Telephone Event Payload Type"
-          prop="basic_common.TelephoneEventPayloadType"
-        >
-          <fh-input v-model="form.basic_common.TelephoneEventPayloadType"> </fh-input>
-        </fh-form-item>
-        <fh-form-item label="Nat Keep Alive Message">
-          <fh-switch v-model="form.basic_common.HeartbeatSwitch"></fh-switch>
-        </fh-form-item>
-        <fh-form-item label="Nat Keep Alive Time(s)" prop="basic_common.HeartbeatCycle">
-          <fh-input v-model="form.basic_common.HeartbeatCycle"> </fh-input>
-        </fh-form-item>
-        <fh-form-item label="Enable 802.1p">
+        </fh-form-item> -->
+        <!-- <fh-form-item label="Enable 802.1p">
           <fh-switch v-model="form.basic_common.VoIP8021PMarkEnable"></fh-switch>
-        </fh-form-item>
+        </fh-form-item> -->
         <template v-if="form.basic_common.VoIP8021PMarkEnable">
           <fh-form-item label="802.1p(SIP)[0-7]" prop="basic_common.SIP8021PMark">
             <fh-input v-model="form.basic_common.SIP8021PMark"> </fh-input>
@@ -103,65 +122,36 @@
             <fh-input v-model="form.basic_common.RTP8021PMark"> </fh-input>
           </fh-form-item>
         </template>
-        <fh-form-item label="Enable Session Timer">
+        <!-- <fh-form-item label="sessiontimerEnable">
           <fh-switch v-model="form.basic_common.SC_ACCT_SIP_SESSION_FLAG"></fh-switch>
         </fh-form-item>
         <template v-if="form.basic_common.SC_ACCT_SIP_SESSION_FLAG">
-          <fh-form-item label="Session Timer(s)" prop="basic_common.SC_ACCT_SIP_SESSION_TIMER">
+          <fh-form-item label="sessionTimer(s)" prop="basic_common.SC_ACCT_SIP_SESSION_TIMER">
             <fh-input v-model="form.basic_common.SC_ACCT_SIP_SESSION_TIMER"> </fh-input>
           </fh-form-item>
-          <fh-form-item
-            label="Min Session Timer(s)"
-            prop="basic_common.SC_ACCT_SIP_SESSION_MIN_EXP"
-          >
+          <fh-form-item label="MinsessionTimer(s)" prop="basic_common.SC_ACCT_SIP_SESSION_MIN_EXP">
             <fh-input v-model="form.basic_common.SC_ACCT_SIP_SESSION_MIN_EXP"> </fh-input>
           </fh-form-item>
-          <fh-form-item label="Session Refresher Rule">
+          <fh-form-item label="sessionRefresherrule">
             <fh-select
               v-model="form.basic_common.SC_ACCT_SIP_SESSION_REFRESHER"
               :options="sessionRefresherRuleOpts"
             ></fh-select>
           </fh-form-item>
-          <fh-form-item label="Session Update Method">
+          <fh-form-item label="sessionUpdateMethod">
             <fh-select
               v-model="form.basic_common.SC_ACCT_SIP_SESSION_METHOD"
               :options="sessionUpdateMethodOpts"
             ></fh-select>
           </fh-form-item>
-        </template>
-        <fh-form-item :label="$t('trans0863')">
-          <fh-switch v-model="form.basic_common.ifSendUnregisterMsg"></fh-switch>
-        </fh-form-item>
-        <fh-form-item label="TOS/DSCP Priority(SIP)" prop="basic_common.SIPDSCPMark">
+        </template> -->
+        <!-- <fh-form-item label="TOS/DSCP Priority(SIP)" prop="basic_common.SIPDSCPMark">
           <fh-input v-model="form.basic_common.SIPDSCPMark"> </fh-input>
         </fh-form-item>
         <fh-form-item label="TOS/DSCP Priority(RTP)" prop="basic_common.RTPDSCPMark">
           <fh-input v-model="form.basic_common.RTPDSCPMark"> </fh-input>
-        </fh-form-item>
-        <fh-form-item label="Support Prack">
-          <fh-switch v-model="form.basic_common.PRACKEnable"></fh-switch>
-        </fh-form-item>
-        <!-- basic_common end -->
-        <!-- VoIPMedia_Common start -->
-        <div class="page__sub-header">
-          <h2 class="page__title">VoIP Media Common Setting</h2>
-        </div>
-        <fh-form-item label="Support T38">
-          <fh-switch v-model="form.VoIPMedia_Common.FaxCodec"></fh-switch>
-        </fh-form-item>
-        <fh-form-item label="G.723 Speed">
-          <fh-select
-            v-model="form.VoIPMedia_Common.SC_ACCT_MEDIA_G723_RATE"
-            :options="g723SpeedOpts"
-          ></fh-select>
-        </fh-form-item>
-        <fh-form-item label="Low speed fax echo cancel enable">
-          <fh-select
-            v-model="form.VoIPMedia_Common.EchoCancellationLowSpeedFax"
-            :options="lowSpeedFaxEchoCancelOpts"
-          ></fh-select>
-        </fh-form-item>
-        <fh-form-item label="Rev Polarity Type">
+        </fh-form-item> -->
+        <!-- <fh-form-item label="Rev Polarity Type">
           <fh-select
             v-model="form.polarityReversalMode"
             :options="polarityReversalModeOpts"
@@ -169,178 +159,39 @@
         </fh-form-item>
         <fh-form-item label="Rev Cancel Type">
           <fh-switch v-model="form.VoIPMedia_Common.EchoCancellationEnable"></fh-switch>
-        </fh-form-item>
-        <!-- VoIPMedia_Common end -->
-        <!-- Digimap Setup start -->
-        <div class="page__sub-header">
-          <h2 class="page__title">{{ $t('trans0898') }}</h2>
-        </div>
-        <fh-form-item label="Start Digit Timer(s)" prop="digit_map.StartDigitTimer">
-          <fh-input v-model="form.digit_map.StartDigitTimer"> </fh-input>
-        </fh-form-item>
-        <fh-form-item label="Inter Digit Timer Short(s)" prop="digit_map.InterDigitTimerShort">
-          <fh-input v-model="form.digit_map.InterDigitTimerShort"> </fh-input>
-        </fh-form-item>
-        <fh-form-item label="Inter Digit Timer Long(s)" prop="digit_map.InterDigitTimerLong">
-          <fh-input v-model="form.digit_map.InterDigitTimerLong"> </fh-input>
-        </fh-form-item>
-        <fh-form-item label="Inter Digit Timer T(s)" prop="digit_map.InterDigitTimerT">
-          <fh-input v-model="form.digit_map.InterDigitTimerT"> </fh-input>
-        </fh-form-item>
-        <fh-form-item label="Busy Tone Timer(s)" prop="digit_map.BusyToneTimer">
-          <fh-input v-model="form.digit_map.BusyToneTimer"> </fh-input>
+        </fh-form-item> -->
+        <!-- <fh-form-item label="Low speed fax echo cancel enable">
+          <fh-select
+            v-model="form.VoIPMedia_Common.EchoCancellationLowSpeedFax"
+            :options="lowSpeedFaxEchoCancelOpts"
+          ></fh-select>
+        </fh-form-item> -->
+        <!-- <fh-form-item label="adaptive jitter buffer enable">
+          <fh-switch v-model="form.enableAdaptiveJitterBuffer"></fh-switch>
         </fh-form-item>
         <fh-form-item
-          label="Hanging Reminder Tone Timer(s)"
-          prop="digit_map.HangingReminderToneTimer"
+          label="jitter buffer max"
+          prop="jitterBufferMax"
+          v-if="form.enableAdaptiveJitterBuffer"
         >
-          <fh-input v-model="form.digit_map.HangingReminderToneTimer"> </fh-input>
-        </fh-form-item>
-        <fh-form-item label="No Answer Timer(s)" prop="digit_map.NoAnswerTimer">
-          <fh-input v-model="form.digit_map.NoAnswerTimer"> </fh-input>
-        </fh-form-item>
-        <fh-form-item label="DM TMode">
-          <fh-select v-model="form.digit_map.TMode" :options="dmTModeOpts"></fh-select>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0899')">
-          <fh-switch v-model="form.digit_map.enableDigitMap"></fh-switch>
-        </fh-form-item>
-        <fh-form-item
-          :label="$t('trans0902')"
-          prop="digit_map.digitMap"
-          v-if="form.digit_map.enableDigitMap"
-        >
-          <fh-input v-model="form.digit_map.digitMap"> </fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0900')">
-          <fh-switch v-model="form.digit_map.enableDigitMapSpecial"></fh-switch>
-        </fh-form-item>
-        <fh-form-item
-          :label="$t('trans0903')"
-          prop="digit_map.digitMapSpecial"
-          v-if="form.digit_map.enableDigitMapSpecial"
-        >
-          <fh-input v-model="form.digit_map.digitMapSpecial"> </fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0901')">
-          <fh-switch v-model="form.digit_map.enablePBXPrefix"></fh-switch>
-        </fh-form-item>
-        <fh-form-item
-          :label="$t('trans0904')"
-          prop="digit_map.pbxPrefix"
-          v-if="form.digit_map.enablePBXPrefix"
-        >
-          <fh-input v-model="form.digit_map.pbxPrefix"> </fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0905')">
-          <fh-switch v-model="form.digit_map.enablePBXDialSecondary"></fh-switch>
-        </fh-form-item>
-        <!-- Digimap Setup end -->
-        <!-- VoIPMedia_line1 start -->
-        <template v-if="form.VoIPMedia_line1.active">
-          <div class="page__sub-header">
-            <h2 class="page__title">Line1 of VoIP Media</h2>
-          </div>
-          <fh-form-item label="Enable Comfortnoise">
-            <fh-switch v-model="form.VoIPMedia_line1.VAD"></fh-switch>
-          </fh-form-item>
-          <fh-form-item label="Enable Silence Compression">
-            <fh-switch v-model="form.VoIPMedia_line1.SilenceCompressionEnable"></fh-switch>
-          </fh-form-item>
-        </template>
-        <!-- VoIPMedia_line1 end -->
-        <!-- VoIPMedia_line2 start -->
-        <template v-if="form.VoIPMedia_line2.active">
-          <div class="page__sub-header">
-            <h2 class="page__title">Line2 of VoIP Media</h2>
-          </div>
-          <fh-form-item label="Enable Comfortnoise">
-            <fh-switch v-model="form.VoIPMedia_line2.VAD"></fh-switch>
-          </fh-form-item>
-          <fh-form-item label="Enable Silence Compression">
-            <fh-switch v-model="form.VoIPMedia_line2.SilenceCompressionEnable"></fh-switch>
-          </fh-form-item>
-        </template>
-        <!-- VoIPMedia_line2 end -->
+          <fh-input v-model="form.jitterBufferMax"> </fh-input>
+        </fh-form-item> -->
+        <!-- <fh-form-item label="G.723 Speed">
+          <fh-select
+            v-model="form.VoIPMedia_Common.SC_ACCT_MEDIA_G723_RATE"
+            :options="g723SpeedOpts"
+          ></fh-select>
+        </fh-form-item> -->
         <!-- call_ctrl_line1 start -->
         <template v-if="form.call_ctrl_line1.active">
           <div class="page__sub-header">
-            <h2 class="page__title">Line1 of Call Control</h2>
+            <h2 class="page__title">{{ $t('trans0926').format(1) }}</h2>
           </div>
-          <fh-form-item label="Ptime Setup">
-            <fh-select
-              v-model="form.call_ctrl_line1.SIPPacketizationTime"
-              :options="ptimeSetupOpts"
-            ></fh-select>
+          <fh-form-item label="comfortnoiseEnable">
+            <fh-switch v-model="form.VoIPMedia_line1.VAD"></fh-switch>
           </fh-form-item>
-          <fh-form-item label="Send Volume(0.1db)" prop="call_ctrl_line1.VoiceVolumeSpeak">
-            <fh-input v-model="form.call_ctrl_line1.VoiceVolumeSpeak"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Sreceive Volume(0.1db)" prop="call_ctrl_line1.VoiceVolumeListen">
-            <fh-input v-model="form.call_ctrl_line1.VoiceVolumeListen"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Warm Line">
-            <fh-switch v-model="form.call_ctrl_line1.HotLineEnable"></fh-switch>
-          </fh-form-item>
-          <fh-form-item label="Warm Line Number" prop="call_ctrl_line1.HotLineNumber">
-            <fh-input v-model="form.call_ctrl_line1.HotLineNumber"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Warm Line Timeout(sec)" prop="call_ctrl_line1.HotLineDelayTime">
-            <fh-input v-model="form.call_ctrl_line1.HotLineDelayTime"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Call Waiting">
-            <fh-switch v-model="form.call_ctrl_line1.SIPCallWaitingEnable"> </fh-switch>
-          </fh-form-item>
-          <fh-form-item label="Call Transfer">
-            <fh-switch v-model="form.call_ctrl_line1.SIPCallTransfer"> </fh-switch>
-          </fh-form-item>
-          <fh-form-item label="Three Party Service">
-            <fh-switch v-model="form.call_ctrl_line1.SIP3wayConf"></fh-switch>
-          </fh-form-item>
-          <fh-form-item label="Enable Server Mix">
-            <fh-switch v-model="form.call_ctrl_line1.SIP3wayConfServerMix"></fh-switch>
-          </fh-form-item>
-          <fh-form-item
-            label="Three Party Meeting Resource Access Code"
-            prop="call_ctrl_line1.SIP3wayConfServAddr"
-          >
-            <fh-input v-model="form.call_ctrl_line1.SIP3wayConfServAddr"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Caller Id Mode">
-            <fh-select
-              v-model="form.call_ctrl_line1.ComingCallDisplayMode"
-              :options="comingCallDisplayModeOpts"
-            ></fh-select>
-          </fh-form-item>
-          <fh-form-item label="Subscribe Type">
-            <fh-select
-              v-model="form.call_ctrl_line1.SubscribeType"
-              :options="subscribeTypeOpts"
-            ></fh-select>
-          </fh-form-item>
-          <fh-form-item label="Subscribe Expire(s)" prop="call_ctrl_line1.SubscribeExpire">
-            <fh-input v-model="form.call_ctrl_line1.SubscribeExpire"> </fh-input>
-          </fh-form-item>
-          <fh-form-item
-            label="Min Flash Hook Time Interval(ms)"
-            prop="call_ctrl_line1.HookMinInterval"
-          >
-            <fh-input v-model="form.call_ctrl_line1.HookMinInterval"> </fh-input>
-          </fh-form-item>
-          <fh-form-item
-            label="Max Flash Hook Time Interval(ms)"
-            prop="call_ctrl_line1.HookMaxInterval"
-          >
-            <fh-input v-model="form.call_ctrl_line1.HookMaxInterval"> </fh-input>
-          </fh-form-item>
-          <fh-form-item
-            label="Min Flash Hook Time Release(ms)"
-            prop="call_ctrl_line1.HookReleaseMin"
-          >
-            <fh-input v-model="form.call_ctrl_line1.HookReleaseMin"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Synchronize Phone Date Time">
-            <fh-switch v-model="form.call_ctrl_line1.SyncCallerTimeEnable"></fh-switch>
+          <fh-form-item label="SilenceCompressionEnable">
+            <fh-switch v-model="form.VoIPMedia_line1.SilenceCompressionEnable"></fh-switch>
           </fh-form-item>
           <fh-form-item label="G.722 Priority">
             <fh-select
@@ -372,87 +223,117 @@
               :options="priorityOpts"
             ></fh-select>
           </fh-form-item>
+          <!-- <fh-form-item label="ptime setup">
+            <fh-select
+              v-model="form.call_ctrl_line1.SIPPacketizationTime"
+              :options="ptimeSetupOpts"
+            ></fh-select>
+          </fh-form-item>
+          <fh-form-item label="send volume(0.1db)" prop="call_ctrl_line1.VoiceVolumeSpeak">
+            <fh-input v-model="form.call_ctrl_line1.VoiceVolumeSpeak"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="receive volume(0.1db)" prop="call_ctrl_line1.VoiceVolumeListen">
+            <fh-input v-model="form.call_ctrl_line1.VoiceVolumeListen"> </fh-input>
+          </fh-form-item> -->
+          <fh-form-item label="Warm Line">
+            <fh-switch v-model="form.call_ctrl_line1.HotLineEnable"></fh-switch>
+          </fh-form-item>
+          <fh-form-item label="Warm Line Number" prop="call_ctrl_line1.HotLineNumber">
+            <fh-input v-model="form.call_ctrl_line1.HotLineNumber"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Warm Line Timeout(sec)" prop="call_ctrl_line1.HotLineDelayTime">
+            <fh-input v-model="form.call_ctrl_line1.HotLineDelayTime"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Call waiting">
+            <fh-switch v-model="form.call_ctrl_line1.SIPCallWaitingEnable"> </fh-switch>
+          </fh-form-item>
+          <fh-form-item label="Call transfer">
+            <fh-switch v-model="form.call_ctrl_line1.SIPCallTransfer"> </fh-switch>
+          </fh-form-item>
+          <fh-form-item label="Call Forwarding Unconditional">
+            <fh-switch v-model="form.call_ctrl_line1.MTKUCFEnable"> </fh-switch>
+          </fh-form-item>
+          <fh-form-item
+            label="Call Forwarding Unconditional Number"
+            prop="call_ctrl_line1.MTKSIPUCFNumber"
+          >
+            <fh-input v-model="form.call_ctrl_line1.MTKSIPUCFNumber"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Call Forwarding Busy">
+            <fh-switch v-model="form.call_ctrl_line1.MTKBCFEnable"> </fh-switch>
+          </fh-form-item>
+          <fh-form-item label="Call Forwarding Busy Number" prop="call_ctrl_line1.MTKSIPBCFNumber">
+            <fh-input v-model="form.call_ctrl_line1.MTKSIPBCFNumber"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Call Forwarding No Reply">
+            <fh-switch v-model="form.call_ctrl_line1.MTKNCFEnable"> </fh-switch>
+          </fh-form-item>
+          <fh-form-item
+            label="Call Forwarding No Reply Number"
+            prop="call_ctrl_line1.MTKSIPNCFNumber"
+          >
+            <fh-input v-model="form.call_ctrl_line1.MTKSIPNCFNumber"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Three party service">
+            <fh-switch v-model="form.call_ctrl_line1.SIP3wayConf"></fh-switch>
+          </fh-form-item>
+          <!-- <fh-form-item label="Enable Server Mix">
+            <fh-switch v-model="form.call_ctrl_line1.SIP3wayConfServerMix"></fh-switch>
+          </fh-form-item> -->
+          <fh-form-item
+            label="Three Party Meeting Resource Access Code"
+            prop="call_ctrl_line1.SIP3wayConfServAddr"
+          >
+            <fh-input v-model="form.call_ctrl_line1.SIP3wayConfServAddr"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Caller id mode">
+            <fh-select
+              v-model="form.call_ctrl_line1.ComingCallDisplayMode"
+              :options="comingCallDisplayModeOpts"
+            ></fh-select>
+          </fh-form-item>
+          <!-- <fh-form-item label="Subscribe Type">
+            <fh-select
+              v-model="form.call_ctrl_line1.SubscribeType"
+              :options="subscribeTypeOpts"
+            ></fh-select>
+          </fh-form-item>
+          <fh-form-item label="Subscribe Expire(s)" prop="call_ctrl_line1.SubscribeExpire">
+            <fh-input v-model="form.call_ctrl_line1.SubscribeExpire"> </fh-input>
+          </fh-form-item> -->
+          <fh-form-item
+            label="Min flash hook time interval(ms)"
+            prop="call_ctrl_line1.HookMinInterval"
+          >
+            <fh-input v-model="form.call_ctrl_line1.HookMinInterval"> </fh-input>
+          </fh-form-item>
+          <fh-form-item
+            label="Max flash hook time interval(ms)"
+            prop="call_ctrl_line1.HookMaxInterval"
+          >
+            <fh-input v-model="form.call_ctrl_line1.HookMaxInterval"> </fh-input>
+          </fh-form-item>
+          <fh-form-item
+            label="Min flash hook time release(ms)"
+            prop="call_ctrl_line1.HookReleaseMin"
+          >
+            <fh-input v-model="form.call_ctrl_line1.HookReleaseMin"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Synchronize phone date time">
+            <fh-switch v-model="form.call_ctrl_line1.SyncCallerTimeEnable"></fh-switch>
+          </fh-form-item>
         </template>
         <!-- call_ctrl_line1 end -->
         <!-- call_ctrl_line2 start -->
         <template v-if="form.call_ctrl_line2.active">
           <div class="page__sub-header">
-            <h2 class="page__title">Line2 of Call Control</h2>
+            <h2 class="page__title">{{ $t('trans0926').format(2) }}</h2>
           </div>
-          <fh-form-item label="Ptime Setup">
-            <fh-select
-              v-model="form.call_ctrl_line2.SIPPacketizationTime"
-              :options="ptimeSetupOpts"
-            ></fh-select>
+          <fh-form-item label="comfortnoiseEnable">
+            <fh-switch v-model="form.VoIPMedia_line2.VAD"></fh-switch>
           </fh-form-item>
-          <fh-form-item label="Send Volume(0.1db)" prop="call_ctrl_line2.VoiceVolumeSpeak">
-            <fh-input v-model="form.call_ctrl_line2.VoiceVolumeSpeak"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Sreceive Volume(0.1db)" prop="call_ctrl_line2.VoiceVolumeListen">
-            <fh-input v-model="form.call_ctrl_line2.VoiceVolumeListen"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Warm Line">
-            <fh-switch v-model="form.call_ctrl_line2.HotLineEnable"></fh-switch>
-          </fh-form-item>
-          <fh-form-item label="Warm Line Number" prop="call_ctrl_line2.HotLineNumber">
-            <fh-input v-model="form.call_ctrl_line2.HotLineNumber"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Warm Line Timeout(sec)" prop="call_ctrl_line2.HotLineDelayTime">
-            <fh-input v-model="form.call_ctrl_line2.HotLineDelayTime"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Call waiting">
-            <fh-switch v-model="form.call_ctrl_line2.SIPCallWaitingEnable"> </fh-switch>
-          </fh-form-item>
-          <fh-form-item label="Call transfer">
-            <fh-switch v-model="form.call_ctrl_line2.SIPCallTransfer"> </fh-switch>
-          </fh-form-item>
-          <fh-form-item label="Three party service">
-            <fh-switch v-model="form.call_ctrl_line2.SIP3wayConf"></fh-switch>
-          </fh-form-item>
-          <fh-form-item label="Enable Server Mix">
-            <fh-switch v-model="form.call_ctrl_line2.SIP3wayConfServerMix"></fh-switch>
-          </fh-form-item>
-          <fh-form-item
-            label="Three Party Meeting Resource Access Code"
-            prop="call_ctrl_line2.SIP3wayConfServAddr"
-          >
-            <fh-input v-model="form.call_ctrl_line2.SIP3wayConfServAddr"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Caller Id Mode">
-            <fh-select
-              v-model="form.call_ctrl_line2.ComingCallDisplayMode"
-              :options="comingCallDisplayModeOpts"
-            ></fh-select>
-          </fh-form-item>
-          <fh-form-item label="Subscribe Type">
-            <fh-select
-              v-model="form.call_ctrl_line2.SubscribeType"
-              :options="subscribeTypeOpts"
-            ></fh-select>
-          </fh-form-item>
-          <fh-form-item label="Subscribe Expire(s)" prop="call_ctrl_line2.SubscribeExpire">
-            <fh-input v-model="form.call_ctrl_line2.SubscribeExpire"> </fh-input>
-          </fh-form-item>
-          <fh-form-item
-            label="Min Flash Hook Time Interval(ms)"
-            prop="call_ctrl_line2.HookMinInterval"
-          >
-            <fh-input v-model="form.call_ctrl_line2.HookMinInterval"> </fh-input>
-          </fh-form-item>
-          <fh-form-item
-            label="Max Flash Hook Time Interval(ms)"
-            prop="call_ctrl_line2.HookMaxInterval"
-          >
-            <fh-input v-model="form.call_ctrl_line2.HookMaxInterval"> </fh-input>
-          </fh-form-item>
-          <fh-form-item
-            label="Min Flash Hook Time Release(ms)"
-            prop="call_ctrl_line2.HookReleaseMin"
-          >
-            <fh-input v-model="form.call_ctrl_line2.HookReleaseMin"> </fh-input>
-          </fh-form-item>
-          <fh-form-item label="Synchronize Phone Date Time">
-            <fh-switch v-model="form.call_ctrl_line2.SyncCallerTimeEnable"></fh-switch>
+          <fh-form-item label="SilenceCompressionEnable">
+            <fh-switch v-model="form.VoIPMedia_line2.SilenceCompressionEnable"></fh-switch>
           </fh-form-item>
           <fh-form-item label="G.722 Priority">
             <fh-select
@@ -484,8 +365,146 @@
               :options="priorityOpts"
             ></fh-select>
           </fh-form-item>
+          <!-- <fh-form-item label="ptime setup">
+            <fh-select
+              v-model="form.call_ctrl_line2.SIPPacketizationTime"
+              :options="ptimeSetupOpts"
+            ></fh-select>
+          </fh-form-item>
+          <fh-form-item label="send volume(0.1db)" prop="call_ctrl_line2.VoiceVolumeSpeak">
+            <fh-input v-model="form.call_ctrl_line2.VoiceVolumeSpeak"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="receive volume(0.1db)" prop="call_ctrl_line2.VoiceVolumeListen">
+            <fh-input v-model="form.call_ctrl_line2.VoiceVolumeListen"> </fh-input>
+          </fh-form-item> -->
+          <fh-form-item label="Warm Line">
+            <fh-switch v-model="form.call_ctrl_line2.HotLineEnable"></fh-switch>
+          </fh-form-item>
+          <fh-form-item label="Warm Line Number" prop="call_ctrl_line2.HotLineNumber">
+            <fh-input v-model="form.call_ctrl_line2.HotLineNumber"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Warm Line Timeout(sec)" prop="call_ctrl_line2.HotLineDelayTime">
+            <fh-input v-model="form.call_ctrl_line2.HotLineDelayTime"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Call waiting">
+            <fh-switch v-model="form.call_ctrl_line2.SIPCallWaitingEnable"> </fh-switch>
+          </fh-form-item>
+          <fh-form-item label="Call transfer">
+            <fh-switch v-model="form.call_ctrl_line2.SIPCallTransfer"> </fh-switch>
+          </fh-form-item>
+          <fh-form-item label="Call Forwarding Unconditional">
+            <fh-switch v-model="form.call_ctrl_line2.MTKUCFEnable"> </fh-switch>
+          </fh-form-item>
+          <fh-form-item
+            label="Call Forwarding Unconditional Number"
+            prop="call_ctrl_line2.MTKSIPUCFNumber"
+          >
+            <fh-input v-model="form.call_ctrl_line2.MTKSIPUCFNumber"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Call Forwarding Busy">
+            <fh-switch v-model="form.call_ctrl_line2.MTKBCFEnable"> </fh-switch>
+          </fh-form-item>
+          <fh-form-item label="Call Forwarding Busy Number" prop="call_ctrl_line2.MTKSIPBCFNumber">
+            <fh-input v-model="form.call_ctrl_line2.MTKSIPBCFNumber"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Call Forwarding No Reply">
+            <fh-switch v-model="form.call_ctrl_line2.MTKNCFEnable"> </fh-switch>
+          </fh-form-item>
+          <fh-form-item
+            label="Call Forwarding No Reply Number"
+            prop="call_ctrl_line2.MTKSIPNCFNumber"
+          >
+            <fh-input v-model="form.call_ctrl_line2.MTKSIPNCFNumber"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Three party service">
+            <fh-switch v-model="form.call_ctrl_line2.SIP3wayConf"></fh-switch>
+          </fh-form-item>
+          <!-- <fh-form-item label="Enable Server Mix">
+            <fh-switch v-model="form.call_ctrl_line2.SIP3wayConfServerMix"></fh-switch>
+          </fh-form-item> -->
+          <fh-form-item
+            label="Three Party Meeting Resource Access Code"
+            prop="call_ctrl_line2.SIP3wayConfServAddr"
+          >
+            <fh-input v-model="form.call_ctrl_line2.SIP3wayConfServAddr"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Caller id mode">
+            <fh-select
+              v-model="form.call_ctrl_line2.ComingCallDisplayMode"
+              :options="comingCallDisplayModeOpts"
+            ></fh-select>
+          </fh-form-item>
+          <!-- <fh-form-item label="Subscribe Type">
+            <fh-select
+              v-model="form.call_ctrl_line2.SubscribeType"
+              :options="subscribeTypeOpts"
+            ></fh-select>
+          </fh-form-item>
+          <fh-form-item label="Subscribe Expire(s)" prop="call_ctrl_line2.SubscribeExpire">
+            <fh-input v-model="form.call_ctrl_line2.SubscribeExpire"> </fh-input>
+          </fh-form-item> -->
+          <fh-form-item
+            label="Min flash hook time interval(ms)"
+            prop="call_ctrl_line2.HookMinInterval"
+          >
+            <fh-input v-model="form.call_ctrl_line2.HookMinInterval"> </fh-input>
+          </fh-form-item>
+          <fh-form-item
+            label="Max flash hook time interval(ms)"
+            prop="call_ctrl_line2.HookMaxInterval"
+          >
+            <fh-input v-model="form.call_ctrl_line2.HookMaxInterval"> </fh-input>
+          </fh-form-item>
+          <fh-form-item
+            label="Min flash hook time release(ms)"
+            prop="call_ctrl_line2.HookReleaseMin"
+          >
+            <fh-input v-model="form.call_ctrl_line2.HookReleaseMin"> </fh-input>
+          </fh-form-item>
+          <fh-form-item label="Synchronize phone date time">
+            <fh-switch v-model="form.call_ctrl_line2.SyncCallerTimeEnable"></fh-switch>
+          </fh-form-item>
         </template>
         <!-- call_ctrl_line2 end -->
+
+        <!-- Digimap Setup start -->
+        <div class="page__sub-header">
+          <h2 class="page__title">{{ $t('trans0898') }}</h2>
+        </div>
+        <fh-form-item label="DigitMapEnable">
+          <fh-switch v-model="form.digit_map.enableDigitMap"></fh-switch>
+        </fh-form-item>
+        <fh-form-item
+          label="DigitMap"
+          prop="digit_map.digitMap"
+          v-if="form.digit_map.enableDigitMap"
+        >
+          <fh-input v-model="form.digit_map.digitMap"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="DigitMapSpecialEnable">
+          <fh-switch v-model="form.digit_map.enableDigitMapSpecial"></fh-switch>
+        </fh-form-item>
+        <fh-form-item
+          label="DigitMapSpecial"
+          prop="digit_map.digitMapSpecial"
+          v-if="form.digit_map.enableDigitMapSpecial"
+        >
+          <fh-input v-model="form.digit_map.digitMapSpecial"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="PBXPrefixEnable">
+          <fh-switch v-model="form.digit_map.enablePBXPrefix"></fh-switch>
+        </fh-form-item>
+        <fh-form-item
+          label="PBXPrefix"
+          prop="digit_map.pbxPrefix"
+          v-if="form.digit_map.enablePBXPrefix"
+        >
+          <fh-input v-model="form.digit_map.pbxPrefix"> </fh-input>
+        </fh-form-item>
+        <fh-form-item label="PBXDialSecondaryEnable">
+          <fh-switch v-model="form.digit_map.enablePBXDialSecondary"></fh-switch>
+        </fh-form-item>
+        <!-- Digimap Setup end -->
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
             {{ $t('trans0002') }}
@@ -554,15 +573,15 @@ const hasVoipWan = ref(false)
 const dmTModeOpts = [
   {
     value: DmTMode.dmShortTimer,
-    text: 'Inter Digit Timer Short',
+    text: 'InterDigitTimerShort',
   },
   {
     value: DmTMode.dmLongTimer,
-    text: 'Inter Digit Timer Long',
+    text: 'InterDigitTimerLong',
   },
   {
     value: DmTMode.dmTTimer,
-    text: 'Inter Digit Timer T',
+    text: 'InterDigitTimerT',
   },
 ]
 const dtmfRelayOpts = [
@@ -582,35 +601,35 @@ const dtmfRelayOpts = [
 const optionsSericeModeOpts = [
   {
     value: OptionsSericeMode.register,
-    text: 'Register Server Mode',
+    text: 'RegisterServerMode',
   },
   {
     value: OptionsSericeMode.proxy,
-    text: 'Proxy Server Mode',
+    text: 'ProxyServerMode',
   },
   {
     value: OptionsSericeMode.outband,
-    text: 'Outbound Mode',
+    text: 'OutboundMode',
   },
 ]
 const faxctrlModeOpts = [
   {
     value: FaxctrlMode.passThru,
-    text: t('trans0920'),
+    text: 'PassThru',
   },
   {
     value: FaxctrlMode.t30fullcontrol,
-    text: t('trans0921'),
+    text: 'T30fullcontrol',
   },
 ]
 const faxpassthruOpts = [
   {
     value: Faxpassthru.pcmu,
-    text: t('trans0915'),
+    text: 'PCMU',
   },
   {
     value: Faxpassthru.pcma,
-    text: t('trans0916'),
+    text: 'PCMA',
   },
 ]
 const msgWithUserOpts = [
@@ -636,15 +655,15 @@ const voiceCodecPriorityCtrlOpts = [
 const numberMatchModeOpts = [
   {
     value: '0',
-    text: 'Min Match',
+    text: 'MinMatch',
   },
   {
     value: '1',
-    text: 'Blur Max Match',
+    text: 'BlurMaxMatch',
   },
   {
     value: '2',
-    text: 'Max Match',
+    text: 'MaxMatch',
   },
 ]
 const actLocalSupplementServiceOpts = [
@@ -668,11 +687,11 @@ const actLocalSupplementServiceOpts = [
 const endCharHandleModeOpts = [
   {
     value: '0',
-    text: 'End Mode',
+    text: 'EndMode',
   },
   {
     value: '1',
-    text: 'Rule Mode',
+    text: 'RuleMode',
   },
 ]
 const polarityReversalModeOpts = [
@@ -862,6 +881,12 @@ const form = reactive({
     VoiceVolumeListen: '', // VoiceVolumeListen, sreceive volume(0.1db)
     VoiceVolumeSpeak: '', // VoiceVolumeSpeak, send volume(0.1db)
     SIPPacketizationTime: `${ptimeSetupMin}`, // SIPPacketizationTime, ptime setup, 值: 10:20:30
+    MTKUCFEnable: true, // MTKUCFEnable, Call Forwarding Unconditional（UI）, 值 1：使能；0：关闭
+    MTKBCFEnable: true, // MTKBCFEnable, Call Forwarding Busy （UI）, 值 1：使能；0：关闭
+    MTKNCFEnable: true, // MTKNCFEnable, Call Forwarding No Reply （UI）, 值 1：使能；0：关闭
+    MTKSIPUCFNumber: '', // MTKSIPUCFNumber, Call Forwarding Unconditional Number  （UI）, 值 电话号码字符串
+    MTKSIPBCFNumber: '', // MTKSIPBCFNumber, Call Forwarding Busy Number （UI）, 值 电话号码字符串
+    MTKSIPNCFNumber: '', // MTKSIPNCFNumber, Call Forwarding No Reply Number （UI）, 值 电话号码字符
     G722: {
       priority: `${numMin}`, // priority, G.722 Priority, 值: 0~5
     },
@@ -898,6 +923,12 @@ const form = reactive({
     VoiceVolumeListen: '', // VoiceVolumeListen, sreceive volume(0.1db)
     VoiceVolumeSpeak: '', // VoiceVolumeSpeak, send volume(0.1db)
     SIPPacketizationTime: `${ptimeSetupMin}`, // SIPPacketizationTime, ptime setup, 值: 10:20:30
+    MTKUCFEnable: true, // MTKUCFEnable, Call Forwarding Unconditional（UI）, 值 1：使能；0：关闭
+    MTKBCFEnable: true, // MTKBCFEnable, Call Forwarding Busy （UI）, 值 1：使能；0：关闭
+    MTKNCFEnable: true, // MTKNCFEnable, Call Forwarding No Reply （UI）, 值 1：使能；0：关闭
+    MTKSIPUCFNumber: '', // MTKSIPUCFNumber, Call Forwarding Unconditional Number  （UI）, 值 电话号码字符串
+    MTKSIPBCFNumber: '', // MTKSIPBCFNumber, Call Forwarding Busy Number （UI）, 值 电话号码字符串
+    MTKSIPNCFNumber: '', // MTKSIPNCFNumber, Call Forwarding No Reply Number （UI）, 值 电话号码字符
     G722: {
       priority: `${numMin}`, // priority, G.722 Priority, 值: 0~5
     },
@@ -1112,6 +1143,24 @@ const rules = reactive({
       message: t('trans0004'),
     },
   ],
+  'call_ctrl_line1.MTKSIPUCFNumber': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
+  'call_ctrl_line1.MTKSIPBCFNumber': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
+  'call_ctrl_line1.MTKSIPNCFNumber': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
   'call_ctrl_line2.HookReleaseMin': [
     {
       rule: (value) => !!value.trim(),
@@ -1161,6 +1210,24 @@ const rules = reactive({
     },
   ],
   'call_ctrl_line2.VoiceVolumeSpeak': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
+  'call_ctrl_line2.MTKSIPUCFNumber': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
+  'call_ctrl_line2.MTKSIPBCFNumber': [
+    {
+      rule: (value) => !!value.trim(),
+      message: t('trans0004'),
+    },
+  ],
+  'call_ctrl_line2.MTKSIPNCFNumber': [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
@@ -1273,6 +1340,12 @@ const save = () => {
       G723: {
         priority: form.call_ctrl_line1.G723.priority,
       },
+      MTKUCFEnable: convertBooleanStatus(form.call_ctrl_line1.MTKUCFEnable),
+      MTKBCFEnable: convertBooleanStatus(form.call_ctrl_line1.MTKBCFEnable),
+      MTKNCFEnable: convertBooleanStatus(form.call_ctrl_line1.MTKNCFEnable),
+      MTKSIPUCFNumber: form.call_ctrl_line1.MTKSIPUCFNumber,
+      MTKSIPBCFNumber: form.call_ctrl_line1.MTKSIPBCFNumber,
+      MTKSIPNCFNumber: form.call_ctrl_line1.MTKSIPNCFNumber,
     },
     call_ctrl_line2: {
       SyncCallerTimeEnable: convertBooleanStatus(form.call_ctrl_line2.SyncCallerTimeEnable),
@@ -1308,6 +1381,12 @@ const save = () => {
       G723: {
         priority: form.call_ctrl_line2.G723.priority,
       },
+      MTKUCFEnable: convertBooleanStatus(form.call_ctrl_line2.MTKUCFEnable),
+      MTKBCFEnable: convertBooleanStatus(form.call_ctrl_line2.MTKBCFEnable),
+      MTKNCFEnable: convertBooleanStatus(form.call_ctrl_line2.MTKNCFEnable),
+      MTKSIPUCFNumber: form.call_ctrl_line2.MTKSIPUCFNumber,
+      MTKSIPBCFNumber: form.call_ctrl_line2.MTKSIPBCFNumber,
+      MTKSIPNCFNumber: form.call_ctrl_line2.MTKSIPNCFNumber,
     },
   }
   setVoipAdvancedSettings(data)
@@ -1437,6 +1516,18 @@ const getVoipAdvancedSettingsData = () => {
     form.call_ctrl_line1.G711u.priority = data.call_ctrl_line1.G711u.priority
     form.call_ctrl_line1.G729.priority = data.call_ctrl_line1.G729.priority
     form.call_ctrl_line1.G723.priority = data.call_ctrl_line1.G723.priority
+    form.call_ctrl_line1.MTKUCFEnable = convertBooleanStatus(
+      data.call_ctrl_line1.MTKUCFEnable,
+    ) as boolean
+    form.call_ctrl_line1.MTKBCFEnable = convertBooleanStatus(
+      data.call_ctrl_line1.MTKBCFEnable,
+    ) as boolean
+    form.call_ctrl_line1.MTKNCFEnable = convertBooleanStatus(
+      data.call_ctrl_line1.MTKNCFEnable,
+    ) as boolean
+    form.call_ctrl_line1.MTKSIPUCFNumber = data.call_ctrl_line1.MTKSIPUCFNumber
+    form.call_ctrl_line1.MTKSIPBCFNumber = data.call_ctrl_line1.MTKSIPBCFNumber
+    form.call_ctrl_line1.MTKSIPNCFNumber = data.call_ctrl_line1.MTKSIPNCFNumber
 
     form.call_ctrl_line2.active = convertBooleanStatus(data.call_ctrl_line2.active) as boolean
     form.call_ctrl_line2.SyncCallerTimeEnable = convertBooleanStatus(
@@ -1474,6 +1565,18 @@ const getVoipAdvancedSettingsData = () => {
     form.call_ctrl_line2.G711u.priority = data.call_ctrl_line2.G711u.priority
     form.call_ctrl_line2.G729.priority = data.call_ctrl_line2.G729.priority
     form.call_ctrl_line2.G723.priority = data.call_ctrl_line2.G723.priority
+    form.call_ctrl_line2.MTKUCFEnable = convertBooleanStatus(
+      data.call_ctrl_line2.MTKUCFEnable,
+    ) as boolean
+    form.call_ctrl_line2.MTKBCFEnable = convertBooleanStatus(
+      data.call_ctrl_line2.MTKBCFEnable,
+    ) as boolean
+    form.call_ctrl_line2.MTKNCFEnable = convertBooleanStatus(
+      data.call_ctrl_line2.MTKNCFEnable,
+    ) as boolean
+    form.call_ctrl_line2.MTKSIPUCFNumber = data.call_ctrl_line2.MTKSIPUCFNumber
+    form.call_ctrl_line2.MTKSIPBCFNumber = data.call_ctrl_line2.MTKSIPBCFNumber
+    form.call_ctrl_line2.MTKSIPNCFNumber = data.call_ctrl_line2.MTKSIPNCFNumber
   })
 }
 const getWanInfo = () => {
