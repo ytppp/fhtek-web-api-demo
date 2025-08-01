@@ -175,6 +175,7 @@ export default {
       getMacFilterStatus().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
         this.form.mode = data.mode
+        this.init()
       })
     },
     save() {
@@ -198,7 +199,7 @@ export default {
       this.modalType = ModalType.edit
       this.visible = true
     },
-    getWifiMacFilterList() {
+    getWifiMacFilterList(init = false) {
       getMacFilterItems()
         .then(({ data }) => {
           const tableData = []
@@ -213,7 +214,7 @@ export default {
         })
         .catch(() => {})
         .finally(() => {
-          this.visible = false
+          if (!init) this.visible = false
         })
     },
     handleClose() {
@@ -264,8 +265,13 @@ export default {
               })
             })
             .catch(() => {})
+          return
         }
-        if (!this.isBlackList) {
+        if (this.isBlackList) {
+          console.log('1111111111')
+          this.openAddModal()
+          this.modalForm.mac = this.$route.query.mac
+        } else {
           this.form.mode = FilteringModes.blackList
           this.save().then(() => {
             this.openAddModal()
@@ -275,10 +281,9 @@ export default {
       }
     },
   },
-  async mounted() {
-    await this.getWifiMacFilterStatusData()
-    await this.getWifiMacFilterList()
-    await this.init()
+  mounted() {
+    this.getWifiMacFilterStatusData()
+    this.getWifiMacFilterList(true)
   },
 }
 </script>

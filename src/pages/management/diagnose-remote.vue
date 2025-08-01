@@ -74,9 +74,9 @@ const isStop = computed(() => remote.status === StartAndStop.stop)
 const statusText = computed(() => {
   if (loading.value) return defaultVal
   if (remote.status === StartAndStop.start) {
-    return t('trans0557')
+    return t('trans0103')
   }
-  return t('trans0804')
+  return t('trans0054')
 })
 const start = () => {
   save(StartAndStop.start)

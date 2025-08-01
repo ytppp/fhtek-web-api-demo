@@ -39,12 +39,12 @@ let menus = [
     children: [
       {
         url: '/status/device',
-        text: 'trans0482',
+        text: 'trans0899',
         config,
       },
       {
         url: '/status/wan',
-        text: 'trans0715',
+        text: 'trans0155',
         config,
       },
       {
@@ -98,7 +98,7 @@ let menus = [
       },
       {
         url: '/status/sta',
-        text: 'trans0938',
+        text: 'trans0082',
         config,
       },
       {

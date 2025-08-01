@@ -250,7 +250,7 @@ export default {
     },
     stripe: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     border: {
       type: Boolean,
@@ -258,7 +258,7 @@ export default {
     },
     hover: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     showTableHeader: {
       type: Boolean,
@@ -271,7 +271,7 @@ export default {
     fixed: {
       type: Boolean,
       default: true,
-    }, // 受否固定列，
+    }, // 是否固定列，
     align: {
       type: String,
       default: 'center',
@@ -528,9 +528,9 @@ export default {
       }
     }
     .table-main__header-row {
-      background-color: @table-background-color;
+      background-color: #dddddd; // @table-background-color;
       .table-main__cell {
-        font-weight: 400;
+        font-weight: 600;
       }
     }
     .table-main__content-row {

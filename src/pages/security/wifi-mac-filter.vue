@@ -197,9 +197,10 @@ export default {
         })
     },
     getWifiMacFilterStatusData() {
-      return getWifiMacFilterStatus().then(({ data }) => {
+      getWifiMacFilterStatus().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
         this.form.mode = data.mode
+        this.init()
       })
     },
     save() {
@@ -227,8 +228,8 @@ export default {
       this.modalType = ModalType.edit
       this.visible = true
     },
-    getWifiMacFilterList() {
-      return getWifiMacFilter()
+    getWifiMacFilterList(init = false) {
+      getWifiMacFilter()
         .then(({ data }) => {
           const tableData = []
           const { items } = data
@@ -245,14 +246,14 @@ export default {
         })
         .catch(() => {})
         .finally(() => {
-          this.visible = false
+          if (!init) this.visible = false
         })
     },
     handleClose() {
       this.$refs.modalFormRef.clearValidate()
     },
     getSsidIndex() {
-      return Promise.all([getWifi2g(), getWifi5g()]).then(([res1, res2]) => {
+      Promise.all([getWifi2g(), getWifi5g()]).then(([res1, res2]) => {
         const wifi2g = res1.data.items
         const wifi5g = res2.data.items
         const ssidOpts = [
@@ -320,8 +321,12 @@ export default {
               })
             })
             .catch(() => {})
+          return
         }
-        if (!this.isBlackList) {
+        if (this.isBlackList) {
+          this.openAddModal()
+          this.modalForm.mac = this.$route.query.mac
+        } else {
           this.form.mode = FilteringModes.blackList
           this.save().then(() => {
             this.openAddModal()
@@ -331,11 +336,10 @@ export default {
       }
     },
   },
-  async mounted() {
-    await this.getWifiMacFilterStatusData()
-    await this.getSsidIndex()
-    await this.getWifiMacFilterList()
-    await this.init()
+  mounted() {
+    this.getWifiMacFilterStatusData()
+    this.getSsidIndex()
+    this.getWifiMacFilterList(true)
   },
 }
 </script>
