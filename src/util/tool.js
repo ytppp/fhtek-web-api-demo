@@ -112,8 +112,7 @@ export function isValidLength(value, min = 8, max = 24) {
 }
 
 export const specialChar = '!#$*+-.=?@_~'
-// /^[a-zA-Z0-9!#$\*\+\-.=\?@_~]+$/
-export function isValidSymbol(value, ruleReg = /^[a-zA-Z0-9!#$*+\-.=?@_~]+$/) {
+export function isValidSymbol(value, ruleReg = /^[\w!#$*+\-.=?@_~]+$/i) {
   if (!value) {
     return false
   }

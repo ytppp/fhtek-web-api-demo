@@ -587,7 +587,7 @@ const generateNumberOpts = (max: number, start: number, step: number) => {
 const { t } = useI18n()
 const { convertBooleanStatus } = useDataClean()
 const digitMapSpecialChar = '!#$*+-.=|?@_~[]'
-const digitMapSpecialReg = /^[\w!#$*+\-.=|?@_~[\]']+$/i // /^[a-zA-Z0-9!#$\*\+\-.=|\?@_~\]\[]+$/
+const digitMapSpecialReg = /^[\w!#$*+\-.=|?@_~[\]']+$/i
 const formRef = ref(null)
 const hasVoipWan = ref(false)
 const dmTModeOpts = [

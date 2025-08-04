@@ -173,7 +173,7 @@ export default {
           this.form.mode = this.isBlackList ? FilteringModes.whiteList : FilteringModes.blackList
         })
     },
-    getWifiMacFilterStatusData() {
+    getUrlFilterStatusData() {
       getUrlFilterStatus().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
         this.form.mode = data.mode
@@ -202,7 +202,7 @@ export default {
       this.modalType = ModalType.edit
       this.visible = true
     },
-    getWifiMacFilterList() {
+    getUrlFilterList() {
       getUrlFilterItems()
         .then(({ data }) => {
           const tableData = []
@@ -230,17 +230,15 @@ export default {
       }
       if (this.isAdd) {
         addUrlFilterItem(data).then(() => {
-          this.getWifiMacFilterList().then(() => {
-            successTips()
-          })
+          successTips()
+          this.getUrlFilterList()
         })
       }
       if (this.isEdit) {
         data.id = this.modalForm.id
         editUrlFilterItem(data).then(() => {
-          this.getWifiMacFilterList()(() => {
-            successTips()
-          })
+          successTips()
+          this.getUrlFilterList()
         })
       }
     },
@@ -249,15 +247,15 @@ export default {
         id: row.id,
       }
       delUrlFilterItem(data).then(() => {
-        this.getWifiMacFilterList()(() => {
+        this.getUrlFilterList()(() => {
           successTips('trans0410')
         })
       })
     },
   },
   mounted() {
-    this.getWifiMacFilterStatusData()
-    this.getWifiMacFilterList()
+    this.getUrlFilterStatusData()
+    this.getUrlFilterList()
   },
 }
 </script>

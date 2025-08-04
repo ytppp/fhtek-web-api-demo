@@ -38,9 +38,9 @@
           <fh-form-item :label="$t('trans0097')" prop="mac">
             <fh-input v-model="modalForm.mac" :placeholder="$t('trans0217')"></fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0414')" prop="ip" style="width: 100%">
+          <fh-form-item :label="$t('trans0414')" prop="ip">
             <fh-input v-model="modalForm.ip" :placeholder="$t('trans0413')">
-              <template #prepend>{{ $t('trans0596') }}</template>
+              <template #prepend>{{ `${$t('trans0596')} +` }}</template>
             </fh-input>
             <template #extra>
               {{ $t('trans0942') }}
@@ -91,8 +91,8 @@ export default {
           },
           {
             rule: (value) => {
-              const ip = tranSimIpv6ToFullIpv6(`${defaultIpv6Prefix}${value}`) // 补全ipv6地址,方便做校验
-              console.log(ip)
+              // 这里只需要输入一个 ipv6 的后四位, 所以临时补全一个ipv6地址,方便做校验
+              const ip = tranSimIpv6ToFullIpv6(`${defaultIpv6Prefix}${value}`)
               return isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip)
             },
             message: this.$t('trans0566').format(this.$t('trans0414')),

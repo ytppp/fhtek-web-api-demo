@@ -253,7 +253,6 @@ const getWanData = () => {
         thisIpv6Data.push(tableItem)
       }
     })
-    console.log(thisIpv4Data)
     Object.assign(ipv4Data, thisIpv4Data)
     Object.assign(ipv6Data, thisIpv6Data)
   })
