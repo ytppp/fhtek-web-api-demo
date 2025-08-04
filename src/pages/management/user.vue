@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { isValidLength, isValidSymbol, specialChar, handleLogout } from '@/util/tool'
+import { isValidLength, isValidSymbol, specialChar, handleLogout, successTips } from '@/util/tool'
 import { getAccount, setAccount } from '@/http/api'
 
 export default {
@@ -109,6 +109,7 @@ export default {
           },
         ]
         setAccount(data).then(() => {
+          successTips()
           if (this.form.username === this.usernameStoraged) {
             handleLogout()
           }

@@ -249,7 +249,7 @@ import {
   Ssidac3,
   Ssidac4,
   NetType,
-  netTypeText
+  netTypeText,
 } from '@/util/constant'
 import {
   format,
@@ -270,6 +270,7 @@ import {
   isValidSymbol,
   specialChar,
   isValidInteger,
+  successTips,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { getLan, getWan, addWan, editWan, deleteWan, getPortBindInfo } from '@/http/api'
@@ -596,20 +597,17 @@ const isEdit = computed(() => {
 })
 
 const type = computed(() => {
-  // don't support 2022/07/21
-  // let text = ''
-  // if (isIpv4.value) {
-  //   text = t('trans0375')
-  // }
-  // if (isIpv6.value) {
-  //   text = t('trans0376')
-  // }
-  // if (isIpMix.value) {
-  //   text = t('trans0377')
-  // }
-  // return text
-  // don't support end
-  return t('trans0375')
+  let text = ''
+  if (isIpv4.value) {
+    text = t('trans0375')
+  }
+  if (isIpv6.value) {
+    text = t('trans0376')
+  }
+  if (isIpMix.value) {
+    text = t('trans0377')
+  }
+  return text
 })
 const mode = computed(() => {
   let mode = ''
@@ -885,12 +883,14 @@ const save = () => {
     }
     if (isAdd.value) {
       addWan(newWan).then(() => {
+        successTips()
         getWanList()
       })
     }
     if (isEdit.value) {
       newWan.id = wan.id
       editWan(newWan).then(({ data }) => {
+        successTips()
         const { id } = data
         getWanList(id)
       })
@@ -906,6 +906,7 @@ const delWanConn = () => {
     })
     .then(() => {
       deleteWan({ id: wan.id }).then(() => {
+        successTips('trans0410')
         getWanList()
       })
     })

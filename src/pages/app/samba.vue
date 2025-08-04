@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { isValidLength, isValidSymbol, specialChar, format } from '@/util/tool'
+import { isValidLength, isValidSymbol, specialChar, format, successTips } from '@/util/tool'
 import { editSamba, getSamba, getUsb } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -112,6 +112,8 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         username: this.form.username,
         password: this.form.pwd,
+      }).then(() => {
+        successTips()
       })
     },
     getSambaData() {

@@ -16,6 +16,11 @@
           :show-header="false"
           :border="true"
         >
+          <template #ip="scope">
+            <div v-if="scope.row.ip.length">
+              <div v-for="(ip, index) in scope.row.ip" :key="index">{{ ip }}</div>
+            </div>
+          </template>
         </fh-table>
       </div>
       <div class="page__sub-header">
@@ -31,9 +36,9 @@
           :border="true"
         >
           <template #ip="scope">
-            <div v-if="scope.row.ip" style="white-space: pre-wrap">
-              {{ formatContent(scope.row.ip) }}
-            </div>
+            <template v-if="scope.row.ip">
+              <div v-for="(ip, index) in scope.row.ip" :key="index">{{ ip }}</div>
+            </template>
           </template>
         </fh-table>
       </div>
@@ -69,16 +74,18 @@ const columns = reactive([
     key: 'wan',
     title: t('trans0140'),
     width: '240',
+    minWidth: '100',
   },
   {
     key: 'statusAlias',
     title: t('trans0166'),
-    width: '100',
+    width: '120',
   },
   {
     key: 'ip',
     title: format(t('trans0598'), [t('trans0056')]),
     width: '150',
+    minWidth: '100',
   },
   {
     key: 'vlanPriority',
@@ -89,26 +96,31 @@ const columns = reactive([
     key: 'mac',
     title: format(t('trans0598'), [t('trans0057')]),
     width: '200',
+    minWidth: '100',
   },
   {
     key: 'mode',
     title: t('trans0080'),
     width: '150',
+    minWidth: '100',
   },
   {
     key: 'gateway',
     title: t('trans0548'),
     width: '200',
+    minWidth: '100',
   },
   {
     key: 'dns1',
     title: t('trans0496'),
     width: '200',
+    minWidth: '100',
   },
   {
     key: 'dns2',
     title: t('trans0497'),
     width: '200',
+    minWidth: '100',
   },
 ])
 const ipv6Columns = reactive([
@@ -116,21 +128,24 @@ const ipv6Columns = reactive([
     key: 'wan',
     title: t('trans0140'),
     width: '240',
+    minWidth: '100',
   },
   {
     key: 'statusAlias',
     title: t('trans0166'),
-    width: '100',
+    width: '120',
   },
   {
     key: 'prefix',
     title: t('trans0476'),
     width: '220',
+    minWidth: '100',
   },
   {
     key: 'ip',
     title: format(t('trans0598'), [t('trans0056')]),
     width: '330',
+    minWidth: '100',
   },
   {
     key: 'vlanPriority',
@@ -141,26 +156,31 @@ const ipv6Columns = reactive([
     key: 'mac',
     title: format(t('trans0598'), [t('trans0057')]),
     width: '200',
+    minWidth: '100',
   },
   {
     key: 'mode',
     title: t('trans0080'),
     width: '150',
+    minWidth: '100',
   },
   {
     key: 'gateway',
     title: t('trans0548'),
     width: '200',
+    minWidth: '100',
   },
   {
     key: 'dns1',
     title: t('trans0496'),
     width: '200',
+    minWidth: '100',
   },
   {
     key: 'dns2',
     title: t('trans0497'),
     width: '200',
+    minWidth: '100',
   },
 ])
 const ipv4Data = reactive([])
@@ -213,7 +233,7 @@ const getWanData = () => {
       const tableItem = {
         ...item,
         wan: item.wanname,
-        ip: ipArr.join(' '),
+        ip: ipArr,
         mode: netTypeText[item.protocol],
         gateway: gatewayArr.join(' '),
         prefix: prefixArr.join(''),
@@ -237,7 +257,6 @@ const getWanData = () => {
     Object.assign(ipv6Data, thisIpv6Data)
   })
 }
-const formatContent = (value) => value.split(' ').join('\n')
 
 onMounted(() => {
   getWanData()

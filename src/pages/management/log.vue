@@ -39,6 +39,7 @@
 import { setLog, getLog, getSyslog, getLan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { http } from '@/http'
+import { successTips } from '@/util/tool'
 
 const { convertBooleanStatus } = useDataClean()
 const LogLevel = {
@@ -112,6 +113,7 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         level: this.form.level,
       }).then(() => {
+        successTips()
         this.getLogData()
       })
     },

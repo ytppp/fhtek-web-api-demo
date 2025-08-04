@@ -71,6 +71,7 @@
 import { ModalType, ServiceType } from '@/util/constant'
 import { getWan, getDdns, addDdns, editDdns, delDdns } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { successTips } from '@/util/tool'
 
 const { convertBooleanStatus } = useDataClean()
 const maxRuleNum = 1
@@ -213,12 +214,14 @@ export default {
         }
         if (this.isAdd) {
           addDdns([data]).then(() => {
+            successTips()
             this.getDdnsList()
           })
         }
         if (this.isEdit) {
           data.id = this.modalForm.id
           editDdns([data]).then(() => {
+            successTips()
             this.getDdnsList()
           })
         }
@@ -226,6 +229,7 @@ export default {
     },
     del(row) {
       delDdns({ id: row.id }).then((res) => {
+        successTips('trans0410')
         this.getDdnsList()
       })
     },

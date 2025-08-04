@@ -109,7 +109,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isValidInteger, isValidSymbol, specialChar } from '@/util/tool'
+import { isValidInteger, isValidSymbol, specialChar, successTips } from '@/util/tool'
 import { ServiceType } from '@/util/constant'
 import { getWan, getVoipBasicSettings, setVoipBasicSettings } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -357,7 +357,9 @@ const save = () => {
       password: form.line2.password,
     },
   }
-  setVoipBasicSettings(data)
+  setVoipBasicSettings(data).then(() => {
+    successTips()
+  })
 }
 const getVoipBasicSettingsData = () => {
   getVoipBasicSettings().then(({ data }) => {

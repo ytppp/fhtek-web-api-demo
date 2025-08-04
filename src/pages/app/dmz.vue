@@ -27,7 +27,15 @@
 </template>
 
 <script>
-import { isIP, getIpBefore, isNetworkIP, isBoardcastIP, isMulticast, isLoopback } from '@/util/tool'
+import {
+  isIP,
+  getIpBefore,
+  isNetworkIP,
+  isBoardcastIP,
+  isMulticast,
+  isLoopback,
+  successTips,
+} from '@/util/tool'
 import { getDmz, setDmz, getLan, getWan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { ServiceType } from '@/util/constant'
@@ -89,6 +97,8 @@ export default {
           wan: this.form.wan,
           enable: convertBooleanStatus(this.form.enable),
           ip: this.form.ip,
+        }).then(() => {
+          successTips()
         })
       }
     },

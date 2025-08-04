@@ -1,6 +1,9 @@
 import { logout } from '@/http/api'
 import { router, loginPath } from '@/router/index'
 import { IP } from './constant'
+import { translate } from '@/i18n/index'
+import toast from '@/components/toast/index.js'
+
 const domainReg = /^(https?:\/\/)?([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
 const ipReg =
   /^(?:(?:\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}(?:\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])$/
@@ -109,7 +112,7 @@ export function isValidLength(value, min = 8, max = 24) {
 }
 
 export const specialChar = '!#$*+-.=?@_~'
-export function isValidSymbol(value, ruleReg = /^[a-zA-Z0-9!#$\*\+\-.=\?@_~]+$/) {
+export function isValidSymbol(value, ruleReg = /^[\w!#$*+\-.=?@_~]+$/i) {
   if (!value) {
     return false
   }
@@ -293,7 +296,7 @@ export function validationCharacterRange(val, minLen, maxLen) {
 }
 
 // 简化 ipv6 地址转化完整 ipv6 地址
-function tranSimIpv6ToFullIpv6(simpeIpv6) {
+export function tranSimIpv6ToFullIpv6(simpeIpv6) {
   simpeIpv6 = simpeIpv6.toUpperCase()
   // ipv6地址有8段，每段4个字符
   const Ipv6Len = 8,
@@ -560,4 +563,12 @@ export const handleLogout = (isLogout = true) => {
     sessionStorage.clear()
     router.push(loginPath)
   }
+}
+
+export const successTips = (msg = 'trans0791') => {
+  toast({
+    duration: 2000,
+    text: translate(msg),
+    type: 'success',
+  })
 }

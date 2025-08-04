@@ -38,7 +38,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getUsb, editMediaSharing, getMediaSharing } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
-import { isValidUnixPath } from '@/util/tool'
+import { isValidUnixPath, successTips } from '@/util/tool'
 
 const { t } = useI18n()
 const { convertBooleanStatus } = useDataClean()
@@ -80,7 +80,9 @@ const save = () => {
     enable: convertBooleanStatus(form.enable),
     sharing_path: form.sharingPath,
   }
-  editMediaSharing(data)
+  editMediaSharing(data).then(() => {
+    successTips()
+  })
 }
 
 onMounted(() => {

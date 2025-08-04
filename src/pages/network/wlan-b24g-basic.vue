@@ -80,7 +80,14 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, onMounted, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } from '@/util/tool'
+import {
+  isValidLength,
+  isValidSymbol,
+  format,
+  specialChar,
+  isValidInteger,
+  successTips,
+} from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { getWifi2g, setWifi2g, getWps, setWps, getWifi2gAdv } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
@@ -277,6 +284,7 @@ const save = () => {
       enable_wps: convertBooleanStatus(wifi.enableWps),
     }
     setWifi2g(data).then(() => {
+      successTips()
       getWifiData(wifi.id)
     })
   }

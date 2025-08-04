@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isValidLength, format, isValidSymbol, specialChar } from '@/util/tool'
+import { isValidLength, format, isValidSymbol, specialChar, successTips } from '@/util/tool'
 import { getOntAuth, editOntAuth } from '@/http/api'
 
 enum AuthMode {
@@ -142,7 +142,9 @@ const save = () => {
         sn: form.password.sn,
       },
     }
-    editOntAuth(data)
+    editOntAuth(data).then(() => {
+      successTips()
+    })
   }
 }
 

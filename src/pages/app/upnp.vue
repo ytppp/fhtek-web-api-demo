@@ -24,6 +24,7 @@
 <script>
 import { getUpnpConfig, setUpnpConfig, getUpnpList } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { successTips } from '@/util/tool'
 
 const { convertBooleanStatus } = useDataClean()
 export default {
@@ -66,6 +67,8 @@ export default {
     switchEnable() {
       setUpnpConfig({
         enable: convertBooleanStatus(this.form.enable),
+      }).then(() => {
+        successTips()
       })
     },
     getUpnpConfigData() {

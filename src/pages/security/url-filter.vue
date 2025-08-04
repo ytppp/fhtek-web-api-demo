@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { isValidDomain } from '@/util/tool'
+import { isValidDomain, successTips } from '@/util/tool'
 import { FilteringModes, ModalType } from '@/util/constant'
 import {
   getUrlFilterStatus,
@@ -173,7 +173,7 @@ export default {
           this.form.mode = this.isBlackList ? FilteringModes.whiteList : FilteringModes.blackList
         })
     },
-    getWifiMacFilterStatusData() {
+    getUrlFilterStatusData() {
       getUrlFilterStatus().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
         this.form.mode = data.mode
@@ -184,7 +184,9 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      editUrlFilterStatus(data)
+      editUrlFilterStatus(data).then(() => {
+        successTips()
+      })
     },
     openAddModal() {
       this.modalForm.id = ''
@@ -200,7 +202,7 @@ export default {
       this.modalType = ModalType.edit
       this.visible = true
     },
-    getWifiMacFilterList() {
+    getUrlFilterList() {
       getUrlFilterItems()
         .then(({ data }) => {
           const tableData = []
@@ -228,13 +230,15 @@ export default {
       }
       if (this.isAdd) {
         addUrlFilterItem(data).then(() => {
-          this.getWifiMacFilterList()
+          successTips()
+          this.getUrlFilterList()
         })
       }
       if (this.isEdit) {
         data.id = this.modalForm.id
         editUrlFilterItem(data).then(() => {
-          this.getWifiMacFilterList()
+          successTips()
+          this.getUrlFilterList()
         })
       }
     },
@@ -243,13 +247,15 @@ export default {
         id: row.id,
       }
       delUrlFilterItem(data).then(() => {
-        this.getWifiMacFilterList()
+        this.getUrlFilterList()(() => {
+          successTips('trans0410')
+        })
       })
     },
   },
   mounted() {
-    this.getWifiMacFilterStatusData()
-    this.getWifiMacFilterList()
+    this.getUrlFilterStatusData()
+    this.getUrlFilterList()
   },
 }
 </script>

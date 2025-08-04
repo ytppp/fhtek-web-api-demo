@@ -38,7 +38,7 @@
 <script lang="ts" setup>
 import { reactive, ref, inject, onMounted, computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { format, isValidInteger } from '@/util/tool'
+import { format, isValidInteger, successTips } from '@/util/tool'
 import { getWifi5gAdv, setWifi5gAdv } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -395,6 +395,7 @@ const save = () => {
 }
 const setWifi5gAdvData = (data) => {
   setWifi5gAdv(data).then(() => {
+    successTips()
     getWifi5gData()
   })
 }

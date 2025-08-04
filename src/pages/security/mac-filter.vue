@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { isMac, format } from '@/util/tool'
+import { isMac, format, successTips } from '@/util/tool'
 import { FilteringModes, ModalType } from '@/util/constant'
 import {
   getMacFilterStatus,
@@ -171,7 +171,7 @@ export default {
           this.form.mode = this.isBlackList ? FilteringModes.whiteList : FilteringModes.blackList
         })
     },
-    getWifiMacFilterStatusData() {
+    getMacFilterStatusData() {
       getMacFilterStatus().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
         this.form.mode = data.mode
@@ -183,7 +183,9 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      return editMacFilterStatus(data)
+      return editMacFilterStatus(data).then(() => {
+        successTips()
+      })
     },
     openAddModal() {
       this.modalForm.id = ''
@@ -199,7 +201,7 @@ export default {
       this.modalType = ModalType.edit
       this.visible = true
     },
-    getWifiMacFilterList(init = false) {
+    getMacFilterList(init = false) {
       getMacFilterItems()
         .then(({ data }) => {
           const tableData = []
@@ -229,13 +231,15 @@ export default {
         addMacFilterItem({
           mac: this.modalForm.mac,
         }).then(() => {
-          this.getWifiMacFilterList()
+          successTips()
+          this.getMacFilterList()
         })
       }
       if (this.isEdit) {
         data.id = this.modalForm.id
         editMacFilterItem(data).then(() => {
-          this.getWifiMacFilterList()
+          successTips()
+          this.getMacFilterList()
         })
       }
     },
@@ -244,7 +248,8 @@ export default {
         id: row.id,
       }
       delMacFilterItem(data).then(() => {
-        this.getWifiMacFilterList()
+        successTips('trans0410')
+        this.getMacFilterList()
       })
     },
     init() {
@@ -268,7 +273,6 @@ export default {
           return
         }
         if (this.isBlackList) {
-          console.log('1111111111')
           this.openAddModal()
           this.modalForm.mac = this.$route.query.mac
         } else {
@@ -282,8 +286,8 @@ export default {
     },
   },
   mounted() {
-    this.getWifiMacFilterStatusData()
-    this.getWifiMacFilterList(true)
+    this.getMacFilterStatusData()
+    this.getMacFilterList(true)
   },
 }
 </script>

@@ -63,6 +63,7 @@ import {
   isValidSymbol,
   getStringByte,
   specialChar,
+  successTips,
 } from '@/util/tool'
 import { Role } from '@/util/constant'
 import { login } from '@/http/api'
@@ -128,9 +129,10 @@ export default {
         login(this.userinfo)
           .then(({ data }) => {
             // const { role } = data
-            const role = Role.super
+            const role = Role.super // data.role
             sessionStorage.setItem('role', role)
             sessionStorage.setItem('login_user', this.userinfo.username)
+            successTips('trans0806')
             this.$router.push('/home')
           })
           .finally(() => {

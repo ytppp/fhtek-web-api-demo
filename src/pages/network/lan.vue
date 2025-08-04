@@ -49,6 +49,7 @@ import {
   isBoardcastIP,
   isValidGatewayIP,
   getSubNetwork,
+  successTips
 } from '@/util/tool'
 import { getLan, setLan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -270,7 +271,9 @@ const save = () => {
         lease: `${form.lease}`,
       },
     })
-      .then(() => {})
+      .then(() => {
+        successTips()
+      })
       .catch(() => {})
       .finally(() => {
         setTimeout(() => {

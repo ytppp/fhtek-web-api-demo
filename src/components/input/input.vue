@@ -418,7 +418,7 @@ const getSuffixVisible = () => {
     position: relative;
     border: @input-border;
     border-radius: @input-border-radius;
-    padding: 0 20px;
+    padding: 0 5px;
     width: 1px;
     white-space: nowrap;
 

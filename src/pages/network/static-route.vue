@@ -77,6 +77,7 @@ import {
   ip2int,
   getIpAfter,
   isValidIpv6AddrExtra,
+  successTips,
 } from '@/util/tool'
 import {
   getWanInfo,
@@ -314,6 +315,7 @@ export default {
           data.gateway = this.modalForm.gateway
           data.interface = this.modalForm.interface
           addStaticRoute(data).then((res) => {
+            successTips()
             this.getStaticRouteListData()
           })
         }
@@ -324,6 +326,7 @@ export default {
           data.gateway = this.modalForm.gateway
           data.interface = this.modalForm.interface
           editStaticRoute(data).then((res) => {
+            successTips()
             this.getStaticRouteListData()
           })
         }
@@ -331,6 +334,7 @@ export default {
     },
     del(row) {
       delStaticRoute({ id: row.id, type: row.type }).then((res) => {
+        successTips('trans0410')
         this.getStaticRouteListData()
       })
     },

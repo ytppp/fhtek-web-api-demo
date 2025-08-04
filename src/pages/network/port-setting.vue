@@ -47,6 +47,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getLanSpeed, setLanSpeed } from '@/http/api'
 import { Lan1, Lan2, Lan3, Lan4, SsidText } from '@/util/constant'
+import { successTips } from '@/util/tool'
 
 enum Mode {
   auto = 'auto',
@@ -94,6 +95,8 @@ const changePort = (val: string, type: string) => {
   setLanSpeed({
     ifname: type,
     speed: val,
+  }).then(() => {
+    successTips()
   })
 }
 const getLanSpeedData = () => {

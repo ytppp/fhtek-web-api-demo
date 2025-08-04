@@ -69,14 +69,15 @@
 </template>
 
 <script lang="ts" setup>
-import { genData, MediumTypeText, DeviceRoleText } from '@/util/topo'
-import { getMesh, setMesh, triggerMesh, getTopology } from '@/http/api'
-import { MeshRole } from '@/util/constant'
-import { useDataClean } from '@/hooks/data-clean'
-import { useCountDown } from '@/hooks/countdown'
 import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import * as echarts from 'echarts'
+import { genData, MediumTypeText, DeviceRoleText } from '@/util/topo'
+import { getMesh, setMesh, triggerMesh, getTopology } from '@/http/api'
+import { MeshRole } from '@/util/constant'
+import { successTips } from '@/util/tool'
+import { useDataClean } from '@/hooks/data-clean'
+import { useCountDown } from '@/hooks/countdown'
 
 defineOptions({
   name: 'MeshPage',
@@ -128,6 +129,7 @@ const save = () => {
     enable: convertBooleanStatus(form.enable),
     steering: convertBooleanStatus(form.enableSteering),
   }).then(() => {
+    successTips()
     getMeshData()
   })
 }

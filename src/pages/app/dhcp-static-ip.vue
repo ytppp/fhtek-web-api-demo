@@ -61,6 +61,7 @@ import {
   isMac,
   isNetworkIP,
   isBoardcastIP,
+  successTips,
 } from '@/util/tool'
 import {
   getLan,
@@ -219,6 +220,7 @@ export default {
           data.ip = this.modalForm.ip
           data.mac = this.modalForm.mac
           addDhcpStaticIp(data).then(() => {
+            successTips()
             this.getDhcpStaticIpData()
           })
         }
@@ -228,6 +230,7 @@ export default {
           data.ip = this.modalForm.ip
           data.mac = this.modalForm.mac
           editDhcpStaticIp(data).then(() => {
+            successTips()
             this.getDhcpStaticIpData()
           })
         }
@@ -235,6 +238,7 @@ export default {
     },
     del(row) {
       delDhcpStaticIp({ id: row.id }).then(() => {
+        successTips('trans0410')
         this.getDhcpStaticIpData()
       })
     },
