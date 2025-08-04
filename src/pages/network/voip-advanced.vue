@@ -539,7 +539,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isValidInteger } from '@/util/tool'
+import { isValidInteger, successTips } from '@/util/tool'
 import { ServiceType } from '@/util/constant'
 import { getWan, getVoipAdvancedSettings, setVoipAdvancedSettings } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -1423,7 +1423,9 @@ const save = () => {
       NoAnswerNCFWaitTime: form.call_ctrl_line2.NoAnswerNCFWaitTime,
     },
   }
-  setVoipAdvancedSettings(data)
+  setVoipAdvancedSettings(data).then(() => {
+    successTips()
+  })
 }
 const getVoipAdvancedSettingsData = () => {
   getVoipAdvancedSettings().then(({ data }) => {

@@ -1,6 +1,9 @@
 import { logout } from '@/http/api'
 import { router, loginPath } from '@/router/index'
 import { IP } from './constant'
+import { translate } from '@/i18n/index'
+import toast from '@/components/toast/index.js'
+
 const domainReg = /^(https?:\/\/)?([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
 const ipReg =
   /^(?:(?:\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}(?:\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])$/
@@ -560,4 +563,8 @@ export const handleLogout = (isLogout = true) => {
     sessionStorage.clear()
     router.push(loginPath)
   }
+}
+
+export const successTips = (msg = 'trans0791') => {
+  toast(translate(msg))
 }

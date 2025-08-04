@@ -38,7 +38,7 @@
 <script lang="ts" setup>
 import { reactive, ref, inject, onMounted, computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { format, isValidInteger } from '@/util/tool'
+import { format, isValidInteger, successTips } from '@/util/tool'
 import { getWifi2gAdv, setWifi2gAdv } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -282,9 +282,12 @@ const save = () => {
   }
 }
 const setWifi2gAdvData = (data) => {
-  setWifi2gAdv(data).then(() => {
-    getWifi2gData()
-  })
+  setWifi2gAdv(data)
+    .then(() => {
+      successTips()
+      getWifi2gData()
+    })
+    .then(() => {})
 }
 onMounted(() => {
   getWifi2gData()

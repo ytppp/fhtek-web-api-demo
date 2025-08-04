@@ -57,6 +57,7 @@ import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
 import { getWanBinding, setWanBinding } from '@/http/api'
 import { SsidText } from '@/util/constant'
+import { successTips } from '@/util/tool'
 
 enum Mode {
   port = 'port',
@@ -139,6 +140,7 @@ const save = () => {
     vlanpair: form.pair,
   }
   setWanBinding([data]).then(() => {
+    successTips()
     getWanBindingData()
   })
 }

@@ -163,11 +163,11 @@ export const router = createRouter({
       name: 'lanipv6',
       component: lanipv6,
     },
-    {
-      path: '/network/lan/ipv6-new',
-      name: 'lanipv6New',
-      component: lanipv6New,
-    },
+    // {
+    //   path: '/network/lan/ipv6-new',
+    //   name: 'lanipv6New',
+    //   component: lanipv6New,
+    // },
     {
       path: '/network/wlan/basic-24g',
       name: 'basicB24g',
@@ -198,11 +198,11 @@ export const router = createRouter({
       name: 'staticRoute',
       component: staticRoute,
     },
-    {
-      path: '/network/default-route',
-      name: 'defaultRoute',
-      component: defaultRoute,
-    },
+    // {
+    //   path: '/network/default-route',
+    //   name: 'defaultRoute',
+    //   component: defaultRoute,
+    // },
     {
       path: '/network/mesh',
       name: 'mesh',
@@ -301,16 +301,16 @@ export const router = createRouter({
       name: 'time',
       component: time,
     },
-    {
-      path: '/app/igmp-mld',
-      name: 'igmp-mld',
-      component: igmpMld,
-    },
-    {
-      path: '/app/static-arp',
-      name: 'static-arp',
-      component: staticArp,
-    },
+    // {
+    //   path: '/app/igmp-mld',
+    //   name: 'igmp-mld',
+    //   component: igmpMld,
+    // },
+    // {
+    //   path: '/app/static-arp',
+    //   name: 'static-arp',
+    //   component: staticArp,
+    // },
     {
       path: '/app/dhcp-static-ip',
       name: 'dhcp-static-ip',

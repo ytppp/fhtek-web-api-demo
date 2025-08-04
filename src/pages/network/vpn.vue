@@ -55,6 +55,7 @@ import {
   ip2int,
   isValidDomain,
   isBoardcastIP,
+  successTips
 } from '@/util/tool'
 import { getVpn, setVpn, getLan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -183,6 +184,7 @@ export default {
           username: this.vpnForm.username,
           password: this.vpnForm.password,
         }).then(() => {
+          successTips()
           this.getVpnData()
         })
       }

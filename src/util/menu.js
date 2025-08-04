@@ -298,11 +298,11 @@ let menus = [
       //   text: 'trans0248',
       //   config,
       // },
-      {
-        url: '/app/static-arp',
-        text: 'trans0805',
-        config,
-      },
+      // {
+      //   url: '/app/static-arp',
+      //   text: 'trans0805',
+      //   config,
+      // },
       {
         url: '/app/static-dns',
         text: 'trans0099',

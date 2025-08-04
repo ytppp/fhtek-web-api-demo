@@ -30,6 +30,7 @@ import { NetType, netTypeText } from '@/util/constant'
 import { getIpv6Lan, setIpv6Lan, getWanInfo } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { useI18n } from 'vue-i18n'
+import { successTips } from '@/util/tool'
 
 defineOptions({
   name: 'LanIpv6Page',
@@ -110,7 +111,9 @@ const save = () => {
       address_mode: form.mode,
       pd_if: form.pd_if,
     })
-      .then(() => {})
+      .then(() => {
+        successTips()
+      })
       .catch(() => {})
       .finally(() => {
         setTimeout(() => {

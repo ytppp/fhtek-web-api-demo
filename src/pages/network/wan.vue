@@ -249,7 +249,7 @@ import {
   Ssidac3,
   Ssidac4,
   NetType,
-  netTypeText
+  netTypeText,
 } from '@/util/constant'
 import {
   format,
@@ -270,6 +270,7 @@ import {
   isValidSymbol,
   specialChar,
   isValidInteger,
+  successTips,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { getLan, getWan, addWan, editWan, deleteWan, getPortBindInfo } from '@/http/api'
@@ -885,12 +886,14 @@ const save = () => {
     }
     if (isAdd.value) {
       addWan(newWan).then(() => {
+        successTips()
         getWanList()
       })
     }
     if (isEdit.value) {
       newWan.id = wan.id
       editWan(newWan).then(({ data }) => {
+        successTips()
         const { id } = data
         getWanList(id)
       })
@@ -906,6 +909,7 @@ const delWanConn = () => {
     })
     .then(() => {
       deleteWan({ id: wan.id }).then(() => {
+        successTips('trans0410')
         getWanList()
       })
     })
