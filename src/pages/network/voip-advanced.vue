@@ -292,12 +292,12 @@
           <!-- <fh-form-item label="Enable Server Mix">
             <fh-switch v-model="form.call_ctrl_line1.SIP3wayConfServerMix"></fh-switch>
           </fh-form-item> -->
-          <fh-form-item
+          <!-- <fh-form-item
             label="Three Party Meeting Resource Access Code"
             prop="call_ctrl_line1.SIP3wayConfServAddr"
           >
             <fh-input v-model="form.call_ctrl_line1.SIP3wayConfServAddr"> </fh-input>
-          </fh-form-item>
+          </fh-form-item> -->
           <fh-form-item label="Caller id mode">
             <fh-select
               v-model="form.call_ctrl_line1.ComingCallDisplayMode"
@@ -539,7 +539,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isValidInteger, successTips } from '@/util/tool'
+import { specialChar, isValidInteger, isValidSymbol, successTips } from '@/util/tool'
 import { ServiceType } from '@/util/constant'
 import { getWan, getVoipAdvancedSettings, setVoipAdvancedSettings } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -586,6 +586,8 @@ const generateNumberOpts = (max: number, start: number, step: number) => {
 
 const { t } = useI18n()
 const { convertBooleanStatus } = useDataClean()
+const digitMapSpecialChar = '!#$*+-.=|?@_~[]'
+const digitMapSpecialReg = /^[\w!#$*+\-.=|?@_~[\]']+$/i // /^[a-zA-Z0-9!#$\*\+\-.=|\?@_~\]\[]+$/
 const formRef = ref(null)
 const hasVoipWan = ref(false)
 const dmTModeOpts = [
@@ -980,385 +982,432 @@ const rules = reactive({
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   registerRetryInterval: [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   rtpRedundantPT: [
     {
       rule: (value) => {
         if (!value.length) return true
-        return isValidInteger(value, 96, 127)
+        return isValidInteger(value)
       },
-      message: t('trans0567').format(96, 127),
+      message: t('trans0378'),
     },
   ],
   jitterBufferMax: [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'digit_map.StartDigitTimer': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'digit_map.InterDigitTimerShort': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'digit_map.InterDigitTimerLong': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'digit_map.InterDigitTimerT': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'digit_map.BusyToneTimer': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'digit_map.HangingReminderToneTimer': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'digit_map.NoAnswerTimer': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'digit_map.digitMap': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidSymbol(value, digitMapSpecialReg)
       },
-      message: t('trans0004'),
+      message: t('trans0013').format('DigitMap', t('trans0042').format(digitMapSpecialChar)),
     },
   ],
   'digit_map.digitMapSpecial': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidSymbol(value, digitMapSpecialReg)
       },
-      message: t('trans0004'),
+      message: t('trans0013').format('DigitMapSpecial', t('trans0042').format(digitMapSpecialChar)),
     },
   ],
   'digit_map.pbxPrefix': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidSymbol(value, digitMapSpecialReg)
       },
-      message: t('trans0004'),
+      message: t('trans0013').format('PBXPrefix', t('trans0042').format(digitMapSpecialChar)),
     },
   ],
   'basic_common.TelephoneEventPayloadType': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'basic_common.HeartbeatCycle': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'basic_common.SIP8021PMark': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'basic_common.RTP8021PMark': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'basic_common.SC_ACCT_SIP_SESSION_TIMER': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'basic_common.SC_ACCT_SIP_SESSION_MIN_EXP': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'basic_common.SIPDSCPMark': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'basic_common.RTPDSCPMark': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.HookReleaseMin': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.HookMaxInterval': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.HookMinInterval': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.SubscribeExpire': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.SIP3wayConfServAddr': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.HotLineDelayTime': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.HotLineNumber': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidSymbol(value)
       },
-      message: t('trans0004'),
+      message: t('trans0013').format('Hot Line Number', t('trans0042').format(specialChar)),
     },
   ],
   'call_ctrl_line1.VoiceVolumeListen': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.VoiceVolumeSpeak': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.MTKSIPUCFNumber': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.MTKSIPBCFNumber': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.MTKSIPNCFNumber': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line1.NoAnswerNCFWaitTime': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.HookReleaseMin': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.HookMaxInterval': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.HookMinInterval': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.SubscribeExpire': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.SIP3wayConfServAddr': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.HotLineDelayTime': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.HotLineNumber': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidSymbol(value)
       },
-      message: t('trans0004'),
+      message: t('trans0013').format('Hot Line Number', t('trans0042').format(specialChar)),
     },
   ],
   'call_ctrl_line2.VoiceVolumeListen': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.VoiceVolumeSpeak': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.MTKSIPUCFNumber': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.MTKSIPBCFNumber': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.MTKSIPNCFNumber': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
   'call_ctrl_line2.NoAnswerNCFWaitTime': [
     {
       rule: (value) => {
         if (!value.length) return true
+        return isValidInteger(value)
       },
-      message: t('trans0004'),
+      message: t('trans0378'),
     },
   ],
 })

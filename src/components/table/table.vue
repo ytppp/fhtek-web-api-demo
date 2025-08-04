@@ -133,7 +133,7 @@
                 <td class="table-main__cell" :style="getItemStyle(col)" v-else>
                   <div class="cell" :style="cellStyle" :title="item[col.key]">
                     <slot :name="col.key" :row="item">
-                      {{ item[col.key] ? item[col.key] : '-' }}
+                      {{ item[col.key]?.length ? item[col.key] : '-' }}
                     </slot>
                   </div>
                 </td>

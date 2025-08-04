@@ -17,9 +17,9 @@
           :border="true"
         >
           <template #ip="scope">
-            <template v-if="scope.row.ip.length">
+            <div v-if="scope.row.ip.length">
               <div v-for="(ip, index) in scope.row.ip" :key="index">{{ ip }}</div>
-            </template>
+            </div>
           </template>
         </fh-table>
       </div>
@@ -79,8 +79,7 @@ const columns = reactive([
   {
     key: 'statusAlias',
     title: t('trans0166'),
-    width: '100',
-    minWidth: '60',
+    width: '120',
   },
   {
     key: 'ip',
@@ -134,8 +133,7 @@ const ipv6Columns = reactive([
   {
     key: 'statusAlias',
     title: t('trans0166'),
-    width: '100',
-    minWidth: '60',
+    width: '120',
   },
   {
     key: 'prefix',
@@ -255,7 +253,7 @@ const getWanData = () => {
         thisIpv6Data.push(tableItem)
       }
     })
-    console.log(thisIpv4Data, thisIpv6Data)
+    console.log(thisIpv4Data)
     Object.assign(ipv4Data, thisIpv4Data)
     Object.assign(ipv6Data, thisIpv6Data)
   })
