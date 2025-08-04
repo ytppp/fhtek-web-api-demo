@@ -28,6 +28,7 @@
 import { getTerminal, setTerminal } from '@/http/api'
 import { onMounted, reactive } from 'vue'
 import { useDataClean } from '@/hooks/data-clean'
+import { successTips } from '@/util/tool'
 
 const { convertBooleanStatus } = useDataClean()
 const form = reactive({
@@ -48,7 +49,9 @@ const save = () => {
       enable: convertBooleanStatus(form.remoteWebEnable),
     },
   }
-  setTerminal(data)
+  setTerminal(data).then(() => {
+    successTips()
+  })
 }
 const getTerminalData = () => {
   getTerminal().then(({ data }) => {

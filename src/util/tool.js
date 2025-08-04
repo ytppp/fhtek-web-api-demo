@@ -296,7 +296,7 @@ export function validationCharacterRange(val, minLen, maxLen) {
 }
 
 // 简化 ipv6 地址转化完整 ipv6 地址
-function tranSimIpv6ToFullIpv6(simpeIpv6) {
+export function tranSimIpv6ToFullIpv6(simpeIpv6) {
   simpeIpv6 = simpeIpv6.toUpperCase()
   // ipv6地址有8段，每段4个字符
   const Ipv6Len = 8,
@@ -566,5 +566,9 @@ export const handleLogout = (isLogout = true) => {
 }
 
 export const successTips = (msg = 'trans0791') => {
-  toast(translate(msg))
+  toast({
+    duration: 2000,
+    text: translate(msg),
+    type: 'success',
+  })
 }

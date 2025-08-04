@@ -100,6 +100,7 @@ import {
   isValidUnixPath,
   format,
   specialChar,
+  successTips,
 } from '@/util/tool'
 import { getUsb, usbDownload, editUsbServer, getUsbDownloadList, getUsbServer } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -264,6 +265,7 @@ const download = () => {
     path: clientForm.path,
   }
   usbDownload([data]).then(() => {
+    successTips()
     getDownloadList()
   })
 }
@@ -276,7 +278,9 @@ const save = () => {
     password: serverForm.password,
     root_path: serverForm.rootPath,
   }
-  editUsbServer(data)
+  editUsbServer(data).then(() => {
+    successTips()
+  })
 }
 
 const getUsbServerData = () => {

@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { isValidDomain } from '@/util/tool'
+import { isValidDomain, successTips } from '@/util/tool'
 import { FilteringModes, ModalType } from '@/util/constant'
 import {
   getUrlFilterStatus,
@@ -184,7 +184,9 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      editUrlFilterStatus(data)
+      editUrlFilterStatus(data).then(() => {
+        successTips()
+      })
     },
     openAddModal() {
       this.modalForm.id = ''
@@ -228,13 +230,17 @@ export default {
       }
       if (this.isAdd) {
         addUrlFilterItem(data).then(() => {
-          this.getWifiMacFilterList()
+          this.getWifiMacFilterList().then(() => {
+            successTips()
+          })
         })
       }
       if (this.isEdit) {
         data.id = this.modalForm.id
         editUrlFilterItem(data).then(() => {
-          this.getWifiMacFilterList()
+          this.getWifiMacFilterList()(() => {
+            successTips()
+          })
         })
       }
     },
@@ -243,7 +249,9 @@ export default {
         id: row.id,
       }
       delUrlFilterItem(data).then(() => {
-        this.getWifiMacFilterList()
+        this.getWifiMacFilterList()(() => {
+          successTips('trans0410')
+        })
       })
     },
   },

@@ -89,7 +89,7 @@
 
 <script>
 import { ProtocolType } from '@/util/constant'
-import { isValidInteger, isValidVal, isIP } from '@/util/tool'
+import { isValidInteger, isValidVal, isIP, successTips } from '@/util/tool'
 import { getPortMapping, setPortMapping, editPortMapping, delPortMapping } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -409,10 +409,12 @@ export default {
         if (this.isEdit) {
           data[0].id = this.modalForm.index
           editPortMapping(data).then(() => {
+            successTips()
             this.getPortMappingData()
           })
         } else {
           setPortMapping(data).then(() => {
+            successTips()
             this.getPortMappingData()
           })
         }
@@ -422,6 +424,7 @@ export default {
       delPortMapping({
         id: row.index,
       }).then(() => {
+        successTips('trans0410')
         this.getPortMappingData()
       })
     },

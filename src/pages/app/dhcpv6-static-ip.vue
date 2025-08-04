@@ -38,8 +38,10 @@
           <fh-form-item :label="$t('trans0097')" prop="mac">
             <fh-input v-model="modalForm.mac" :placeholder="$t('trans0217')"></fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0414')" prop="ip">
-            <fh-input v-model="modalForm.ip" :placeholder="$t('trans0413')"></fh-input>
+          <fh-form-item :label="$t('trans0414')" prop="ip" style="width: 100%">
+            <fh-input v-model="modalForm.ip" :placeholder="$t('trans0413')">
+              <template #prepend>{{ $t('trans0596') }}</template>
+            </fh-input>
             <template #extra>
               {{ $t('trans0942') }}
             </template>
@@ -56,7 +58,7 @@
 </template>
 
 <script>
-import { isIP, isMac, isValidIpv6AddrExtra } from '@/util/tool'
+import { isIP, isMac, isValidIpv6AddrExtra, successTips, tranSimIpv6ToFullIpv6 } from '@/util/tool'
 import {
   getLan,
   getDhcpStaticIp,
@@ -67,6 +69,7 @@ import {
 import { ModalType, IP } from '@/util/constant'
 
 const maxRuleNum = 8
+const defaultIpv6Prefix = '1111:1111:1111:1111::'
 export default {
   data() {
     return {
@@ -87,7 +90,11 @@ export default {
             message: this.$t('trans0004'),
           },
           {
-            rule: (value) => isIP(value, IP.IPv6) && isValidIpv6AddrExtra(value),
+            rule: (value) => {
+              const ip = tranSimIpv6ToFullIpv6(`${defaultIpv6Prefix}${value}`) // 补全ipv6地址,方便做校验
+              console.log(ip)
+              return isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip)
+            },
             message: this.$t('trans0566').format(this.$t('trans0414')),
           },
           {
@@ -195,6 +202,7 @@ export default {
           data.ip = this.modalForm.ip
           data.mac = this.modalForm.mac
           addDhcpStaticIp(data).then(() => {
+            successTips()
             this.getDhcpStaticIpData()
           })
         }
@@ -204,6 +212,7 @@ export default {
           data.ip = this.modalForm.ip
           data.mac = this.modalForm.mac
           editDhcpStaticIp(data).then(() => {
+            successTips()
             this.getDhcpStaticIpData()
           })
         }
@@ -211,6 +220,7 @@ export default {
     },
     del(row) {
       delDhcpStaticIp({ id: row.id }).then(() => {
+        successTips('trans0410')
         this.getDhcpStaticIpData()
       })
     },

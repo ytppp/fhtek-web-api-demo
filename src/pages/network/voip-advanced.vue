@@ -4,11 +4,11 @@
       <h1 class="page__title">{{ $t('trans0579') }}</h1>
     </div>
     <div class="page__content">
-      <!-- :rules="rules" -->
       <fh-form
         class="form form--small"
         label-width="370px"
         ref="formRef"
+        :rules="rules"
         :model="form"
         v-if="hasVoipWan"
       >
@@ -905,7 +905,7 @@ const form = reactive({
     MTKSIPUCFNumber: '', // MTKSIPUCFNumber, Call Forwarding Unconditional Number  （UI）, 值 电话号码字符串
     MTKSIPBCFNumber: '', // MTKSIPBCFNumber, Call Forwarding Busy Number （UI）, 值 电话号码字符串
     MTKSIPNCFNumber: '', // MTKSIPNCFNumber, Call Forwarding No Reply Number （UI）, 值 电话号码字符
-    NoAnswerNCFWaitTime: '',  // NoAnswerNCFWaitTime, NoAnswerCallForwardingWaitTimer(s)
+    NoAnswerNCFWaitTime: '', // NoAnswerNCFWaitTime, NoAnswerCallForwardingWaitTimer(s)
     G722: {
       priority: `${numMin}`, // priority, G.722 Priority, 值: 0~5
     },
@@ -948,7 +948,7 @@ const form = reactive({
     MTKSIPUCFNumber: '', // MTKSIPUCFNumber, Call Forwarding Unconditional Number  （UI）, 值 电话号码字符串
     MTKSIPBCFNumber: '', // MTKSIPBCFNumber, Call Forwarding Busy Number （UI）, 值 电话号码字符串
     MTKSIPNCFNumber: '', // MTKSIPNCFNumber, Call Forwarding No Reply Number （UI）, 值 电话号码字符
-    NoAnswerNCFWaitTime: '',  // NoAnswerNCFWaitTime, NoAnswerCallForwardingWaitTimer(s)
+    NoAnswerNCFWaitTime: '', // NoAnswerNCFWaitTime, NoAnswerCallForwardingWaitTimer(s)
     G722: {
       priority: `${numMin}`, // priority, G.722 Priority, 值: 0~5
     },
@@ -969,299 +969,395 @@ const form = reactive({
 const rules = reactive({
   registrationExpireTimer: [
     {
-      rule: (value) => !!value.trim(),
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidInteger(value)
+      },
+      message: t('trans0378'),
     },
   ],
   maxStartDelay: [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   registerRetryInterval: [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   rtpRedundantPT: [
     {
-      rule: (value) => !!value.trim(),
-      message: t('trans0004'),
-    },
-    {
-      rule: (value) => isValidInteger(value, 96, 127),
+      rule: (value) => {
+        if (!value.length) return true
+        return isValidInteger(value, 96, 127)
+      },
       message: t('trans0567').format(96, 127),
     },
   ],
   jitterBufferMax: [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'digit_map.StartDigitTimer': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'digit_map.InterDigitTimerShort': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'digit_map.InterDigitTimerLong': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'digit_map.InterDigitTimerT': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'digit_map.BusyToneTimer': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'digit_map.HangingReminderToneTimer': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'digit_map.NoAnswerTimer': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'digit_map.digitMap': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'digit_map.digitMapSpecial': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'digit_map.pbxPrefix': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'basic_common.TelephoneEventPayloadType': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'basic_common.HeartbeatCycle': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'basic_common.SIP8021PMark': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'basic_common.RTP8021PMark': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'basic_common.SC_ACCT_SIP_SESSION_TIMER': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'basic_common.SC_ACCT_SIP_SESSION_MIN_EXP': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'basic_common.SIPDSCPMark': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'basic_common.RTPDSCPMark': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.HookReleaseMin': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.HookMaxInterval': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.HookMinInterval': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.SubscribeExpire': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.SIP3wayConfServAddr': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.HotLineDelayTime': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.HotLineNumber': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.VoiceVolumeListen': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.VoiceVolumeSpeak': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.MTKSIPUCFNumber': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.MTKSIPBCFNumber': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.MTKSIPNCFNumber': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line1.NoAnswerNCFWaitTime': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.HookReleaseMin': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.HookMaxInterval': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.HookMinInterval': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.SubscribeExpire': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.SIP3wayConfServAddr': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.HotLineDelayTime': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.HotLineNumber': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.VoiceVolumeListen': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.VoiceVolumeSpeak': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.MTKSIPUCFNumber': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.MTKSIPBCFNumber': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.MTKSIPNCFNumber': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],
   'call_ctrl_line2.NoAnswerNCFWaitTime': [
     {
-      rule: (value) => !!value.trim(),
+      rule: (value) => {
+        if (!value.length) return true
+      },
       message: t('trans0004'),
     },
   ],

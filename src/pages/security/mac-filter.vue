@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { isMac, format } from '@/util/tool'
+import { isMac, format, successTips } from '@/util/tool'
 import { FilteringModes, ModalType } from '@/util/constant'
 import {
   getMacFilterStatus,
@@ -183,7 +183,9 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      return editMacFilterStatus(data)
+      return editMacFilterStatus(data).then(() => {
+        successTips()
+      })
     },
     openAddModal() {
       this.modalForm.id = ''
@@ -229,12 +231,14 @@ export default {
         addMacFilterItem({
           mac: this.modalForm.mac,
         }).then(() => {
+          successTips()
           this.getWifiMacFilterList()
         })
       }
       if (this.isEdit) {
         data.id = this.modalForm.id
         editMacFilterItem(data).then(() => {
+          successTips()
           this.getWifiMacFilterList()
         })
       }
@@ -244,6 +248,7 @@ export default {
         id: row.id,
       }
       delMacFilterItem(data).then(() => {
+        successTips('trans0410')
         this.getWifiMacFilterList()
       })
     },
@@ -268,7 +273,6 @@ export default {
           return
         }
         if (this.isBlackList) {
-          console.log('1111111111')
           this.openAddModal()
           this.modalForm.mac = this.$route.query.mac
         } else {

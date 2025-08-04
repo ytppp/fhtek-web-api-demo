@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { isMac, format } from '@/util/tool'
+import { isMac, format, successTips } from '@/util/tool'
 import { FilteringModes, ModalType, SsidText } from '@/util/constant'
 import {
   getWifiMacFilterStatus,
@@ -208,7 +208,9 @@ export default {
         enable: convertBooleanStatus(this.form.enable),
         mode: this.form.mode,
       }
-      return setWifiMacFilterStatus(data)
+      return setWifiMacFilterStatus(data).then(() => {
+        successTips()
+      })
     },
     openAddModal() {
       this.modalForm.id = this.ssidOpts[0].value
@@ -281,6 +283,7 @@ export default {
       }
       if (this.isAdd) {
         addWifiMacFilter(data).then(() => {
+          successTips()
           this.getWifiMacFilterList()
         })
       }
@@ -290,6 +293,7 @@ export default {
           mac: this.modalForm.pre_mac,
         }).then(() => {
           editWifiMacFilter(data).then(() => {
+            successTips()
             this.getWifiMacFilterList()
           })
         })
@@ -300,6 +304,7 @@ export default {
         id: row.id,
         mac: row.mac,
       }).then(() => {
+        successTips('trans0410')
         this.getWifiMacFilterList()
       })
     },

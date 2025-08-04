@@ -52,6 +52,7 @@ import { getSysTime, getTime, setTime } from '@/http/api'
 import { Weeks } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
 import { locale } from '@/i18n/index'
+import { successTips } from '@/util/tool'
 
 const ntpServers = [
   '0.openwrt.pool.ntp.org',
@@ -182,6 +183,7 @@ export default {
             this.isOtherSlave ? this.form.otherSlaveSntpServer : this.form.slaveSntpServer,
           ],
         }).then(() => {
+          successTips()
           this.getTimeData()
         })
       }

@@ -60,6 +60,7 @@ import {
   isLoopback,
   isNetworkIP,
   isBoardcastIP,
+  successTips,
 } from '@/util/tool'
 import { getStaticDnsList, addStaticDns, editStaticDns, delStaticDns } from '@/http/api'
 import { ModalType } from '@/util/constant'
@@ -217,6 +218,7 @@ export default {
           data.domain = this.modalForm.domain
           data.ip = this.modalForm.ip
           addStaticDns([data]).then((res) => {
+            successTips()
             this.getStaticDnsListData()
           })
         }
@@ -225,6 +227,7 @@ export default {
           data.domain = this.modalForm.domain
           data.ip = this.modalForm.ip
           editStaticDns([data]).then((res) => {
+            successTips()
             this.getStaticDnsListData()
           })
         }
@@ -232,6 +235,7 @@ export default {
     },
     del(row) {
       delStaticDns({ id: row.id }).then((res) => {
+        successTips('trans0410')
         this.getStaticDnsListData()
       })
     },

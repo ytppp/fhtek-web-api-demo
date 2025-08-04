@@ -30,6 +30,7 @@ import { reactive, ref, computed, onMounted } from 'vue'
 import { getPortMirr, setPortMirr } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { StartAndStop } from '@/util/constant'
+import { successTips } from '@/util/tool'
 
 enum Interface {
   all = 'All',
@@ -99,6 +100,7 @@ const save = (order) => {
     interface: remote.interface,
     order,
   }).then(() => {
+    successTips()
     getPortMirrData()
   })
 }

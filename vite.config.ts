@@ -17,7 +17,7 @@ if (process.env.CUSTOMER_ID) {
 export default defineConfig(async () => {
   const module = await import(`./src/customer-conf/${CUSTOMER_ID}.json`)
   return {
-    plugins: [vue(), vueJsx, vueDevTools()],
+    plugins: [vue(), vueJsx(), vueDevTools()],
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
