@@ -30,33 +30,27 @@
                   'table-main__cell--fixed': isFixedLeft(col),
                   'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                 }"
-                :style="{
-                  position: isFixedLeft(col) ? 'sticky' : '',
-                  left: isFixedLeft(col) ? '0' : '',
-                  ...cellStyle(col),
-                }"
+                :style="`${isFixedLeft(col) ? 'position: sticky; left: 0' : ''}`"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 ref="checkboxCol"
                 v-if="col.key === 'checkbox'"
-              ></th>
+              >
+                <div class="com-cell" :style="cellStyle(col)"></div>
+              </th>
               <th
                 class="table-main__cell table-main__index"
                 :class="{
                   'table-main__cell--fixed': isFixedLeft(col),
                   'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                 }"
-                :style="{
-                  position: isFixedLeft(col) ? 'sticky' : '',
-                  left: isFixedLeft(col) ? (isShowRowCheckbox && isShowIndex ? '50px' : '0') : '',
-                  ...cellStyle(col),
-                }"
+                :style="`${isFixedLeft(col) ? `position: sticky; left: ${isShowRowCheckbox && isShowIndex ? '50px' : '0'}` : ''}`"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 ref="indexCol"
                 v-else-if="col.key === 'index'"
               >
-                {{ $t('trans0454') }}
+                <div class="com-cell" :style="cellStyle(col)">{{ $t('trans0454') }}</div>
               </th>
               <th
                 class="table-main__cell"
@@ -64,31 +58,24 @@
                   'table-main__cell--fixed': isFixedRight(col),
                   'table-main__cell--fixed-right-last': isFixedRightLast(colIndex),
                 }"
-                :style="{
-                  position: isFixedRight(col) ? 'sticky' : '',
-                  right: isFixedRight(col) ? '0' : '',
-                  ...cellStyle(col),
-                }"
+                :style="`${isFixedRight(col) ? 'position: sticky; right: 0' : ''}`"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 ref="rowOperationCol"
                 v-else-if="col.key === 'operation'"
               >
-                {{ $t('trans0141') }}
+                <div class="com-cell" :style="cellStyle(col)">{{ $t('trans0141') }}</div>
               </th>
               <th
                 class="table-main__cell"
                 :title="col.title"
-                :style="{
-                  ...getItemStyle(col),
-                  ...cellStyle(col),
-                }"
+                :style="getItemStyle(col)"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 :ref="col.key"
                 v-else
               >
-                {{ col.title }}
+                <div class="cell" :style="cellStyle(col)">{{ col.title }}</div>
               </th>
             </template>
           </tr>
@@ -112,14 +99,12 @@
                     'table-main__cell--fixed': isFixedLeft(col),
                     'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                   }"
-                  :style="{
-                    position: isFixedLeft(col) ? 'sticky' : '',
-                    left: isFixedLeft(col) ? '0' : '',
-                    ...cellStyle(col),
-                  }"
+                  :style="`${isFixedLeft(col) ? 'position: sticky; left: 0' : ''}`"
                   v-if="col.key === 'checkbox'"
                 >
-                  <fh-checkbox @change="(val) => select(val, item)" />
+                  <div class="com-cell" :style="cellStyle(col)">
+                    <fh-checkbox @change="(val) => select(val, item)" />
+                  </div>
                 </td>
                 <td
                   class="table-main__cell table-main__index"
@@ -127,14 +112,10 @@
                     'table-main__cell--fixed': isFixedLeft(col),
                     'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                   }"
-                  :style="{
-                    position: isFixedLeft(col) ? 'sticky' : '',
-                    left: isFixedLeft(col) ? (isShowRowCheckbox && isShowIndex ? '50px' : '0') : '',
-                    ...cellStyle(col),
-                  }"
+                  :style="`${isFixedLeft(col) ? `position: sticky; left: ${isShowRowCheckbox && isShowIndex ? '50px' : '0'}` : ''}`"
                   v-else-if="col.key === 'index'"
                 >
-                  {{ index + 1 }}
+                  <div class="com-cell" :style="cellStyle(col)">{{ index + 1 }}</div>
                 </td>
                 <td
                   class="table-main__cell"
@@ -142,27 +123,19 @@
                     'table-main__cell--fixed': isFixedRight(col),
                     'table-main__cell--fixed-right-last': isFixedRightLast(colIndex),
                   }"
-                  :style="{
-                    position: isFixedRight(col) ? 'sticky' : '',
-                    right: isFixedRight(col) ? '0' : '',
-                    ...cellStyle(col),
-                  }"
+                  :style="`${isFixedRight(col) ? 'position: sticky; right: 0' : ''}`"
                   v-else-if="col.key === 'operation'"
                 >
-                  <slot name="operation" :row="item"></slot>
+                  <div class="com-cell" :style="cellStyle(col)">
+                    <slot name="operation" :row="item"></slot>
+                  </div>
                 </td>
-                <td
-                  class="table-main__cell"
-                  :style="{
-                    ...getItemStyle(col),
-                    ...cellStyle(col),
-                  }"
-                  :title="item[col.key]"
-                  v-else
-                >
-                  <slot :name="col.key" :row="item">
-                    {{ cellContent(item, col.key) }}
-                  </slot>
+                <td class="table-main__cell" :style="getItemStyle(col)" v-else>
+                  <div class="cell" :style="cellStyle(col)" :title="item[col.key]">
+                    <slot :name="col.key" :row="item">
+                      {{ cellContent(item, col.key) }}
+                    </slot>
+                  </div>
                 </td>
               </template>
             </tr>
@@ -562,39 +535,24 @@ export default {
       }
     }
     .table-main__header-row {
+      background-color: #dddddd; // @table-background-color;
       .table-main__cell {
         font-weight: 600;
-        background-color: @table-header-background-color;
-        &.table-main__cell--fixed {
-          background-color: @table-header-background-color;
-        }
       }
     }
     .table-main__content-row {
-      .table-main__cell {
-        background-color: @table-background-color;
-      }
+      background-color: @table-background-color;
       &:last-child {
         .table-main__cell {
           border-bottom: none;
         }
       }
       &.is-stripe {
-        .table-main__cell {
-          background-color: #fafafa;
-          &.table-main__cell--fixed {
-            background-color: #fafafa;
-          }
-        }
+        background-color: #fafafa;
       }
       &.is-hover {
         &:hover {
-          .table-main__cell {
-            background-color: #f5f7fa !important;
-            &.table-main__cell--fixed {
-              background-color: #fafafa !important;
-            }
-          }
+          background-color: #f5f7fa;
         }
       }
       &.empty-row {
@@ -609,17 +567,13 @@ export default {
     }
     .table-main__cell {
       z-index: 1;
-      padding: 12px 5px;
+      padding: 12px 0;
       font-size: 16px;
       color: #262626;
       border-bottom: 1px solid #c9c9c9;
-      box-sizing: border-box;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      word-break: break-all;
       &.table-main__cell--fixed {
         z-index: 2;
+        background-color: @table-background-color;
         &.table-main__cell--fixed-left-last,
         &.table-main__cell--fixed-right-last {
           &::after {
@@ -653,6 +607,21 @@ export default {
       width: 50px;
       min-width: 50px;
     }
+  }
+  .com-cell {
+    box-sizing: border-box;
+    padding-left: 5px;
+    padding-right: 5px;
+    white-space: nowrap;
+  }
+  .cell {
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+    padding-left: 5px;
+    padding-right: 5px;
   }
 }
 </style>

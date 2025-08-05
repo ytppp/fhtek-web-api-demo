@@ -1232,7 +1232,9 @@ const wanRules = reactive({
           return !wanList.some((item) => item.vlan.id === value || item.multiVlanId === value)
         }
         if (isEdit.value) {
-          return !wanList.some((item) => item.id !== wan.id && (item.vlan.id === value || item.multiVlanId === value))
+          return !wanList.some(
+            (item) => item.id !== wan.id && (item.vlan.id === value || item.multiVlanId === value),
+          )
         }
       },
       message: format(t('trans0678'), [t('trans0777')]),

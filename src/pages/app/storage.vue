@@ -45,6 +45,7 @@
             :columns="columns"
             :data-source="tableData"
             :show-row-checkbox="false"
+            :show-header="false"
           ></fh-table>
         </div>
         <div class="page__sub-header">

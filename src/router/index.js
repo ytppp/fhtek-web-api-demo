@@ -76,9 +76,9 @@ export const router = createRouter({
     },
     {
       path: '/home',
-      // name: 'home',
-      // component: home,
-      redirect: '/status/device',
+      name: 'home',
+      component: home,
+      // redirect: '/status/device',
     },
     {
       path: '/status',

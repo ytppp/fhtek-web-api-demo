@@ -75,6 +75,7 @@ const columns = reactive([
     title: t('trans0140'),
     width: '240',
     minWidth: '100',
+    textAlign: 'left',
   },
   {
     key: 'statusAlias',
