@@ -169,6 +169,7 @@ export const encrypts = [
   },
 ]
 
+// TR069 和 VOICE 都只能创建一条
 export enum ServiceType {
   TR069 = 'TR069',
   INTERNET = 'INTERNET',

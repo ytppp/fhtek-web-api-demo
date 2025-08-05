@@ -4,38 +4,41 @@
       <h1 class="page__title">{{ $t('trans0060') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form" ref="formRef" :model="form">
+      <fh-form class="form" :model="form">
         <fh-form-item :label="$t('trans0060')">
           <fh-switch v-model="form.enable" @change="switchEnable"> </fh-switch>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0703')">
-          <div>{{ currentLevel }}</div>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0037')" v-if="form.enable">
-          <fh-select v-model="form.level" :options="securityLevels"> </fh-select>
-        </fh-form-item>
-        <fh-form-item class="form__submit-btn">
-          <fh-button @click="save" block>
-            {{ $t('trans0002') }}
-          </fh-button>
-        </fh-form-item>
+        <template v-if="form.enable">
+          <fh-form-item :label="$t('trans0703')">
+            <div>{{ currentLevel }}</div>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0037')" v-if="form.enable">
+            <fh-select v-model="form.level" :options="securityLevels"> </fh-select>
+          </fh-form-item>
+          <fh-form-item class="form__submit-btn">
+            <fh-button @click="save" block>
+              {{ $t('trans0002') }}
+            </fh-button>
+          </fh-form-item>
+        </template>
       </fh-form>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted, inject, useTemplateRef } from 'vue'
+import { ref, reactive, computed, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { setFirewall, getFirewall } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { EnableStatus } from '@/util/constant'
+import { successTips } from '@/util/tool'
 
 defineOptions({
   name: 'FirewallPage',
 })
 
 enum SecurityLevels {
-  disable = 'disable',
   low = 'low',
   medium = 'medium',
   high = 'high',
@@ -45,35 +48,41 @@ enum SecurityLevels {
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
 const dialog = inject('dialog')
+const SecurityLevelsText = {
+  [SecurityLevels.low]: t('trans0062'),
+  [SecurityLevels.medium]: t('trans0063'),
+  [SecurityLevels.high]: t('trans0064'),
+  [SecurityLevels.userdefined]: t('trans0065'),
+}
 const securityLevels = [
   {
-    value: SecurityLevels.disable,
-    text: t('trans0054'),
-  },
-  {
     value: SecurityLevels.low,
-    text: t('trans0062'),
+    text: SecurityLevelsText[SecurityLevels.low],
   },
   {
     value: SecurityLevels.medium,
-    text: t('trans0063'),
+    text: SecurityLevelsText[SecurityLevels.medium],
   },
   {
     value: SecurityLevels.high,
-    text: t('trans0064'),
+    text: SecurityLevelsText[SecurityLevels.high],
   },
-  // {
-  //   value: SecurityLevels.userdefined,
-  //   text: t('trans0065'),
-  // }
+  {
+    value: SecurityLevels.userdefined,
+    text: SecurityLevelsText[SecurityLevels.userdefined],
+  },
 ]
-const formRef = useTemplateRef('formRef')
+const formEnableInitial = ref(false)
+const currentLevel = ref(SecurityLevelsText[SecurityLevels.low])
 const form = reactive({
   enable: true,
-  level: SecurityLevels.disable,
+  level: SecurityLevels.low,
 })
-const formEnableInitial = ref(false)
-const currentLevel = ref(SecurityLevels.disable)
+
+const isCustom = computed(() => {
+  return form.level === SecurityLevels.userdefined
+})
+
 const switchEnable = () => {
   if (!form.enable && formEnableInitial.value) {
     dialog
@@ -91,17 +100,35 @@ const switchEnable = () => {
   }
 }
 const save = () => {
-  setFirewall({
-    enable: convertBooleanStatus(form.enable),
-    level: form.level,
+  const data: {
+    enable: string
+    level?: SecurityLevels
+    custom?: EnableStatus
+  } = {
+    enable: convertBooleanStatus(form.enable) as string,
+  }
+  if (isCustom.value) {
+    data.custom = EnableStatus.yes
+  } else {
+    data.custom = EnableStatus.no
+    data.level = form.level
+  }
+  setFirewall(data).then(() => {
+    successTips()
   })
 }
 const getFirewallData = () => {
   getFirewall().then(({ data }) => {
-    const { enable, level } = data
+    const { enable, level, custom } = data
     formEnableInitial.value = form.enable = convertBooleanStatus(enable) as boolean
-    form.level = level
-    currentLevel.value = level
+    const isCustom = convertBooleanStatus(custom) as boolean
+    if (isCustom) {
+      currentLevel.value = SecurityLevelsText[SecurityLevels.userdefined]
+      form.level = SecurityLevels.userdefined
+    } else {
+      form.level = level
+      currentLevel.value = SecurityLevelsText[form.level]
+    }
   })
 }
 onMounted(() => {
