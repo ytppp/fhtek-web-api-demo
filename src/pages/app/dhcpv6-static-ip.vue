@@ -39,9 +39,7 @@
             <fh-input v-model="modalForm.mac" :placeholder="$t('trans0217')"></fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0414')" prop="ip">
-            <fh-input v-model="modalForm.ip" :placeholder="$t('trans0413')">
-              <template #prepend>{{ `${$t('trans0596')} +` }}</template>
-            </fh-input>
+            <fh-input v-model="modalForm.ip" :placeholder="$t('trans0413')"> </fh-input>
             <template #extra>
               {{ $t('trans0942') }}
             </template>
@@ -69,7 +67,7 @@ import {
 import { ModalType, IP } from '@/util/constant'
 
 const maxRuleNum = 8
-const defaultIpv6Prefix = '1111:1111:1111:1111::'
+const defaultIpv6Prefix = '1111:1111:1111:1111:'
 export default {
   data() {
     return {

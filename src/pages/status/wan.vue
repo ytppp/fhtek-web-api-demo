@@ -84,7 +84,7 @@ const columns = reactive([
   {
     key: 'ip',
     title: format(t('trans0598'), [t('trans0056')]),
-    width: '150',
+    width: '330',
     minWidth: '100',
   },
   {

@@ -1226,6 +1226,17 @@ const wanRules = reactive({
       rule: (value) => isValidInteger(value, 1, 4094),
       message: format(t('trans0388'), [t('trans0777'), 1, 4094]),
     },
+    {
+      rule: (value) => {
+        if (isAdd.value) {
+          return !wanList.some((item) => item.vlan.id === value || item.multiVlanId === value)
+        }
+        if (isEdit.value) {
+          return !wanList.some((item) => item.id !== wan.id && (item.vlan.id === value || item.multiVlanId === value))
+        }
+      },
+      message: format(t('trans0678'), [t('trans0777')]),
+    },
   ],
   mtu: [
     {

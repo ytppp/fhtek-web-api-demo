@@ -1,5 +1,6 @@
 import { translate } from '@/i18n/index'
 
+export const DefaultVal = '-'
 export const customers = {
   demo: 'demo',
   fhtek: 'fhtek',

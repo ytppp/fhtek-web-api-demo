@@ -84,7 +84,7 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const { convertBooleanStatus } = useDataClean()
+const { convertBooleanStatus, defaultVal } = useDataClean()
 const timeout = -1
 const interval = 30 * 1000
 const onboarding = '1'
@@ -166,7 +166,7 @@ const drawTopo = (routers) => {
         const str = []
         str.push('<div class="popup-info">')
         const strFormatter = (str) => {
-          return str || '-'
+          return str || defaultVal
         }
         const tagBuilder = (value, cls) => {
           const content = value instanceof Array ? value.join('') : value

@@ -133,7 +133,7 @@
                 <td class="table-main__cell" :style="getItemStyle(col)" v-else>
                   <div class="cell" :style="cellStyle" :title="item[col.key]">
                     <slot :name="col.key" :row="item">
-                      {{ item[col.key]?.length ? item[col.key] : '-' }}
+                      {{ cellContent(item, col.key) }}
                     </slot>
                   </div>
                 </td>
@@ -156,6 +156,9 @@
 </template>
 
 <script>
+import { useDataClean } from '@/hooks/data-clean'
+
+const { defaultVal } = useDataClean()
 /**
  * 从多维对象数组中提取指定维度的数据
  * @param {Array} array - 多维对象数组
@@ -382,6 +385,12 @@ export default {
   },
   emits: ['select', 'click-row'],
   methods: {
+    cellContent(item, key) {
+      if (Array.isArray(item[key]) && !item[key].length) {
+        return defaultVal
+      }
+      return item[key] ? item[key] : defaultVal
+    },
     isFixedLeft(col) {
       return col.fixed === Fixed.left && this.isShowScroll && this.isScrollRight
     },
