@@ -115,6 +115,7 @@ const save = () => {
   }
   setFirewall(data).then(() => {
     successTips()
+    getFirewallData()
   })
 }
 const getFirewallData = () => {

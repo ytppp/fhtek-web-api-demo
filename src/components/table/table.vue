@@ -25,7 +25,7 @@
           <tr class="table-main__header-row" v-for="(row, rowIndex) in headerRows" :key="rowIndex">
             <template v-for="(col, colIndex) in row" :key="`${rowIndex}-${colIndex}`">
               <th
-                class="table-main__cell table-main__checkbox"
+                class="table-main__cell"
                 :class="{
                   'table-main__cell--fixed': isFixedLeft(col),
                   'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
@@ -34,6 +34,7 @@
                   position: isFixedLeft(col) ? 'sticky' : '',
                   left: isFixedLeft(col) ? '0' : '',
                   ...cellStyle(col),
+                  ...getItemStyle(col),
                 }"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
@@ -41,7 +42,7 @@
                 v-if="col.key === 'checkbox'"
               ></th>
               <th
-                class="table-main__cell table-main__index"
+                class="table-main__cell"
                 :class="{
                   'table-main__cell--fixed': isFixedLeft(col),
                   'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
@@ -49,6 +50,7 @@
                 :style="{
                   position: isFixedLeft(col) ? 'sticky' : '',
                   left: isFixedLeft(col) ? (isShowRowCheckbox && isShowIndex ? '50px' : '0') : '',
+                  ...cellStyle(col),
                   ...cellStyle(col),
                 }"
                 :colspan="col.colspan"
@@ -67,6 +69,7 @@
                 :style="{
                   position: isFixedRight(col) ? 'sticky' : '',
                   right: isFixedRight(col) ? '0' : '',
+                  ...getItemStyle(col),
                   ...cellStyle(col),
                 }"
                 :colspan="col.colspan"
@@ -107,7 +110,7 @@
             >
               <template v-for="(col, colIndex) in leafColumns" :key="col.key">
                 <td
-                  class="table-main__cell table-main__checkbox"
+                  class="table-main__cell"
                   :class="{
                     'table-main__cell--fixed': isFixedLeft(col),
                     'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
@@ -116,13 +119,14 @@
                     position: isFixedLeft(col) ? 'sticky' : '',
                     left: isFixedLeft(col) ? '0' : '',
                     ...cellStyle(col),
+                    ...getItemStyle(col),
                   }"
                   v-if="col.key === 'checkbox'"
                 >
                   <fh-checkbox @change="(val) => select(val, item)" />
                 </td>
                 <td
-                  class="table-main__cell table-main__index"
+                  class="table-main__cell"
                   :class="{
                     'table-main__cell--fixed': isFixedLeft(col),
                     'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
@@ -131,6 +135,7 @@
                     position: isFixedLeft(col) ? 'sticky' : '',
                     left: isFixedLeft(col) ? (isShowRowCheckbox && isShowIndex ? '50px' : '0') : '',
                     ...cellStyle(col),
+                    ...getItemStyle(col),
                   }"
                   v-else-if="col.key === 'index'"
                 >
@@ -145,6 +150,7 @@
                   :style="{
                     position: isFixedRight(col) ? 'sticky' : '',
                     right: isFixedRight(col) ? '0' : '',
+                    ...getItemStyle(col),
                     ...cellStyle(col),
                   }"
                   v-else-if="col.key === 'operation'"
@@ -335,6 +341,8 @@ export default {
           key: 'checkbox',
           title: '',
           fixed: Fixed.left,
+          width: '50',
+          minWidth: '50',
         })
       }
       if (this.isShowIndex) {
@@ -342,6 +350,8 @@ export default {
           key: 'index',
           title: '',
           fixed: Fixed.left,
+          width: '50',
+          minWidth: '50',
         })
       }
       list = [...list, ...this.columns]
@@ -350,6 +360,7 @@ export default {
           key: 'operation',
           title: '',
           fixed: Fixed.right,
+          minWidth: '100',
         })
       }
       return list
@@ -592,7 +603,7 @@ export default {
           .table-main__cell {
             background-color: #f5f7fa !important;
             &.table-main__cell--fixed {
-              background-color: #fafafa !important;
+              background-color: #f5f7fa !important;
             }
           }
         }
@@ -647,11 +658,6 @@ export default {
           }
         }
       }
-    }
-    .table-main__index,
-    .table-main__checkbox {
-      width: 50px;
-      min-width: 50px;
     }
   }
 }

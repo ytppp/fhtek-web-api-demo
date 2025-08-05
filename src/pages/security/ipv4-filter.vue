@@ -32,7 +32,7 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0132') }}</h2>
       </div>
-      <div class="page__table page__table--padding">
+      <div class="page__table">
         <fh-table :columns="columns" :data-source="urlList" :show-row-checkbox="false">
           <template #operationgroup>
             <fh-button type="text" @click="del">{{ $t('trans0111') }}</fh-button>
