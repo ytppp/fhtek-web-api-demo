@@ -204,7 +204,7 @@ const getWanData = () => {
       let dns1 = ''
       let dns2 = ''
       let vlanPriority = ''
-      const statusAlias = 'a' // StatusText[item.status]
+      const statusAlias = StatusText[item.status]
       if (item.dns_servers.length > 0) {
         dns1 = item.dns_servers[0]
         dns2 = item.dns_servers.length >= 2 && item.dns_servers[1]
