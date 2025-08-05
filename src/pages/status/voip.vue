@@ -94,13 +94,13 @@ const getVoipBasicSettingsData = () => {
       name: t('trans0926').format(1),
       tel: data.line1.account,
       registerStatus: data.line1.registrationStatus,
-      lineStatus: '-',
+      lineStatus: '',
     }
     const thisLine2Info = {
       name: t('trans0926').format(2),
       tel: data.line2.account,
       registerStatus: data.line2.registrationStatus,
-      lineStatus: '-',
+      lineStatus: '',
     }
     isLine1Active.value = convertBooleanStatus(data.line1.active) as boolean
     isLine2Active.value = convertBooleanStatus(data.line2.active) as boolean
