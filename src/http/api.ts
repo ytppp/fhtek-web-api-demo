@@ -170,14 +170,14 @@ export const getWanList = (params): Promise<ApiResponse<any>> => {
 
 export const setFirewall = (params): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'firewall:edit',
+    method: 'firewall.protection:edit',
     data: params,
   })
 }
 
 export const getFirewall = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'firewall:get',
+    method: 'firewall.protection:get',
   })
 }
 

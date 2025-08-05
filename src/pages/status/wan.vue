@@ -79,12 +79,14 @@ const columns = reactive([
   {
     key: 'statusAlias',
     title: t('trans0166'),
-    width: '120',
+    minWidth: '90',
+    width: '100',
+    maxWidth: '120',
   },
   {
     key: 'ip',
     title: format(t('trans0598'), [t('trans0056')]),
-    width: '330',
+    maxWidth: '330',
     minWidth: '100',
   },
   {
@@ -133,7 +135,9 @@ const ipv6Columns = reactive([
   {
     key: 'statusAlias',
     title: t('trans0166'),
-    width: '120',
+    minWidth: '90',
+    width: '100',
+    maxWidth: '120',
   },
   {
     key: 'prefix',
@@ -144,7 +148,7 @@ const ipv6Columns = reactive([
   {
     key: 'ip',
     title: format(t('trans0598'), [t('trans0056')]),
-    width: '330',
+    maxWidth: '330',
     minWidth: '100',
   },
   {
@@ -200,7 +204,7 @@ const getWanData = () => {
       let dns1 = ''
       let dns2 = ''
       let vlanPriority = ''
-      const statusAlias = StatusText[item.status]
+      const statusAlias = 'a' // StatusText[item.status]
       if (item.dns_servers.length > 0) {
         dns1 = item.dns_servers[0]
         dns2 = item.dns_servers.length >= 2 && item.dns_servers[1]
