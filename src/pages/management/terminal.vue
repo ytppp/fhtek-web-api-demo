@@ -11,7 +11,7 @@
         <fh-form-item :label="$t('trans0402')">
           <fh-switch v-model="form.sshEnable" />
         </fh-form-item>
-        <fh-form-item :label="$t('trans0447')">
+        <fh-form-item :label="$t('trans0162')">
           <fh-switch v-model="form.remoteWebEnable" />
         </fh-form-item>
         <fh-form-item class="form__submit-btn">

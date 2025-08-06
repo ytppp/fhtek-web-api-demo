@@ -144,13 +144,14 @@ export default {
       ],
       modalForm: {
         id: '',
+        index: -1,
         type: '',
         type_pre: '',
         target: '',
         gateway: '',
         interface: '',
       },
-      index: -1,
+      lanIp: '',
       modalFormRules: {
         interface: [
           {
@@ -196,7 +197,7 @@ export default {
           },
           {
             rule: (value) =>
-              !this.data.some((item) => item.index !== this.index && item.target === value),
+              !this.data.some((item) => item.index !== this.modalForm.index && item.target === value),
             message: this.$t('trans0399'),
           },
         ],
@@ -214,7 +215,7 @@ export default {
           },
           // {
           //   rule: (value) =>
-          //     !this.data.some((item) => item.index !== this.index && item.gateway === value),
+          //     !this.data.some((item) => item.index !== this.modalForm.index && item.gateway === value),
           //   message: this.$t('trans0405'),
           // },
         ],
@@ -285,7 +286,7 @@ export default {
       this.modalForm.target = ''
       this.modalForm.gateway = ''
       this.modalForm.interface = ''
-      this.index = -1
+      this.modalForm.index = -1
       this.modalType = ModalType.add
       this.visible = true
     },
@@ -295,7 +296,7 @@ export default {
       this.modalForm.target = row.target
       this.modalForm.gateway = row.gateway
       this.modalForm.interface = row.interface
-      this.index = row.index
+      this.modalForm.index = row.index
       this.modalType = ModalType.edit
       this.visible = true
     },

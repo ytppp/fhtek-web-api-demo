@@ -25,32 +25,40 @@
           <tr class="table-main__header-row" v-for="(row, rowIndex) in headerRows" :key="rowIndex">
             <template v-for="(col, colIndex) in row" :key="`${rowIndex}-${colIndex}`">
               <th
-                class="table-main__cell table-main__checkbox"
+                class="table-main__cell"
                 :class="{
                   'table-main__cell--fixed': isFixedLeft(col),
                   'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                 }"
-                :style="`${isFixedLeft(col) ? 'position: sticky; left: 0' : ''}`"
+                :style="{
+                  position: isFixedLeft(col) ? 'sticky' : '',
+                  left: isFixedLeft(col) ? '0' : '',
+                  ...cellStyle(col),
+                  ...getItemStyle(col),
+                }"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 ref="checkboxCol"
                 v-if="col.key === 'checkbox'"
-              >
-                <div class="com-cell" :style="cellStyle"></div>
-              </th>
+              ></th>
               <th
-                class="table-main__cell table-main__index"
+                class="table-main__cell"
                 :class="{
                   'table-main__cell--fixed': isFixedLeft(col),
                   'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                 }"
-                :style="`${isFixedLeft(col) ? `position: sticky; left: ${isShowRowCheckbox && isShowIndex ? '50px' : '0'}` : ''}`"
+                :style="{
+                  position: isFixedLeft(col) ? 'sticky' : '',
+                  left: isFixedLeft(col) ? (isShowRowCheckbox && isShowIndex ? '50px' : '0') : '',
+                  ...cellStyle(col),
+                  ...cellStyle(col),
+                }"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 ref="indexCol"
                 v-else-if="col.key === 'index'"
               >
-                <div class="com-cell" :style="cellStyle">{{ $t('trans0454') }}</div>
+                {{ $t('trans0454') }}
               </th>
               <th
                 class="table-main__cell"
@@ -58,24 +66,32 @@
                   'table-main__cell--fixed': isFixedRight(col),
                   'table-main__cell--fixed-right-last': isFixedRightLast(colIndex),
                 }"
-                :style="`${isFixedRight(col) ? 'position: sticky; right: 0' : ''}`"
+                :style="{
+                  position: isFixedRight(col) ? 'sticky' : '',
+                  right: isFixedRight(col) ? '0' : '',
+                  ...getItemStyle(col),
+                  ...cellStyle(col),
+                }"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 ref="rowOperationCol"
                 v-else-if="col.key === 'operation'"
               >
-                <div class="com-cell" :style="cellStyle">{{ $t('trans0141') }}</div>
+                {{ $t('trans0141') }}
               </th>
               <th
                 class="table-main__cell"
                 :title="col.title"
-                :style="getItemStyle(col)"
+                :style="{
+                  ...getItemStyle(col),
+                  ...cellStyle(col),
+                }"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 :ref="col.key"
                 v-else
               >
-                <div class="cell" :style="cellStyle">{{ col.title }}</div>
+                {{ col.title }}
               </th>
             </template>
           </tr>
@@ -94,28 +110,36 @@
             >
               <template v-for="(col, colIndex) in leafColumns" :key="col.key">
                 <td
-                  class="table-main__cell table-main__checkbox"
+                  class="table-main__cell"
                   :class="{
                     'table-main__cell--fixed': isFixedLeft(col),
                     'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                   }"
-                  :style="`${isFixedLeft(col) ? 'position: sticky; left: 0' : ''}`"
+                  :style="{
+                    position: isFixedLeft(col) ? 'sticky' : '',
+                    left: isFixedLeft(col) ? '0' : '',
+                    ...cellStyle(col),
+                    ...getItemStyle(col),
+                  }"
                   v-if="col.key === 'checkbox'"
                 >
-                  <div class="com-cell" :style="cellStyle">
-                    <fh-checkbox @change="(val) => select(val, item)" />
-                  </div>
+                  <fh-checkbox @change="(val) => select(val, item)" />
                 </td>
                 <td
-                  class="table-main__cell table-main__index"
+                  class="table-main__cell"
                   :class="{
                     'table-main__cell--fixed': isFixedLeft(col),
                     'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                   }"
-                  :style="`${isFixedLeft(col) ? `position: sticky; left: ${isShowRowCheckbox && isShowIndex ? '50px' : '0'}` : ''}`"
+                  :style="{
+                    position: isFixedLeft(col) ? 'sticky' : '',
+                    left: isFixedLeft(col) ? (isShowRowCheckbox && isShowIndex ? '50px' : '0') : '',
+                    ...cellStyle(col),
+                    ...getItemStyle(col),
+                  }"
                   v-else-if="col.key === 'index'"
                 >
-                  <div class="com-cell" :style="cellStyle">{{ index + 1 }}</div>
+                  {{ index + 1 }}
                 </td>
                 <td
                   class="table-main__cell"
@@ -123,19 +147,28 @@
                     'table-main__cell--fixed': isFixedRight(col),
                     'table-main__cell--fixed-right-last': isFixedRightLast(colIndex),
                   }"
-                  :style="`${isFixedRight(col) ? 'position: sticky; right: 0' : ''}`"
+                  :style="{
+                    position: isFixedRight(col) ? 'sticky' : '',
+                    right: isFixedRight(col) ? '0' : '',
+                    ...getItemStyle(col),
+                    ...cellStyle(col),
+                  }"
                   v-else-if="col.key === 'operation'"
                 >
-                  <div class="com-cell" :style="cellStyle">
-                    <slot name="operation" :row="item"></slot>
-                  </div>
+                  <slot name="operation" :row="item"></slot>
                 </td>
-                <td class="table-main__cell" :style="getItemStyle(col)" v-else>
-                  <div class="cell" :style="cellStyle" :title="item[col.key]">
-                    <slot :name="col.key" :row="item">
-                      {{ cellContent(item, col.key) }}
-                    </slot>
-                  </div>
+                <td
+                  class="table-main__cell"
+                  :style="{
+                    ...getItemStyle(col),
+                    ...cellStyle(col),
+                  }"
+                  :title="item[col.key]"
+                  v-else
+                >
+                  <slot :name="col.key" :row="item">
+                    {{ cellContent(item, col.key) }}
+                  </slot>
                 </td>
               </template>
             </tr>
@@ -301,12 +334,6 @@ export default {
     isShowRowCheckbox() {
       return this.showRowCheckbox && this.dataSource.length
     },
-    cellStyle() {
-      return {
-        textAlign: this.align,
-        height: '100%',
-      }
-    },
     columnsNew() {
       let list = []
       if (this.isShowRowCheckbox) {
@@ -314,6 +341,8 @@ export default {
           key: 'checkbox',
           title: '',
           fixed: Fixed.left,
+          width: '50',
+          minWidth: '50',
         })
       }
       if (this.isShowIndex) {
@@ -321,6 +350,8 @@ export default {
           key: 'index',
           title: '',
           fixed: Fixed.left,
+          width: '50',
+          minWidth: '50',
         })
       }
       list = [...list, ...this.columns]
@@ -329,6 +360,7 @@ export default {
           key: 'operation',
           title: '',
           fixed: Fixed.right,
+          minWidth: '100',
         })
       }
       return list
@@ -405,6 +437,12 @@ export default {
     isFixedRightLast(index) {
       return this.leafColumns[index - 1]?.fixed !== Fixed.right
     },
+    cellStyle(col) {
+      return {
+        textAlign: col.textAlign ? col.textAlign : this.align,
+        height: '100%',
+      }
+    },
     getItemStyle(col) {
       return this.dataSource.length
         ? {
@@ -480,7 +518,7 @@ export default {
   width: 100%;
   .table__header {
     position: relative;
-    height: 85px;
+    height: 50px;
   }
   .table__title {
     display: flex;
@@ -497,12 +535,10 @@ export default {
   .table__filter-group,
   .table__operation-group {
     position: absolute;
-    top: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
-    > * {
-      margin: 0 4px;
-    }
   }
   .table__filter-group {
     left: 0;
@@ -537,24 +573,39 @@ export default {
       }
     }
     .table-main__header-row {
-      background-color: #dddddd; // @table-background-color;
       .table-main__cell {
         font-weight: 600;
+        background-color: @table-header-background-color;
+        &.table-main__cell--fixed {
+          background-color: @table-header-background-color;
+        }
       }
     }
     .table-main__content-row {
-      background-color: @table-background-color;
+      .table-main__cell {
+        background-color: @table-background-color;
+      }
       &:last-child {
         .table-main__cell {
           border-bottom: none;
         }
       }
       &.is-stripe {
-        background-color: #fafafa;
+        .table-main__cell {
+          background-color: #fafafa;
+          &.table-main__cell--fixed {
+            background-color: #fafafa;
+          }
+        }
       }
       &.is-hover {
         &:hover {
-          background-color: #f5f7fa;
+          .table-main__cell {
+            background-color: #f5f7fa !important;
+            &.table-main__cell--fixed {
+              background-color: #f5f7fa !important;
+            }
+          }
         }
       }
       &.empty-row {
@@ -569,13 +620,17 @@ export default {
     }
     .table-main__cell {
       z-index: 1;
-      padding: 12px 0;
+      padding: 12px 5px;
       font-size: 16px;
       color: #262626;
       border-bottom: 1px solid #c9c9c9;
+      box-sizing: border-box;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-all;
       &.table-main__cell--fixed {
         z-index: 2;
-        background-color: @table-background-color;
         &.table-main__cell--fixed-left-last,
         &.table-main__cell--fixed-right-last {
           &::after {
@@ -604,26 +659,6 @@ export default {
         }
       }
     }
-    .table-main__index,
-    .table-main__checkbox {
-      width: 50px;
-      min-width: 50px;
-    }
-  }
-  .com-cell {
-    box-sizing: border-box;
-    padding-left: 5px;
-    padding-right: 5px;
-    white-space: nowrap;
-  }
-  .cell {
-    box-sizing: border-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    word-break: break-all;
-    padding-left: 5px;
-    padding-right: 5px;
   }
 }
 </style>

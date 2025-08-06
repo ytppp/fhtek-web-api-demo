@@ -23,7 +23,7 @@
           </fh-button>
         </fh-form-item>
       </fh-form>
-      <div class="page__table page__table--padding">
+      <div class="page__table">
         <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false">
           <template #operationgroup>
             <fh-icon
