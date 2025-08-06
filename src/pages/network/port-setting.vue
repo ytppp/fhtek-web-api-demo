@@ -4,49 +4,53 @@
       <h1 class="page__title">{{ $t('trans0751') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form" ref="formRef" :model="form">
-        <fh-form-item :label="SsidText[Lan1]">
+      <fh-table
+        :columns="columns"
+        :data-source="tableData"
+        :show-index="false"
+        :show-row-checkbox="false"
+        :show-header="false"
+        :border="true"
+        :hover="false"
+      >
+        <template #[Lan1]="scope">
           <fh-select
-            @change="(val: string) => changePort(val, Lan1)"
-            v-model="form[Lan1]"
+            @change="(val) => changePort(val, Lan1)"
+            v-model="scope.row[Lan1]"
             :options="modeList"
-          >
-          </fh-select>
-        </fh-form-item>
-        <fh-form-item :label="SsidText[Lan2]">
+          ></fh-select>
+        </template>
+        <template #[Lan2]="scope">
           <fh-select
-            @change="(val: string) => changePort(val, Lan2)"
-            v-model="form[Lan2]"
+            @change="(val) => changePort(val, Lan2)"
+            v-model="scope.row[Lan2]"
             :options="modeList"
-          >
-          </fh-select>
-        </fh-form-item>
-        <fh-form-item :label="SsidText[Lan3]">
+          ></fh-select>
+        </template>
+        <template #[Lan3]="scope">
           <fh-select
-            @change="(val: string) => changePort(val, Lan3)"
-            v-model="form[Lan3]"
+            @change="(val) => changePort(val, Lan3)"
+            v-model="scope.row[Lan3]"
             :options="modeList"
-          >
-          </fh-select>
-        </fh-form-item>
-        <fh-form-item :label="SsidText[Lan4]">
+          ></fh-select>
+        </template>
+        <template #[Lan4]="scope">
           <fh-select
-            @change="(val: string) => changePort(val, Lan4)"
-            v-model="form[Lan4]"
+            @change="(val) => changePort(val, Lan4)"
+            v-model="scope.row[Lan4]"
             :options="modeList"
-          >
-          </fh-select>
-        </fh-form-item>
-      </fh-form>
+          ></fh-select>
+        </template>
+      </fh-table>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getLanSpeed, setLanSpeed } from '@/http/api'
 import { Lan1, Lan2, Lan3, Lan4, SsidText } from '@/util/constant'
+import { getLanSpeed, setLanSpeed } from '@/http/api'
 import { successTips } from '@/util/tool'
 
 enum Mode {
@@ -57,15 +61,28 @@ enum Mode {
   f100 = '100full',
   f1000 = '1000full',
 }
+
 const { t } = useI18n()
-const formRef = ref(null)
-const form = reactive({
-  [Lan1]: '',
-  [Lan2]: '',
-  [Lan3]: '',
-  [Lan4]: '',
-})
-const modeList = reactive([
+const tableData = reactive([])
+const columns = reactive([
+  {
+    key: Lan1,
+    title: SsidText[Lan1],
+  },
+  {
+    key: Lan2,
+    title: SsidText[Lan2],
+  },
+  {
+    key: Lan3,
+    title: SsidText[Lan3],
+  },
+  {
+    key: Lan4,
+    title: SsidText[Lan4],
+  },
+])
+const modeList = [
   {
     text: t('trans0487'),
     value: Mode.auto,
@@ -90,7 +107,7 @@ const modeList = reactive([
     text: '1000M/Full Duplex',
     value: Mode.f1000,
   },
-])
+]
 const changePort = (val: string, type: string) => {
   setLanSpeed({
     ifname: type,
@@ -102,13 +119,17 @@ const changePort = (val: string, type: string) => {
 const getLanSpeedData = () => {
   getLanSpeed().then(({ data }) => {
     const { items } = data
-    form[Lan1] = items.find((item) => item.ifname === Lan1).speed
-    form[Lan2] = items.find((item) => item.ifname === Lan2).speed
-    form[Lan3] = items.find((item) => item.ifname === Lan3).speed
-    form[Lan4] = items.find((item) => item.ifname === Lan4).speed
+    const thisTableData = [
+      {
+        [Lan1]: items.find((item) => item.ifname === Lan1).speed,
+        [Lan2]: items.find((item) => item.ifname === Lan2).speed,
+        [Lan3]: items.find((item) => item.ifname === Lan3).speed,
+        [Lan4]: items.find((item) => item.ifname === Lan4).speed,
+      },
+    ]
+    Object.assign(tableData, thisTableData)
   })
 }
-
 onMounted(() => {
   getLanSpeedData()
 })
