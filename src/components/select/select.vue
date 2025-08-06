@@ -31,11 +31,10 @@
     <transition name="select">
       <ul class="select__popup" ref="selectPopupRef" v-show="opened">
         <template v-if="options.length">
-          <!-- selected === option -->
           <li
             class="select__popup-item"
             :class="{
-              'is-selected': selected.value === option.value && selected.text === option.text,
+              'is-selected': selected.value === option.value,
             }"
             :key="option.value"
             @click.stop="select(option)"
@@ -65,10 +64,11 @@ import {
   onMounted,
   useSlots,
   useTemplateRef,
+  onUnmounted,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { scrollTo } from '@/util/tool'
-import { computePosition, flip, shift, offset } from '@floating-ui/vue'
+import { computePosition, flip, shift, offset } from '@floating-ui/dom'
 
 defineOptions({
   name: 'FhSelect',
@@ -100,18 +100,18 @@ const props = defineProps({
 const model = defineModel({
   required: true,
 })
-const emit = defineEmits(['focus', 'blur', 'change', 'input'])
+const emit = defineEmits(['focus', 'blur', 'change'])
 
 const { t } = useI18n()
 const slots = useSlots()
-const selected = reactive({
-  value: '',
-  text: '',
-})
 const opened = ref(false)
 const selectRef = useTemplateRef('selectRef')
 const selectInputRef = useTemplateRef('selectInputRef')
 const selectPopupRef = useTemplateRef('selectPopupRef')
+const selected = reactive({
+  value: '',
+  text: '',
+})
 
 const currentLabel = computed(() => {
   return props.label || formItem?.label.value || ''
@@ -126,19 +126,12 @@ const selectDisabled = computed(() => {
 watch(opened, (val) => {
   if (val) {
     formItem?.clearValidate()
-    nextTick(() => {
-      updatePosition()
-      // window.onresize = function () {
-      //   updatePosition()
-      // }
-      // window.onscroll = function () {
-      //   updatePosition()
-      // }
-    })
+    window.addEventListener('resize', updatePosition)
+    window.addEventListener('scroll', updatePosition)
   } else {
     formItem?.validate()
-    // window.onresize = null
-    // window.onscroll = null
+    window.removeEventListener('resize', updatePosition)
+    window.removeEventListener('scroll', updatePosition)
   }
 })
 watch(
@@ -152,7 +145,6 @@ watch(
     deep: true,
   },
 )
-
 const updatePosition = () => {
   const { width } = selectInputRef.value.getBoundingClientRect()
   computePosition(selectInputRef.value, selectPopupRef.value, {
@@ -170,7 +162,6 @@ const setSelected = () => {
   const option = props.options.filter((o) => o.value === model.value)[0] || {
     text: model.value,
   }
-  // selected = option
   selected.value = option.value
   selected.text = option.text
 }
@@ -187,24 +178,18 @@ const scrollToSelect = () => {
   })
 }
 const select = (option) => {
-  // selected = option
   selected.value = option.value
   selected.text = option.text
-  opened.value = false
-  emit('input', selected.value)
-  if (model.value !== selected.value) {
-    change()
-  }
-}
-const change = () => {
-  if (props.beforeChange) props.beforeChange()
   model.value = selected.value
+  if (props.beforeChange) props.beforeChange()
   emit('change', selected.value)
+  opened.value = false
 }
 const open = () => {
   if (!props.disabled) {
     opened.value = !opened.value
     if (opened.value) {
+      updatePosition()
       scrollToSelect()
     }
   }
@@ -218,7 +203,6 @@ const inputBlurHandler = () => {
 const inputFocusHandler = () => {
   emit('focus')
 }
-
 onMounted(() => {
   setSelected()
 })
