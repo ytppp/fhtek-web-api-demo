@@ -4,28 +4,38 @@
       <h1 class="page__title">{{ $t('trans0059') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form" ref="form" :model="form">
+      <!-- <fh-form class="form" ref="form" :model="form">
         <fh-form-item :label="$t('trans0059')">
           <fh-switch v-model="form.enable" @change="switchEnable"></fh-switch>
         </fh-form-item>
-      </fh-form>
+      </fh-form> -->
       <div class="page__table">
-        <fh-table :columns="columns" :data-source="data" @select="select">
+        <fh-table :columns="columns" :data-source="data">
           <template #operationgroup>
-            <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
-              {{ $t('trans0164') }}
-            </fh-button>
-            <fh-button size="small" v-if="isShowDelBtn" @click="del">{{
-              $t('trans0111')
-            }}</fh-button>
+            <fh-icon
+              class="page__header-icon"
+              v-if="isShowAddBtn"
+              @click="openAddModal"
+              name="icon-add"
+              :title="$t('trans0164')"
+            />
           </template>
-          <template #Active="scope">
-            <fh-switch v-model="scope.row.Active" @change="toggleStatus(scope.row)" />
+          <template #active="scope">
+            <fh-switch v-model="scope.row.active" @change="toggleStatus(scope.row)" />
           </template>
           <template #operation="scope">
-            <fh-button type="text" @click="openEditModal(scope.row)">
-              {{ $t('trans0165') }}
-            </fh-button>
+            <fh-icon
+              class="page__header-icon"
+              @click="openEditModal(scope.row)"
+              name="icon-edit-square"
+              :title="$t('trans0165')"
+            />
+            <fh-icon
+              class="page__header-icon"
+              @click="del(scope.row)"
+              name="icon-delete"
+              :title="$t('trans0111')"
+            />
           </template>
         </fh-table>
       </div>
@@ -39,32 +49,28 @@
           <fh-form-item :label="$t('trans0150')" prop="aclRuleName">
             <fh-input name="AclRuleName" v-model="modalForm.aclRuleName"></fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0151')" prop="scrIPAddrBegin">
+          <fh-form-item :label="$t('trans0136')" prop="srcIp">
             <fh-input
               name="ScrIPAddrBegin"
-              v-model="modalForm.scrIPAddrBegin"
+              v-model="modalForm.srcIp"
               @blur="changeIPAddrBegin"
+              :placeholder="placeholderTips"
             ></fh-input>
-            <template #extra>
-              {{ $t('trans0171') }}
-            </template>
-          </fh-form-item>
-          <fh-form-item :label="$t('trans0152')" prop="scrIPAddrEnd" ref="scrIPAddrEnd">
-            <fh-input name="ScrIPAddrEnd" v-model="modalForm.scrIPAddrEnd"></fh-input>
           </fh-form-item>
           <!-- <fh-form-item :label="$t('trans0153')">
-                  <fh-select
-                    v-model="modalForm.interface"
-                    :options="interfaceList"
-                    name="Interface"
-                  >
-                  </fh-select>
-                </fh-form-item> -->
+            <fh-select
+              v-model="modalForm.interface"
+              :options="interfaceList"
+              name="Interface"
+            >
+            </fh-select>
+          </fh-form-item> -->
           <fh-form-item :label="$t('trans0154')">
             <fh-select
               v-model="modalForm.application"
               :options="applicationList"
               name="Application"
+              @change="changeApplication"
             >
             </fh-select>
           </fh-form-item>
@@ -80,40 +86,60 @@
 </template>
 
 <script>
-import { isValidUrlName, getStringByte, isValidName, isPrivateIP } from '@/util/tool'
+import {
+  isValidVal,
+  isValidName,
+  isPrivateIP,
+  cidrToSubnetMask,
+  isMulticast,
+  isLoopback,
+} from '@/util/tool'
 import { ModalType } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
+import { getAcl, addAcl, editAcl, delAcl } from '@/http/api'
 
-const { convertBooleanStatus } = useDataClean()
-function cmpIpAddress(address1, address2) {
-  let Lnum = 0
-  let Snum = 0
-  const addrParts1 = address1.split('.')
-  const addrParts2 = address2.split('.')
-  for (let i = 0; i <= 3; i++) {
-    Lnum = parseInt(addrParts1[i])
-    Snum = parseInt(addrParts2[i])
-    if (Lnum < Snum) {
-      return false
-    }
+function isValidStaticRouteMask(ip, mask) {
+  if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
+  if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
+  return false
+}
+function isValidMask(ip) {
+  if (ip.split('.').filter((val) => val).length !== 4) return false
+  const i = ip2int(ip).toString(2).padStart(32, '0')
+  const result = i.split('10')
+  // result.length !== 2
+  if (result.length > 2) {
+    return false
   }
-
+  // 有效mask
+  if (result[0].includes('0') || (result[1] && result[1].includes('1'))) {
+    return false
+  }
   return true
 }
+const { convertBooleanStatus } = useDataClean()
 const Interface = {
-  Wan: 'Wan',
-  Lan: 'Lan',
-  Both: 'Both',
+  wan: 'wan',
+  lan: 'lan',
+  both: 'both',
 }
 const Application = {
   ALL: 'ALL',
+  TELNET: 'TELNET',
+  WEB: 'WEB',
   PING: 'PING',
   FTP: 'FTP',
-  WEB: 'WEB',
-  TELNET: 'TELNET',
   SNMP: 'SNMP',
+  SSH: 'SSH',
 }
-const maxAclRuleNum = 17 // 16 items configured by the user plus 1 item configured by the underlying default configuration
+const ApplicationPort = {
+  [Application.TELNET]: '23',
+  [Application.SSH]: '22',
+  [Application.WEB]: '80',
+  [Application.PING]: '',
+  [Application.ALL]: 'all',
+}
+const maxAclRuleNum = 16
 export default {
   name: 'AclPage',
   data() {
@@ -124,13 +150,14 @@ export default {
       form: {
         enable: false,
       },
+      lanIp: '',
       modalForm: {
+        index: -1,
         id: '',
+        srcIp: '',
         enable: true,
+        port: ApplicationPort[Application.ALL],
         aclRuleName: '',
-        scrIPAddrBegin: '',
-        scrIPAddrEnd: '',
-        // interface: Interface.Wan,
         application: Application.ALL,
       },
       modalFormRules: {
@@ -143,29 +170,39 @@ export default {
             rule: (value) => isValidName(value),
             message: this.$t('trans0167'),
           },
+          {
+            rule: (value) => isValidVal(value, 1, 32),
+            message: this.$t('trans0167'),
+          },
         ],
-        scrIPAddrBegin: [
+        srcIp: [
           {
             rule: (value) => value,
             message: this.$t('trans0004'),
           },
           {
-            rule: (value) => value == '0.0.0.0' || isPrivateIP(value),
-            message: this.$t('trans0168'),
-          },
-        ],
-        scrIPAddrEnd: [
-          {
-            rule: (value) => value,
-            message: this.$t('trans0004'),
-          },
-          {
-            rule: (value) => value == '0.0.0.0' || isPrivateIP(value),
-            message: this.$t('trans0169'),
-          },
-          {
-            rule: () => this.validateIpAddr(),
-            message: this.$t('trans0170'),
+            rule: (value) => {
+              const parts = value.split('/')
+              if (parts.length !== 2) return false
+              const ip = parts[0]
+              const suffix = parts[1]
+              if (isPrivateIP(ip)) {
+                const flag = isValidMask(suffix)
+                const mask = cidrToSubnetMask(parseInt(suffix))
+                if (!flag && !mask) return false
+                const maskVal = flag ? suffix : mask
+                // isNetworkIP(ip, maskVal) || sBoardcastIP(ip, maskVal)
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal)) {
+                  return false
+                }
+                if (!this.lanIp && this.lanIp === ip) {
+                  return false
+                }
+                return true
+              }
+              return false
+            },
+            message: this.$t('trans0197'),
           },
         ],
       },
@@ -178,10 +215,10 @@ export default {
           value: Interface.Lan,
           text: this.$t('trans0156'),
         },
-        /*{
-                    value: Interface.Both,
-                    text: this.$t('trans0157'),
-                  },*/
+        // {
+        //   value: Interface.Both,
+        //   text: this.$t('trans0157'),
+        // },
       ],
       applicationList: [
         {
@@ -204,6 +241,10 @@ export default {
           value: Application.TELNET,
           text: this.$t('trans0162'),
         },
+        {
+          value: Application.SSH,
+          text: this.$t('trans0402'),
+        },
         // {
         //   value: Application.SNMP,
         //   text: this.$t('trans0163'),
@@ -211,17 +252,13 @@ export default {
       ],
       columns: [
         {
-          key: 'aclRuleName',
+          key: 'name',
           title: this.$t('trans0150'),
           width: 180,
         },
         {
-          key: 'scrIPAddrBegin',
-          title: this.$t('trans0151'),
-        },
-        {
-          key: 'scrIPAddrEnd',
-          title: this.$t('trans0152'),
+          key: 'srcIp',
+          title: this.$t('trans0136'),
         },
         // {
         //   key: 'interface',
@@ -232,21 +269,17 @@ export default {
           title: this.$t('trans0154'),
         },
         {
-          key: 'Active',
+          key: 'activeAlias',
           title: this.$t('trans0166'),
           width: '60',
         },
       ],
       data: [],
-      indexList: [],
     }
   },
   computed: {
     isShowAddBtn() {
       return this.data.length < maxAclRuleNum
-    },
-    isShowDelBtn() {
-      return this.indexList.length > 0
     },
     isAdd() {
       return this.modalType === ModalType.add
@@ -254,86 +287,101 @@ export default {
     modalTitle() {
       return this.isAdd ? this.$t('trans0164') : this.$t('trans0165')
     },
-  },
-  watch: {
-    indexList: function (val) {
-      this.form.delnum = this.indexList.length ? `${this.indexList.toString()},` : ''
+    placeholderTips() {
+      return `${this.$t('trans0598').format(this.$t('trans0456'))}/${this.$t('trans0459')}`
     },
   },
   methods: {
-    changeIPAddrBegin() {
-      if (this.$refs.scrIPAddrEnd && this.modalForm.scrIPAddrEnd) {
-        this.$refs.scrIPAddrEnd.extraValidate(this.validateIpAddr, this.$t('trans0170'))
-      }
-    },
-    validateIpAddr() {
-      if (this.modalForm.scrIPAddrBegin) {
-        return cmpIpAddress(this.modalForm.scrIPAddrEnd, this.modalForm.scrIPAddrBegin)
-      }
-      return true
-    },
-    switchEnable(val) {
-      // todo
-    },
+    // switchEnable(val) {
+    // },
     openAddModal() {
+      this.modalForm.index = -1
+      this.modalForm.id = ''
+      this.modalForm.srcIp = ''
       this.modalForm.enable = true
+      this.modalForm.port = ApplicationPort[Application.ALL]
       this.modalForm.aclRuleName = ''
-      this.modalForm.scrIPAddrBegin = ''
-      this.modalForm.scrIPAddrEnd = ''
-      // this.modalForm.interface = Interface.Wan;
       this.modalForm.application = Application.ALL
       this.modalType = ModalType.add
       this.visible = true
     },
-    setEditModal(row) {
-      this.modalForm.enable = row.Active
-      this.modalForm.aclRuleName = row.aclRuleName
-      this.modalForm.scrIPAddrBegin = row.scrIPAddrBegin
-      this.modalForm.scrIPAddrEnd = row.scrIPAddrEnd
-      // this.modalForm.interface = row.interface;
+    openEditModal(row) {
+      this.modalForm.index = row.index
+      this.modalForm.id = row.id
+      this.modalForm.srcIp = row.srcIp
+      this.modalForm.enable = row.enabled
+      this.modalForm.port = row.port
+      this.modalForm.aclRuleName = row.name
       this.modalForm.application = row.application
       this.modalType = ModalType.edit
-    },
-    openEditModal(row) {
-      this.setEditModal(row)
       this.visible = true
     },
     toggleStatus(row) {
-      this.setEditModal(row)
-      this.modalForm.enable = !row.Active
-      this.save()
+      editAcl([
+        {
+          id: row.id,
+          enabled: convertBooleanStatus(row.enabled),
+        },
+      ]).then(() => {
+        this.getAclData()
+      })
+    },
+    changeApplication() {
+      this.modalForm.port = ApplicationPort[this.modalForm.application]
+    },
+    del(row) {
+      delAcl({
+        id: row.id,
+      }).then(() => {
+        successTips('trans0410')
+        this.getAclData()
+      })
     },
     save() {
-      if (this.$refs.modalForm.validate()) {
-        // todo
+      if (!this.$refs.modalForm.validate()) return
+      const data = {
+        src: Interface.wan, // 传固定值
+        dest: Interface.lan, // 传固定值
+        src_ip: this.modalForm.srcIp,
+        enabled: convertBooleanStatus(this.modalForm.enable),
+        application: this.modalForm.application,
+        port: this.modalForm.port,
+        name: this.modalForm.aclRuleName,
+      }
+      if (this.isAdd) {
+        addAcl([data]).then(() => {
+          successTips()
+          this.getAclData()
+        })
+      }
+      if (this.isEdit) {
+        data.id = this.modalForm.id
+        editAcl([data]).then(() => {
+          successTips()
+          this.getAclData()
+        })
       }
     },
-    del() {
-      // todo
-    },
-    select(list) {
-      this.indexList = list.map((item) => item.Index)
+    getAclData() {
+      getAcl().then(({ data }) => {
+        const { items } = data
+        const tableData = []
+        items.forEach((item, i) => {
+          tableData.push({
+            ...item,
+            srcIp: item.src_ip,
+            activeAlias: convertBooleanStatus(item.enabled)
+              ? this.$t('trans0103')
+              : this.$t('trans0054'),
+            index: i,
+          })
+        })
+        this.data = tableData
+      })
     },
   },
   created() {
-    // this.form.enable = Common_Activate === 'Yes'
-    // const res = JSON.parse(aclListStr)
-    // const data = []
-    // res.data.forEach((item) => {
-    //   if (item.Index != -1) {
-    //     data.push({
-    //       Index: item.Index,
-    //       aclRuleName: item.ACLName,
-    //       scrIPAddrBegin: item.ScrIPAddrBegin,
-    //       scrIPAddrEnd: item.ScrIPAddrEnd,
-    //       // interface: item.Interface,
-    //       application: item.Application,
-    //       status: item.Active == 'Yes' ? this.$t('trans0103') : this.$t('trans0054'),
-    //       Active: item.Active,
-    //     })
-    //   }
-    // })
-    // this.data = data
+    this.getAclData()
   },
 }
 </script>

@@ -73,6 +73,38 @@ export const deleteWan = (params): Promise<ApiResponse<any>> => {
   return http.post('DeleteWan', createData(params))
 }
 
+export const getAcl = (): Promise<ApiResponse<any>> => {
+  return http.get('firewall.wan_acl:get')
+}
+
+export const addAcl = (params): Promise<ApiResponse<any>> => {
+  return http.post('firewall.wan_acl:add', createData(params))
+}
+
+export const editAcl = (params): Promise<ApiResponse<any>> => {
+  return http.post('firewall.wan_acl:edit', createData(params))
+}
+
+export const delAcl = (params): Promise<ApiResponse<any>> => {
+  return http.post('firewall.wan_acl:delete', createData(params))
+}
+
+export const getIpv4Filter = (): Promise<ApiResponse<any>> => {
+  return http.get('firewall.ipv4_filter:get')
+}
+
+export const addIpv4Filter = (params): Promise<ApiResponse<any>> => {
+  return http.post('firewall.ipv4_filter:add', createData(params))
+}
+
+export const editIpv4Filter = (params): Promise<ApiResponse<any>> => {
+  return http.post('firewall.ipv4_filter:edit', createData(params))
+}
+
+export const delIpv4Filter = (params): Promise<ApiResponse<any>> => {
+  return http.post('firewall.ipv4_filter:delete', createData(params))
+}
+
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
   return http.get('wifi.b24g.basic:get')
 }
