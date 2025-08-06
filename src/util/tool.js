@@ -343,8 +343,8 @@ export function isValidIpv6AddrExtra(value) {
   let fullAddr = tranSimIpv6ToFullIpv6(value)
   let ipv6OfAll0 = new Array(8).fill(''.padStart(4, '0')).join(':') // Ipv6 address of all '0'
   let ipv6OfAllF = new Array(8).fill(''.padStart(4, 'F')).join(':') // Ipv6 address of all 'F'
-  let ipv6End1 = `0001`
-  const fullAddrArr = fullAddr.split(':')
+  let ipv6End1 = `${new Array(7).fill(''.padStart(4, '0')).join(':')}:0001` // ::1
+
   if (
     fullAddr.startsWith('FF') ||
     fullAddr.startsWith('FE80') ||
@@ -356,7 +356,7 @@ export function isValidIpv6AddrExtra(value) {
     fullAddr.startsWith('FC00') ||
     fullAddr === ipv6OfAll0 ||
     fullAddr === ipv6OfAllF ||
-    fullAddrArr[fullAddrArr.length - 1] === ipv6End1
+    fullAddr === ipv6End1
   ) {
     flag = false
   }
