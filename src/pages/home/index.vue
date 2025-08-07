@@ -10,7 +10,7 @@
           <fh-button size="small" @click="del">删除</fh-button>
         </template>
         <template #url="scope">
-          <fh-popover title="popover弹框内容" trigger="click">{{ scope.row.url }}</fh-popover>
+          <fh-popover :title="scope.row.url" trigger="click">{{ scope.row.url }}</fh-popover>
         </template>
         <template #enable="scope">
           <!-- @change="toggleStatus(scope.row)" -->
@@ -187,8 +187,8 @@ const schedulesList = [
 ]
 const tableData = [
   {
-    url: 'www.baidu.com',
-    name: '百度一下',
+    url: 'www.apple.com',
+    name: '苹果',
     enable: EnableStatus.yes,
   },
   {
@@ -197,8 +197,8 @@ const tableData = [
     enable: EnableStatus.no,
   },
   {
-    url: 'www.baidu.com',
-    name: '百度',
+    url: 'www.geogle.com',
+    name: '谷歌',
     enable: EnableStatus.yes,
   },
 ]

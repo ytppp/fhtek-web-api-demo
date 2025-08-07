@@ -287,7 +287,6 @@ const setWifi2gAdvData = (data) => {
       successTips()
       getWifi2gData()
     })
-    .then(() => {})
 }
 onMounted(() => {
   getWifi2gData()
