@@ -247,7 +247,7 @@ const getWanData = () => {
         mac: item.macaddr,
         statusAlias,
       }
-      if (ipv4.length > 0 || item.protocol === NetType.dhcp) {
+      if (ipv4.length > 0 || item.protocol === NetType.dhcp || item.protocol === NetType.bridge) {
         thisIpv4Data.push(tableItem)
       } else if (ipv6.length > 0 || item.protocol === NetType.dhcpv6) {
         thisIpv6Data.push(tableItem)

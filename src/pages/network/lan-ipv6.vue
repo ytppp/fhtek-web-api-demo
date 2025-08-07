@@ -89,7 +89,7 @@ const getWanData = () => {
       ) {
         thisWanList.push({
           value: item.interface,
-          text: `${item.wanname}(${item.interface})`,
+          text: item.wanname,
         })
       }
     })

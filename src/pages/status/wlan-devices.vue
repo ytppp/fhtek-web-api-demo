@@ -18,7 +18,7 @@
         >
           <template #blacklist="scope">
             <fh-icon
-              @click="goWifiMacFilter(scope.row.mac)"
+              @click="goWifiMacFilterPage(scope.row.mac)"
               class="page__header-icon"
               name="icon-add"
               :title="$t('trans0164')"
@@ -50,7 +50,7 @@
         >
           <template #blacklist="scope">
             <fh-icon
-              @click="goWifiMacFilter(scope.row.mac)"
+              @click="goWifiMacFilterPage(scope.row.mac)"
               class="page__header-icon"
               name="icon-add"
               :title="$t('trans0164')"
@@ -184,7 +184,7 @@ const getWlanDeviceData = () => {
     Object.assign(b5gWlanData, b5gWlanTableData)
   })
 }
-const goWifiMacFilter = (mac) => {
+const goWifiMacFilterPage = (mac) => {
   dialog
     .confirm({
       okText: t('trans0019'),
