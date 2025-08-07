@@ -64,7 +64,6 @@ import {
   onMounted,
   useSlots,
   useTemplateRef,
-  onUnmounted,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { scrollTo } from '@/util/tool'
@@ -104,14 +103,14 @@ const emit = defineEmits(['focus', 'blur', 'change'])
 
 const { t } = useI18n()
 const slots = useSlots()
-const opened = ref(false)
-const selectRef = useTemplateRef('selectRef')
-const selectInputRef = useTemplateRef('selectInputRef')
-const selectPopupRef = useTemplateRef('selectPopupRef')
 const selected = reactive({
   value: '',
   text: '',
 })
+const opened = ref(false)
+const selectRef = useTemplateRef('selectRef')
+const selectInputRef = useTemplateRef('selectInputRef')
+const selectPopupRef = useTemplateRef('selectPopupRef')
 
 const currentLabel = computed(() => {
   return props.label || formItem?.label.value || ''
@@ -178,10 +177,11 @@ const scrollToSelect = () => {
   })
 }
 const select = (option) => {
+  if (model.value === option.value) return
+  if (props.beforeChange) props.beforeChange()
   selected.value = option.value
   selected.text = option.text
   model.value = selected.value
-  if (props.beforeChange) props.beforeChange()
   emit('change', selected.value)
   opened.value = false
 }
@@ -230,14 +230,6 @@ onMounted(() => {
       cursor: pointer;
     }
   }
-  .select__arrow {
-    position: absolute;
-    background: @select-popup-background-color;
-    border: 1px solid @select-popup-border-color;
-    width: 8px;
-    height: 8px;
-    transform: rotate(45deg);
-  }
   .select__popup {
     position: absolute;
     z-index: 2000;
@@ -271,16 +263,16 @@ onMounted(() => {
       color: @select-item-selected-color;
     }
   }
-}
-.select__popup-item--empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 84px;
-  font-size: 14px;
-  background-color: #fff;
-  color: #999;
+  .select__popup-item--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 84px;
+    font-size: 14px;
+    background-color: #fff;
+    color: #999;
+  }
 }
 .select-enter-active,
 .select-leave-active {
