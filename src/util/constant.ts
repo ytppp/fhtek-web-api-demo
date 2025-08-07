@@ -34,10 +34,10 @@ export const VlanMode = {
 }
 
 export const ProtocolType = {
-  ALL: 'TCP/UDP',
-  TCP: 'TCP',
-  UDP: 'UDP',
-  ICMP: 'ICMP',
+  TCP: 'tcp',
+  UDP: 'udp',
+  ICMP: 'icmp',
+  IGMP: 'igmp',
 }
 
 export enum EnableStatus {

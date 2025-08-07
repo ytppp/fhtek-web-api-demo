@@ -183,11 +183,17 @@ export default {
       this.isMobile = isMobileDevice()
     },
     getDevInfoData() {
+      const productName = sessionStorage.getItem('product_name')
+      if (productName) {
+        this.title = productName
+        return
+      }
       getDevInfo({
         toast: false,
         loading: false,
       }).then(({ data }) => {
         this.title = data.model
+        sessionStorage.setItem('product_name', this.title)
       })
     },
   },

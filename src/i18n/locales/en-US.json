@@ -400,7 +400,7 @@
   "trans0400": "The Mac address already exists",
   "trans0401": "Device Access Control",
   "trans0402": "SSH",
-  "trans0403": "Telnet",
+  "trans0403": "trans0403",
   "trans0404": "The maximum %d binding bars between %s and %s has been reached",
   "trans0405": "The same domain name already exists",
   "trans0406": "Port Mapping",
