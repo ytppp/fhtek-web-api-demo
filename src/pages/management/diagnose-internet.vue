@@ -182,7 +182,7 @@ const getWanData = () => {
       if (item.protocol !== NetType.bridge) {
         thisWanList.push({
           value: item.device,
-          text: item.wanname,
+          text: `${item.wanname}(${item.interface})`,
         })
       }
     })

@@ -341,11 +341,6 @@ let menus = [
     icon: 'icon-setting',
     children: [
       {
-        url: '/management/upgrade',
-        text: 'trans0187',
-        config,
-      },
-      {
         url: '/management/user',
         text: 'trans0184',
         config,
@@ -353,6 +348,11 @@ let menus = [
       {
         url: '/management/device',
         text: 'trans0227',
+        config,
+      },
+      {
+        url: '/management/upgrade',
+        text: 'trans0187',
         config,
       },
       {
