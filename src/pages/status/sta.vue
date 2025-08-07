@@ -196,15 +196,15 @@ const getStaInfoData = () => {
         })
       }
     })
-    for (let i = 0; i < 100; i++) {
-      thisDhcpData.push({
-        id: i + 1,
-        hostname: `hostname${i}`,
-        ip: `192.168.1.${i}`,
-        mac: `00:00:00:00:00:${i}`,
-        lease: transformDuration(10000),
-      })
-    }
+    // for (let i = 0; i < 100; i++) {
+    //   thisDhcpData.push({
+    //     id: i + 1,
+    //     hostname: `hostname${i}`,
+    //     ip: `192.168.1.${i}`,
+    //     mac: `00:00:00:00:00:${i}`,
+    //     lease: transformDuration(10000),
+    //   })
+    // }
     // for (let i = 0; i < 100; i++) {
     //   thisDhcpv6Data.push({
     //     id: i + 1,
