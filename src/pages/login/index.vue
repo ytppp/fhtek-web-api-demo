@@ -132,7 +132,7 @@ export default {
             const role = Role.super // data.role
             sessionStorage.setItem('role', role)
             sessionStorage.setItem('login_user', this.userinfo.username)
-            successTips('trans0806')
+            // successTips('trans0806')
             this.$router.push('/home')
           })
           .finally(() => {

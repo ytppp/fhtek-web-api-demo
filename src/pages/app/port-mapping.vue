@@ -47,13 +47,13 @@
           <fh-form-item :label="$t('trans0166')">
             <fh-switch v-model="modalForm.enable" />
           </fh-form-item>
-          <fh-form-item :label="$t('trans0424')">
+          <!-- <fh-form-item :label="$t('trans0424')">
             <fh-radio-group v-model="modalForm.mappingMode" @change="changeMappingMode">
               <fh-radio v-for="mode in mappingModes" :key="mode.value" :label="mode.value">
                 {{ mode.text }}
               </fh-radio>
             </fh-radio-group>
-          </fh-form-item>
+          </fh-form-item> -->
           <fh-form-item :label="$t('trans0426')" v-if="isTemp">
             <fh-select v-model="modalForm.temp" :options="tempList" @change="changeTempList">
             </fh-select>
@@ -88,17 +88,13 @@
 </template>
 
 <script>
-import { ProtocolType } from '@/util/constant'
+import { ModalType, ProtocolType } from '@/util/constant'
 import { isValidInteger, isValidVal, isIP, successTips } from '@/util/tool'
 import { getPortMapping, setPortMapping, editPortMapping, delPortMapping } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
 const { convertBooleanStatus } = useDataClean()
 const maxRuleNum = 10
-const ModalType = {
-  add: 'add',
-  edit: 'edit',
-}
 const MappingMode = {
   customize: 'Customize',
   temp: 'Template',
@@ -179,7 +175,7 @@ const tempList = Temp.map((item) => ({
   value: item.name,
   text: item.name,
 }))
-
+const protocolAll = `${ProtocolType.TCP}/${ProtocolType.UDP}`
 export default {
   name: 'PortMappingPage',
   data() {
@@ -189,13 +185,14 @@ export default {
       visible: false,
       modalForm: {
         enable: true,
+        id: '',
         index: -1,
-        mappingMode: MappingMode.temp,
-        temp: Temp[0].name,
-        mappingName: Temp[0].name,
-        protocol: Temp[0].protocal,
+        mappingMode: MappingMode.customize,
+        temp: null,
+        mappingName: '',
+        protocol: protocolAll,
         extHost: '',
-        extPort: Temp[0].extPort,
+        extPort: '',
         intHost: '',
         intPort: '',
       },
@@ -292,8 +289,8 @@ export default {
       tempList,
       ProtocalList: [
         {
-          text: this.$t('trans0189'),
-          value: ProtocolType.ALL,
+          text: this.$t('trans0158'),
+          value: protocolAll,
         },
         {
           text: this.$t('trans0190'),
@@ -303,6 +300,10 @@ export default {
           text: this.$t('trans0191'),
           value: ProtocolType.UDP,
         },
+        // {
+        //   value: ProtocolType.ICMP,
+        //   text: this.$t('trans0192'),
+        // },
       ],
       columns: [
         {
@@ -363,13 +364,14 @@ export default {
     openAddModal() {
       this.modalForm = {
         enable: true,
+        id: '',
         index: -1,
-        mappingMode: MappingMode.temp,
-        temp: Temp[0].name,
-        mappingName: Temp[0].name,
-        protocol: Temp[0].protocal,
+        mappingMode: MappingMode.customize,
+        temp: null,
+        mappingName: '',
+        protocol: protocolAll,
         extHost: '',
-        extPort: Temp[0].extPort,
+        extPort: '',
         intHost: '',
         intPort: '',
       }
@@ -379,6 +381,7 @@ export default {
     openEditModal(row) {
       const item = Temp.find((temp) => temp.name === row.mappingName)
       this.modalForm = {
+        id: row.id,
         enable: row.enable,
         index: row.index,
         extHost: row.extHost,
@@ -395,25 +398,26 @@ export default {
     },
     save() {
       if (this.$refs.modalForm.validate()) {
-        const data = [
-          {
-            name: this.modalForm.mappingName,
-            proto: this.modalForm.protocol,
-            dest: this.modalForm.extHost,
-            dest_port: this.modalForm.extPort,
-            src: this.modalForm.intHost,
-            src_port: this.modalForm.intPort,
-            enable: convertBooleanStatus(this.modalForm.enable),
-          },
-        ]
+        const data = {
+          src: 'wan', // 传固定值
+          dest: 'lan', // 传固定值
+          target: 'DNAT', // 传固定值
+          name: this.modalForm.mappingName,
+          proto: this.modalForm.protocol,
+          src_ip: this.modalForm.extHost,
+          src_port: this.modalForm.extPort,
+          dest_ip: this.modalForm.intHost,
+          dest_port: this.modalForm.intPort,
+          enable: convertBooleanStatus(this.modalForm.enable),
+        }
         if (this.isEdit) {
-          data[0].id = this.modalForm.index
-          editPortMapping(data).then(() => {
+          data.id = this.modalForm.id
+          editPortMapping([data]).then(() => {
             successTips()
             this.getPortMappingData()
           })
         } else {
-          setPortMapping(data).then(() => {
+          setPortMapping([data]).then(() => {
             successTips()
             this.getPortMappingData()
           })
@@ -422,7 +426,7 @@ export default {
     },
     del(row) {
       delPortMapping({
-        id: row.index,
+        id: row.id,
       }).then(() => {
         successTips('trans0410')
         this.getPortMappingData()
@@ -431,7 +435,7 @@ export default {
     toggleStatus(row) {
       editPortMapping([
         {
-          id: row.index,
+          id: row.id,
           enable: row.enable,
         },
       ])
@@ -462,15 +466,16 @@ export default {
         .then(({ data }) => {
           const tableData = []
           const { items } = data
-          items.forEach((item) => {
+          items.forEach((item, index) => {
             tableData.push({
-              index: item.id || '',
-              mappingName: item.name || '',
-              protocol: item.proto || '',
-              extHost: item.dest || '',
-              extPort: item.dest_port || '',
-              intHost: item.src || '',
-              intPort: item.src_port || '',
+              ...item,
+              index: index,
+              mappingName: item.name,
+              protocol: item.proto,
+              extHost: item.src_ip,
+              extPort: item.src_port,
+              intHost: item.dest_ip,
+              intPort: item.dest_port,
               enable: convertBooleanStatus(item.enable),
             })
           })

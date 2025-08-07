@@ -5,7 +5,7 @@
     </div>
     <div class="page__content">
       <fh-form class="form" :model="form">
-        <fh-form-item :label="$t('trans0403')">
+        <fh-form-item :label="$t('trans0162')">
           <fh-switch v-model="form.telnetEnable" />
         </fh-form-item>
         <fh-form-item :label="$t('trans0402')">

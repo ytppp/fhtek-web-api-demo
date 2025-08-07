@@ -80,7 +80,7 @@ import {
   isMulticast,
   isLoopback,
 } from '@/util/tool'
-import { ModalType } from '@/util/constant'
+import { ModalType, ProtocolType } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
 import { getIpv4Filter, addIpv4Filter, editIpv4Filter, delIpv4Filter } from '@/http/api'
 
@@ -109,13 +109,7 @@ const Interface = {
   lan: 'lan',
   both: 'both',
 }
-const Protocol = {
-  all: 'tcp/udp/icmp/igmp',
-  tcp: 'tcp',
-  udp: 'udp',
-  icmp: 'icmp',
-  igmp: 'igmp',
-}
+const protocolAll = `${ProtocolType.TCP}/${ProtocolType.UDP}/${ProtocolType.ICMP}/${ProtocolType.IGMP}`
 const maxAclRuleNum = 16
 export default {
   name: 'Ipv4FilterPage',
@@ -134,7 +128,7 @@ export default {
         srcIp: '',
         enable: true,
         name: '',
-        proto: Protocol.all,
+        proto: protocolAll,
       },
       modalFormRules: {
         name: [
@@ -184,23 +178,23 @@ export default {
       },
       protoList: [
         {
-          value: Protocol.ALL,
+          value: protocolAll,
           text: this.$t('trans0158'),
         },
         {
-          value: Protocol.tcp,
+          value: ProtocolType.TCP,
           text: this.$t('trans0190'),
         },
         {
-          value: Protocol.udp,
+          value: ProtocolType.UDP,
           text: this.$t('trans0191'),
         },
         {
-          value: Protocol.icmp,
+          value: ProtocolType.ICMP,
           text: this.$t('trans0192'),
         },
         {
-          value: Protocol.igmp,
+          value: ProtocolType.IGMP,
           text: this.$t('trans0375'),
         },
       ],
@@ -250,7 +244,7 @@ export default {
       this.modalForm.srcIp = ''
       this.modalForm.enable = true
       this.modalForm.name = ''
-      this.modalForm.proto = Protocol.WEB
+      this.modalForm.proto = protocolAll
       this.modalType = ModalType.add
       this.visible = true
     },
