@@ -153,10 +153,15 @@ const emit = defineEmits(['change'])
 watchEffect(() => {
   emit('change', currentPage.value, currentPageSize.value)
 })
-
 watch(currentPageSize, () => {
   currentPage.value = 1
 })
+watch(
+  () => props.total,
+  () => {
+    currentPage.value = 1
+  },
+)
 
 const prev = () => {
   if (currentPage.value > 1) {
@@ -237,7 +242,7 @@ const changePageJump = () => {
     margin-left: 8px;
   }
   .pagination__input {
-    width: 30px;
+    width: 50px;
   }
   .pagination__jump-text--right {
     margin-left: 4px;

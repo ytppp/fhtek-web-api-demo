@@ -11,20 +11,21 @@
         <fh-table
           :columns="dhcpColumn"
           :data-source="dhcpDataDisplay"
-          :show-header="false"
           :show-row-checkbox="false"
           :border="true"
           :show-index="false"
+          :show-pagination="true"
         >
-          <template #footer>
-            <div class="page__table-footer">
-              <fh-pagination
-                @change="dhcpChangeCurrent"
-                :total="dhcpTotal"
-                :default-current="dhcpCurrent"
-                :defaultPageSize="dhcpPageSize"
-              ></fh-pagination>
-            </div>
+          <template #filtergroup>
+            <fh-input
+              v-model="dhcpInputVal"
+              :placeholder="$t('trans0935')"
+              :clearable="true"
+              style="margin-right: 5px"
+            ></fh-input>
+            <fh-button @click="searchDhcp" size="small">
+              {{ $t('trans0863') }}
+            </fh-button>
           </template>
         </fh-table>
       </div>
@@ -39,17 +40,8 @@
           :show-row-checkbox="false"
           :border="true"
           :show-index="false"
+          :show-pagination="true"
         >
-          <template #footer>
-            <div class="page__table-footer">
-              <fh-pagination
-                @change="dhcpv6ChangeCurrent"
-                :total="dhcpv6Total"
-                :default-current="dhcpv6Current"
-                :defaultPageSize="dhcpv6PageSize"
-              ></fh-pagination>
-            </div>
-          </template>
         </fh-table>
       </div>
     </div>
@@ -115,22 +107,16 @@ const dhcpv6Column = reactive([
 ])
 const dhcpData = reactive([])
 const dhcpv6Data = reactive([])
-const dhcpTotal = ref(0)
-const dhcpv6Total = ref(0)
-const dhcpCurrent = ref(1)
-const dhcpPageSize = ref(20)
-const dhcpv6Current = ref(1)
-const dhcpv6PageSize = ref(20)
+const dhcpInputVal = ref('')
+const dhcpFilterVal = ref('')
 
 const dhcpDataDisplay = computed(() => {
-  const start = (dhcpCurrent.value - 1) * dhcpPageSize.value
-  const end = start + dhcpPageSize.value
-  return dhcpData.slice(start, end)
+  return dhcpData.filter((item) =>
+    item.hostname.toLowerCase().includes(dhcpFilterVal.value.toLowerCase()),
+  )
 })
 const dhcpv6DataDisplay = computed(() => {
-  const start = (dhcpv6Current.value - 1) * dhcpv6PageSize.value
-  const end = start + dhcpv6PageSize.value
-  return dhcpv6Data.slice(start, end)
+  return dhcpv6Data
 })
 
 const transformDuration = (zone) => {
@@ -228,19 +214,12 @@ const getStaInfoData = () => {
     //     lease: transformDuration(10000),
     //   })
     // }
-    dhcpTotal.value = thisDhcpData.length
-    dhcpv6Total.value = thisDhcpv6Data.length
     Object.assign(dhcpData, thisDhcpData)
     Object.assign(dhcpv6Data, thisDhcpv6Data)
   })
 }
-const dhcpChangeCurrent = (current, currentPageSize) => {
-  dhcpCurrent.value = current
-  dhcpPageSize.value = currentPageSize
-}
-const dhcpv6ChangeCurrent = (current, currentPageSize) => {
-  dhcpv6Current.value = current
-  dhcpv6PageSize.value = currentPageSize
+const searchDhcp = () => {
+  dhcpFilterVal.value = dhcpInputVal.value
 }
 onMounted(() => {
   getStaInfoData()

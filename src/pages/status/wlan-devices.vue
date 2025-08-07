@@ -15,6 +15,7 @@
           :show-header="false"
           :border="true"
           :show-index="false"
+          :show-pagination="true"
         >
           <template #blacklist="scope">
             <fh-icon
@@ -23,16 +24,6 @@
               name="icon-add"
               :title="$t('trans0164')"
             />
-          </template>
-          <template #footer>
-            <div class="page__table-footer">
-              <fh-pagination
-                @change="b24gChangeCurrent"
-                :total="b24gWlanTotal"
-                :default-current="b24gCurrent"
-                :defaultPageSize="b24gPageSize"
-              ></fh-pagination>
-            </div>
           </template>
         </fh-table>
       </div>
@@ -47,6 +38,7 @@
           :show-header="false"
           :border="true"
           :show-index="false"
+          :show-pagination="true"
         >
           <template #blacklist="scope">
             <fh-icon
@@ -55,16 +47,6 @@
               name="icon-add"
               :title="$t('trans0164')"
             />
-          </template>
-          <template #footer>
-            <div class="page__table-footer">
-              <fh-pagination
-                @change="b5gChangeCurrent"
-                :total="b5gWlanTotal"
-                :default-current="b5gCurrent"
-                :defaultPageSize="b5gPageSize"
-              ></fh-pagination>
-            </div>
           </template>
         </fh-table>
       </div>
@@ -114,22 +96,12 @@ const wlanDevicesColumns = reactive([
 ])
 const b24gWlanData = reactive([])
 const b5gWlanData = reactive([])
-const b24gWlanTotal = ref(0)
-const b5gWlanTotal = ref(0)
-const b24gCurrent = ref(1)
-const b24gPageSize = ref(20)
-const b5gCurrent = ref(1)
-const b5gPageSize = ref(20)
 
 const b24gWlanDataDisplay = computed(() => {
-  const start = (b24gCurrent.value - 1) * b24gPageSize.value
-  const end = start + b24gPageSize.value
-  return b24gWlanData.slice(start, end)
+  return b24gWlanData
 })
 const b5gWlanDataDisplay = computed(() => {
-  const start = (b5gCurrent.value - 1) * b5gPageSize.value
-  const end = start + b5gPageSize.value
-  return b5gWlanData.slice(start, end)
+  return b5gWlanData
 })
 
 const getWlanDeviceData = () => {
@@ -178,8 +150,6 @@ const getWlanDeviceData = () => {
     //     mac: `00:00:00:00:00:${i}`,
     //   })
     // }
-    b24gWlanTotal.value = b24gWlanTableData.length
-    b5gWlanTotal.value = b5gWlanTableData.length
     Object.assign(b24gWlanData, b24gWlanTableData)
     Object.assign(b5gWlanData, b5gWlanTableData)
   })
@@ -198,14 +168,6 @@ const goWifiMacFilterPage = (mac) => {
       })
     })
     .catch(() => {})
-}
-const b24gChangeCurrent = (current, currentPageSize) => {
-  b24gCurrent.value = current
-  b24gPageSize.value = currentPageSize
-}
-const b5gChangeCurrent = (current, currentPageSize) => {
-  b5gCurrent.value = current
-  b5gPageSize.value = currentPageSize
 }
 onMounted(() => {
   getWlanDeviceData()

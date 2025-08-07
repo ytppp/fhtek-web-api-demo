@@ -53,7 +53,6 @@
             <fh-input
               name="ScrIPAddrBegin"
               v-model="modalForm.srcIp"
-              @blur="changeIPAddrBegin"
               :placeholder="placeholderTips"
             ></fh-input>
           </fh-form-item>

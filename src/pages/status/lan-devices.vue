@@ -12,6 +12,7 @@
           :show-header="false"
           :border="true"
           :show-index="false"
+          :show-pagination="true"
         >
           <template #blacklist="scope">
             <fh-icon
@@ -20,16 +21,6 @@
               name="icon-add"
               :title="$t('trans0164')"
             />
-          </template>
-          <template #footer>
-            <div class="page__table-footer">
-              <fh-pagination
-                @change="lanChangeCurrent"
-                :total="lanTotal"
-                :default-current="lanCurrent"
-                :defaultPageSize="lanPageSize"
-              ></fh-pagination>
-            </div>
           </template>
         </fh-table>
       </div>
@@ -70,14 +61,9 @@ const lanColumns = reactive([
   },
 ])
 const lanData = reactive([])
-const lanTotal = ref(0)
-const lanCurrent = ref(1)
-const lanPageSize = ref(20)
 
 const lanDataDisplay = computed(() => {
-  const start = (lanCurrent.value - 1) * lanPageSize.value
-  const end = start + lanPageSize.value
-  return lanData.slice(start, end)
+  return lanData
 })
 
 const getLanDeviceData = () => {
@@ -103,7 +89,6 @@ const getLanDeviceData = () => {
     //     mac: `00:00:00:00:00:${i}`,
     //   })
     // }
-    lanTotal.value = lanTableData.length
     Object.assign(lanData, lanTableData)
   })
 }
@@ -121,10 +106,6 @@ const goMacFilter = (mac) => {
       })
     })
     .catch(() => {})
-}
-const lanChangeCurrent = (current, currentPageSize) => {
-  lanCurrent.value = current
-  lanPageSize.value = currentPageSize
 }
 
 onMounted(() => {

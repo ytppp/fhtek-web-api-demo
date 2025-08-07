@@ -38,7 +38,7 @@
     <fh-modal v-model="visible" :title="modalTitle" :before-close="onClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
-          <fh-form-item :label="$t('trans0770')">
+          <fh-form-item :label="$t('trans0135')">
             <fh-radio-group v-model="modalForm.type" @change="changeIpType">
               <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
                 {{ item.text }}

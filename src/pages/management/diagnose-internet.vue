@@ -16,8 +16,19 @@
         :rules="rules"
         :disabled="pingFormDisabled"
       >
+        <fh-form-item :label="$t('trans0135')">
+          <fh-radio-group v-model="pingForm.type">
+            <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
+              {{ item.text }}
+            </fh-radio>
+          </fh-radio-group>
+        </fh-form-item>
         <fh-form-item :label="$t('trans0140')">
-          <fh-select name="interface" v-model="pingForm.interface" :options="wanList"></fh-select>
+          <fh-select
+            name="interface"
+            v-model="pingForm.interface"
+            :options="pingWanOpts"
+          ></fh-select>
         </fh-form-item>
         <fh-form-item prop="repetitions" :label="$t('trans0555')">
           <fh-input name="repetitions" v-model="pingForm.repetitions"></fh-input>
@@ -51,11 +62,18 @@
         :rules="rules"
         :disabled="tracerouteFormDisabled"
       >
+        <fh-form-item :label="$t('trans0135')">
+          <fh-radio-group v-model="tracerouteForm.type">
+            <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
+              {{ item.text }}
+            </fh-radio>
+          </fh-radio-group>
+        </fh-form-item>
         <fh-form-item :label="$t('trans0140')">
           <fh-select
             name="interface"
             v-model="tracerouteForm.interface"
-            :options="wanList"
+            :options="tracerouteWanOpts"
           ></fh-select>
         </fh-form-item>
         <fh-form-item prop="destination" :label="$t('trans0556')">
@@ -111,6 +129,16 @@ const { defaultVal } = useDataClean()
 const loading = inject('loading')
 const timeout = 1000 * 60 * 2 // 2 minutes
 const interval = 5000 // 5 second
+const ipOptions = [
+  {
+    value: IP.IPv4,
+    text: t('trans0456'),
+  },
+  {
+    value: IP.IPv6,
+    text: t('trans0457'),
+  },
+]
 const FormDataRange = {
   repetitions: {
     min: 1,
@@ -120,7 +148,8 @@ const FormDataRange = {
     label: 'trans0555',
   },
 }
-const wanList = reactive([])
+const ipv4Data = reactive([])
+const ipv6Data = reactive([])
 const rules = reactive({
   repetitions: [
     {
@@ -169,24 +198,42 @@ function createDoneHandle(key: OperateType, getResults: () => void) {
 const getWanData = () => {
   getWanInfo().then(({ data }) => {
     const { items } = data
-    if (items.length === 0) {
-      return
-    }
-    const thisWanList = [
+    const thisIpv4Data = [
       {
         value: '',
         text: t('trans0487'),
       },
     ]
+    const thisIpv6Data = [
+      {
+        value: '',
+        text: t('trans0487'),
+      },
+    ]
+    if (items.length === 0) {
+      return
+    }
     items.forEach((item) => {
       if (item.protocol !== NetType.bridge) {
-        thisWanList.push({
-          value: item.device,
-          text: `${item.wanname}(${item.interface})`,
-        })
+        if (
+          item.ipv4.length > 0 ||
+          item.protocol === NetType.dhcp ||
+          item.protocol === NetType.pppoe
+        ) {
+          thisIpv4Data.push({
+            value: item.device,
+            text: item.wanname,
+          })
+        } else if (item.ipv6.length > 0 || item.protocol === NetType.dhcpv6) {
+          thisIpv6Data.push({
+            value: item.device,
+            text: item.wanname,
+          })
+        }
       }
     })
-    Object.assign(wanList, thisWanList)
+    Object.assign(ipv4Data, thisIpv4Data)
+    Object.assign(ipv6Data, thisIpv6Data)
   })
 }
 
@@ -195,9 +242,17 @@ const pingRef = useTemplateRef('pingRef')
 const pingFormDisabled = ref(false)
 const pingSuccessFlag = ref(false)
 const pingForm = reactive({
+  type: IP.IPv4,
   interface: '',
   repetitions: '',
   destination: '',
+})
+const pingWanOpts = computed(() => {
+  if (pingForm.type === IP.IPv4) {
+    return ipv4Data
+  } else {
+    return ipv6Data
+  }
 })
 const repetitionsTips = computed(() => {
   let tipsText = ''
@@ -238,6 +293,7 @@ cleanPingCountDown = _cleanPingCountDown
 const ping = () => {
   if (!pingRef.value.validate()) return
   startPing({
+    type: pingForm.type,
     interface: pingForm.interface,
     order: Order.start,
     repetitions: pingForm.repetitions,
@@ -262,8 +318,16 @@ const tracerouteRef = useTemplateRef('tracerouteRef')
 const tracerouteFormDisabled = ref(false)
 const tracerouteSuccessFlag = ref(false)
 const tracerouteForm = reactive({
+  type: IP.IPv4,
   interface: '',
   destination: '',
+})
+const tracerouteWanOpts = computed(() => {
+  if (tracerouteForm.type === IP.IPv4) {
+    return ipv4Data
+  } else {
+    return ipv6Data
+  }
 })
 let cleanTracerouteCountDown: () => void
 const checkTracerouteStatus = () => tracerouteStatus().then(({ data }) => data.status)
@@ -287,6 +351,7 @@ cleanTracerouteCountDown = _cleanTracerouteCountDown
 const traceroute = () => {
   if (!tracerouteRef.value.validate()) return
   startTraceroute({
+    type: tracerouteForm.type,
     interface: tracerouteForm.interface,
     order: Order.start,
     destination: tracerouteForm.destination,
