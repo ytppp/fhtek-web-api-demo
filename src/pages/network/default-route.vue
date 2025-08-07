@@ -54,13 +54,13 @@ const getWanData = () => {
         if (item.ipv4.length) {
           ipv4WanList.push({
             value: item.interface,
-            text: `${item.wanname}(${item.interface})`,
+            text: item.wanname,
           })
         }
         if (item.ipv6.length) {
           ipv6WanList.push({
             value: item.interface,
-            text: `${item.wanname}(${item.interface})`,
+            text: item.wanname,
           })
         }
       }

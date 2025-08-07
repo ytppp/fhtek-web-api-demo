@@ -197,7 +197,9 @@ export default {
           },
           {
             rule: (value) =>
-              !this.data.some((item) => item.index !== this.modalForm.index && item.target === value),
+              !this.data.some(
+                (item) => item.index !== this.modalForm.index && item.target === value,
+              ),
             message: this.$t('trans0399'),
           },
         ],
@@ -350,7 +352,7 @@ export default {
           if (item.protocol !== NetType.bridge) {
             wanList.push({
               value: item.interface,
-              text: `${item.wanname}(${item.interface})`,
+              text: item.wanname,
               type: item.ipv4.length ? IP.IPv4 : item.ipv6.length ? IP.IPv6 : '',
             })
           }

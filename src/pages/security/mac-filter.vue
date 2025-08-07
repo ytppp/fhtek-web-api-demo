@@ -213,7 +213,7 @@ export default {
       this.modalType = ModalType.edit
       this.visible = true
     },
-    getMacFilterList(init = false) {
+    getMacFilterList(isInit = false) {
       getMacFilterItems()
         .then(({ data }) => {
           const tableData = []
@@ -228,7 +228,7 @@ export default {
         })
         .catch(() => {})
         .finally(() => {
-          if (!init) this.visible = false
+          if (!isInit) this.visible = false
         })
     },
     handleClose() {
@@ -298,8 +298,8 @@ export default {
     },
   },
   mounted() {
-    this.getMacFilterStatusData()
     this.getMacFilterList(true)
+    this.getMacFilterStatusData()
   },
 }
 </script>

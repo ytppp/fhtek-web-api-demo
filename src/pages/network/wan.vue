@@ -624,7 +624,8 @@ const statusText = computed(() => {
   return `${type.value} ${mode.value}`
 })
 const versionText = computed(() => {
-  return `${type.value} ${mode.value} ${t('trans0379')}`
+  // return `${type.value} ${mode.value} ${t('trans0379')}`
+  return `${t('trans0375')} ${t('trans0379')}`
 })
 
 watch(

@@ -58,7 +58,7 @@
             :model="modalForm"
             :rules="modalRules"
           >
-            <fh-form-item :label="$t('trans0711')">
+            <fh-form-item :label="$t('trans0711')" prop="id">
               <fh-select v-model="modalForm.id" :options="ssidOpts"> </fh-select>
             </fh-form-item>
             <fh-form-item :label="$t('trans0097')" prop="mac">
@@ -124,6 +124,12 @@ export default {
       modalType: ModalType.add,
       all: 'all',
       modalRules: {
+        id: [
+          {
+            rule: (value) => value.trim(),
+            message: this.$t('trans0677').format(this.$t('trans0711')),
+          },
+        ],
         mac: [
           {
             rule: (value) => value.trim(),
@@ -213,7 +219,7 @@ export default {
       })
     },
     openAddModal() {
-      this.modalForm.id = this.ssidOpts[0].value
+      this.modalForm.id = this.ssidOpts[0].value || ''
       this.modalForm.mac = ''
       this.modalForm.pre_id = ''
       this.modalForm.pre_mac = ''
@@ -230,8 +236,8 @@ export default {
       this.modalType = ModalType.edit
       this.visible = true
     },
-    getWifiMacFilterList(init = false) {
-      getWifiMacFilter()
+    getWifiMacFilterList(isInit = false) {
+      return getWifiMacFilter()
         .then(({ data }) => {
           const tableData = []
           const { items } = data
@@ -248,14 +254,14 @@ export default {
         })
         .catch(() => {})
         .finally(() => {
-          if (!init) this.visible = false
+          if (!isInit) this.visible = false
         })
     },
     handleClose() {
       this.$refs.modalFormRef.clearValidate()
     },
     getSsidIndex() {
-      Promise.all([getWifi2g(), getWifi5g()]).then(([res1, res2]) => {
+      return Promise.all([getWifi2g(), getWifi5g()]).then(([res1, res2]) => {
         const wifi2g = res1.data.items
         const wifi5g = res2.data.items
         const ssidOpts = [
@@ -341,10 +347,10 @@ export default {
       }
     },
   },
-  mounted() {
-    this.getWifiMacFilterStatusData()
-    this.getSsidIndex()
-    this.getWifiMacFilterList(true)
+  async mounted() {
+    await this.getSsidIndex()
+    await this.getWifiMacFilterList(true)
+    await this.getWifiMacFilterStatusData()
   },
 }
 </script>
