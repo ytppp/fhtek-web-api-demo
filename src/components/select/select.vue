@@ -67,7 +67,7 @@ import {
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { scrollTo } from '@/util/tool'
-import { computePosition, flip, shift, offset } from '@floating-ui/dom'
+import { computePosition, flip, shift, offset } from '@floating-ui/vue'
 
 defineOptions({
   name: 'FhSelect',

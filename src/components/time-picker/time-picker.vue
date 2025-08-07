@@ -1,23 +1,25 @@
 <template>
   <div class="time-picker" @click="open" v-clickoutside="closeStatusOpened">
-    <fh-input
-      readonly
-      :disabled="selectDisabled"
-      :placeholder="selectPlaceholder"
-      :label="currentLabel"
-      v-model="value"
-      :name="name"
-    >
-      <template v-slot:prefix v-if="$slots.prefix">
-        <slot name="prefix"></slot>
-      </template>
-      <template v-slot:suffix>
-        <fh-icon
-          :class="['time-picker__caret', 'input__icon', this.opened ? 'is-reverse' : '']"
-          name="icon-down"
-        ></fh-icon>
-      </template>
-    </fh-input>
+    <div class="time-picker__input" ref="timePickerInputRef">
+      <fh-input
+        readonly
+        :disabled="selectDisabled"
+        :placeholder="selectPlaceholder"
+        :label="currentLabel"
+        v-model="value"
+        :name="name"
+      >
+        <template v-slot:prefix v-if="$slots.prefix">
+          <slot name="prefix"></slot>
+        </template>
+        <template v-slot:suffix>
+          <fh-icon
+            :class="['time-picker__caret', 'input__icon', this.opened ? 'is-reverse' : '']"
+            name="icon-down"
+          ></fh-icon>
+        </template>
+      </fh-input>
+    </div>
     <transition name="select">
       <div class="time-picker__popup" ref="combo" v-show="opened">
         <div class="time-picker__popup-wrap">
@@ -197,9 +199,7 @@ export default defineComponent({
 
 <style lang="less">
 .time-picker {
-  position: relative;
   width: 100%;
-  max-width: @form-item-max-width;
   .time-picker__caret {
     transition: transform 0.2s linear;
     &.is-reverse {
@@ -217,7 +217,8 @@ export default defineComponent({
     position: absolute;
     z-index: 2000;
     background: @time-picker-combox-background-color;
-    left: -1px;
+    top: 0;
+    left: 0;
     width: 100%;
     box-shadow: 0 2px 8px @time-picker-combox-shadow-color;
     background-clip: padding-box;
