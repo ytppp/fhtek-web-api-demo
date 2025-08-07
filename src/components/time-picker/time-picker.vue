@@ -57,6 +57,7 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { computePosition, flip, shift, offset } from '@floating-ui/vue'
 
 export default defineComponent({
   name: 'FhTimePicker',
@@ -120,6 +121,17 @@ export default defineComponent({
   },
   emits: ['input', 'update:modelValue'],
   methods: {
+    updatePosition() {
+      computePosition(this.$refs.timePickerInputRef, this.$refs.combo, {
+        placement: 'bottom-start',
+        middleware: [flip(), shift(), offset(6)],
+      }).then(({ x, y }) => {
+        Object.assign(this.$refs.combo.style, {
+          left: `${x}px`,
+          top: `${y}px`,
+        })
+      })
+    },
     formatCount(v) {
       return `0${v}`.slice(-2)
     },
@@ -145,6 +157,7 @@ export default defineComponent({
           m: this.value ? this.value.split(':')[1] : '',
         }
         this.$nextTick(() => {
+          this.updatePosition()
           const hEl = this.$refs.h
           const mEl = this.$refs.m
           this.initScroll(hEl)
