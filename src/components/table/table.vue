@@ -434,14 +434,10 @@ export default {
     },
   },
   watch: {
-    dataSource: {
-      handler(val, oldVal) {
-        if (val.length !== oldVal.length) {
-          this.checkScrollLeft()
-        }
-        this.pagination.current = 1
-      },
-      deep: true,
+    dataSource(val, oldVal) {
+      if (val.length !== oldVal.length) {
+        this.checkScrollLeft()
+      }
     },
   },
   emits: ['select', 'click-row'],
