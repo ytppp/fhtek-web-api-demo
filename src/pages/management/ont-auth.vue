@@ -5,7 +5,7 @@
     </div>
     <div class="page__content">
       <fh-form class="form" ref="formRef" :model="form" :rules="rules">
-        <fh-form-item :label="$t('trans0767')">
+        <fh-form-item :label="$t('trans0714')">
           <fh-select v-model="form.authType" :options="authModeOpts"> </fh-select>
         </fh-form-item>
         <template v-if="isLoid">

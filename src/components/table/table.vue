@@ -97,9 +97,9 @@
           </tr>
         </thead>
         <tbody class="table-main__content">
-          <template v-if="dataSource.length">
+          <template v-if="dataSourceDisplay.length">
             <tr
-              v-for="(item, index) in dataSource"
+              v-for="(item, index) in dataSourceDisplay"
               :key="index"
               class="table-main__content-row"
               :class="{
@@ -180,6 +180,14 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div class="table__pagination" v-if="showPagination">
+      <fh-pagination
+        :total="dataSource.length"
+        :default-current="pagination.current"
+        :default-pageSize="pagination.pageSize"
+        @change="changePagination"
+      ></fh-pagination>
     </div>
     <div class="table__footer" v-if="footer || $slots.footer">
       <template v-if="footer"> {{ footer }} </template>
@@ -278,11 +286,15 @@ export default {
     footer: String,
     showRowCheckbox: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     showIndex: {
       type: Boolean,
       default: true,
+    },
+    showPagination: {
+      type: Boolean,
+      default: false,
     },
     stripe: {
       type: Boolean,
@@ -322,9 +334,22 @@ export default {
       isScrollLeft: false,
       isScrollRight: false,
       isShowScroll: false,
+      pagination: {
+        current: 1,
+        pageSize: 20,
+      },
     }
   },
   computed: {
+    dataSourceDisplay() {
+      if (!this.showPagination) {
+        return this.dataSource
+      }
+      const { current, pageSize } = this.pagination
+      const start = (current - 1) * pageSize
+      const end = current * pageSize
+      return this.dataSource.slice(start, end)
+    },
     isShowOperation() {
       return this.$slots.operation
     },
@@ -332,7 +357,7 @@ export default {
       return this.showIndex
     },
     isShowRowCheckbox() {
-      return this.showRowCheckbox && this.dataSource.length
+      return this.showRowCheckbox
     },
     columnsNew() {
       let list = []
@@ -417,6 +442,10 @@ export default {
   },
   emits: ['select', 'click-row'],
   methods: {
+    changePagination(current, currentPageSize) {
+      this.pagination.current = current
+      this.pagination.pageSize = currentPageSize
+    },
     cellContent(item, key) {
       if (Array.isArray(item[key]) && !item[key].length) {
         return defaultVal
@@ -444,7 +473,7 @@ export default {
       }
     },
     getItemStyle(col) {
-      return this.dataSource.length
+      return this.dataSourceDisplay.length
         ? {
             width: col.width && `${col.width}px`,
             minWidth: col.minWidth ? `${col.minWidth}px` : col.width ? `${col.width}px` : 'auto',
@@ -551,8 +580,17 @@ export default {
     overflow-x: auto;
     overflow-y: hidden;
   }
-  .table__footer {
+  .table__footer,
+  .table__pagination {
     padding: 10px 0;
+  }
+  .table__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    @media screen and (max-width: 768px) {
+      justify-content: center;
+    }
   }
   .table-main {
     table-layout: fixed;
