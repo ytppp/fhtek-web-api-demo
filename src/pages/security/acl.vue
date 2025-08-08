@@ -95,7 +95,7 @@ import {
   successTips,
   getIpAfter,
 } from '@/util/tool'
-import { ModalType } from '@/util/constant'
+import { ModalType, ProtocolType } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
 import { getAcl, addAcl, editAcl, delAcl } from '@/http/api'
 
@@ -120,11 +120,26 @@ const Application = {
   SSH: 'ssh',
 }
 const ApplicationPort = {
-  [Application.TELNET]: '23',
-  [Application.SSH]: '22',
-  [Application.WEB]: '80',
-  [Application.PING]: '',
-  [Application.ALL]: 'all',
+  [Application.TELNET]: {
+    port: '23',
+    proto: ProtocolType.TCP,
+  },
+  [Application.SSH]: {
+    port: '22',
+    proto: ProtocolType.TCP,
+  },
+  [Application.WEB]: {
+    port: '80',
+    proto: ProtocolType.TCP,
+  },
+  [Application.PING]: {
+    port: '',
+    proto: ProtocolType.ICMP,
+  },
+  [Application.ALL]: {
+    port: '',
+    proto: 'all',
+  },
 }
 const maxAclRuleNum = 8
 export default {
@@ -143,7 +158,8 @@ export default {
         id: '',
         srcIp: '',
         enable: true,
-        port: ApplicationPort[Application.ALL],
+        port: ApplicationPort[Application.ALL].port,
+        proto: ApplicationPort[Application.ALL].proto,
         aclRuleName: '',
         application: Application.ALL,
       },
@@ -298,7 +314,8 @@ export default {
       this.modalForm.id = ''
       this.modalForm.srcIp = ''
       this.modalForm.enable = true
-      this.modalForm.port = ApplicationPort[Application.ALL]
+      this.modalForm.port = ApplicationPort[Application.ALL].port
+      this.modalForm.proto = ApplicationPort[Application.ALL].proto
       this.modalForm.aclRuleName = ''
       this.modalForm.application = Application.ALL
       this.modalType = ModalType.add
@@ -310,6 +327,7 @@ export default {
       this.modalForm.srcIp = row.srcIp
       this.modalForm.enable = row.enabled
       this.modalForm.port = row.port
+      this.modalForm.proto = row.proto
       this.modalForm.aclRuleName = row.name
       this.modalForm.application = row.application
       this.modalType = ModalType.edit
@@ -326,7 +344,8 @@ export default {
       })
     },
     changeApplication() {
-      this.modalForm.port = ApplicationPort[this.modalForm.application]
+      this.modalForm.port = ApplicationPort[this.modalForm.application].port
+      this.modalForm.proto = ApplicationPort[this.modalForm.application].proto
     },
     del(row) {
       delAcl({
@@ -346,6 +365,7 @@ export default {
         enabled: convertBooleanStatus(this.modalForm.enable),
         application: this.modalForm.application,
         port: this.modalForm.port,
+        proto: this.modalForm.proto,
         name: this.modalForm.aclRuleName,
       }
       if (this.isAdd) {
