@@ -210,6 +210,9 @@ function ipRule(ip, mask) {
   }
   return true
 }
+function isIPC(ip) {
+  return IPCReg.test(ip)
+}
 // 是否为私有地址
 export function isPrivateIP(ip) {
   return IPAReg.test(ip) || IPBReg.test(ip) || isIPC(ip)

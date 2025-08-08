@@ -20,7 +20,7 @@
               :title="$t('trans0164')"
             />
           </template>
-          <template #active="scope">
+          <template #enabled="scope">
             <fh-switch v-model="scope.row.active" @change="toggleStatus(scope.row)" />
           </template>
           <template #operation="scope">
@@ -53,7 +53,6 @@
             <fh-input
               name="ScrIPAddrBegin"
               v-model="modalForm.srcIp"
-              @blur="changeIPAddrBegin"
               :placeholder="placeholderTips"
             ></fh-input>
           </fh-form-item>
@@ -93,6 +92,8 @@ import {
   cidrToSubnetMask,
   isMulticast,
   isLoopback,
+  successTips,
+  getIpAfter,
 } from '@/util/tool'
 import { ModalType } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
@@ -124,13 +125,13 @@ const Interface = {
   both: 'both',
 }
 const Application = {
-  ALL: 'ALL',
-  TELNET: 'TELNET',
-  WEB: 'WEB',
-  PING: 'PING',
-  FTP: 'FTP',
-  SNMP: 'SNMP',
-  SSH: 'SSH',
+  ALL: 'all',
+  TELNET: 'telnet',
+  WEB: 'web',
+  PING: 'ping',
+  FTP: 'ftp',
+  SNMP: 'snmp',
+  SSH: 'ssh',
 }
 const ApplicationPort = {
   [Application.TELNET]: '23',
@@ -220,36 +221,15 @@ export default {
         //   text: this.$t('trans0157'),
         // },
       ],
-      applicationList: [
-        {
-          value: Application.ALL,
-          text: this.$t('trans0158'),
-        },
-        {
-          value: Application.PING,
-          text: this.$t('trans0159'),
-        },
-        // {
-        //   value: Application.FTP,
-        //   text: this.$t('trans0160'),
-        // },
-        {
-          value: Application.WEB,
-          text: this.$t('trans0161'),
-        },
-        {
-          value: Application.TELNET,
-          text: this.$t('trans0162'),
-        },
-        {
-          value: Application.SSH,
-          text: this.$t('trans0402'),
-        },
-        // {
-        //   value: Application.SNMP,
-        //   text: this.$t('trans0163'),
-        // },
-      ],
+      applicationText: {
+        [Application.ALL]: this.$t('trans0158'),
+        [Application.PING]: this.$t('trans0159'),
+        [Application.FTP]: this.$t('trans0160'),
+        [Application.WEB]: this.$t('trans0161'),
+        [Application.TELNET]: this.$t('trans0162'),
+        [Application.SNMP]: this.$t('trans0163'),
+        [Application.SSH]: this.$t('trans0402'),
+      },
       columns: [
         {
           key: 'name',
@@ -265,11 +245,11 @@ export default {
         //   title: this.$t('trans0153'),
         // },
         {
-          key: 'application',
+          key: 'applicationAlias',
           title: this.$t('trans0154'),
         },
         {
-          key: 'activeAlias',
+          key: 'enabled',
           title: this.$t('trans0166'),
           width: '60',
         },
@@ -284,11 +264,46 @@ export default {
     isAdd() {
       return this.modalType === ModalType.add
     },
+    isEdit() {
+      return this.modalType === ModalType.Edit
+    },
     modalTitle() {
       return this.isAdd ? this.$t('trans0164') : this.$t('trans0165')
     },
     placeholderTips() {
       return `${this.$t('trans0598').format(this.$t('trans0456'))}/${this.$t('trans0459')}`
+    },
+    applicationList() {
+      return [
+        {
+          value: Application.ALL,
+          text: this.applicationText[Application.ALL],
+        },
+        {
+          value: Application.PING,
+          text: this.applicationText[Application.PING],
+        },
+        // {
+        //   value: Application.FTP,
+        //   text: this.applicationText[Application.FTP],
+        // },
+        {
+          value: Application.WEB,
+          text: this.applicationText[Application.WEB],
+        },
+        {
+          value: Application.TELNET,
+          text: this.applicationText[Application.TELNET],
+        },
+        {
+          value: Application.SSH,
+          text: this.applicationText[Application.SSH],
+        },
+        // {
+        //   value: Application.SNMP,
+        //   text: this.applicationText[Application.SNMP],
+        // },
+      ]
     },
   },
   methods: {
@@ -362,26 +377,30 @@ export default {
         })
       }
     },
-    getAclData() {
-      getAcl().then(({ data }) => {
-        const { items } = data
-        const tableData = []
-        items.forEach((item, i) => {
-          tableData.push({
-            ...item,
-            srcIp: item.src_ip,
-            activeAlias: convertBooleanStatus(item.enabled)
-              ? this.$t('trans0103')
-              : this.$t('trans0054'),
-            index: i,
+    getAclData(isInit = false) {
+      getAcl()
+        .then(({ data }) => {
+          const { items } = data
+          const tableData = []
+          items.forEach((item, i) => {
+            tableData.push({
+              ...item,
+              srcIp: item.src_ip,
+              applicationAlias: this.applicationText[item.application],
+              enabled: convertBooleanStatus(item.enabled),
+              index: i,
+            })
           })
+          this.data = tableData
         })
-        this.data = tableData
-      })
+        .catch(() => {})
+        .finally(() => {
+          if (!isInit) this.visible = false
+        })
     },
   },
   created() {
-    this.getAclData()
+    this.getAclData(true)
   },
 }
 </script>
