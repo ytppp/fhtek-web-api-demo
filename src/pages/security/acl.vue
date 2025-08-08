@@ -21,7 +21,7 @@
             />
           </template>
           <template #enabled="scope">
-            <fh-switch v-model="scope.row.active" @change="toggleStatus(scope.row)" />
+            <fh-switch v-model="scope.row.enabled" @change="toggleStatus(scope.row)" />
           </template>
           <template #operation="scope">
             <fh-icon
@@ -104,20 +104,6 @@ function isValidStaticRouteMask(ip, mask) {
   if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
   return false
 }
-function isValidMask(ip) {
-  if (ip.split('.').filter((val) => val).length !== 4) return false
-  const i = ip2int(ip).toString(2).padStart(32, '0')
-  const result = i.split('10')
-  // result.length !== 2
-  if (result.length > 2) {
-    return false
-  }
-  // 有效mask
-  if (result[0].includes('0') || (result[1] && result[1].includes('1'))) {
-    return false
-  }
-  return true
-}
 const { convertBooleanStatus } = useDataClean()
 const Interface = {
   wan: 'wan',
@@ -140,7 +126,7 @@ const ApplicationPort = {
   [Application.PING]: '',
   [Application.ALL]: 'all',
 }
-const maxAclRuleNum = 16
+const maxAclRuleNum = 8
 export default {
   name: 'AclPage',
   data() {
@@ -188,12 +174,10 @@ export default {
               const ip = parts[0]
               const suffix = parts[1]
               if (isPrivateIP(ip)) {
-                const flag = isValidMask(suffix)
                 const mask = cidrToSubnetMask(parseInt(suffix))
-                if (!flag && !mask) return false
-                const maskVal = flag ? suffix : mask
-                // isNetworkIP(ip, maskVal) || sBoardcastIP(ip, maskVal)
-                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal)) {
+                if (!mask) return false
+                // isNetworkIP(ip, mask) || sBoardcastIP(ip, mask)
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, mask)) {
                   return false
                 }
                 if (!this.lanIp && this.lanIp === ip) {
@@ -265,13 +249,13 @@ export default {
       return this.modalType === ModalType.add
     },
     isEdit() {
-      return this.modalType === ModalType.Edit
+      return this.modalType === ModalType.edit
     },
     modalTitle() {
       return this.isAdd ? this.$t('trans0164') : this.$t('trans0165')
     },
     placeholderTips() {
-      return `${this.$t('trans0598').format(this.$t('trans0456'))}/${this.$t('trans0459')}`
+      return `${this.$t('trans0598').format(this.$t('trans0456'))}/xx`
     },
     applicationList() {
       return [
