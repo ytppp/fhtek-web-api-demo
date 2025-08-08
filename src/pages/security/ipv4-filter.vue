@@ -20,8 +20,8 @@
               :title="$t('trans0164')"
             />
           </template>
-          <template #active="scope">
-            <fh-switch v-model="scope.row.active" @change="toggleStatus(scope.row)" />
+          <template #enabled="scope">
+            <fh-switch v-model="scope.row.enabled" @change="toggleStatus(scope.row)" />
           </template>
           <template #operation="scope">
             <fh-icon
@@ -78,6 +78,8 @@ import {
   cidrToSubnetMask,
   isMulticast,
   isLoopback,
+  successTips,
+  getIpAfter,
 } from '@/util/tool'
 import { ModalType, ProtocolType } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
@@ -175,28 +177,13 @@ export default {
           },
         ],
       },
-      protoList: [
-        {
-          value: protocolAll,
-          text: this.$t('trans0158'),
-        },
-        {
-          value: ProtocolType.TCP,
-          text: this.$t('trans0190'),
-        },
-        {
-          value: ProtocolType.UDP,
-          text: this.$t('trans0191'),
-        },
-        {
-          value: ProtocolType.ICMP,
-          text: this.$t('trans0192'),
-        },
-        {
-          value: ProtocolType.IGMP,
-          text: this.$t('trans0375'),
-        },
-      ],
+      protoText: {
+        [protocolAll]: this.$t('trans0158'),
+        [ProtocolType.TCP]: this.$t('trans0190'),
+        [ProtocolType.UDP]: this.$t('trans0191'),
+        [ProtocolType.ICMP]: this.$t('trans0192'),
+        [ProtocolType.IGMP]: this.$t('trans0375'),
+      },
       columns: [
         {
           key: 'name',
@@ -208,11 +195,11 @@ export default {
           title: this.$t('trans0136'),
         },
         {
-          key: 'proto',
+          key: 'protoAlias',
           title: this.$t('trans0135'),
         },
         {
-          key: 'activeAlias',
+          key: 'enabled',
           title: this.$t('trans0166'),
           width: '60',
         },
@@ -227,11 +214,38 @@ export default {
     isAdd() {
       return this.modalType === ModalType.add
     },
+    isEdit() {
+      return this.modalType === ModalType.edit
+    },
     modalTitle() {
       return this.isAdd ? this.$t('trans0164') : this.$t('trans0165')
     },
     placeholderTips() {
       return `${this.$t('trans0598').format(this.$t('trans0456'))}/${this.$t('trans0459')}`
+    },
+    protoList() {
+      return [
+        {
+          value: protocolAll,
+          text: this.protoText[protocolAll],
+        },
+        {
+          value: ProtocolType.TCP,
+          text: this.protoText[ProtocolType.TCP],
+        },
+        {
+          value: ProtocolType.UDP,
+          text: this.protoText[ProtocolType.UDP],
+        },
+        {
+          value: ProtocolType.ICMP,
+          text: this.protoText[ProtocolType.ICMP],
+        },
+        {
+          value: ProtocolType.IGMP,
+          text: this.protoText[ProtocolType.IGMP],
+        },
+      ]
     },
   },
   methods: {
@@ -300,26 +314,30 @@ export default {
         })
       }
     },
-    getIpv4FilterData() {
-      getIpv4Filter().then(({ data }) => {
-        const { items } = data
-        const tableData = []
-        items.forEach((item, i) => {
-          tableData.push({
-            ...item,
-            srcIp: item.src_ip,
-            activeAlias: convertBooleanStatus(item.enabled)
-              ? this.$t('trans0103')
-              : this.$t('trans0054'),
-            index: i,
+    getIpv4FilterData(isInit = false) {
+      getIpv4Filter()
+        .then(({ data }) => {
+          const { items } = data
+          const tableData = []
+          items.forEach((item, i) => {
+            tableData.push({
+              ...item,
+              srcIp: item.src_ip,
+              enabled: convertBooleanStatus(item.enabled),
+              protoAlias: this.protoText[item.proto],
+              index: i,
+            })
           })
+          this.data = tableData
         })
-        this.data = tableData
-      })
+        .catch(() => {})
+        .finally(() => {
+          if (!isInit) this.visible = false
+        })
     },
   },
   created() {
-    this.getIpv4FilterData()
+    this.getIpv4FilterData(true)
   },
 }
 </script>

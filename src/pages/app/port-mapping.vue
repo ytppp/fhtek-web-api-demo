@@ -62,7 +62,7 @@
             <fh-input v-model="modalForm.mappingName"></fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0135')">
-            <fh-select v-model="modalForm.protocol" :options="ProtocalList"> </fh-select>
+            <fh-select v-model="modalForm.protocol" :options="protocalList"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0446')" prop="extHost">
             <fh-input v-model="modalForm.extHost"></fh-input>
@@ -287,24 +287,12 @@ export default {
         },
       ],
       tempList,
-      ProtocalList: [
-        {
-          text: this.$t('trans0158'),
-          value: protocolAll,
-        },
-        {
-          text: this.$t('trans0190'),
-          value: ProtocolType.TCP,
-        },
-        {
-          text: this.$t('trans0191'),
-          value: ProtocolType.UDP,
-        },
-        // {
-        //   value: ProtocolType.ICMP,
-        //   text: this.$t('trans0192'),
-        // },
-      ],
+      protocalText: {
+        [ProtocolType.TCP]: this.$t('trans0190'),
+        [ProtocolType.UDP]: this.$t('trans0191'),
+        [ProtocolType.ICMP]: this.$t('trans0192'),
+        [protocolAll]: this.$t('trans0158'),
+      },
       columns: [
         {
           key: 'mappingName',
@@ -312,7 +300,7 @@ export default {
           width: '100',
         },
         {
-          key: 'protocol',
+          key: 'protocolAlias',
           title: this.$t('trans0135'),
         },
         {
@@ -355,6 +343,26 @@ export default {
     },
     isTemp() {
       return this.modalForm.mappingMode === MappingMode.temp
+    },
+    protocalList() {
+      return [
+        {
+          text: this.protocalText[protocolAll],
+          value: protocolAll,
+        },
+        {
+          text: this.protocalText[ProtocolType.TCP],
+          value: ProtocolType.TCP,
+        },
+        {
+          text: this.protocalText[ProtocolType.UDP],
+          value: ProtocolType.UDP,
+        },
+        // {
+        //   value: this.protocalText[ProtocolType.ICMP],
+        //   text: this.$t('trans0192'),
+        // },
+      ]
     },
   },
   methods: {
@@ -461,7 +469,7 @@ export default {
       this.modalForm.extPort = temp.extPort
       this.$refs.modalForm.clearValidate()
     },
-    getPortMappingData() {
+    getPortMappingData(isInit = false) {
       getPortMapping()
         .then(({ data }) => {
           const tableData = []
@@ -471,7 +479,7 @@ export default {
               ...item,
               index: index,
               mappingName: item.name,
-              protocol: item.proto,
+              protocolAlias: this.protocalText[item.proto],
               extHost: item.src_ip,
               extPort: item.src_port,
               intHost: item.dest_ip,
@@ -483,7 +491,7 @@ export default {
         })
         .catch(() => {})
         .finally(() => {
-          this.visible = false
+          if (!isInit) this.visible = false
         })
     },
   },
