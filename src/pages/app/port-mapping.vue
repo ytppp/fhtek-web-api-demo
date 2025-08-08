@@ -175,7 +175,7 @@ const tempList = Temp.map((item) => ({
   value: item.name,
   text: item.name,
 }))
-const protocolAll = `${ProtocolType.TCP}/${ProtocolType.UDP}`
+const protocolAll = `all`
 export default {
   name: 'PortMappingPage',
   data() {

@@ -96,7 +96,7 @@ const Interface = {
   lan: 'lan',
   both: 'both',
 }
-const protocolAll = `${ProtocolType.TCP}/${ProtocolType.UDP}/${ProtocolType.ICMP}/${ProtocolType.IGMP}`
+const protocolAll = `all`
 const maxAclRuleNum = 8
 export default {
   name: 'Ipv4FilterPage',
