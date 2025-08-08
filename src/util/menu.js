@@ -268,6 +268,11 @@ let menus = [
         text: 'trans0422',
         config,
       },
+      // {
+      //   url: '/app/port-trigger',
+      //   text: 'trans0427',
+      //   config,
+      // },
       {
         url: '/app/dmz',
         text: 'trans0254',

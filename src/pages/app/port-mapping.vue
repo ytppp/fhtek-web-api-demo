@@ -175,7 +175,6 @@ const tempList = Temp.map((item) => ({
   value: item.name,
   text: item.name,
 }))
-const protocolAll = `all`
 export default {
   name: 'PortMappingPage',
   data() {
@@ -190,7 +189,7 @@ export default {
         mappingMode: MappingMode.customize,
         temp: null,
         mappingName: '',
-        protocol: protocolAll,
+        protocol: ProtocolType.ALL,
         extHost: '',
         extPort: '',
         intHost: '',
@@ -291,7 +290,7 @@ export default {
         [ProtocolType.TCP]: this.$t('trans0190'),
         [ProtocolType.UDP]: this.$t('trans0191'),
         [ProtocolType.ICMP]: this.$t('trans0192'),
-        [protocolAll]: this.$t('trans0158'),
+        [ProtocolType.ALL]: this.$t('trans0158'),
       },
       columns: [
         {
@@ -346,8 +345,8 @@ export default {
     protocalList() {
       return [
         {
-          text: this.protocalText[protocolAll],
-          value: protocolAll,
+          text: this.protocalText[ProtocolType.ALL],
+          value: ProtocolType.ALL,
         },
         {
           text: this.protocalText[ProtocolType.TCP],
@@ -376,7 +375,7 @@ export default {
         mappingMode: MappingMode.customize,
         temp: null,
         mappingName: '',
-        protocol: protocolAll,
+        protocol: ProtocolType.ALL,
         extHost: '',
         extPort: '',
         intHost: '',

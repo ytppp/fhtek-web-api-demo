@@ -49,12 +49,22 @@
           <fh-form-item :label="$t('trans0150')" prop="name">
             <fh-input name="AclRuleName" v-model="modalForm.name"></fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0136')" prop="srcIp">
+          <fh-form-item :label="$t('trans0136')" prop="src_ip">
             <fh-input
-              name="ScrIPAddrBegin"
-              v-model="modalForm.srcIp"
+              name="src_ip"
+              v-model="modalForm.src_ip"
               :placeholder="placeholderTips"
             ></fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0139')" prop="dest_port">
+            <fh-input
+              name="dest_port"
+              v-model="modalForm.dest_port"
+              :placeholder="numPlaceholder"
+            ></fh-input>
+            <template #extra>
+              {{ $t('trans0902').format($t('trans0139')) }}
+            </template>
           </fh-form-item>
           <fh-form-item :label="$t('trans0135')">
             <fh-select v-model="modalForm.proto" :options="protoList" name="proto"> </fh-select>
@@ -80,6 +90,7 @@ import {
   isLoopback,
   successTips,
   getIpAfter,
+  isValidInteger,
 } from '@/util/tool'
 import { ModalType, ProtocolType } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
@@ -96,12 +107,13 @@ const Interface = {
   lan: 'lan',
   both: 'both',
 }
-const protocolAll = `all`
+const numPlaceholder = '0-65535'
 const maxAclRuleNum = 8
 export default {
   name: 'Ipv4FilterPage',
   data() {
     return {
+      numPlaceholder,
       maxAclRuleNum,
       modalType: ModalType.add,
       visible: false, // dialog visible
@@ -112,10 +124,11 @@ export default {
       modalForm: {
         index: -1,
         id: '',
-        srcIp: '',
+        src_ip: '',
+        dest_port: '',
         enable: true,
         name: '',
-        proto: protocolAll,
+        proto: ProtocolType.ALL,
       },
       modalFormRules: {
         name: [
@@ -132,13 +145,10 @@ export default {
             message: this.$t('trans0167'),
           },
         ],
-        srcIp: [
-          {
-            rule: (value) => value,
-            message: this.$t('trans0004'),
-          },
+        src_ip: [
           {
             rule: (value) => {
+              if (!value) return true
               const parts = value.split('/')
               if (parts.length !== 2) return false
               const ip = parts[0]
@@ -157,12 +167,23 @@ export default {
               }
               return false
             },
-            message: this.$t('trans0197'),
+            message: this.$t('trans0566').format(this.$t('trans0136')),
+          },
+        ],
+        dest_port: [
+          {
+            rule: (value) => {
+              if (!value) return true
+              const ports = value.split(':')
+              if (ports.length > 2) return false
+              return ports.every((port) => isValidInteger(port, 0, 65535))
+            },
+            message: this.$t('trans0566').format(this.$t('trans0139')),
           },
         ],
       },
       protoText: {
-        [protocolAll]: this.$t('trans0158'),
+        [ProtocolType.ALL]: this.$t('trans0158'),
         [ProtocolType.TCP]: this.$t('trans0190'),
         [ProtocolType.UDP]: this.$t('trans0191'),
         [ProtocolType.ICMP]: this.$t('trans0192'),
@@ -175,8 +196,12 @@ export default {
           width: 180,
         },
         {
-          key: 'srcIp',
+          key: 'src_ip',
           title: this.$t('trans0136'),
+        },
+        {
+          key: 'dest_port',
+          title: this.$t('trans0139'),
         },
         {
           key: 'protoAlias',
@@ -205,13 +230,13 @@ export default {
       return this.isAdd ? this.$t('trans0164') : this.$t('trans0165')
     },
     placeholderTips() {
-      return `${this.$t('trans0598').format(this.$t('trans0456'))}/xx`
+      return `${this.$t('trans0598').format(this.$t('trans0456'))}/${this.$t('trans0459')}`
     },
     protoList() {
       return [
         {
-          value: protocolAll,
-          text: this.protoText[protocolAll],
+          value: ProtocolType.ALL,
+          text: this.protoText[ProtocolType.ALL],
         },
         {
           value: ProtocolType.TCP,
@@ -238,17 +263,19 @@ export default {
     openAddModal() {
       this.modalForm.index = -1
       this.modalForm.id = ''
-      this.modalForm.srcIp = ''
+      this.modalForm.src_ip = ''
+      this.modalForm.dest_port = ''
       this.modalForm.enable = true
       this.modalForm.name = ''
-      this.modalForm.proto = protocolAll
+      this.modalForm.proto = ProtocolType.ALL
       this.modalType = ModalType.add
       this.visible = true
     },
     openEditModal(row) {
       this.modalForm.index = row.index
       this.modalForm.id = row.id
-      this.modalForm.srcIp = row.srcIp
+      this.modalForm.src_ip = row.src_ip
+      this.modalForm.dest_port = row.dest_port
       this.modalForm.enable = row.enable
       this.modalForm.name = row.name
       this.modalForm.proto = row.proto
@@ -279,7 +306,8 @@ export default {
         src: Interface.wan, // 传固定值
         dest: Interface.lan, // 传固定值
         target: 'REJECT', // 传固定值
-        src_ip: this.modalForm.srcIp,
+        src_ip: this.modalForm.src_ip,
+        dest_port: this.modalForm.dest_port,
         enabled: convertBooleanStatus(this.modalForm.enable),
         proto: this.modalForm.proto,
         name: this.modalForm.name,
@@ -306,7 +334,6 @@ export default {
           items.forEach((item, i) => {
             tableData.push({
               ...item,
-              srcIp: item.src_ip,
               enable: convertBooleanStatus(item.enabled),
               protoAlias: this.protoText[item.proto],
               index: i,
