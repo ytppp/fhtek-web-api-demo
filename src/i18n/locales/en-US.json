@@ -900,7 +900,7 @@
   "trans0900": "ON",
   "trans0901": "OFF",
   "trans0902": "If %s is a range, it can be separated by a colon (:).",
-  "trans0903": "trans0903",
+  "trans0903": "This function is only available when the firewall is enabled and its security level is set to user-defined",
   "trans0904": "trans0904",
   "trans0905": "trans0905",
   "trans0906": "FSK",

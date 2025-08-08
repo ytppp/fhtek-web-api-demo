@@ -4,59 +4,64 @@
       <h1 class="page__title">{{ $t('trans0059') }}</h1>
     </div>
     <div class="page__content">
-      <!-- <fh-form class="form" ref="form" :model="form">
+      <template v-if="isEnable">
+        <!-- <fh-form class="form" ref="form" :model="form">
         <fh-form-item :label="$t('trans0059')">
           <fh-switch v-model="form.enable" @change="switchEnable"></fh-switch>
         </fh-form-item>
       </fh-form> -->
-      <div class="page__table">
-        <fh-table :columns="columns" :data-source="data">
-          <template #operationgroup>
-            <fh-icon
-              class="page__header-icon"
-              v-if="isShowAddBtn"
-              @click="openAddModal"
-              name="icon-add"
-              :title="$t('trans0164')"
-            />
-          </template>
-          <template #enabled="scope">
-            <fh-switch v-model="scope.row.enabled" @change="toggleStatus(scope.row)" />
-          </template>
-          <template #operation="scope">
-            <fh-icon
-              class="page__header-icon"
-              @click="openEditModal(scope.row)"
-              name="icon-edit-square"
-              :title="$t('trans0165')"
-            />
-            <fh-icon
-              class="page__header-icon"
-              @click="del(scope.row)"
-              name="icon-delete"
-              :title="$t('trans0111')"
-            />
-          </template>
-        </fh-table>
-      </div>
-    </div>
-    <fh-modal v-model="visible" :title="modalTitle">
-      <template #body>
-        <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
-          <fh-form-item :label="$t('trans0166')">
-            <fh-switch v-model="modalForm.enable"></fh-switch>
-          </fh-form-item>
-          <fh-form-item :label="$t('trans0150')" prop="aclRuleName">
-            <fh-input name="AclRuleName" v-model="modalForm.aclRuleName"></fh-input>
-          </fh-form-item>
-          <fh-form-item :label="$t('trans0136')" prop="srcIp">
-            <fh-input
-              name="ScrIPAddrBegin"
-              v-model="modalForm.srcIp"
-              :placeholder="placeholderTips"
-            ></fh-input>
-          </fh-form-item>
-          <!-- <fh-form-item :label="$t('trans0153')">
+        <div class="page__table">
+          <fh-table :columns="columns" :data-source="data">
+            <template #operationgroup>
+              <fh-icon
+                class="page__header-icon"
+                v-if="isShowAddBtn"
+                @click="openAddModal"
+                name="icon-add"
+                :title="$t('trans0164')"
+              />
+            </template>
+            <template #enabled="scope">
+              <fh-switch v-model="scope.row.enabled" @change="toggleStatus(scope.row)" />
+            </template>
+            <template #operation="scope">
+              <fh-icon
+                class="page__header-icon"
+                @click="openEditModal(scope.row)"
+                name="icon-edit-square"
+                :title="$t('trans0165')"
+              />
+              <fh-icon
+                class="page__header-icon"
+                @click="del(scope.row)"
+                name="icon-delete"
+                :title="$t('trans0111')"
+              />
+            </template>
+          </fh-table>
+        </div>
+        <fh-modal v-model="visible" :title="modalTitle">
+          <template #body>
+            <fh-form
+              class="form modal-form"
+              ref="modalForm"
+              :model="modalForm"
+              :rules="modalFormRules"
+            >
+              <fh-form-item :label="$t('trans0166')">
+                <fh-switch v-model="modalForm.enable"></fh-switch>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0150')" prop="aclRuleName">
+                <fh-input name="AclRuleName" v-model="modalForm.aclRuleName"></fh-input>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0136')" prop="srcIp">
+                <fh-input
+                  name="ScrIPAddrBegin"
+                  v-model="modalForm.srcIp"
+                  :placeholder="placeholderTips"
+                ></fh-input>
+              </fh-form-item>
+              <!-- <fh-form-item :label="$t('trans0153')">
             <fh-select
               v-model="modalForm.interface"
               :options="interfaceList"
@@ -64,23 +69,28 @@
             >
             </fh-select>
           </fh-form-item> -->
-          <fh-form-item :label="$t('trans0154')">
-            <fh-select
-              v-model="modalForm.application"
-              :options="applicationList"
-              name="Application"
-              @change="changeApplication"
-            >
-            </fh-select>
-          </fh-form-item>
-          <fh-form-item class="form__submit-btn">
-            <fh-button id="submitbutton" @click="save" block>
-              {{ $t('trans0002') }}
-            </fh-button>
-          </fh-form-item>
-        </fh-form>
+              <fh-form-item :label="$t('trans0154')">
+                <fh-select
+                  v-model="modalForm.application"
+                  :options="applicationList"
+                  name="Application"
+                  @change="changeApplication"
+                >
+                </fh-select>
+              </fh-form-item>
+              <fh-form-item class="form__submit-btn">
+                <fh-button id="submitbutton" @click="save" block>
+                  {{ $t('trans0002') }}
+                </fh-button>
+              </fh-form-item>
+            </fh-form>
+          </template>
+        </fh-modal>
       </template>
-    </fh-modal>
+      <div style="padding-left: 20px; font-size: 16px" v-else>
+        {{ $t('trans0903') }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -97,7 +107,7 @@ import {
 } from '@/util/tool'
 import { ModalType, ProtocolType } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
-import { getAcl, addAcl, editAcl, delAcl } from '@/http/api'
+import { getAcl, addAcl, editAcl, delAcl, getFirewall } from '@/http/api'
 
 function isValidStaticRouteMask(ip, mask) {
   if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
@@ -255,6 +265,7 @@ export default {
         },
       ],
       data: [],
+      isEnable: false,
     }
   },
   computed: {
@@ -403,9 +414,18 @@ export default {
           if (!isInit) this.visible = false
         })
     },
+    getFirewallData() {
+      getFirewall().then(({ data }) => {
+        const { enable, custom } = data
+        this.isEnable = convertBooleanStatus(enable) && convertBooleanStatus(custom)
+        if (this.isEnable) {
+          this.getAclData(true)
+        }
+      })
+    },
   },
   created() {
-    this.getAclData(true)
+    this.getFirewallData()
   },
 }
 </script>
