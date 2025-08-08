@@ -4,79 +4,89 @@
       <h1 class="page__title">{{ $t('trans0131') }}</h1>
     </div>
     <div class="page__content">
-      <!-- <fh-form class="form" ref="form" :model="form">
-        <fh-form-item :label="$t('trans0059')">
-          <fh-switch v-model="form.enable" @change="switchEnable"></fh-switch>
-        </fh-form-item>
-      </fh-form> -->
-      <div class="page__table">
-        <fh-table :columns="columns" :data-source="data">
-          <template #operationgroup>
-            <fh-icon
-              class="page__header-icon"
-              v-if="isShowAddBtn"
-              @click="openAddModal"
-              name="icon-add"
-              :title="$t('trans0164')"
-            />
+      <template v-if="isEnable">
+        <!-- <fh-form class="form" ref="form" :model="form">
+          <fh-form-item :label="$t('trans0059')">
+            <fh-switch v-model="form.enable" @change="switchEnable"></fh-switch>
+          </fh-form-item>
+        </fh-form> -->
+        <div class="page__table">
+          <fh-table :columns="columns" :data-source="data">
+            <template #operationgroup>
+              <fh-icon
+                class="page__header-icon"
+                v-if="isShowAddBtn"
+                @click="openAddModal"
+                name="icon-add"
+                :title="$t('trans0164')"
+              />
+            </template>
+            <template #enable="scope">
+              <fh-switch v-model="scope.row.enable" @change="toggleStatus(scope.row)" />
+            </template>
+            <template #operation="scope">
+              <fh-icon
+                class="page__header-icon"
+                @click="openEditModal(scope.row)"
+                name="icon-edit-square"
+                :title="$t('trans0165')"
+              />
+              <fh-icon
+                class="page__header-icon"
+                @click="del(scope.row)"
+                name="icon-delete"
+                :title="$t('trans0111')"
+              />
+            </template>
+          </fh-table>
+        </div>
+        <fh-modal v-model="visible" :title="modalTitle">
+          <template #body>
+            <fh-form
+              class="form modal-form"
+              ref="modalForm"
+              :model="modalForm"
+              :rules="modalFormRules"
+            >
+              <fh-form-item :label="$t('trans0166')">
+                <fh-switch v-model="modalForm.enable"></fh-switch>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0150')" prop="name">
+                <fh-input name="AclRuleName" v-model="modalForm.name"></fh-input>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0136')" prop="src_ip">
+                <fh-input
+                  name="src_ip"
+                  v-model="modalForm.src_ip"
+                  :placeholder="placeholderTips"
+                ></fh-input>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0139')" prop="dest_port">
+                <fh-input
+                  name="dest_port"
+                  v-model="modalForm.dest_port"
+                  :placeholder="numPlaceholder"
+                ></fh-input>
+                <template #extra>
+                  {{ $t('trans0902').format($t('trans0139')) }}
+                </template>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0135')">
+                <fh-select v-model="modalForm.proto" :options="protoList" name="proto"> </fh-select>
+              </fh-form-item>
+              <fh-form-item class="form__submit-btn">
+                <fh-button id="submitbutton" @click="save" block>
+                  {{ $t('trans0002') }}
+                </fh-button>
+              </fh-form-item>
+            </fh-form>
           </template>
-          <template #enable="scope">
-            <fh-switch v-model="scope.row.enable" @change="toggleStatus(scope.row)" />
-          </template>
-          <template #operation="scope">
-            <fh-icon
-              class="page__header-icon"
-              @click="openEditModal(scope.row)"
-              name="icon-edit-square"
-              :title="$t('trans0165')"
-            />
-            <fh-icon
-              class="page__header-icon"
-              @click="del(scope.row)"
-              name="icon-delete"
-              :title="$t('trans0111')"
-            />
-          </template>
-        </fh-table>
+        </fh-modal>
+      </template>
+      <div style="padding-left: 20px; font-size: 16px" v-else>
+        {{ $t('trans0903') }}
       </div>
     </div>
-    <fh-modal v-model="visible" :title="modalTitle">
-      <template #body>
-        <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
-          <fh-form-item :label="$t('trans0166')">
-            <fh-switch v-model="modalForm.enable"></fh-switch>
-          </fh-form-item>
-          <fh-form-item :label="$t('trans0150')" prop="name">
-            <fh-input name="AclRuleName" v-model="modalForm.name"></fh-input>
-          </fh-form-item>
-          <fh-form-item :label="$t('trans0136')" prop="src_ip">
-            <fh-input
-              name="src_ip"
-              v-model="modalForm.src_ip"
-              :placeholder="placeholderTips"
-            ></fh-input>
-          </fh-form-item>
-          <fh-form-item :label="$t('trans0139')" prop="dest_port">
-            <fh-input
-              name="dest_port"
-              v-model="modalForm.dest_port"
-              :placeholder="numPlaceholder"
-            ></fh-input>
-            <template #extra>
-              {{ $t('trans0902').format($t('trans0139')) }}
-            </template>
-          </fh-form-item>
-          <fh-form-item :label="$t('trans0135')">
-            <fh-select v-model="modalForm.proto" :options="protoList" name="proto"> </fh-select>
-          </fh-form-item>
-          <fh-form-item class="form__submit-btn">
-            <fh-button id="submitbutton" @click="save" block>
-              {{ $t('trans0002') }}
-            </fh-button>
-          </fh-form-item>
-        </fh-form>
-      </template>
-    </fh-modal>
   </div>
 </template>
 
@@ -94,7 +104,13 @@ import {
 } from '@/util/tool'
 import { ModalType, ProtocolType } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
-import { getIpv4Filter, addIpv4Filter, editIpv4Filter, delIpv4Filter } from '@/http/api'
+import {
+  getIpv4Filter,
+  addIpv4Filter,
+  editIpv4Filter,
+  delIpv4Filter,
+  getFirewall,
+} from '@/http/api'
 
 function isValidStaticRouteMask(ip, mask) {
   if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
@@ -214,6 +230,7 @@ export default {
         },
       ],
       data: [],
+      isEnable: false,
     }
   },
   computed: {
@@ -346,9 +363,18 @@ export default {
           if (!isInit) this.visible = false
         })
     },
+    getFirewallData() {
+      getFirewall().then(({ data }) => {
+        const { enable, custom } = data
+        this.isEnable = convertBooleanStatus(enable) && convertBooleanStatus(custom)
+        if (this.isEnable) {
+          this.getIpv4FilterData(true)
+        }
+      })
+    },
   },
   created() {
-    this.getIpv4FilterData(true)
+    this.getFirewallData()
   },
 }
 </script>
