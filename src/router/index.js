@@ -277,16 +277,16 @@ export const router = createRouter({
       name: 'ddns',
       component: ddns,
     },
-    // {
-    //   path: '/app/port-mapping',
-    //   name: 'port-mapping',
-    //   component: portMapping,
-    // },
     {
-      path: '/app/port-trigger',
-      name: 'port-trigger',
-      component: portTrigger,
+      path: '/app/port-mapping',
+      name: 'port-mapping',
+      component: portMapping,
     },
+    // {
+    //   path: '/app/port-trigger',
+    //   name: 'port-trigger',
+    //   component: portTrigger,
+    // },
     {
       path: '/app/dmz',
       name: 'dmz',
