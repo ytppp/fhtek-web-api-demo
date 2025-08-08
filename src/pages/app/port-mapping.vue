@@ -94,7 +94,7 @@ import { getPortMapping, setPortMapping, editPortMapping, delPortMapping } from 
 import { useDataClean } from '@/hooks/data-clean'
 
 const { convertBooleanStatus } = useDataClean()
-const maxRuleNum = 10
+const maxRuleNum = 8
 const MappingMode = {
   customize: 'Customize',
   temp: 'Template',
@@ -297,7 +297,6 @@ export default {
         {
           key: 'mappingName',
           title: this.$t('trans0425'),
-          width: '100',
         },
         {
           key: 'protocolAlias',
@@ -397,7 +396,7 @@ export default {
         intHost: row.intHost,
         intPort: row.intPort,
         mappingName: row.mappingName,
-        protocol: row.protocol,
+        protocol: row.proto,
         mappingMode: !!item ? MappingMode.temp : MappingMode.customize,
         temp: !!item && item.name,
       }
@@ -496,7 +495,7 @@ export default {
     },
   },
   mounted() {
-    this.getPortMappingData()
+    this.getPortMappingData(false)
   },
 }
 </script>
