@@ -74,35 +74,57 @@ export const deleteWan = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getAcl = (): Promise<ApiResponse<any>> => {
-  return http.get('firewall.wan_acl:get')
+  return http.post(api, {
+    method: 'firewall.wan_acl:get',
+  })
 }
 
 export const addAcl = (params): Promise<ApiResponse<any>> => {
-  return http.post('firewall.wan_acl:add', createData(params))
+  return http.post(api, {
+    method: 'firewall.wan_acl:add',
+    data: params,
+  })
 }
 
 export const editAcl = (params): Promise<ApiResponse<any>> => {
-  return http.post('firewall.wan_acl:edit', createData(params))
+  return http.post(api, {
+    method: 'firewall.wan_acl:edit',
+    data: params,
+  })
 }
 
 export const delAcl = (params): Promise<ApiResponse<any>> => {
-  return http.post('firewall.wan_acl:delete', createData(params))
+  return http.post(api, {
+    method: 'firewall.wan_acl:delete',
+    data: params,
+  })
 }
 
 export const getIpv4Filter = (): Promise<ApiResponse<any>> => {
-  return http.get('firewall.ipv4_filter:get')
+  return http.post(api, {
+    method: 'firewall.ipv4_filter:get',
+  })
 }
 
 export const addIpv4Filter = (params): Promise<ApiResponse<any>> => {
-  return http.post('firewall.ipv4_filter:add', createData(params))
+  return http.post(api, {
+    method: 'firewall.ipv4_filter:add',
+    data: params,
+  })
 }
 
 export const editIpv4Filter = (params): Promise<ApiResponse<any>> => {
-  return http.post('firewall.ipv4_filter:edit', createData(params))
+  return http.post(api, {
+    method: 'firewall.ipv4_filter:edit',
+    data: params,
+  })
 }
 
 export const delIpv4Filter = (params): Promise<ApiResponse<any>> => {
-  return http.post('firewall.ipv4_filter:delete', createData(params))
+  return http.post(api, {
+    method: 'firewall.ipv4_filter:delete',
+    data: params,
+  })
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
