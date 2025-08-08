@@ -341,6 +341,7 @@ export default {
       const data = {
         src: Interface.wan, // 传固定值
         dest: Interface.lan, // 传固定值
+        type: 'ACCEPT',
         src_ip: this.modalForm.srcIp,
         enabled: convertBooleanStatus(this.modalForm.enable),
         application: this.modalForm.application,
