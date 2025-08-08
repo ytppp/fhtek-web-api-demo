@@ -115,7 +115,7 @@ export default {
         srcIp: '',
         enable: true,
         name: '',
-        proto: protocolAll,
+        proto: ProtocolType.ALL,
       },
       modalFormRules: {
         name: [
@@ -162,7 +162,7 @@ export default {
         ],
       },
       protoText: {
-        [protocolAll]: this.$t('trans0158'),
+        [ProtocolType.ALL]: this.$t('trans0158'),
         [ProtocolType.TCP]: this.$t('trans0190'),
         [ProtocolType.UDP]: this.$t('trans0191'),
         [ProtocolType.ICMP]: this.$t('trans0192'),
@@ -210,8 +210,8 @@ export default {
     protoList() {
       return [
         {
-          value: protocolAll,
-          text: this.protoText[protocolAll],
+          value: ProtocolType.ALL,
+          text: this.protoText[ProtocolType.ALL],
         },
         {
           value: ProtocolType.TCP,
@@ -241,7 +241,7 @@ export default {
       this.modalForm.srcIp = ''
       this.modalForm.enable = true
       this.modalForm.name = ''
-      this.modalForm.proto = protocolAll
+      this.modalForm.proto = ProtocolType.ALL
       this.modalType = ModalType.add
       this.visible = true
     },

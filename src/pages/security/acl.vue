@@ -138,7 +138,7 @@ const ApplicationPort = {
   },
   [Application.ALL]: {
     port: '',
-    proto: 'all',
+    proto: ProtocolType.ALL,
   },
 }
 const maxAclRuleNum = 8

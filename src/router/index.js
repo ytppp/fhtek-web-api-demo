@@ -38,6 +38,7 @@ import ipv4Filter from '../pages/security/ipv4-filter.vue'
 import acl from '../pages/security/acl.vue'
 import dos from '../pages/security/dos.vue'
 import portMapping from '../pages/app/port-mapping.vue'
+import portTrigger from '../pages/app/port-trigger.vue'
 import dmz from '../pages/app/dmz.vue'
 import staticDns from '../pages/app/static-dns.vue'
 import staticArp from '../pages/app/static-arp.vue'
@@ -276,10 +277,15 @@ export const router = createRouter({
       name: 'ddns',
       component: ddns,
     },
+    // {
+    //   path: '/app/port-mapping',
+    //   name: 'port-mapping',
+    //   component: portMapping,
+    // },
     {
-      path: '/app/port-mapping',
-      name: 'port-mapping',
-      component: portMapping,
+      path: '/app/port-trigger',
+      name: 'port-trigger',
+      component: portTrigger,
     },
     {
       path: '/app/dmz',

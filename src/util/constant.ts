@@ -38,6 +38,7 @@ export const ProtocolType = {
   UDP: 'udp',
   ICMP: 'icmp',
   IGMP: 'igmp',
+  ALL: 'all',
 }
 
 export enum EnableStatus {
