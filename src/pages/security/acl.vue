@@ -271,7 +271,7 @@ export default {
       return this.isAdd ? this.$t('trans0164') : this.$t('trans0165')
     },
     placeholderTips() {
-      return `${this.$t('trans0598').format(this.$t('trans0456'))}/xx`
+      return `${this.$t('trans0598').format(this.$t('trans0456'))}/${this.$t('trans0459')}`
     },
     applicationList() {
       return [
