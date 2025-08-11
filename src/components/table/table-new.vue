@@ -432,6 +432,12 @@ export default {
       }
       return rows
     },
+    isStickyLeftLast() {
+      return cols.findLastIndex((col) => col.fixed === Fixed.left)
+    },
+    isStickyRightLast() {
+      return cols.findIndex((col) => col.fixed === Fixed.right)
+    },
   },
   watch: {
     dataSource(val, oldVal) {
@@ -545,9 +551,6 @@ export default {
         }
       }
       return offset
-    },
-    isStickyLast(cols, condition) {
-      return cols.findLastIndex(condition)
     },
   },
   mounted() {

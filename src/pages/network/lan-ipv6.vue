@@ -50,7 +50,7 @@ const modes = [
   },
   {
     value: NetType.slaac,
-    text: netTypeText[NetType.slaac],
+    text: 'SLAAC',
   },
   {
     value: NetType.dhcpv6,
