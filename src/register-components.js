@@ -22,6 +22,7 @@ import FhPopover from './components/popover/popover.vue'
 import FhTimePicker from './components/time-picker/time-picker.vue'
 import FhStep from './components/step/step.vue'
 import FhTable from './components/table/table.vue'
+import FhTableNew from './components/table/table-new.vue'
 import FhPagination from './components/pagination/pagination.vue'
 
 import clickoutside from './components/directives/clickoutside.js'
@@ -57,6 +58,7 @@ const registerComponents = (app) => {
   app.component('FhTimePicker', FhTimePicker)
   app.component('FhStep', FhStep)
   app.component('FhTable', FhTable)
+  app.component('FhTableNew', FhTableNew)
   app.component('FhDescriptions', FhDescriptions)
   app.component('FhPagination', FhPagination)
 

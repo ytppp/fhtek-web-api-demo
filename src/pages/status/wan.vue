@@ -61,13 +61,15 @@ defineOptions({
 enum Status {
   UP = 'UP',
   DOWN = 'DOWN',
+  DISCONNECTED = 'DISCONNECTED',
 }
 
 const { t } = useI18n()
 const { defaultVal } = useDataClean()
 const StatusText = {
   [Status.UP]: t('trans0652'),
-  [Status.DOWN]: t('trans0653'),
+  [Status.DOWN]: t('trans0853'),
+  [Status.DISCONNECTED]: t('trans0653'),
 }
 const columns = reactive([
   {
