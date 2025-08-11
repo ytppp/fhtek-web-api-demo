@@ -251,7 +251,11 @@ const getWanData = () => {
       }
       if (ipv4.length > 0 || item.protocol === NetType.dhcp || item.protocol === NetType.pppoe) {
         thisIpv4Data.push(tableItem)
-      } else if (ipv6.length > 0 || item.protocol === NetType.dhcpv6) {
+      } else if (
+        ipv6.length > 0 ||
+        item.protocol === NetType.slaac ||
+        item.protocol === NetType.dhcpv6
+      ) {
         thisIpv6Data.push(tableItem)
       }
       if (item.protocol === NetType.bridge) {
