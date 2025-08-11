@@ -468,7 +468,7 @@
   "trans0468": "Note",
   "trans0469": "%s Configuration",
   "trans0470": "If the primary time of IPv6 address expire, it will be prohibited to start the new connection",
-  "trans0471": "SLAAC",
+  "trans0471": "AutoConfigured",
   "trans0472": "DHCPv6 Server",
   "trans0473": "DNS",
   "trans0474": "If the start time is later than the end time, the duration spans from the current day into the next day",
