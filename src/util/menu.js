@@ -106,6 +106,11 @@ let menus = [
         text: 'trans0813',
         config,
       },
+      {
+        url: '/status/vpn',
+        text: 'trans0647',
+        config,
+      },
     ],
   },
   {
