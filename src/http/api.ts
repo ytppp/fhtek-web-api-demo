@@ -528,7 +528,10 @@ export const getVpn = (): Promise<ApiResponse<any>> => {
   return http.get('network.vpn.settings:get')
 }
 export const setVpn = (params): Promise<ApiResponse<any>> => {
-  return http.post('network.vpn.settings:edit', createData(params))
+  return http.post(api, {
+    method: 'network.vpn.settings:edit',
+    data: params,
+  })
 }
 
 export const startReboot = (): Promise<ApiResponse<any>> => {
