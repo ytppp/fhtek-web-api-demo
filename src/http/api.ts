@@ -525,15 +525,10 @@ export const getTopology = (): Promise<ApiResponse<any>> => {
   return http.get('mesh.topology:get', undefined, { loading: false })
 }
 export const getVpn = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.vpn.settings:get',
-  })
+  return http.post('network.vpn.settings:get')
 }
 export const setVpn = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.vpn.settings:edit',
-    data: params,
-  })
+  return http.post('network.vpn.settings:edit', createData(params))
 }
 
 export const startReboot = (): Promise<ApiResponse<any>> => {
