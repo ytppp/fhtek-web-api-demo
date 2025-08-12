@@ -524,8 +524,13 @@ export const triggerMesh = (params): Promise<ApiResponse<any>> => {
 export const getTopology = (): Promise<ApiResponse<any>> => {
   return http.get('mesh.topology:get', undefined, { loading: false })
 }
+export const getVpnInfo = (): Promise<ApiResponse<any>> => {
+  return http.get('network.vpn.info:get')
+}
 export const getVpn = (): Promise<ApiResponse<any>> => {
-  return http.get('network.vpn.settings:get')
+  return http.post(api, {
+    method: 'network.vpn.settings:get',
+  })
 }
 export const setVpn = (params): Promise<ApiResponse<any>> => {
   return http.post(api, {

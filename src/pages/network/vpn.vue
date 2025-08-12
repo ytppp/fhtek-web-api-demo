@@ -55,16 +55,13 @@ import {
   ip2int,
   isValidDomain,
   isBoardcastIP,
-  successTips
+  successTips,
 } from '@/util/tool'
 import { getVpn, setVpn, getLan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { VpnType, VpnTypeText } from '@/util/constant'
 
 const { convertBooleanStatus } = useDataClean()
-const VpnType = {
-  l2tp: 'l2tp',
-  pptp: 'pptp',
-}
 export default {
   name: 'VpnPage',
   data() {
@@ -82,11 +79,11 @@ export default {
       vpnTypes: [
         {
           value: VpnType.l2tp,
-          text: 'l2tp',
+          text: VpnTypeText[VpnType.l2tp],
         },
         {
           value: VpnType.pptp,
-          text: 'pptp',
+          text: VpnTypeText[VpnType.pptp],
         },
       ],
       rules: {

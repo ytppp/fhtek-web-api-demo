@@ -220,3 +220,12 @@ export const Weeks = {
   sat: '6',
   sun: '7',
 }
+
+export const VpnType = {
+  l2tp: 'l2tp',
+  pptp: 'pptp',
+}
+export const VpnTypeText = {
+  [VpnType.l2tp]: 'l2tp',
+  [VpnType.pptp]: 'pptp',
+}

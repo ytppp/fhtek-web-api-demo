@@ -433,10 +433,10 @@ export default {
       return rows
     },
     isStickyLeftLast() {
-      return cols.findLastIndex((col) => col.fixed === Fixed.left)
+      return this.leafColumns.findLastIndex((col) => col.fixed === Fixed.left)
     },
     isStickyRightLast() {
-      return cols.findIndex((col) => col.fixed === Fixed.right)
+      return this.leafColumns.findIndex((col) => col.fixed === Fixed.right)
     },
   },
   watch: {

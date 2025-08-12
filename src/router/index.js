@@ -14,6 +14,7 @@ import voip from '../pages/status/voip.vue'
 import cwmpStatus from '../pages/status/cwmp.vue'
 import sta from '../pages/status/sta.vue'
 import usb from '../pages/status/usb.vue'
+import vpnInfo from '../pages/status/vpn.vue'
 import wanNetwork from '../pages/network/wan.vue'
 import wanBinding from '../pages/network/wan-binding.vue'
 import lan from '../pages/network/lan.vue'
@@ -139,6 +140,11 @@ export const router = createRouter({
       path: '/status/usb',
       name: 'usb',
       component: usb,
+    },
+    {
+      path: '/status/vpn',
+      name: 'vpnInfo',
+      component: vpnInfo,
     },
     {
       path: '/network',
