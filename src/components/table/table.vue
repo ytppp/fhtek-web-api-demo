@@ -12,6 +12,21 @@
         <slot name="operationgroup"></slot>
       </div>
     </div>
+    <div class="table__header" v-if="showSearch">
+      <div class="table__filter-group">
+        <fh-input
+          v-model="inputVal"
+          :placeholder="$t('trans0854')"
+          class="table__header-search-input"
+        ></fh-input>
+        <fh-icon
+          class="page__header-icon"
+          @click="search"
+          name="icon-search"
+          :title="$t('trans0863')"
+        />
+      </div>
+    </div>
     <div class="table__main" ref="tableWrap" @scroll="handleScroll">
       <table
         cellspacing="0"
@@ -198,6 +213,7 @@
 
 <script>
 import { useDataClean } from '@/hooks/data-clean'
+import { findObjectsWithValue } from '@/util/tool'
 
 const { defaultVal } = useDataClean()
 /**
@@ -296,6 +312,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showSearch: {
+      type: Boolean,
+      default: false,
+    },
     stripe: {
       type: Boolean,
       default: true,
@@ -314,7 +334,7 @@ export default {
     },
     showHeader: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     fixed: {
       type: Boolean,
@@ -338,6 +358,8 @@ export default {
         current: 1,
         pageSize: 20,
       },
+      inputVal: '',
+      filterVal: '',
     }
   },
   computed: {
@@ -345,10 +367,14 @@ export default {
       if (!this.showPagination) {
         return this.dataSource
       }
+      if (!this.showSearch) {
+        return this.dataSource
+      }
+      const data = findObjectsWithValue(this.dataSource, this.filterVal)
       const { current, pageSize } = this.pagination
       const start = (current - 1) * pageSize
       const end = current * pageSize
-      return this.dataSource.slice(start, end)
+      return data.slice(start, end)
     },
     isShowOperation() {
       return this.$slots.operation
@@ -442,6 +468,9 @@ export default {
   },
   emits: ['select', 'click-row'],
   methods: {
+    search() {
+      this.filterVal = this.inputVal
+    },
     changePagination(current, currentPageSize) {
       this.pagination.current = current
       this.pagination.pageSize = currentPageSize
@@ -583,6 +612,12 @@ export default {
   .table__footer,
   .table__pagination {
     padding: 10px 0;
+  }
+  .table__header-search-input {
+    margin-right: 5px;
+    .input__inner {
+      height: 28px;
+    }
   }
   .table__pagination {
     display: flex;

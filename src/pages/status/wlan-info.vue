@@ -23,7 +23,6 @@
           :data-source="b24gSsidData"
           :show-row-checkbox="false"
           :show-index="false"
-          :show-header="false"
           :border="true"
         >
         </fh-table>
@@ -47,7 +46,6 @@
           :data-source="b5gSsidData"
           :show-row-checkbox="false"
           :show-index="false"
-          :show-header="false"
           :border="true"
         >
         </fh-table>

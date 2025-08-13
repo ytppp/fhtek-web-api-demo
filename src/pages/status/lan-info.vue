@@ -14,7 +14,6 @@
           :data-source="lanListData"
           :show-row-checkbox="false"
           :show-index="false"
-          :show-header="false"
           :border="true"
         >
         </fh-table>
@@ -24,8 +23,6 @@
           :columns="interfaceColumns"
           :data-source="interfaceData"
           :show-row-checkbox="false"
-          :show-index="false"
-          :show-header="false"
         >
         </fh-table>
       </div>
@@ -39,8 +36,7 @@ import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
 import { format, formatNetworkData } from '@/util/tool'
 import { getLanInfo } from '@/http/api'
-import { Lan1, Lan2, Lan3, Lan4, SsidText } from '@/util/constant'
-import { number } from 'echarts'
+import { Lan1, Lan2, Lan3, Lan4, SsidText, ModeText } from '@/util/constant'
 
 const { t, n } = useI18n()
 const { defaultDataObj, defaultVal } = useDataClean()
@@ -168,7 +164,7 @@ const getLanInfoData = () => {
   })
 }
 const convertLan = (lanVal) => {
-  return lanVal === Down ? t('trans0653') : `${lanVal} Mbps`
+  return lanVal === Down ? t('trans0653') : ModeText[lanVal]
 }
 
 onMounted(() => {

@@ -411,10 +411,10 @@ const vlanModeOptions = [
     value: VlanMode.Untag,
     text: t('trans0773'),
   },
-  {
-    value: VlanMode.Transparent,
-    text: t('trans0774'),
-  },
+  // {
+  //   value: VlanMode.Transparent,
+  //   text: t('trans0774'),
+  // },
 ]
 const igmpVersionOptions = [
   {

@@ -10,12 +10,7 @@
         </fh-form-item>
       </fh-form>
       <div class="page__table">
-        <fh-table
-          :columns="columns"
-          :data-source="data"
-          :show-header="false"
-          :show-row-checkbox="false"
-        />
+        <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false" />
       </div>
     </div>
   </div>

@@ -229,3 +229,21 @@ export const VpnTypeText = {
   [VpnType.l2tp]: 'l2tp',
   [VpnType.pptp]: 'pptp',
 }
+
+export enum Mode {
+  auto = 'auto',
+  h10 = '10half',
+  f10 = '10full',
+  h100 = '100half',
+  f100 = '100full',
+  f1000 = '1000full',
+}
+
+export const ModeText = {
+  [Mode.auto]: translate('trans0487'),
+  [Mode.h10]: '10M/Half Duplex',
+  [Mode.f10]: '10M/Full Duplex',
+  [Mode.h100]: '100M/Half Duplex',
+  [Mode.f100]: '100M/Full Duplex',
+  [Mode.f1000]: '1000M/Full Duplex',
+}

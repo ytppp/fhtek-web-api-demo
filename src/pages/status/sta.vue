@@ -10,23 +10,13 @@
       <div class="page__table">
         <fh-table
           :columns="dhcpColumn"
-          :data-source="dhcpDataDisplay"
+          :data-source="dhcpData"
           :show-row-checkbox="false"
           :border="true"
           :show-index="false"
           :show-pagination="true"
+          :show-search="true"
         >
-          <template #filtergroup>
-            <fh-input
-              v-model="dhcpInputVal"
-              :placeholder="$t('trans0935')"
-              :clearable="true"
-              style="margin-right: 5px"
-            ></fh-input>
-            <fh-button @click="searchDhcp" size="small">
-              {{ $t('trans0863') }}
-            </fh-button>
-          </template>
         </fh-table>
       </div>
       <div class="page__sub-header">
@@ -36,20 +26,19 @@
         <fh-table
           :columns="dhcpv6Column"
           :data-source="dhcpv6DataDisplay"
-          :show-header="false"
           :show-row-checkbox="false"
           :border="true"
           :show-index="false"
           :show-pagination="true"
-        >
-        </fh-table>
+          :show-search="true"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, formatDuration } from '@/util/tool'
 import { getStaInfo } from '@/http/api'
@@ -107,14 +96,7 @@ const dhcpv6Column = reactive([
 ])
 const dhcpData = reactive([])
 const dhcpv6Data = reactive([])
-const dhcpInputVal = ref('')
-const dhcpFilterVal = ref('')
 
-const dhcpDataDisplay = computed(() => {
-  return dhcpData.filter((item) =>
-    item.hostname.toLowerCase().includes(dhcpFilterVal.value.toLowerCase()),
-  )
-})
 const dhcpv6DataDisplay = computed(() => {
   return dhcpv6Data
 })
@@ -196,15 +178,15 @@ const getStaInfoData = () => {
         })
       }
     })
-    // for (let i = 0; i < 100; i++) {
-    //   thisDhcpData.push({
-    //     id: i + 1,
-    //     hostname: `hostname${i}`,
-    //     ip: `192.168.1.${i}`,
-    //     mac: `00:00:00:00:00:${i}`,
-    //     lease: transformDuration(10000),
-    //   })
-    // }
+    for (let i = 0; i < 100; i++) {
+      thisDhcpData.push({
+        id: i + 1,
+        hostname: `hostname${i}`,
+        ip: `192.168.1.${i}`,
+        mac: `00:00:00:00:00:${i}`,
+        lease: transformDuration(10000),
+      })
+    }
     // for (let i = 0; i < 100; i++) {
     //   thisDhcpv6Data.push({
     //     id: i + 1,
@@ -217,9 +199,6 @@ const getStaInfoData = () => {
     Object.assign(dhcpData, thisDhcpData)
     Object.assign(dhcpv6Data, thisDhcpv6Data)
   })
-}
-const searchDhcp = () => {
-  dhcpFilterVal.value = dhcpInputVal.value
 }
 onMounted(() => {
   getStaInfoData()

@@ -576,3 +576,41 @@ export const successTips = (msg = 'trans0791') => {
     type: 'success',
   })
 }
+
+export const search = (database, searchVal) => {
+  return database.filter((row) => {
+    return row.filter((col) => {
+      return col.toLowerCase().includes(searchVal.toLowerCase())
+    })
+  })
+}
+
+/**
+ * 查找对象数组中包含特定值的所有对象
+ * @param {Array} database - 要搜索的对象数组
+ * @param {*} searchVal - 要查找的值
+ * @returns {Array} 包含该值的所有对象组成的数组
+ */
+export const findObjectsWithValue = (database, searchVal) => {
+  if (!Array.isArray(database)) {
+    return []
+  }
+
+  if (searchVal === undefined || searchVal === null || !searchVal) {
+    return database
+  }
+
+  return database.filter((obj) => {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        if (obj[key] === null || obj[key] === undefined) {
+          continue
+        }
+        if (obj[key].toString().toLowerCase().includes(searchVal.toString().toLowerCase())) {
+          return true
+        }
+      }
+    }
+    return false
+  })
+}
