@@ -24,7 +24,12 @@
         </fh-form-item>
       </fh-form>
       <div class="page__table">
-        <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false">
+        <fh-table
+          :columns="columns"
+          :data-source="data"
+          :show-row-checkbox="false"
+          :show-header="true"
+        >
           <template #operationgroup>
             <fh-icon
               class="page__header-icon"

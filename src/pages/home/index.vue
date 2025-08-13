@@ -1,9 +1,8 @@
 <template>
   <div>
-    <!-- style="width: 300px" -->
-    <div>
-      <fh-pagination :total="paginationTotal"></fh-pagination>
-      <fh-table :columns="columns" :data-source="tableData">
+    <fh-pagination :total="paginationTotal"></fh-pagination>
+    <div style="width: 600px">
+      <fh-table-new :columns="columns" :data-source="tableData">
         <template #title> 标题 </template>
         <template #operationgroup>
           <fh-button size="small">新增</fh-button>
@@ -27,7 +26,7 @@
           <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
         </template>
         <template #footer> footer </template>
-      </fh-table>
+      </fh-table-new>
     </div>
     <fh-form :model="form">
       <fh-radio-group v-model="form.onlineWay" @change="changeOnlineWay">
@@ -188,16 +187,25 @@ const schedulesList = [
 const tableData = [
   {
     url: 'www.apple.com',
+    url2: 'www.apple.com',
+    url3: 'www.apple.com',
+    url4: 'www.apple.com',
     name: '苹果',
     enable: EnableStatus.yes,
   },
   {
     url: 'www.baidu.com',
+    url2: 'www.baidu.com',
+    url3: 'www.baidu.com',
+    url4: 'www.baidu.com',
     name: '百度',
     enable: EnableStatus.no,
   },
   {
     url: 'www.geogle.com',
+    url2: 'www.geogle.com',
+    url3: 'www.geogle.com',
+    url4: 'www.geogle.com',
     name: '谷歌',
     enable: EnableStatus.yes,
   },
@@ -206,6 +214,19 @@ const columns = [
   {
     key: 'url',
     title: 'url',
+  },
+  {
+    key: 'url2',
+    title: 'url2',
+    fixed: 'left',
+  },
+  {
+    key: 'url3',
+    title: 'url3',
+  },
+  {
+    key: 'url4',
+    title: 'url4',
   },
   {
     key: 'name',

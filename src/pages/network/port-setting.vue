@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0751') }}</h1>
+      <h1 class="page__title">{{ $t('trans0757') }}</h1>
     </div>
     <div class="page__content">
       <fh-form class="form" :model="form" v-if="isMobile">
@@ -43,7 +43,6 @@
         :data-source="tableData"
         :show-index="false"
         :show-row-checkbox="false"
-        :show-header="false"
         :border="true"
         :hover="false"
         v-else
@@ -84,19 +83,10 @@
 <script lang="ts" setup>
 import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Lan1, Lan2, Lan3, Lan4, SsidText } from '@/util/constant'
+import { Lan1, Lan2, Lan3, Lan4, SsidText, Mode, ModeText } from '@/util/constant'
 import { getLanSpeed, setLanSpeed } from '@/http/api'
 import { successTips } from '@/util/tool'
 import { useIsMobile } from '@/hooks/is-mobile'
-
-enum Mode {
-  auto = 'auto',
-  h10 = '10half',
-  f10 = '10full',
-  h100 = '100half',
-  f100 = '100full',
-  f1000 = '1000full',
-}
 
 const { t } = useI18n()
 const { isMobile } = useIsMobile()
@@ -127,27 +117,27 @@ const columns = reactive([
 ])
 const modeList = [
   {
-    text: t('trans0487'),
+    text: ModeText[Mode.auto],
     value: Mode.auto,
   },
   {
-    text: '10M/Half Duplex',
+    text: ModeText[Mode.h10],
     value: Mode.h10,
   },
   {
-    text: '10M/Full Duplex',
+    text: ModeText[Mode.f10],
     value: Mode.f10,
   },
   {
-    text: '100M/Half Duplex',
+    text: ModeText[Mode.h100],
     value: Mode.h100,
   },
   {
-    text: '100M/Full Duplex',
+    text: ModeText[Mode.f100],
     value: Mode.f100,
   },
   {
-    text: '1000M/Full Duplex',
+    text: ModeText[Mode.f1000],
     value: Mode.f1000,
   },
 ]

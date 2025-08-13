@@ -13,7 +13,6 @@
           :data-source="ipv4Data"
           :show-index="false"
           :show-row-checkbox="false"
-          :show-header="false"
           :border="true"
         >
           <template #ip="scope">
@@ -32,7 +31,6 @@
           :data-source="ipv6Data"
           :show-index="false"
           :show-row-checkbox="false"
-          :show-header="false"
           :border="true"
         >
           <template #ip="scope">
@@ -216,7 +214,7 @@ const getWanData = () => {
       const prefixArr: string[] = []
       ipv4.forEach((ipv4Item) => {
         if (ipv4Item.hasOwnProperty('address')) {
-          ipArr.push(ipv4Item.address)
+          ipArr.push(ipv4Item.address.split('/')[0])
         }
         if (ipv4Item.hasOwnProperty('gateway')) {
           gatewayArr.push(ipv4Item.gateway)
@@ -224,7 +222,7 @@ const getWanData = () => {
       })
       ipv6.forEach((ipv6Item) => {
         if (ipv6Item.hasOwnProperty('address')) {
-          ipArr.push(ipv6Item.address)
+          ipArr.push(ipv6Item.address.split('/')[0])
         }
         if (ipv6Item.hasOwnProperty('gateway')) {
           gatewayArr.push(ipv6Item.gateway)

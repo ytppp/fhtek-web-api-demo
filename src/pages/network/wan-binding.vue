@@ -10,7 +10,6 @@
           :data-source="wanBindingData"
           :show-row-checkbox="false"
           :show-index="false"
-          :show-header="false"
         >
           <template #operation="scope">
             <fh-icon

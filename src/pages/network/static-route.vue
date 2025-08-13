@@ -5,7 +5,12 @@
     </div>
     <div class="page__content">
       <div class="page__table">
-        <fh-table :columns="columns" :data-source="diplayData" :show-row-checkbox="false">
+        <fh-table
+          :columns="columns"
+          :data-source="diplayData"
+          :show-row-checkbox="false"
+          :show-header="true"
+        >
           <template #filtergroup>
             <fh-select v-model="display" :options="displayOptions"></fh-select>
           </template>

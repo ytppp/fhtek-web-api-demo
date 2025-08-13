@@ -46,7 +46,7 @@ const getVpnInfoData = () => {
   getVpnInfo().then(({ data }) => {
     const thisVpnInfo = {
       status:
-        VpnStatus[data.status as VpnStatus] === VpnStatus.up ? t('trans0103') : t('trans0054'),
+        VpnStatus[data.status as VpnStatus] === VpnStatus.up ? t('trans0652') : t('trans0653'),
       type: VpnTypeText[data.type],
       ip: data.ip,
       gateway: data.gateway,

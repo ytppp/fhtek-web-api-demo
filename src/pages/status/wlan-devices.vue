@@ -12,10 +12,10 @@
           :columns="wlanDevicesColumns"
           :data-source="b24gWlanDataDisplay"
           :show-row-checkbox="false"
-          :show-header="false"
           :border="true"
           :show-index="false"
           :show-pagination="true"
+          :show-search="true"
         >
           <template #blacklist="scope">
             <fh-icon
@@ -35,10 +35,10 @@
           :columns="wlanDevicesColumns"
           :data-source="b5gWlanDataDisplay"
           :show-row-checkbox="false"
-          :show-header="false"
           :border="true"
           :show-index="false"
           :show-pagination="true"
+          :show-search="true"
         >
           <template #blacklist="scope">
             <fh-icon

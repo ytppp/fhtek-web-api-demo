@@ -11,7 +11,7 @@
           </fh-form-item>
         </fh-form> -->
         <div class="page__table">
-          <fh-table :columns="columns" :data-source="data">
+          <fh-table :columns="columns" :data-source="data" :show-header="true">
             <template #operationgroup>
               <fh-icon
                 class="page__header-icon"
@@ -160,6 +160,22 @@ export default {
             rule: (value) => isValidVal(value, 1, 32),
             message: this.$t('trans0167'),
           },
+          {
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.name === value
+              })
+              return flag
+            },
+            message: this.$t('trans0678').format(this.$t('trans0150')),
+          },
         ],
         src_ip: [
           {
@@ -185,6 +201,22 @@ export default {
             },
             message: this.$t('trans0566').format(this.$t('trans0136')),
           },
+          {
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.src_ip === value
+              })
+              return flag
+            },
+            message: this.$t('trans0678').format(this.$t('trans0136')),
+          },
         ],
         dest_port: [
           {
@@ -195,6 +227,22 @@ export default {
               return ports.every((port) => isValidInteger(port, 0, 65535))
             },
             message: this.$t('trans0566').format(this.$t('trans0139')),
+          },
+          {
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.dest_port === value
+              })
+              return flag
+            },
+            message: this.$t('trans0678').format(this.$t('trans0139')),
           },
         ],
       },
@@ -263,14 +311,14 @@ export default {
           value: ProtocolType.UDP,
           text: this.protoText[ProtocolType.UDP],
         },
-        {
-          value: ProtocolType.ICMP,
-          text: this.protoText[ProtocolType.ICMP],
-        },
-        {
-          value: ProtocolType.IGMP,
-          text: this.protoText[ProtocolType.IGMP],
-        },
+        // {
+        //   value: ProtocolType.ICMP,
+        //   text: this.protoText[ProtocolType.ICMP],
+        // },
+        // {
+        //   value: ProtocolType.IGMP,
+        //   text: this.protoText[ProtocolType.IGMP],
+        // },
       ]
     },
   },

@@ -11,7 +11,7 @@
         </fh-form-item>
       </fh-form> -->
         <div class="page__table">
-          <fh-table :columns="columns" :data-source="data">
+          <fh-table :columns="columns" :data-source="data" :show-header="true">
             <template #operationgroup>
               <fh-icon
                 class="page__header-icon"
@@ -54,10 +54,10 @@
               <fh-form-item :label="$t('trans0150')" prop="aclRuleName">
                 <fh-input name="AclRuleName" v-model="modalForm.aclRuleName"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0136')" prop="srcIp">
+              <fh-form-item :label="$t('trans0136')" prop="src_ip">
                 <fh-input
                   name="ScrIPAddrBegin"
-                  v-model="modalForm.srcIp"
+                  v-model="modalForm.src_ip"
                   :placeholder="placeholderTips"
                 ></fh-input>
               </fh-form-item>
@@ -166,7 +166,7 @@ export default {
       modalForm: {
         index: -1,
         id: '',
-        srcIp: '',
+        src_ip: '',
         enable: true,
         port: ApplicationPort[Application.ALL].port,
         proto: ApplicationPort[Application.ALL].proto,
@@ -187,8 +187,24 @@ export default {
             rule: (value) => isValidVal(value, 1, 32),
             message: this.$t('trans0167'),
           },
+          {
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.name === value
+              })
+              return flag
+            },
+            message: this.$t('trans0678').format(this.$t('trans0150')),
+          },
         ],
-        srcIp: [
+        src_ip: [
           {
             rule: (value) => value,
             message: this.$t('trans0004'),
@@ -214,6 +230,22 @@ export default {
               return false
             },
             message: this.$t('trans0197'),
+          },
+          {
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.src_ip === value
+              })
+              return flag
+            },
+            message: this.$t('trans0678').format(this.$t('trans0136')),
           },
         ],
       },
@@ -247,7 +279,7 @@ export default {
           width: 180,
         },
         {
-          key: 'srcIp',
+          key: 'src_ip',
           title: this.$t('trans0136'),
         },
         // {
@@ -323,7 +355,7 @@ export default {
     openAddModal() {
       this.modalForm.index = -1
       this.modalForm.id = ''
-      this.modalForm.srcIp = ''
+      this.modalForm.src_ip = ''
       this.modalForm.enable = true
       this.modalForm.port = ApplicationPort[Application.ALL].port
       this.modalForm.proto = ApplicationPort[Application.ALL].proto
@@ -335,7 +367,7 @@ export default {
     openEditModal(row) {
       this.modalForm.index = row.index
       this.modalForm.id = row.id
-      this.modalForm.srcIp = row.srcIp
+      this.modalForm.src_ip = row.src_ip
       this.modalForm.enable = row.enabled
       this.modalForm.port = row.port
       this.modalForm.proto = row.proto
@@ -372,7 +404,7 @@ export default {
         src: Interface.wan, // 传固定值
         dest: Interface.lan, // 传固定值
         target: 'ACCEPT',
-        src_ip: this.modalForm.srcIp,
+        src_ip: this.modalForm.src_ip,
         enabled: convertBooleanStatus(this.modalForm.enable),
         application: this.modalForm.application,
         port: this.modalForm.port,
@@ -401,7 +433,6 @@ export default {
           items.forEach((item, i) => {
             tableData.push({
               ...item,
-              srcIp: item.src_ip,
               applicationAlias: this.applicationText[item.application],
               enabled: convertBooleanStatus(item.enabled),
               index: i,
