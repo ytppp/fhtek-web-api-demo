@@ -31,7 +31,7 @@
           </template>
         </fh-table>
       </div>
-      <fh-modal v-model="visible" :title="modalTitle" :before-close="onClose">
+      <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
         <template #body>
           <fh-form
             class="form"
@@ -241,6 +241,14 @@ export default {
         { text: this.$t('trans0191'), value: ProtocolType.UDP },
         { text: this.$t('trans0189'), value: ProtocolType.ALL },
       ],
+    }
+  },
+  methods: {
+    handleClose() {
+      this.$refs.portTrigerform.clearValidate()
+    },
+    save() {
+      // todo
     }
   },
 }

@@ -594,11 +594,8 @@ export default {
       word-break: break-all;
       &.table-main__cell--fixed {
         z-index: 2;
-        .sticky-column:not(:last-of-type) {
-          box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.1);
-        }
         &.table-main__cell--fixed-left-last,
-        &.table-main__cell--fixed-right-last {
+        &.table-main__cell--fixed-right-first {
           &::after {
             position: absolute;
             top: 0;
@@ -616,7 +613,7 @@ export default {
             box-shadow: inset 10px 0 8px -8px #ccc;
           }
         }
-        &.table-main__cell--fixed-right-last {
+        &.table-main__cell--fixed-right-first {
           &::after {
             left: 0;
             transform: translate(-100%);

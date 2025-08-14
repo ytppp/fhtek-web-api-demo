@@ -40,7 +40,7 @@
             </template>
           </fh-table>
         </div>
-        <fh-modal v-model="visible" :title="modalTitle">
+        <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
           <template #body>
             <fh-form
               class="form modal-form"
@@ -352,6 +352,9 @@ export default {
   methods: {
     // switchEnable(val) {
     // },
+    handleClose() {
+      this.$refs.modalForm.clearValidate()
+    },
     openAddModal() {
       this.modalForm.index = -1
       this.modalForm.id = ''

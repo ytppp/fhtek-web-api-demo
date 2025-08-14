@@ -40,7 +40,7 @@
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model="visible" :title="modalTitle" :before-close="onClose">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
       <template #body>
         <fh-form
           class="form modal-form"
@@ -369,7 +369,7 @@ export default {
     },
   },
   methods: {
-    onClose() {
+    handleClose() {
       this.$refs.modalForm.clearValidate()
     },
     openAddModal() {
