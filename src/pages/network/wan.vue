@@ -565,7 +565,12 @@ const isHidePortBinding = computed(
   () => !(wan.serviceType === ServiceType.TR069 || wan.serviceType === ServiceType.VOICE),
 )
 const isHideEnableNat = computed(
-  () => !(wan.serviceType === ServiceType.TR069 || wan.serviceType === ServiceType.VOICE),
+  () =>
+    !(
+      wan.serviceType === ServiceType.TR069 ||
+      wan.serviceType === ServiceType.VOICE ||
+      wan.serviceType === ServiceType.IPTV
+    ),
 )
 const isInternetWan = computed(
   () =>
