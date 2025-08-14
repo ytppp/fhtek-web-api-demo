@@ -11,7 +11,7 @@
           </fh-form-item>
         </fh-form> -->
         <div class="page__table">
-          <fh-table :columns="columns" :data-source="data" :show-header="true">
+          <fh-table :columns="columns" :data-source="data" :show-header="isShowAddBtn">
             <template #operationgroup>
               <fh-icon
                 class="page__header-icon"

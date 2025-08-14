@@ -5,8 +5,12 @@
     </div>
     <div class="page__content">
       <div class="page__table">
-        <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false" 
-        :show-header="true">
+        <fh-table
+          :columns="columns"
+          :data-source="data"
+          :show-row-checkbox="false"
+          :show-header="isShowAddBtn"
+        >
           <template #operationgroup>
             <fh-icon
               class="page__header-icon"

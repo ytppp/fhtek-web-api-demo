@@ -9,7 +9,7 @@
           :columns="columns"
           :data-source="data"
           :show-row-checkbox="false"
-          :show-header="true"
+          :show-header="isShowAddBtn"
         >
           <template #operationgroup>
             <fh-icon

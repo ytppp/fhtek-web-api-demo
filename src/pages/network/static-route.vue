@@ -9,7 +9,7 @@
           :columns="columns"
           :data-source="diplayData"
           :show-row-checkbox="false"
-          :show-header="true"
+          :show-header="isShowAddBtn"
         >
           <template #filtergroup>
             <fh-select v-model="display" :options="displayOptions"></fh-select>
