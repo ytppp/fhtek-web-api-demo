@@ -54,7 +54,7 @@ export const setLanSpeed = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getWan = (): Promise<ApiResponse<any>> => {
-  return http.get(`GetWan`)
+  return http.get(`GetWan`, undefined, { timeout: 20000 })
 }
 
 export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
@@ -62,15 +62,15 @@ export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {
-  return http.post(`AddWan`, createData(params))
+  return http.post(`AddWan`, createData(params), { timeout: 20000 })
 }
 
 export const editWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWan', createData(params))
+  return http.post('SetWan', createData(params), { timeout: 20000 })
 }
 
 export const deleteWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('DeleteWan', createData(params))
+  return http.post('DeleteWan', createData(params), { timeout: 20000 })
 }
 
 export const getAcl = (): Promise<ApiResponse<any>> => {
