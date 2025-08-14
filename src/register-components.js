@@ -57,8 +57,7 @@ const registerComponents = (app) => {
   app.component('FhPopover', FhPopover)
   app.component('FhTimePicker', FhTimePicker)
   app.component('FhStep', FhStep)
-  app.component('FhTable', FhTable)
-  app.component('FhTableNew', FhTableNew)
+  app.component('FhTable', FhTableNew)
   app.component('FhDescriptions', FhDescriptions)
   app.component('FhPagination', FhPagination)
 

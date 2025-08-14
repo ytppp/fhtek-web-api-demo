@@ -75,6 +75,7 @@ const columns = reactive([
     title: t('trans0140'),
     width: '240',
     minWidth: '100',
+    fixed: 'left',
   },
   {
     key: 'statusAlias',
@@ -131,6 +132,7 @@ const ipv6Columns = reactive([
     title: t('trans0140'),
     width: '240',
     minWidth: '100',
+    fixed: 'left',
   },
   {
     key: 'statusAlias',

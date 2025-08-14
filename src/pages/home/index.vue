@@ -2,7 +2,7 @@
   <div>
     <fh-pagination :total="paginationTotal"></fh-pagination>
     <div style="width: 600px">
-      <fh-table-new :columns="columns" :data-source="tableData">
+      <fh-table :columns="columns" :data-source="tableData">
         <template #title> 标题 </template>
         <template #operationgroup>
           <fh-button size="small">新增</fh-button>
@@ -26,7 +26,7 @@
           <fh-button type="text" @click="() => operation(scope)">操作</fh-button>
         </template>
         <template #footer> footer </template>
-      </fh-table-new>
+      </fh-table>
     </div>
     <fh-form :model="form">
       <fh-radio-group v-model="form.onlineWay" @change="changeOnlineWay">
@@ -235,6 +235,7 @@ const columns = [
   {
     key: 'enable',
     title: t('trans0166'),
+    fixed: 'right',
   },
 ]
 const selectAll = (val) => {

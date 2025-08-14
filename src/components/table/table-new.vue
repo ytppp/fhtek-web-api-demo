@@ -15,7 +15,7 @@
     <div class="table__header" v-if="showSearch">
       <div class="table__filter-group">
         <fh-input
-          v-model="inputVal"
+          v-model="filterInputVal"
           :placeholder="$t('trans0854')"
           class="table__header-search-input"
         ></fh-input>
@@ -34,7 +34,7 @@
         border="0"
         ref="scrollTable"
         class="table-main"
-        :class="{ 'is-border': border || maxLevel > 1 }"
+        :class="{ 'is-border': border || headerRowsMaxLevel > 1 }"
       >
         <thead class="table-main__header" v-if="showTableHeader">
           <tr class="table-main__header-row" v-for="(row, rowIndex) in headerRows" :key="rowIndex">
@@ -93,7 +93,7 @@
               }"
               @click="() => clickRow(item)"
             >
-              <template v-for="(col, colIndex) in leafColumns" :key="col.key">
+              <template v-for="(col, colIndex) in columnsFlattened" :key="col.key">
                 <td
                   class="table-main__cell"
                   :style="cellStyle(col, colIndex)"
@@ -133,7 +133,7 @@
             </tr>
           </template>
           <tr class="table-main__content-row empty-row" v-else>
-            <td class="empty-row__cell" :colspan="leafColumns.length">
+            <td class="empty-row__cell" :colspan="columnsFlattened.length">
               {{ $t('trans0142') }}
             </td>
           </tr>
@@ -158,75 +158,10 @@
 <script>
 import { useDataClean } from '@/hooks/data-clean'
 import { findObjectsWithValue } from '@/util/tool'
+import { extractDimension, flatten } from './table-util'
 
 const { defaultVal } = useDataClean()
-/**
- * 从多维对象数组中提取指定维度的数据
- * @param {Array} array - 多维对象数组
- * @param {number} targetDepth - 目标维度（从0开始）
- * @param {string} childrenKey - 包含子数组的属性名（默认为'children'）
- * @returns {Array} 包含指定维度所有元素的数组（不包含子维度）
- */
-function extractDimension(array, targetDepth, childrenKey = 'children') {
-  // 参数验证
-  if (!Array.isArray(array)) {
-    throw new TypeError('第一个参数必须是数组')
-  }
 
-  if (typeof targetDepth !== 'number' || targetDepth < 0) {
-    throw new TypeError('目标维度必须是非负整数')
-  }
-
-  if (typeof childrenKey !== 'string') {
-    throw new TypeError('子维度键名必须是字符串')
-  }
-
-  const result = []
-
-  /**
-   * 递归遍历多维数组
-   * @param {Array} currentArray - 当前处理的数组
-   * @param {number} currentDepth - 当前深度
-   */
-  function traverse(currentArray, currentDepth) {
-    for (const item of currentArray) {
-      // 检查是否是对象（处理对象数组）
-      const isObject = item !== null && typeof item === 'object' && !Array.isArray(item)
-
-      if (currentDepth === targetDepth) {
-        // 到达目标维度，提取数据
-
-        // 克隆对象，排除子维度
-        if (isObject) {
-          const clonedItem = { ...item }
-          result.push(clonedItem)
-        } else {
-          // 非对象元素直接添加
-          result.push(item)
-        }
-      } else if (isObject && item[childrenKey] && Array.isArray(item[childrenKey])) {
-        // 继续遍历子维度
-        traverse(item[childrenKey], currentDepth + 1)
-      }
-    }
-  }
-
-  traverse(array, 0)
-  return result
-}
-/**
- * 将嵌套的列数组扁平化，将所有子列提取到一个一维数组中。
- * @param {Array} columns - 包含嵌套列对象的数组，每个列对象可能包含 `children` 属性，该属性是一个子列数组。
- * @returns {Array} - 扁平化后的一维列数组。
- */
-function flatten(columns) {
-  return columns.reduce((acc, col) => {
-    if (Array.isArray(col.children) && col.children.length > 0) {
-      return [...acc, ...flatten(col.children)]
-    }
-    return [...acc, col]
-  }, [])
-}
 const Fixed = {
   left: 'left',
   right: 'right',
@@ -253,11 +188,11 @@ export default {
       type: Boolean,
       default: true,
     },
-    showSearch: {
+    showPagination: {
       type: Boolean,
       default: false,
     },
-    showPagination: {
+    showSearch: {
       type: Boolean,
       default: false,
     },
@@ -279,7 +214,7 @@ export default {
     },
     showHeader: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     align: {
       type: String,
@@ -300,23 +235,23 @@ export default {
         current: 1,
         pageSize: 20,
       },
-      inputVal: '',
+      filterInputVal: '',
       filterVal: '',
     }
   },
   computed: {
     dataSourceDisplay() {
-      if (!this.showPagination) {
-        return this.dataSource
+      let data = this.dataSource
+      if (this.showSearch) {
+        data = findObjectsWithValue(this.dataSource, this.filterVal)
       }
-      if (!this.showSearch) {
-        return this.dataSource
+      if (this.showPagination) {
+        const { current, pageSize } = this.pagination
+        const start = (current - 1) * pageSize
+        const end = current * pageSize
+        data = data.slice(start, end)
       }
-      const data = findObjectsWithValue(this.dataSource, this.filterVal)
-      const { current, pageSize } = this.pagination
-      const start = (current - 1) * pageSize
-      const end = current * pageSize
-      return data.slice(start, end)
+      return data
     },
     isShowOperation() {
       return this.$slots.operation
@@ -334,8 +269,7 @@ export default {
           key: 'checkbox',
           title: '',
           fixed: Fixed.left,
-          width: '50',
-          minWidth: '50',
+          width: '60',
         })
       }
       if (this.isShowIndex) {
@@ -343,8 +277,7 @@ export default {
           key: 'index',
           title: '',
           fixed: Fixed.left,
-          width: '50',
-          minWidth: '50',
+          width: '60',
         })
       }
       list = [
@@ -366,7 +299,7 @@ export default {
       }
       return list
     },
-    maxLevel() {
+    headerRowsMaxLevel() {
       // 计算表头的最大深度
       const calculateMaxLevel = (columns, currentLevel = 1) => {
         return columns.reduce((max, col) => {
@@ -378,15 +311,15 @@ export default {
       }
       return calculateMaxLevel(this.columnsNew)
     },
-    leafColumns() {
-      // 扁平化的叶子列（最底层列，用于数据渲染）
+    columnsFlattened() {
+      // 扁平化的叶子列（用于数据渲染）
       return flatten(this.columnsNew)
     },
     headerRows() {
       // 生成表头行数据
-      if (this.maxLevel <= 1) return [this.leafColumns]
+      if (this.headerRowsMaxLevel <= 1) return [this.columnsFlattened]
       const rows = []
-      for (let level = 0; level < this.maxLevel; level++) {
+      for (let level = 0; level < this.headerRowsMaxLevel; level++) {
         let item = extractDimension(this.columnsNew, level)
         item = item.map((col) => {
           const hasChildren = Array.isArray(col.children) && col.children.length > 0
@@ -399,7 +332,7 @@ export default {
           } else {
             return {
               colspan: 1,
-              rowspan: this.maxLevel - level,
+              rowspan: this.headerRowsMaxLevel - level,
               ...col,
             }
           }
@@ -419,7 +352,7 @@ export default {
   emits: ['select', 'click-row'],
   methods: {
     search() {
-      this.filterVal = this.inputVal
+      this.filterVal = this.filterInputVal
     },
     changePagination(current, currentPageSize) {
       this.pagination.current = current
@@ -463,7 +396,7 @@ export default {
       let offset = 0
       // 遍历当前列之前的所有列
       for (let i = 0; i < colIndex; i++) {
-        const col = this.leafColumns[i]
+        const col = this.columnsFlattened[i]
         if (col.fixed === Fixed.left) {
           const { width } = this.headerColRefs[i].getBoundingClientRect()
           offset += width || 150
@@ -473,9 +406,9 @@ export default {
     },
     getStickyRightOffset(colIndex) {
       let offset = 0
-      // 遍历当前列之前的所有列
-      for (let i = this.leafColumns.length - 1; i > colIndex; i--) {
-        const col = this.leafColumns[i]
+      // 遍历当前列后面的所有列
+      for (let i = this.columnsFlattened.length - 1; i > colIndex; i--) {
+        const col = this.columnsFlattened[i]
         if (col.fixed === Fixed.right) {
           const { width } = this.headerColRefs[i].getBoundingClientRect()
           offset += width
@@ -487,52 +420,44 @@ export default {
       const currentScrollLeft = this.$refs.tableWrap.scrollLeft
       if (isInit) {
         this.isScrollLeft = this.$refs.scrollTable.scrollWidth > this.$refs.tableWrap.clientWidth
-      } else if (currentScrollLeft > this.lastScrollLeft) {
-        this.isScrollRight = true
-        this.isScrollLeft = false
-      } else if (currentScrollLeft < this.lastScrollLeft) {
-        this.isScrollRight = false
-        this.isScrollLeft = true
+      } else {
+        this.isScrollRight = currentScrollLeft > this.lastScrollLeft
+        this.isScrollLeft = currentScrollLeft < this.lastScrollLeft
       }
       const parentRect = this.$refs.tableWrap.getBoundingClientRect()
       this.headerColRefs.forEach((col, index) => {
+        if (!col) return
         const childRect = col.getBoundingClientRect()
-        if (this.isScrollRight && this.leafColumns[index].fixed === Fixed.left) {
+        const column = this.columnsFlattened[index]
+        if (this.isScrollRight && column.fixed === Fixed.left) {
           if (col.style.position === 'sticky') return
-          const leftOffset = this.getStickyLeftOffset(index)
           if (childRect.left < parentRect.left) {
-            col.style.position = 'sticky'
-            col.style.left = `${leftOffset}px`
-            // todo 'table-main__cell--fixed-left-last'
-            col.classList.add('table-main__cell--fixed')
-            this.dataSourceDisplay.forEach((item, rowIndex) => {
-              this.$refs[`content_cell_${rowIndex}_${index}_ref`][0].style.position = 'sticky'
-              this.$refs[`content_cell_${rowIndex}_${index}_ref`][0].style.left = `${leftOffset}px`
-              this.$refs[`content_cell_${rowIndex}_${index}_ref`][0].classList.add(
-                'table-main__cell--fixed',
-              )
-            })
+            const leftOffset = this.getStickyLeftOffset(index)
+            this.setStickyStyle(col, index, 'left', leftOffset)
           }
-        } else if (this.isScrollLeft && this.leafColumns[index].fixed === Fixed.right) {
+        } else if (this.isScrollLeft && column.fixed === Fixed.right) {
           if (col.style.position === 'sticky') return
-          const rightOffset = this.getStickyRightOffset(index)
           if (childRect.right > parentRect.right) {
-            col.style.position = 'sticky'
-            col.style.right = `${rightOffset}px`
-            // 'table-main__cell--fixed-right-last'
-            col.classList.add('table-main__cell--fixed')
-            this.dataSourceDisplay.forEach((item, rowIndex) => {
-              this.$refs[`content_cell_${rowIndex}_${index}_ref`][0].style.position = 'sticky'
-              this.$refs[`content_cell_${rowIndex}_${index}_ref`][0].style.right =
-                `${rightOffset}px`
-              this.$refs[`content_cell_${rowIndex}_${index}_ref`][0].classList.add(
-                'table-main__cell--fixed',
-              )
-            })
+            const rightOffset = this.getStickyRightOffset(index)
+            this.setStickyStyle(col, index, 'right', rightOffset)
           }
         }
       })
       this.lastScrollLeft = currentScrollLeft
+    },
+    setStickyStyle(col, index, direction, offset) {
+      col.style.position = 'sticky'
+      col.style[direction] = `${offset}px`
+      col.classList.add('table-main__cell--fixed')
+
+      this.dataSourceDisplay.forEach((item, rowIndex) => {
+        const cell = this.$refs[`content_cell_${rowIndex}_${index}_ref`]?.[0]
+        if (cell) {
+          cell.style.position = 'sticky'
+          cell.style[direction] = `${offset}px`
+          cell.classList.add('table-main__cell--fixed')
+        }
+      })
     },
   },
   mounted() {
