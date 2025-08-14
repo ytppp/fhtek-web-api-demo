@@ -11,7 +11,7 @@
           </fh-form-item>
         </fh-form> -->
         <div class="page__table">
-          <fh-table :columns="columns" :data-source="data" :show-header="true">
+          <fh-table :columns="columns" :data-source="data" :show-header="isShowAddBtn">
             <template #operationgroup>
               <fh-icon
                 class="page__header-icon"
@@ -40,7 +40,7 @@
             </template>
           </fh-table>
         </div>
-        <fh-modal v-model="visible" :title="modalTitle">
+        <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
           <template #body>
             <fh-form
               class="form modal-form"
@@ -325,6 +325,9 @@ export default {
   methods: {
     // switchEnable(val) {
     // },
+    handleClose() {
+      this.$refs.modalForm.clearValidate()
+    },
     openAddModal() {
       this.modalForm.index = -1
       this.modalForm.id = ''

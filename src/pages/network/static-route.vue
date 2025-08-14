@@ -9,7 +9,7 @@
           :columns="columns"
           :data-source="diplayData"
           :show-row-checkbox="false"
-          :show-header="true"
+          :show-header="isShowAddBtn"
         >
           <template #filtergroup>
             <fh-select v-model="display" :options="displayOptions"></fh-select>
@@ -40,7 +40,7 @@
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model="visible" :title="modalTitle" :before-close="onClose">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0135')">
@@ -284,7 +284,7 @@ export default {
     changeIpType() {
       this.modalForm.interface = ''
     },
-    onClose() {
+    handleClose() {
       this.$refs.modalForm.clearValidate()
     },
     openAddModal() {
