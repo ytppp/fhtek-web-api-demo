@@ -109,6 +109,7 @@ enum DownloadStatus {
   done = '0',
   failed = '2',
   doing = '1',
+  init = '3',
 }
 const { t } = useI18n()
 const UrlAppend = 'ftp://'
@@ -263,6 +264,7 @@ const download = () => {
     username: clientForm.username,
     password: clientForm.password,
     path: clientForm.path,
+    status: DownloadStatus.init,
   }
   usbDownload([data]).then(() => {
     successTips()
