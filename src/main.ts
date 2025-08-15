@@ -4,6 +4,7 @@ import registerI18n from './i18n/index'
 import registerRouter from './router'
 import { setFavicon, getPublicFile, setDocTitle } from './util/tool'
 import App from './App.vue'
+import { logout } from '@/http/api'
 import '@/assets/style/main.less'
 
 const app = createApp(App)
@@ -21,5 +22,14 @@ String.prototype.format = function (...args) {
   })
   return _this
 }
+
+window.addEventListener('beforeunload', function () {
+  if (navigator.sendBeacon) {
+    const data = JSON.stringify({ event: 'window_closed' })
+    navigator.sendBeacon('/action/logout', data)
+  } else {
+    logout()
+  }
+})
 
 app.mount('#app')
