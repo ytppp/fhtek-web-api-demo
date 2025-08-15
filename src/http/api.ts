@@ -623,8 +623,12 @@ export const setTime = (params): Promise<ApiResponse<any>> => {
   return http.post('setTime', createData(params))
 }
 
-export const getDevInfo = (config?: TAxiosRequestConfig): Promise<ApiResponse<any>> => {
-  return http.get('getDevinfo', undefined, { cancel: false, ...config })
+export const getDevInfo = (): Promise<ApiResponse<any>> => {
+  return http.get('getDevinfo')
+}
+
+export const getDevModel = (): Promise<ApiResponse<any>> => {
+  return http.get('getDevmodel', undefined, { toast: false, loading: false })
 }
 
 export const getPonInfo = (): Promise<ApiResponse<any>> => {
