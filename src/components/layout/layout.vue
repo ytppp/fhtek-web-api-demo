@@ -72,7 +72,7 @@
 <script>
 import { getMenu } from '@/util/menu'
 import { isMobileDevice, isObjArrHasVal } from '@/util/tool'
-import { getDevInfo } from '@/http/api'
+import { getDevModel } from '@/http/api'
 import { loginPath } from '@/router'
 
 // 若多维对象数组中存在某个值，返回其顶级对象
@@ -188,10 +188,7 @@ export default {
         this.title = productName
         return
       }
-      getDevInfo({
-        toast: false,
-        loading: false,
-      }).then(({ data }) => {
+      getDevModel().then(({ data }) => {
         this.title = data.model
         sessionStorage.setItem('product_name', this.title)
       })
