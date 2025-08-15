@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import { isValidLength, isValidSymbol, specialChar } from '@/util/tool'
-import { getAccount, setAccount, logout } from '@/http/api'
+import { isValidLength, isValidSymbol, specialChar, handleLogout, successTips } from '@/util/tool'
+import { getAccount, setAccount } from '@/http/api'
 
 export default {
   data() {
@@ -109,10 +109,9 @@ export default {
           },
         ]
         setAccount(data).then(() => {
+          successTips()
           if (this.form.username === this.usernameStoraged) {
-            logout().then(() => {
-              this.$router.push('/login')
-            })
+            handleLogout()
           }
         })
       }
@@ -127,8 +126,8 @@ export default {
           return
         }
         const roleOpts = items.map((item) => ({
-          value: item.type,
-          text: item.type,
+          value: item.role,
+          text: item.role,
         }))
         this.roleOpts = roleOpts
         this.userList = items
@@ -136,14 +135,14 @@ export default {
       })
     },
     changeRole() {
-      const thisUser = this.userList.find((item) => item.type === this.form.role)
+      const thisUser = this.userList.find((item) => item.role === this.form.role)
       this.form.id = thisUser.id
       this.form.username = thisUser.name
-      this.form.role = thisUser.type
+      this.form.role = thisUser.role
     },
   },
   created() {
-    this.form.username = this.usernameStoraged = sessionStorage.getItem('loginuser')
+    this.form.username = this.usernameStoraged = sessionStorage.getItem('login_user')
     this.form.role = sessionStorage.getItem('role')
   },
   mounted() {

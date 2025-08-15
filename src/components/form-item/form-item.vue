@@ -27,7 +27,7 @@
       <slot></slot>
     </div>
     <transition name="form-item-error">
-      <div v-if="error" class="form-item__error">{{ validateMessage }}</div>
+      <div v-if="error" class="form-item__error" :style="contentStyle">{{ validateMessage }}</div>
     </transition>
     <div class="form-item__extra" :style="contentStyle" v-if="slots.extra">
       <slot name="extra"></slot>
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed, provide, inject, useSlots } from 'vue'
+import { ref, computed, provide, inject, useSlots, useTemplateRef, useId } from 'vue'
 import LabelWrap from './label-wrap.vue'
 
 defineOptions({
@@ -67,9 +67,14 @@ const props = defineProps({
   labelWidth: {
     type: String,
   },
+  cancelBlurValidate: {
+    type: Boolean,
+    default: false,
+  },
 })
+const id = useId()
 const slots = useSlots()
-const formItemRef = ref(null)
+const formItemRef = useTemplateRef('formItemRef')
 const validateMessage = ref('')
 const computedLabelWidth = ref('')
 const result = ref(null) // null表示没有进行校验，true通过，false未通过
@@ -93,9 +98,7 @@ const labelStyle = computed(() => {
 const contentStyle = computed(() => {
   const ret = {}
   if (labelPositionCom.value === 'top') return ret
-  if (!props.label && !props.labelWidth) return ret
   if (labelWidthCom.value === 'auto') {
-    // don't konw how to do
     if (props.labelWidth === 'auto') {
       ret.marginLeft = computedLabelWidth.value
     } else if (form.labelWidth.value === 'auto') {
@@ -107,7 +110,7 @@ const contentStyle = computed(() => {
   return ret
 })
 const labelFor = computed(() => {
-  return props.for || props.prop
+  return props.for || id
 })
 const error = computed(() => {
   return result.value !== null && result.value === false
@@ -144,8 +147,7 @@ const getValueByPath = (obj, path) => {
 const validate = () => {
   if (props.prop && formItemRef.value) {
     const rules = form.rules.value || {}
-    const prop = props.prop
-    let validators = rules[prop] || []
+    let validators = rules[props.prop] || []
     if (props.rules) {
       validators = validators.concat(props.rules)
     }
@@ -189,6 +191,8 @@ provide('formItem', {
   validate,
   updateComputedLabelWidth,
   label: computed(() => props.label),
+  cancelBlurValidate: computed(() => props.cancelBlurValidate),
+  id,
 })
 defineExpose({
   extraValidate,
@@ -201,7 +205,7 @@ defineExpose({
 .form-item {
   margin-bottom: 20px;
   &:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
   }
   .form-item__label {
     display: inline-block;
@@ -209,29 +213,30 @@ defineExpose({
     font-size: 16px;
     color: #000;
     font-weight: 500;
-    height: 30px;
-    line-height: 30px;
     &.form-item__label--top {
       float: none;
       width: 100%;
+      height: 30px;
+      line-height: 30px;
     }
     &.form-item__label--left,
     &.form-item__label--right {
       float: left;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      padding-right: 10px;
-      &.form-item__label {
-        height: 40px;
-        line-height: 40px;
-      }
+      // overflow: hidden;
+      // white-space: nowrap;
+      // text-overflow: ellipsis;
+      padding-right: 30px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
     }
     &.form-item__label--left {
       text-align: left;
+      justify-content: flex-start;
     }
     &.form-item__label--right {
       text-align: right;
+      justify-content: flex-end;
     }
   }
   .form-item__content {

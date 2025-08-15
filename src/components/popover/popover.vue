@@ -3,12 +3,7 @@
     <div ref="triggerWrapper" class="popover__trigger">
       <slot></slot>
     </div>
-    <div
-      ref="popoverWrapper"
-      class="popover__wrap"
-      :class="`position__wrap-${position}`"
-      v-if="visible"
-    >
+    <div ref="popoverWrapper" class="popover__wrap" v-if="visible">
       <div ref="popoverTriangle" class="popover__triangle"></div>
       <template v-if="title || $slots.title">
         <div class="popover__title" v-if="title">{{ title }}</div>
@@ -23,6 +18,8 @@
 </template>
 
 <script>
+import { computePosition, flip, shift, offset, arrow } from '@floating-ui/vue'
+
 const Positions = {
   topStart: 'top-start',
   top: 'top',
@@ -33,6 +30,12 @@ const Positions = {
   left: 'left',
   right: 'right',
 }
+const StaticSide = {
+  top: 'bottom',
+  right: 'left',
+  bottom: 'top',
+  left: 'right',
+}
 const Trigger = {
   click: 'click',
   hover: 'hover',
@@ -42,10 +45,7 @@ export default {
   props: {
     position: {
       type: String,
-      default: Positions.top,
-      validator(value) {
-        return [Positions.top, Positions.bottom].includes(value)
-      },
+      default: Positions.bottom,
     },
     trigger: {
       type: String,
@@ -70,31 +70,24 @@ export default {
   },
   methods: {
     positionContent() {
-      const { triggerWrapper, popoverWrapper } = this.$refs
-      document.body.appendChild(popoverWrapper)
-      const { width, height, top, left } = triggerWrapper.getBoundingClientRect()
-      const { width: popoverWrapperWidth, height: popoverWrapperHeight } =
-        popoverWrapper.getBoundingClientRect()
-      const positions = {
-        [Positions.top]: {
-          top: parseInt(window.scrollY + top - popoverWrapperHeight),
-          left: parseInt(window.scrollX + left - (popoverWrapperWidth - width) / 2),
-        },
-        [Positions.bottom]: {
-          top: parseInt(window.scrollY + top + height),
-          left: parseInt(window.scrollX + left - (popoverWrapperWidth - width) / 2),
-        },
-        // [Positions.left]: {
-        //   top: top + (height - popoverHeight) / 2 + window.scrollY,
-        //   left: window.scrollX - left,
-        // },
-        // [Positions.right]: {
-        //   top: top + (height - popoverHeight) / 2 + window.scrollY,
-        //   left: left + width + window.scrollX,
-        // },
-      }
-      popoverWrapper.style.left = positions[this.position].left + 'px'
-      popoverWrapper.style.top = positions[this.position].top + 'px'
+      computePosition(this.$refs.triggerWrapper, this.$refs.popoverWrapper, {
+        placement: this.position,
+        middleware: [flip(), shift(), offset(6), arrow({ element: this.$refs.popoverTriangle })],
+      }).then(({ x, y, placement, strategy, middlewareData }) => {
+        Object.assign(this.$refs.popoverWrapper.style, {
+          left: `${x}px`,
+          top: `${y}px`,
+        })
+        const { x: arrowX, y: arrowY } = middlewareData.arrow
+        const staticSide = StaticSide[placement.split('-')[0]]
+        Object.assign(this.$refs.popoverTriangle.style, {
+          left: arrowX != null ? `${arrowX}px` : '',
+          top: arrowY != null ? `${arrowY}px` : '',
+          right: '',
+          bottom: '',
+          [staticSide]: '-4px',
+        })
+      })
     },
     handleClick(event) {
       if (this.$refs.triggerWrapper.contains(event.target)) {
@@ -153,14 +146,10 @@ export default {
 
 <style lang="less">
 .popover {
-  position: relative;
   display: inline-block;
 }
 .popover__trigger {
   cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .popover__wrap {
   position: absolute;
@@ -173,36 +162,13 @@ export default {
   font-size: 12px;
   color: #fff;
   padding: 10px;
-  &.position__wrap-top {
-    .popover__triangle {
-      bottom: -8px;
-      top: initial;
-    }
-  }
-  &.position__wrap-bottom {
-    .popover__triangle {
-      top: -8px;
-      bottom: initial;
-      transform: rotate(-180deg);
-    }
-  }
 }
 .popover__triangle {
-  width: 16px;
-  height: 8px;
   position: absolute;
-  left: calc(50% - 8px);
-  &::before {
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    overflow: hidden;
-    border: 8px solid #333;
-    border-bottom: none;
-    border-left-color: transparent;
-    border-right-color: transparent;
-  }
+  background-color: #333;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
 }
 .popover__title {
   line-height: 1;

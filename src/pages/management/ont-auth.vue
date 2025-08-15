@@ -5,7 +5,7 @@
     </div>
     <div class="page__content">
       <fh-form class="form" ref="formRef" :model="form" :rules="rules">
-        <fh-form-item :label="$t('trans0767')">
+        <fh-form-item :label="$t('trans0714')">
           <fh-select v-model="form.authType" :options="authModeOpts"> </fh-select>
         </fh-form-item>
         <template v-if="isLoid">
@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isValidLength, format, isValidSymbol, specialChar } from '@/util/tool'
+import { isValidLength, format, isValidSymbol, specialChar, successTips } from '@/util/tool'
 import { getOntAuth, editOntAuth } from '@/http/api'
 
 enum AuthMode {
@@ -76,7 +76,7 @@ const rules = {
     },
     {
       rule: (value) => isValidLength(value, 1, 24),
-      message: format(t('trans0003'), [t('trans0781'), 1, 64]),
+      message: format(t('trans0003'), [t('trans0781'), 1, 24]),
     },
   ],
   'loid.checkCode': [
@@ -142,7 +142,9 @@ const save = () => {
         sn: form.password.sn,
       },
     }
-    editOntAuth(data)
+    editOntAuth(data).then(() => {
+      successTips()
+    })
   }
 }
 

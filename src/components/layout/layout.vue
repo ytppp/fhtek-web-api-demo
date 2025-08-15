@@ -31,7 +31,7 @@
       </template>
     </main>
     <fh-footer v-if="isNoAuthPage" />
-    <div class="layout__toolbar-wrap" v-if="!isNoAuthPage">
+    <div class="layout__toolbar-wrap" v-if="!isNoAuthPage && menus.length <= toolbarMaxShowTotal">
       <ul class="layout__toolbar toolbar">
         <li
           v-for="(menu, index) in menus"
@@ -45,13 +45,7 @@
         </li>
       </ul>
     </div>
-    <fh-drawer
-      :title="$t('trans0016')"
-      size="90%"
-      v-model:visible="drawer"
-      :appendToBody="true"
-      v-if="isMobile"
-    >
+    <fh-drawer size="90%" v-model:visible="drawer" :appendToBody="true" v-if="isMobile">
       <div :style="{ height: '100%', backgroundColor: asideBgColor }">
         <fh-menu
           :menus="childMenus"
@@ -78,6 +72,8 @@
 <script>
 import { getMenu } from '@/util/menu'
 import { isMobileDevice, isObjArrHasVal } from '@/util/tool'
+import { getDevInfo } from '@/http/api'
+import { loginPath } from '@/router'
 
 // 若多维对象数组中存在某个值，返回其顶级对象
 const getTopObjFromObjArr = (arr, val, childNodeName = 'children', keyName = 'url') => {
@@ -103,18 +99,13 @@ const getObjFromObjArr = (arr, childNodeName = 'children', keyName = 'url') => {
   return menu
 }
 export default {
-  props: {
-    title: String,
-    isStopRefresh: {
-      type: Boolean,
-      default: false,
-    },
-  },
   data() {
     return {
+      title: '',
       url: location.hash.replace('#', ''),
       layoutMainMarginTop: 30,
       layoutHeaderHeight: 70,
+      toolbarMaxShowTotal: 6, // 最多显示的菜单数量
       asideBgColor: '#DDDDDD',
       isMobile: false,
       drawer: false,
@@ -122,7 +113,7 @@ export default {
   },
   computed: {
     isNoAuthPage() {
-      return ['/login', '/guide'].includes(this.url)
+      return [loginPath, '/guide'].includes(this.url)
     },
     hasChildPage() {
       return this.childMenus.length > 0
@@ -191,8 +182,23 @@ export default {
       this.setHeight()
       this.isMobile = isMobileDevice()
     },
+    getDevInfoData() {
+      const productName = sessionStorage.getItem('product_name')
+      if (productName) {
+        this.title = productName
+        return
+      }
+      getDevInfo({
+        toast: false,
+        loading: false,
+      }).then(({ data }) => {
+        this.title = data.model
+        sessionStorage.setItem('product_name', this.title)
+      })
+    },
   },
   mounted() {
+    this.getDevInfoData()
     this.changeScreen()
     if (window.addEventListener) {
       window.addEventListener('resize', this.changeScreen)

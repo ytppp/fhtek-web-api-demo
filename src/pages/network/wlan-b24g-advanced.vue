@@ -4,19 +4,15 @@
       <h1 class="page__title">{{ format($t('trans0611'), [$t('trans0049')]) }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
-        <fh-form-item
-          :label="format($t('trans0027'), [$t('trans0049')])"
-          label-position="left"
-          :label-width="labelWidth"
-        >
+      <fh-form class="form form--padding" ref="wifiFormRef" :model="wifi" :rules="rules">
+        <fh-form-item :label="format($t('trans0027'), [$t('trans0049')])">
           <fh-switch @change="switchEnable" v-model="wifi.enable"> </fh-switch>
         </fh-form-item>
         <template v-if="wifi.enable">
           <fh-form-item :label="$t('trans0508')">
-            <fh-select v-model="wifi.mode" :options="modeOpts"> </fh-select>
+            <fh-select @change="changeMode" v-model="wifi.mode" :options="modeOpts"> </fh-select>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0509')" v-if="showBandwidth">
+          <fh-form-item :label="$t('trans0509')">
             <fh-select v-model="wifi.bw" :options="bwOpts"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0507')">
@@ -40,9 +36,9 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, inject, onMounted, computed } from 'vue'
+import { reactive, ref, inject, onMounted, computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { format, isValidInteger } from '@/util/tool'
+import { format, isValidInteger, successTips } from '@/util/tool'
 import { getWifi2gAdv, setWifi2gAdv } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -55,12 +51,12 @@ enum BandWidths24G {
   b20m40 = 'bw20m40',
 }
 enum SelectMode24G {
-  modebgnmix = '9', // 802.11b/g/n 显示频宽
+  modebgnmix = '9', // 802.11b/g/n 显示全部频宽
   modebgmix = '0', // 802.11b/g
-  moden = '6', // 802.11n 显示频宽
+  moden = '6', // 802.11n 显示全部频宽
   modeg = '4', // 802.11g
   modeb = '1', // 802.11b
-  modeAx = '16', // 802.11b/g/n/ax 显示频宽
+  modeAx = '16', // 802.11b/g/n/ax 显示全部频宽
 }
 enum Powermodes {
   low = '50', // 50%
@@ -86,9 +82,9 @@ enum Channels24G {
 const dialog = inject('dialog')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
-const getCurrentChannel = ref('0')
-const wifiFormRef = ref(null)
-const labelWidth = '110px'
+const channelCurrent = ref('0')
+const wifiEnableInitial = ref(false)
+const wifiFormRef = useTemplateRef('wifiFormRef')
 const modeOpts = [
   {
     value: SelectMode24G.modeb,
@@ -115,10 +111,10 @@ const modeOpts = [
     text: '802.11b/g/n/ax',
   },
 ]
-const channelOpts = [
+const channelOpts = reactive([
   {
     value: Channels24G.auto,
-    text: format(t('trans0510'), [getCurrentChannel.value]),
+    text: format(t('trans0510'), [channelCurrent.value]),
   },
   {
     value: Channels24G.ch1,
@@ -172,21 +168,35 @@ const channelOpts = [
     value: Channels24G.ch13,
     text: Channels24G.ch13,
   },
-]
-const bwOpts = [
-  {
-    value: BandWidths24G.b20,
-    text: '20MHz',
-  },
-  {
-    value: BandWidths24G.b40,
-    text: '40MHz',
-  },
-  {
-    value: BandWidths24G.b20m40,
-    text: '20/40MHz',
-  },
-]
+])
+const bwOpts = computed(() => {
+  if (
+    wifi.mode === SelectMode24G.moden ||
+    wifi.mode === SelectMode24G.modebgnmix ||
+    wifi.mode === SelectMode24G.modeAx
+  ) {
+    return [
+      {
+        value: BandWidths24G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths24G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths24G.b20m40,
+        text: '20/40MHz',
+      },
+    ]
+  }
+  return [
+    {
+      value: BandWidths24G.b20,
+      text: '20MHz',
+    },
+  ]
+})
 const powerOpts = [
   {
     value: Powermodes.low,
@@ -202,7 +212,7 @@ const powerOpts = [
   },
 ]
 const wifi = reactive({
-  enable: true,
+  enable: false,
   mode: SelectMode24G.modeb,
   bw: BandWidths24G.b20,
   channel: Channels24G.auto,
@@ -221,24 +231,24 @@ const rules = reactive({
     },
   ],
 })
-
-const showBandwidth = computed(() => {
-  return (
-    wifi.mode === SelectMode24G.moden ||
-    wifi.mode === SelectMode24G.modebgnmix ||
-    wifi.mode === SelectMode24G.modeAx
-  )
-})
-
+const changeMode = () => {
+  if (!bwOpts.value.find((item) => item.value === wifi.bw)) {
+    wifi.bw = bwOpts.value[0].value
+  }
+}
 const switchEnable = (val) => {
-  if (!val) {
+  if (!val && wifiEnableInitial.value) {
     dialog
       .confirm({
         okText: t('trans0019'),
         cancelText: t('trans0020'),
         message: t('trans0025'),
       })
-      .then(() => {})
+      .then(() => {
+        setWifi2gAdvData({
+          enable: convertBooleanStatus(wifi.enable),
+        })
+      })
       .catch(() => {
         wifi.enable = true
       })
@@ -246,14 +256,15 @@ const switchEnable = (val) => {
 }
 const getWifi2gData = () => {
   getWifi2gAdv().then(({ data }) => {
-    wifi.enable = convertBooleanStatus(data.enable)
+    wifiEnableInitial.value = wifi.enable = convertBooleanStatus(data.enable)
     wifi.mode = data.mode
     wifi.bw = data.bw
     wifi.channel = data.channel
     wifi.power = data.power
     wifi.beacon = data.beacon_interval
     if (Channels24G.auto === wifi.channel) {
-      getCurrentChannel.value = data.channel_current
+      channelCurrent.value = data.channel_current
+      channelOpts[0].text = format(t('trans0510'), [channelCurrent.value])
     }
   })
 }
@@ -267,23 +278,17 @@ const save = () => {
       power: wifi.power,
       beacon_interval: wifi.beacon,
     }
-    setWifi2gAdv(data)
+    setWifi2gAdvData(data)
   }
+}
+const setWifi2gAdvData = (data) => {
+  setWifi2gAdv(data)
+    .then(() => {
+      successTips()
+      getWifi2gData()
+    })
 }
 onMounted(() => {
   getWifi2gData()
 })
 </script>
-
-<style lang="less">
-.wifi-form {
-  .form-item {
-    .form-item__extra {
-      margin-left: 0px !important;
-    }
-  }
-  .page__sub-header {
-    margin-bottom: 20px;
-  }
-}
-</style>

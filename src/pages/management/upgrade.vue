@@ -4,20 +4,20 @@
       <h1 class="page__title">{{ $t('trans0187') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form" ref="form" :disabled="formDisabled" :model="form">
+      <fh-form class="form" ref="form" :disabled="formDisabled">
         <fh-form-item>
           <fh-upload
             dragable
             ref="uploader"
+            :accept="accept"
             :before-upload="beforeUpload"
             :on-error="handleUploadError"
             :on-success="handleUploadsuccess"
             :on-cancel="handleUploadcancel"
-            :request="upload"
           />
         </fh-form-item>
         <fh-form-item>
-          <fh-button @click="save" block :disabled="saveBtnDisabled">
+          <fh-button @click="save" block>
             {{ $t('trans0187') }}
           </fh-button>
         </fh-form-item>
@@ -33,37 +33,33 @@ export default {
   data() {
     return {
       uploadFileName: '',
-      isSuccess: false,
       accept: '.bin',
       formDisabled: false,
-      saveBtnDisabled: false,
-      successFlag: 'SUCCESS',
-      form: {},
       isHasfile: false,
-      time: 120,
-      file: '',
     }
   },
   methods: {
     handleUploadError() {
-      this.saveBtnDisabled = true
+      this.formDisabled = true
     },
     handleUploadsuccess() {
-      this.saveBtnDisabled = false
+      this.formDisabled = false
     },
     handleUploadcancel() {
-      this.saveBtnDisabled = false
-    },
-    upload(file) {
-      this.file = file
+      this.formDisabled = false
     },
     save() {
+      if (!this.$refs.uploader.files.length) {
+        this.$toast(this.$t('trans0222'), 3000, 'error')
+        return
+      }
+      this.formDisabled = true
       const fd = new FormData()
-      fd.append('file', this.file[0])
+      fd.append('file', this.$refs.uploader.files[0])
       upload(fd, (progressEvent) => {
         const { loaded, total, lengthComputable } = progressEvent
         if (lengthComputable) {
-          this.$refs.uploader.percentage = Math.floor((loaded / total) * 100)
+          this.$refs.uploader.uploadPercentage = Math.floor((loaded / total) * 100)
           if (loaded >= total) {
             this.$refs.uploader.status = this.$refs.uploader.UploadStatus.success
           } else {
@@ -75,12 +71,12 @@ export default {
           this.upgrading()
         })
         .catch(() => {
+          this.formDisabled = false
           this.$refs.uploader.status = this.$refs.uploader.UploadStatus.fail
         })
     },
     upgrading() {
       this.$upgrade.open({
-        timeout: this.time,
         title: this.$t('trans0468'),
         tip: this.$t('trans0203'),
       })
@@ -99,7 +95,7 @@ export default {
   mounted() {
     getUpgradeStatus().then(({ data }) => {
       const { upgradestatus } = data
-      if (upgradestatus === 1) {
+      if (upgradestatus == 1) {
         this.upgrading()
       }
     })

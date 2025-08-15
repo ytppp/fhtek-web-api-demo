@@ -1,27 +1,20 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0156') }}</h1>
+      <h1 class="page__title">{{ $t('trans0456') }}</h1>
     </div>
-    <div class="page__content page__content--padding-small">
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0456') }}</h2>
-      </div>
-      <fh-form class="form form--padding" ref="formRef" :model="form" :rules="rules">
+    <div class="page__content">
+      <fh-form class="form" ref="formRef" :model="form" :rules="rules">
         <fh-form-item :label="$t('trans0415')" prop="ip" ref="ipRef">
           <fh-input v-model="form.ip" @blur="changeIp" clearable> </fh-input>
           <template #extra>
             {{ $t('trans0644') }}
           </template>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0460')" label-position="left">
-          <fh-switch
-            v-model="form.enable"
-            :active-value="EnableStatus.yes"
-            :inactive-value="EnableStatus.no"
-          ></fh-switch>
+        <fh-form-item :label="$t('trans0460')">
+          <fh-switch v-model="form.enable"></fh-switch>
         </fh-form-item>
-        <template v-if="isEnable">
+        <template v-if="form.enable">
           <fh-form-item prop="ip_start" :label="$t('trans0151')" ref="ipStartRef">
             <fh-input v-model="form.ip_start" @blur="ipStartChange"></fh-input>
           </fh-form-item>
@@ -34,26 +27,6 @@
         </template>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
-            {{ $t('trans0002') }}
-          </fh-button>
-        </fh-form-item>
-      </fh-form>
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0457') }}</h2>
-      </div>
-      <fh-form class="form form--padding" ref="formIpv6Ref" :model="ipv6Form">
-        <fh-form-item :label="$t('trans0457')" label-position="left">
-          <fh-switch
-            v-model="ipv6Form.enable"
-            :active-value="EnableStatus.yes"
-            :inactive-value="EnableStatus.no"
-          ></fh-switch>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0489')">
-          <fh-select v-model="ipv6Form.mode" :options="modes"> </fh-select>
-        </fh-form-item>
-        <fh-form-item class="form__submit-btn">
-          <fh-button @click="saveIpv6" block>
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
@@ -76,14 +49,17 @@ import {
   isBoardcastIP,
   isValidGatewayIP,
   getSubNetwork,
+  successTips
 } from '@/util/tool'
-import { EnableStatus } from '@/util/constant'
-import { getLan, setLan, getIpv6Lan, setIpv6Lan } from '@/http/api'
+import { getLan, setLan } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
+import { loginPath } from '@/router'
 
 defineOptions({
   name: 'LanPage',
 })
 
+const { convertBooleanStatus } = useDataClean()
 const isSameSubNetwork = (ip, ip2, mask) => {
   const subnetwork = getSubNetwork(ip, mask)
   const subnetwork2 = getSubNetwork(ip2, mask)
@@ -100,14 +76,9 @@ const { t } = useI18n()
 const dialog = inject('dialog')
 const loading = inject('loading')
 enum Leases {
-  oneHour = 1 * 60,
-  oneDay = 24 * 60,
-  oneWeek = 7 * 24 * 60,
-}
-enum Mode {
-  slaac = 'slaac',
-  dhcpv6 = 'dhcpv6',
-  hybrid = 'hybrid',
+  oneHour = 60 * 60,
+  oneDay = 24 * 60 * 60,
+  oneWeek = 7 * 24 * 60 * 60,
 }
 interface ILease {
   value: Leases
@@ -127,38 +98,19 @@ const leases: ILease[] = [
     text: t('trans0464', 1, { named: { val: 1 } }),
   },
 ]
-const modes = [
-  {
-    value: Mode.slaac,
-    text: 'Slaac',
-  },
-  {
-    value: Mode.dhcpv6,
-    text: 'Dhcpv6',
-  },
-  {
-    value: Mode.hybrid,
-    text: 'Hybrid',
-  },
-]
 const ipRef = ref(null)
 const ipStartRef = ref(null)
 const ipEndRef = ref(null)
 const formRef = ref(null)
-const formIpv6Ref = ref(null)
 const ipOrigin = ref('')
 const wanIp = ref('')
 const form = reactive({
-  enable: EnableStatus.yes,
+  enable: true,
   ip: '',
   mask: '',
   ip_start: '',
   ip_end: '',
   lease: Leases.oneHour,
-})
-const ipv6Form = reactive({
-  enable: EnableStatus.yes,
-  mode: Mode.slaac,
 })
 const rules = reactive({
   ip: [
@@ -251,9 +203,6 @@ const rules = reactive({
     },
   ],
 })
-const isEnable = computed(() => {
-  return form.enable === EnableStatus.yes
-})
 const isIpChanged = computed(() => ipOrigin.value !== form.ip)
 
 function getLanData() {
@@ -262,7 +211,7 @@ function getLanData() {
     const { ip, mask } = lan
     const { enable, ip_start, ip_offset, lease } = dhcp
     Object.assign(form, {
-      enable,
+      enable: convertBooleanStatus(enable),
       ip,
       mask,
       ip_start: `${getIpBefore(ip)}${ip_start}`,
@@ -270,12 +219,6 @@ function getLanData() {
       lease: Number(lease),
     })
     ipOrigin.value = form.ip
-  })
-}
-function getIpv6LanData() {
-  getIpv6Lan().then(({ data }) => {
-    ipv6Form.enable = data.enabled
-    ipv6Form.mode = data.address_mode
   })
 }
 const changeIp = () => {
@@ -322,48 +265,31 @@ const save = () => {
         mask: form.mask,
       },
       dhcp: {
-        enable: form.enable,
+        enable: convertBooleanStatus(form.enable),
         ip_start: getIpAfter(form.ip_start),
         ip_offset: `${Number(getIpAfter(form.ip_end)) - Number(getIpAfter(form.ip_start))}`,
-        lease: form.lease,
+        lease: `${form.lease}`,
       },
     })
-      .then(() => {})
+      .then(() => {
+        successTips()
+      })
       .catch(() => {})
       .finally(() => {
         setTimeout(() => {
           loading.close()
           if (isIpChanged.value) {
             if (!import.meta.env.DEV) {
-              window.location.href = `http://${form.ip}/index.html#/login`
+              sessionStorage.clear()
+              window.location.href = `http://${form.ip}/index.html#${loginPath}`
             }
           }
         }, 5000)
       })
   }
 }
-const saveIpv6 = () => {
-  if (formIpv6Ref.value.validate()) {
-    loading.open()
-    setIpv6Lan({
-      enabled: ipv6Form.enable,
-      address_mode: ipv6Form.mode,
-    })
-      .then(() => {})
-      .catch(() => {})
-      .finally(() => {
-        setTimeout(() => {
-          loading.close()
-        }, 5000)
-      })
-  }
-}
-function getWanIp() {
-  // todo
-}
 onMounted(() => {
   getLanData()
-  getIpv6LanData()
 })
 </script>
 

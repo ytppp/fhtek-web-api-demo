@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div style="width: 300px">
+    <fh-pagination :total="paginationTotal"></fh-pagination>
+    <div style="width: 600px">
       <fh-table :columns="columns" :data-source="tableData">
         <template #title> 标题 </template>
         <template #operationgroup>
@@ -8,7 +9,7 @@
           <fh-button size="small" @click="del">删除</fh-button>
         </template>
         <template #url="scope">
-          <fh-popover title="popover弹框内容" trigger="click">{{ scope.row.url }}</fh-popover>
+          <fh-popover :title="scope.row.url" trigger="click">{{ scope.row.url }}</fh-popover>
         </template>
         <template #enable="scope">
           <!-- @change="toggleStatus(scope.row)" -->
@@ -94,6 +95,7 @@ defineOptions({
 
 const { t } = useI18n()
 const dialog = inject('dialog')
+const paginationTotal = 100
 const uploading = ref(false)
 const visible = ref(false)
 const checkAll = ref(true)
@@ -184,18 +186,27 @@ const schedulesList = [
 ]
 const tableData = [
   {
-    url: 'www.baidu.com',
-    name: '百度一下',
+    url: 'www.apple.com',
+    url2: 'www.apple.com',
+    url3: 'www.apple.com',
+    url4: 'www.apple.com',
+    name: '苹果',
     enable: EnableStatus.yes,
   },
   {
     url: 'www.baidu.com',
+    url2: 'www.baidu.com',
+    url3: 'www.baidu.com',
+    url4: 'www.baidu.com',
     name: '百度',
     enable: EnableStatus.no,
   },
   {
-    url: 'www.baidu.com',
-    name: '百度',
+    url: 'www.geogle.com',
+    url2: 'www.geogle.com',
+    url3: 'www.geogle.com',
+    url4: 'www.geogle.com',
+    name: '谷歌',
     enable: EnableStatus.yes,
   },
 ]
@@ -205,12 +216,26 @@ const columns = [
     title: 'url',
   },
   {
+    key: 'url2',
+    title: 'url2',
+    fixed: 'left',
+  },
+  {
+    key: 'url3',
+    title: 'url3',
+  },
+  {
+    key: 'url4',
+    title: 'url4',
+  },
+  {
     key: 'name',
     title: 'name',
   },
   {
     key: 'enable',
     title: t('trans0166'),
+    fixed: 'right',
   },
 ]
 const selectAll = (val) => {

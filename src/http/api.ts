@@ -1,5 +1,5 @@
 import { http } from './index'
-import type { ApiResponse } from './type'
+import type { ApiResponse, TAxiosRequestConfig } from './type'
 
 const api = 'api'
 const createData = (data: any) => ({ data })
@@ -12,10 +12,14 @@ export const logout = (): Promise<ApiResponse<any>> => {
   return http.post('logout')
 }
 
-export const getLan = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'dhcp:get',
-  })
+export const getLan = (loading: boolean = true, toast = true): Promise<ApiResponse<any>> => {
+  return http.post(
+    api,
+    {
+      method: 'dhcp:get',
+    },
+    { loading, toast },
+  )
 }
 
 export const setLan = (params): Promise<ApiResponse<any>> => {
@@ -33,24 +37,94 @@ export const upload = (params, onprogressCallback): Promise<ApiResponse<any>> =>
   return http.upload('uploadTest', params, onprogressCallback, { loading: false })
 }
 
+export const uploadConfig = (params, onprogressCallback): Promise<ApiResponse<any>> => {
+  return http.upload('uploadConfig', params, onprogressCallback, { loading: false })
+}
+
 export const getUpgradeStatus = (): Promise<ApiResponse<any>> => {
-  return http.get('ChkUpgradeStatus', {}, { loading: false, toast: false })
+  return http.get('ChkUpgradeStatus', undefined, { loading: false, toast: false })
+}
+
+export const getLanSpeed = (): Promise<ApiResponse<any>> => {
+  return http.get(`GetLanSpeed`)
+}
+
+export const setLanSpeed = (params): Promise<ApiResponse<any>> => {
+  return http.post(`SetLanSpeed`, createData(params))
 }
 
 export const getWan = (): Promise<ApiResponse<any>> => {
-  return http.get(`GetWan`)
+  return http.get(`GetWan`, undefined, { timeout: 20000 })
+}
+
+export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
+  return http.post(`GetPortBindInfo`, createData(params))
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {
-  return http.post(`AddWan`, createData(params))
+  return http.post(`AddWan`, createData(params), { timeout: 20000 })
 }
 
 export const editWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWan', createData(params))
+  return http.post('SetWan', createData(params), { timeout: 20000 })
 }
 
 export const deleteWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('DeleteWan', createData(params))
+  return http.post('DeleteWan', createData(params), { timeout: 20000 })
+}
+
+export const getAcl = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.wan_acl:get',
+  })
+}
+
+export const addAcl = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.wan_acl:add',
+    data: params,
+  })
+}
+
+export const editAcl = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.wan_acl:edit',
+    data: params,
+  })
+}
+
+export const delAcl = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.wan_acl:delete',
+    data: params,
+  })
+}
+
+export const getIpv4Filter = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter:get',
+  })
+}
+
+export const addIpv4Filter = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter:add',
+    data: params,
+  })
+}
+
+export const editIpv4Filter = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter:edit',
+    data: params,
+  })
+}
+
+export const delIpv4Filter = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter:delete',
+    data: params,
+  })
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
@@ -58,10 +132,6 @@ export const getWifi2g = (): Promise<ApiResponse<any>> => {
 }
 
 export const setWifi2g = (params): Promise<ApiResponse<any>> => {
-  // return http.post(api, {
-  //   method: 'wifi.b24g.basic:edit',
-  //   data: params,
-  // })
   return http.post('wifi.b24g.basic:edit', createData(params))
 }
 
@@ -154,14 +224,14 @@ export const getWanList = (params): Promise<ApiResponse<any>> => {
 
 export const setFirewall = (params): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'firewall:edit',
+    method: 'firewall.protection:edit',
     data: params,
   })
 }
 
 export const getFirewall = (): Promise<ApiResponse<any>> => {
   return http.post(api, {
-    method: 'firewall:get',
+    method: 'firewall.protection:get',
   })
 }
 
@@ -193,30 +263,35 @@ export const delStaticDns = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getStaticRoute = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:get',
-  })
+  return http.post('network.static_route:get')
 }
 
 export const addStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:add',
-    data: params,
-  })
+  return http.post('network.static_route:add', createData(params))
 }
 
 export const editStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:edit',
-    data: params,
-  })
+  return http.post('network.static_route:edit', createData(params))
 }
 
 export const delStaticRoute = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'network.static_route:delete',
-    data: params,
-  })
+  return http.post('network.static_route:delete', createData(params))
+}
+
+export const getDhcpStaticIp = (): Promise<ApiResponse<any>> => {
+  return http.post('getDhcpStaticIp')
+}
+
+export const addDhcpStaticIp = (params): Promise<ApiResponse<any>> => {
+  return http.post('addDhcpStaticIp', createData(params))
+}
+
+export const editDhcpStaticIp = (params): Promise<ApiResponse<any>> => {
+  return http.post('editDhcpStaticIp', createData(params))
+}
+
+export const delDhcpStaticIp = (params): Promise<ApiResponse<any>> => {
+  return http.post('delDhcpStaticIp', createData(params))
 }
 
 export const getOntAuth = (): Promise<ApiResponse<any>> => {
@@ -232,8 +307,8 @@ export const editOntAuth = (params): Promise<ApiResponse<any>> => {
   })
 }
 
-export const getPortMirr = (): Promise<ApiResponse<any>> => {
-  return http.get('GetPortMirr')
+export const getPortMirr = (params): Promise<ApiResponse<any>> => {
+  return http.post('GetPortMirr', createData(params))
 }
 
 export const setPortMirr = (params): Promise<ApiResponse<any>> => {
@@ -305,4 +380,303 @@ export const delDdns = (params): Promise<ApiResponse<any>> => {
     method: 'network.ddns:delete',
     data: params,
   })
+}
+
+export const getWifiMacFilterStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('security.wifi_mac_filter.status:get')
+}
+
+export const setWifiMacFilterStatus = (params): Promise<ApiResponse<any>> => {
+  return http.post('security.wifi_mac_filter.status:edit', createData(params))
+}
+
+export const getWifiMacFilter = (): Promise<ApiResponse<any>> => {
+  return http.get('security.wifi_mac_filter.items:get')
+}
+
+export const addWifiMacFilter = (params): Promise<ApiResponse<any>> => {
+  return http.post('security.wifi_mac_filter.items:add', createData(params))
+}
+
+export const editWifiMacFilter = (params): Promise<ApiResponse<any>> => {
+  return http.post('security.wifi_mac_filter.items:edit', createData(params))
+}
+
+export const delWifiMacFilter = (params): Promise<ApiResponse<any>> => {
+  return http.post('security.wifi_mac_filter.items:delete', createData(params))
+}
+
+export const getMacFilterStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getMacFilterStatus')
+}
+
+export const editMacFilterStatus = (params): Promise<ApiResponse<any>> => {
+  return http.post('editMacFilterStatus', createData(params))
+}
+
+export const getMacFilterItems = (): Promise<ApiResponse<any>> => {
+  return http.get('getMacFilterItems')
+}
+
+export const addMacFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('addMacFilterItem', createData(params))
+}
+
+export const editMacFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('editMacFilterItem', createData(params))
+}
+
+export const delMacFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('delMacFilterItem', createData(params))
+}
+
+export const getUrlFilterStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getUrlFilterStatus')
+}
+
+export const editUrlFilterStatus = (params): Promise<ApiResponse<any>> => {
+  return http.post('editUrlFilterStatus', createData(params))
+}
+
+export const getUrlFilterItems = (): Promise<ApiResponse<any>> => {
+  return http.get('getUrlFilterItems')
+}
+
+export const addUrlFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('addUrlFilterItem', createData(params))
+}
+
+export const editUrlFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('editUrlFilterItem', createData(params))
+}
+
+export const delUrlFilterItem = (params): Promise<ApiResponse<any>> => {
+  return http.post('delUrlFilterItem', createData(params))
+}
+
+export const getUsb = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.usb.status:get',
+  })
+}
+
+export const usbDownload = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.client.download:add',
+    data: params,
+  })
+}
+
+export const getUsbDownloadList = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.client.download:get',
+  })
+}
+
+export const editUsbServer = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.server:edit',
+    data: params,
+  })
+}
+export const getUsbServer = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.server:get',
+  })
+}
+
+export const editSamba = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.samba:edit',
+    data: params,
+  })
+}
+
+export const getSamba = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.samba:get',
+    data: params,
+  })
+}
+
+export const editMediaSharing = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.media_sharing:edit',
+    data: params,
+  })
+}
+
+export const getMediaSharing = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'storage.media_sharing:get',
+  })
+}
+
+export const getMesh = (): Promise<ApiResponse<any>> => {
+  return http.get('mesh.settings:get')
+}
+export const setMesh = (params): Promise<ApiResponse<any>> => {
+  return http.post('mesh.settings:edit', createData(params))
+}
+export const triggerMesh = (params): Promise<ApiResponse<any>> => {
+  return http.post('mesh.trigger:edit', createData(params))
+}
+export const getTopology = (): Promise<ApiResponse<any>> => {
+  return http.get('mesh.topology:get', undefined, { loading: false })
+}
+export const getVpnInfo = (): Promise<ApiResponse<any>> => {
+  return http.get('network.vpn.info:get')
+}
+export const getVpn = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.vpn.settings:get',
+  })
+}
+export const setVpn = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'network.vpn.settings:edit',
+    data: params,
+  })
+}
+
+export const startReboot = (): Promise<ApiResponse<any>> => {
+  return http.post('reboot')
+}
+
+export const rebootStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getRebootStatus', undefined, { loading: false, toast: false })
+}
+
+export const startPing = (params): Promise<ApiResponse<any>> => {
+  return http.post('startPing', createData(params))
+}
+
+export const pingStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getPingStatus', undefined, { loading: false, toast: false })
+}
+
+export const getPingResults = (): Promise<ApiResponse<any>> => {
+  return http.get('getPingResults')
+}
+
+export const startTraceroute = (params): Promise<ApiResponse<any>> => {
+  return http.post('startTraceroute', createData(params))
+}
+
+export const tracerouteStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getTracerouteStatus', undefined, { loading: false, toast: false })
+}
+
+export const getTracerouteResults = (): Promise<ApiResponse<any>> => {
+  return http.get('getTracerouteResults')
+}
+
+export const startReset = (): Promise<ApiResponse<any>> => {
+  return http.post('reset')
+}
+
+export const resetStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getResetStatus', undefined, { loading: false, toast: false })
+}
+export const backup = (): Promise<ApiResponse<any>> => {
+  return http.get('getConfig', undefined)
+}
+
+export const setLog = (params): Promise<ApiResponse<any>> => {
+  return http.post('setLogSettings', createData(params))
+}
+
+export const getLog = (): Promise<ApiResponse<any>> => {
+  return http.get('getLogSettings')
+}
+
+export const getSyslog = (): Promise<ApiResponse<any>> => {
+  return http.get('getSyslog')
+}
+
+export const getWanBinding = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wan.binding:get',
+  })
+}
+
+export const setWanBinding = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wan.binding:edit',
+    data: params,
+  })
+}
+
+export const getWlanDevices = (params?): Promise<ApiResponse<any>> => {
+  return http.post('getWlanDevices', createData(params))
+}
+
+export const getSysTime = (): Promise<ApiResponse<any>> => {
+  return http.get('getSysTime')
+}
+
+export const getTime = (): Promise<ApiResponse<any>> => {
+  return http.get('getTime')
+}
+
+export const setTime = (params): Promise<ApiResponse<any>> => {
+  return http.post('setTime', createData(params))
+}
+
+export const getDevInfo = (config?: TAxiosRequestConfig): Promise<ApiResponse<any>> => {
+  return http.get('getDevinfo', undefined, { cancel: false, ...config })
+}
+
+export const getPonInfo = (): Promise<ApiResponse<any>> => {
+  return http.get('getPoninfo')
+}
+
+export const getStaInfo = (): Promise<ApiResponse<any>> => {
+  return http.get('getStaInfo')
+}
+
+export const getVoipBasicSettings = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'voip.basic.settings:get',
+  })
+}
+
+export const setVoipBasicSettings = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'voip.basic.settings:edit',
+    data: params,
+  })
+}
+
+export const getVoipAdvancedSettings = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'voip.advanced.settings:get',
+  })
+}
+
+export const setVoipAdvancedSettings = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'voip.advanced.settings:edit',
+    data: params,
+  })
+}
+
+export const getLanInfo = (): Promise<ApiResponse<any>> => {
+  return http.get('getLanInfo')
+}
+
+export const getWanInfo = (): Promise<ApiResponse<any>> => {
+  return http.get('getWaninfo')
+}
+
+export const getUpnpConfig = (): Promise<ApiResponse<any>> => {
+  return http.get('getUpnpConfig')
+}
+
+export const setUpnpConfig = (params): Promise<ApiResponse<any>> => {
+  return http.post('setUpnpConfig', createData(params))
+}
+
+export const getUpnpList = (): Promise<ApiResponse<any>> => {
+  return http.get('getUpnpList')
 }

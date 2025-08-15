@@ -1,19 +1,25 @@
 import { createWebHashHistory, createRouter } from 'vue-router'
+import { http } from '@/http'
 
 import login from '../pages/login/index.vue'
 import home from '../pages/home/index.vue'
 import deviceStatus from '../pages/status/device.vue'
-import wan from '../pages/status/wan.vue'
-import wlan from '../pages/status/wlan.vue'
-import lanStatus from '../pages/status/lan.vue'
+import wanStatus from '../pages/status/wan.vue'
+import wlanInfo from '../pages/status/wlan-info.vue'
+import wlanDevices from '../pages/status/wlan-devices.vue'
+import lanInfo from '../pages/status/lan-info.vue'
+import lanDevices from '../pages/status/lan-devices.vue'
 import optical from '../pages/status/optical.vue'
 import voip from '../pages/status/voip.vue'
 import cwmpStatus from '../pages/status/cwmp.vue'
 import sta from '../pages/status/sta.vue'
 import usb from '../pages/status/usb.vue'
+import vpnInfo from '../pages/status/vpn.vue'
 import wanNetwork from '../pages/network/wan.vue'
 import wanBinding from '../pages/network/wan-binding.vue'
 import lan from '../pages/network/lan.vue'
+import lanipv6 from '../pages/network/lan-ipv6.vue'
+import lanipv6New from '../pages/network/lan-ipv6-old.vue'
 import basicB24g from '../pages/network/wlan-b24g-basic.vue'
 import advancedB24g from '../pages/network/wlan-b24g-advanced.vue'
 import basicB5g from '../pages/network/wlan-b5g-basic.vue'
@@ -21,8 +27,19 @@ import advancedB5g from '../pages/network/wlan-b5g-advanced.vue'
 import portSetting from '../pages/network/port-setting.vue'
 import staticRoute from '../pages/network/static-route.vue'
 import defaultRoute from '../pages/network/default-route.vue'
-import firewall from '../pages/safety/firewall.vue'
+import mesh from '../pages/network/mesh.vue'
+import vpn from '../pages/network/vpn.vue'
+import basicVoip from '../pages/network/voip-basic.vue'
+import advancedVoip from '../pages/network/voip-advanced.vue'
+import firewall from '../pages/security/firewall.vue'
+import urlFilter from '../pages/security/url-filter.vue'
+import macFilter from '../pages/security/mac-filter.vue'
+import wifiMacFilter from '../pages/security/wifi-mac-filter.vue'
+import ipv4Filter from '../pages/security/ipv4-filter.vue'
+import acl from '../pages/security/acl.vue'
+import dos from '../pages/security/dos.vue'
 import portMapping from '../pages/app/port-mapping.vue'
+import portTrigger from '../pages/app/port-trigger.vue'
 import dmz from '../pages/app/dmz.vue'
 import staticDns from '../pages/app/static-dns.vue'
 import staticArp from '../pages/app/static-arp.vue'
@@ -32,6 +49,10 @@ import cwmp from '../pages/app/cwmp.vue'
 import time from '../pages/app/time.vue'
 import igmpMld from '../pages/app/igmp-mld.vue'
 import dhcpStaticIp from '../pages/app/dhcp-static-ip.vue'
+import dhcpv6StaticIp from '../pages/app/dhcpv6-static-ip.vue'
+import storage from '../pages/app/storage.vue'
+import mediaSharing from '../pages/app/media-sharing.vue'
+import samba from '../pages/app/samba.vue'
 import upgrade from '../pages/management/upgrade.vue'
 import user from '../pages/management/user.vue'
 import device from '../pages/management/device.vue'
@@ -41,22 +62,29 @@ import ontAuth from '../pages/management/ont-auth.vue'
 import internetDiagnose from '../pages/management/diagnose-internet.vue'
 import remoteDiagnose from '../pages/management/diagnose-remote.vue'
 
+export const loginPath = '/login'
+
 export const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
       path: '/',
-      redirect: '/login',
+      redirect: '/home',
     },
     {
-      path: '/login',
+      path: loginPath,
       name: 'login',
       component: login,
     },
     {
       path: '/home',
-      name: 'home',
-      component: home,
+      // name: 'home',
+      // component: home,
+      redirect: '/status/device',
+    },
+    {
+      path: '/status',
+      redirect: '/status/device',
     },
     {
       path: '/status/device',
@@ -65,18 +93,28 @@ export const router = createRouter({
     },
     {
       path: '/status/wan',
-      name: 'wan',
-      component: wan,
+      name: 'wanStatus',
+      component: wanStatus,
     },
     {
-      path: '/status/wlan',
-      name: 'wlan',
-      component: wlan,
+      path: '/status/wlan/info',
+      name: 'wlanInfo',
+      component: wlanInfo,
     },
     {
-      path: '/status/lan',
-      name: 'lanStatus',
-      component: lanStatus,
+      path: '/status/wlan/devices',
+      name: 'wlanDevices',
+      component: wlanDevices,
+    },
+    {
+      path: '/status/lan/info',
+      name: 'lanInfo',
+      component: lanInfo,
+    },
+    {
+      path: '/status/lan/devices',
+      name: 'lanDevices',
+      component: lanDevices,
     },
     {
       path: '/status/optical',
@@ -104,6 +142,15 @@ export const router = createRouter({
       component: usb,
     },
     {
+      path: '/status/vpn',
+      name: 'vpnInfo',
+      component: vpnInfo,
+    },
+    {
+      path: '/network',
+      redirect: '/network/wan',
+    },
+    {
       path: '/network/wan',
       name: 'wanNetwork',
       component: wanNetwork,
@@ -114,10 +161,20 @@ export const router = createRouter({
       component: wanBinding,
     },
     {
-      path: '/network/lan',
-      name: 'lan',
+      path: '/network/lan/ipv4',
+      name: 'lanipv4',
       component: lan,
     },
+    {
+      path: '/network/lan/ipv6',
+      name: 'lanipv6',
+      component: lanipv6,
+    },
+    // {
+    //   path: '/network/lan/ipv6-new',
+    //   name: 'lanipv6New',
+    //   component: lanipv6New,
+    // },
     {
       path: '/network/wlan/basic-24g',
       name: 'basicB24g',
@@ -148,15 +205,73 @@ export const router = createRouter({
       name: 'staticRoute',
       component: staticRoute,
     },
+    // {
+    //   path: '/network/default-route',
+    //   name: 'defaultRoute',
+    //   component: defaultRoute,
+    // },
     {
-      path: '/network/default-route',
-      name: 'defaultRoute',
-      component: defaultRoute,
+      path: '/network/mesh',
+      name: 'mesh',
+      component: mesh,
     },
     {
-      path: '/safety/firewall',
+      path: '/network/vpn',
+      name: 'vpn',
+      component: vpn,
+    },
+    {
+      path: '/network/wlan/basic-voip',
+      name: 'basicVoip',
+      component: basicVoip,
+    },
+    {
+      path: '/network/wlan/advanced-voip',
+      name: 'advancedVoip',
+      component: advancedVoip,
+    },
+    {
+      path: '/security',
+      redirect: '/security/firewall',
+    },
+    {
+      path: '/security/firewall',
       name: 'firewall',
       component: firewall,
+    },
+    {
+      path: '/security/url-filter',
+      name: 'urlFilter',
+      component: urlFilter,
+    },
+    {
+      path: '/security/mac-filter',
+      name: 'macFilter',
+      component: macFilter,
+    },
+    {
+      path: '/security/wifi-mac-filter',
+      name: 'wifiMacFilter',
+      component: wifiMacFilter,
+    },
+    {
+      path: '/security/ipv4-filter',
+      name: 'ipv4Filter',
+      component: ipv4Filter,
+    },
+    {
+      path: '/security/acl',
+      name: 'acl',
+      component: acl,
+    },
+    {
+      path: '/security/dos',
+      name: 'dos',
+      component: dos,
+    },
+    {
+      path: '/app',
+      redirect: '/app/static-dns',
     },
     {
       path: '/app/static-dns',
@@ -173,6 +288,11 @@ export const router = createRouter({
       name: 'port-mapping',
       component: portMapping,
     },
+    // {
+    //   path: '/app/port-trigger',
+    //   name: 'port-trigger',
+    //   component: portTrigger,
+    // },
     {
       path: '/app/dmz',
       name: 'dmz',
@@ -193,20 +313,44 @@ export const router = createRouter({
       name: 'time',
       component: time,
     },
-    {
-      path: '/app/igmp-mld',
-      name: 'igmp-mld',
-      component: igmpMld,
-    },
-    {
-      path: '/app/static-arp',
-      name: 'static-arp',
-      component: staticArp,
-    },
+    // {
+    //   path: '/app/igmp-mld',
+    //   name: 'igmp-mld',
+    //   component: igmpMld,
+    // },
+    // {
+    //   path: '/app/static-arp',
+    //   name: 'static-arp',
+    //   component: staticArp,
+    // },
     {
       path: '/app/dhcp-static-ip',
       name: 'dhcp-static-ip',
       component: dhcpStaticIp,
+    },
+    {
+      path: '/app/dhcpv6-static-ip',
+      name: 'dhcpv6-static-ip',
+      component: dhcpv6StaticIp,
+    },
+    {
+      path: '/app/storage',
+      name: 'storage',
+      component: storage,
+    },
+    {
+      path: '/app/media-sharing',
+      name: 'media-sharing',
+      component: mediaSharing,
+    },
+    {
+      path: '/app/samba',
+      name: 'samba',
+      component: samba,
+    },
+    {
+      path: '/management',
+      redirect: '/management/upgrade',
     },
     {
       path: '/management/upgrade',
@@ -248,12 +392,29 @@ export const router = createRouter({
       name: 'oremote-diagnose',
       component: remoteDiagnose,
     },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/home',
+    },
   ],
 })
 
-// router.beforeEach(async (to, from, next) => {
-//   // todo
-// })
+router.beforeEach(async (to, from, next) => {
+  if (to.path !== loginPath) {
+    if (sessionStorage.getItem('login_user')) {
+      http.cancelAllRequests()
+      next()
+    } else {
+      next(loginPath)
+    }
+  } else {
+    if (sessionStorage.getItem('login_user')) {
+      next('/home')
+    } else {
+      next()
+    }
+  }
+})
 
 function registerRouter(app) {
   app.use(router)

@@ -50,7 +50,6 @@ const props = defineProps({
     default: false,
   },
   name: String,
-  id: String,
 })
 const model = defineModel({
   type: [Boolean, String, Number],
@@ -58,6 +57,9 @@ const model = defineModel({
 })
 const emit = defineEmits(['change', 'input'])
 
+const id = computed(() => {
+  return formItem?.id
+})
 const checked = computed(() => {
   return model.value === props.activeValue
 })

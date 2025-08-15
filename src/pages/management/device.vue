@@ -3,35 +3,21 @@
     <div class="page__header">
       <h1 class="page__title">{{ $t('trans0227') }}</h1>
     </div>
-    <div class="page__content page__content--padding-small">
+    <div class="page__content">
       <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0224') }}</h2>
+        <h2 class="page__title">{{ $t('trans0075') }}</h2>
       </div>
-      <fh-form class="form form--padding" :model="resetForm" name="resetForm" method="post">
-        <input type="hidden" id="defaultflag" name="defaultflag" v-model="resetForm.defaultflag" />
-        <input
-          type="hidden"
-          id="restoreflag2"
-          name="restoreflag2"
-          v-model="resetForm.restoreflag2"
-        />
+      <fh-form class="form form--padding">
         <fh-form-item>
-          <fh-button @click="resetDefaults" block>
-            {{ $t('trans0224') }}
+          <fh-button @click="reboot" block>
+            {{ $t('trans0075') }}
           </fh-button>
         </fh-form-item>
       </fh-form>
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0224') }}</h2>
       </div>
-      <fh-form class="form form--padding" :model="resetForm" name="resetForm" method="post">
-        <input type="hidden" id="defaultflag" name="defaultflag" v-model="resetForm.defaultflag" />
-        <input
-          type="hidden"
-          id="restoreflag2"
-          name="restoreflag2"
-          v-model="resetForm.restoreflag2"
-        />
+      <fh-form class="form form--padding">
         <fh-form-item>
           <fh-button @click="resetDefaults" block>
             {{ $t('trans0224') }}
@@ -41,94 +27,258 @@
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0643') }}</h2>
       </div>
-      <fh-form
-        class="form form--padding"
-        enctype="multipart/form-data"
-        ref="form"
-        :disabled="formDisabled"
-        :model="form"
-        name="form"
-        method="post"
-      >
-        <input type="hidden" name="postflag" v-model="form.postflag" />
-        <input type="hidden" name="HTML_HEADER_TYPE" v-model="form.HTML_HEADER_TYPE" />
-        <input type="hidden" name="upload_type" v-model="form.type" />
+      <fh-form class="form form--padding" ref="form">
         <fh-form-item :label="$t('trans0226')">
           <fh-button @click="backConfig" block>
             {{ $t('trans0226') }}
           </fh-button>
         </fh-form-item>
         <fh-form-item :label="$t('trans0634')">
-          <fh-upload dragable ref="uploader" name="FW_UploadFile" />
-          <!-- :accept="accept"
-            :before-upload="beforeUpload"
+          <fh-upload
+            dragable
+            ref="uploader"
+            :accept="accept"
             :on-error="handleUploadError"
             :on-success="handleUploadsuccess"
-            :on-cancel="handleUploadcancel" -->
+            :on-cancel="handleUploadcancel"
+            :disabled="saveBtnDisabled"
+          />
         </fh-form-item>
         <fh-form-item>
           <fh-button @click="save" block :disabled="saveBtnDisabled">
             {{ $t('trans0634') }}
           </fh-button>
         </fh-form-item>
-        <fh-form-item v-show="alert">
-          <fh-alert :title="alert" type="success"> </fh-alert>
-        </fh-form-item>
       </fh-form>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      tip: true,
-      isReset: false,
-      resetForm: {
-        defaultflag: '0',
-        restoreflag2: '0',
-      },
-      form: {
-        type: '',
-        postflag: '1',
-        HTML_HEADER_TYPE: '2',
-      },
-    }
-  },
-  computed: {},
-  methods: {
-    resetDefaults() {
-      dialog.confirm({
-        okText: this.$t('trans0019'),
-        cancelText: this.$t('trans0020'),
-        message: this.$t('trans0225'),
-        callback: {
-          ok: () => {},
-          cancel: () => {},
-        },
-      })
-    },
-    backConfig() {
-      dialog.confirm({
-        okText: this.$t('trans0019'),
-        cancelText: this.$t('trans0020'),
-        message: this.$t('trans0228'),
-        callback: {
-          ok: () => {},
-          cancel: () => {},
-        },
-      })
-    },
-    reseting() {
-      this.isStopRefresh = true
-      loading.open({
-        tip: this.$t('trans0617'),
-      })
-      setTimeout(() => {
-        loading.close()
-      }, 1000)
-    },
-  },
+<script lang="ts" setup>
+import { ref, useTemplateRef, inject, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import {
+  startReboot,
+  rebootStatus,
+  startReset,
+  resetStatus,
+  backup,
+  uploadConfig,
+  getLan,
+} from '@/http/api'
+import { useCountDown } from '@/hooks/countdown'
+import { handleLogout } from '@/util/tool'
+
+defineOptions({
+  name: 'DevicePage',
+})
+
+enum Status {
+  doing = 'doing',
+  done = 'done',
+  fail = 'fail',
 }
+
+const { t } = useI18n()
+const timeout = 1000 * 60 * 2 // 2 minutes
+const interval = 5000 // 5 second
+const accept = '.tgz'
+const saveBtnDisabled = ref(false)
+const dialog = inject('dialog')
+const loading = inject('loading')
+const toast = inject('toast')
+const uploader = useTemplateRef('uploader')
+const lanIp = ref('')
+
+function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: () => void) {
+  return () => {
+    checkStatus().then((status) => {
+      if (status === Status.done || status === Status.fail) {
+        cleanCountDown()
+        handleLogout(false)
+      }
+    })
+  }
+}
+function createDoneHandle(key: string) {
+  return () => {
+    sessionStorage.setItem(key, '0')
+    loading.close()
+  }
+}
+
+let cleanRebootCountDown: () => void
+let cleanResetCountDown: () => void
+const checkRebootStatus = () => rebootStatus().then(({ data }) => data.status)
+const checkResetStatus = () => resetStatus().then(({ data }) => data.status)
+const doingRebootHandle = createDoingHandle(checkRebootStatus, () => cleanRebootCountDown())
+const doingResetHandle = createDoingHandle(checkResetStatus, () => cleanResetCountDown())
+const doneRebootHandle = createDoneHandle('reboot')
+const doneResetHandle = createDoneHandle('reset')
+
+const { createCountDown: createRebootCountDown, cleanCountDown: _cleanRebootCountDown } =
+  useCountDown(timeout, interval, doingRebootHandle, doneRebootHandle)
+const { createCountDown: createResetCountDown, cleanCountDown: _cleanResetCountDown } =
+  useCountDown(timeout, interval, doingResetHandle, doneResetHandle)
+cleanRebootCountDown = _cleanRebootCountDown
+cleanResetCountDown = _cleanResetCountDown
+
+const handleReboot = () => {
+  loading.open({
+    tip: t('trans0229'),
+  })
+  sessionStorage.setItem('reboot', '1')
+  createRebootCountDown()
+}
+const handleReset = () => {
+  loading.open({
+    tip: t('trans0617'),
+  })
+  sessionStorage.setItem('reset', '1')
+  createResetCountDown()
+}
+const reboot = () => {
+  dialog
+    .confirm({
+      okText: t('trans0019'),
+      cancelText: t('trans0020'),
+      message: t('trans0242'),
+    })
+    .then(() => {
+      startReboot().then(({ data }) => {
+        const status = data.status
+        if (status === Status.doing) {
+          handleReboot()
+        }
+      })
+    })
+    .catch(() => {})
+}
+const reset = () => {
+  startReset().then(({ data }) => {
+    const status = data.status
+    if (status === Status.doing) {
+      handleReset()
+    }
+  })
+}
+const resetDefaults = () => {
+  dialog
+    .confirm({
+      okText: t('trans0019'),
+      cancelText: t('trans0020'),
+      message: t('trans0225'),
+    })
+    .then(() => {
+      reset()
+    })
+    .catch(() => {})
+}
+const getBackupFile = () => {
+  backup().then(({ data }) => {
+    window.location.href = `${import.meta.env.DEV ? `http://${lanIp.value}` : location.origin}/${data.cfg_name}`
+  })
+}
+const backConfig = () => {
+  dialog
+    .confirm({
+      okText: t('trans0019'),
+      cancelText: t('trans0020'),
+      message: t('trans0228'),
+    })
+    .then(() => {
+      getBackupFile()
+    })
+    .catch(() => {})
+}
+const handleUploadError = () => {
+  saveBtnDisabled.value = true
+}
+const handleUploadsuccess = () => {
+  saveBtnDisabled.value = false
+}
+const handleUploadcancel = () => {
+  saveBtnDisabled.value = false
+}
+// const beforeUpload = (files) => {
+//   this.isHasfile = files.length > 0
+//   const isValidFileName = !!files.find((file) => {
+//     return true // file.name.split('_')[0] === this.uploadFileName // eg: file name: FTG6214X-B4I_V1.0.0-rc.1.bin
+//   })
+//   if (!isValidFileName) {
+//     this.$toast({ text: this.$t('trans0366') })
+//   }
+//   return isValidFileName
+// }
+const save = () => {
+  if (!uploader.value.files.length) {
+    toast(t('trans0222'), 3000, 'error')
+    return
+  }
+  saveBtnDisabled.value = true
+  const fd = new FormData()
+  fd.append('file', uploader.value.files[0])
+  uploadConfig(fd, (progressEvent) => {
+    const { loaded, total, lengthComputable } = progressEvent
+    if (lengthComputable) {
+      uploader.value.uploadPercentage = Math.floor((loaded / total) * 100)
+      if (loaded >= total) {
+        uploader.value.status = uploader.value.UploadStatus.success
+      } else {
+        uploader.value.status = uploader.value.UploadStatus.uploading
+      }
+    }
+  })
+    .then(() => {
+      handleReboot()
+    })
+    .catch(() => {
+      uploader.value.status = uploader.value.UploadStatus.fail
+    })
+    .finally(() => {
+      saveBtnDisabled.value = false
+    })
+}
+const getLanData = () => {
+  getLan(false, false).then(({ data }) => {
+    const { lan } = data
+    const { ip } = lan
+    lanIp.value = ip
+  })
+}
+onMounted(() => {
+  if (sessionStorage.getItem('reboot') === '1') {
+    loading.open({
+      tip: t('trans0229'),
+    })
+    checkRebootStatus()
+      .then((status) => {
+        if (status === Status.doing) {
+          createRebootCountDown()
+        } else if (status === Status.done) {
+          doneRebootHandle()
+        }
+      })
+      .catch(() => {
+        createRebootCountDown()
+      })
+  }
+  if (sessionStorage.getItem('reset') === '1') {
+    loading.open({
+      tip: t('trans0617'),
+    })
+    checkResetStatus()
+      .then((status) => {
+        if (status === Status.doing) {
+          createResetCountDown()
+        } else if (status === Status.done) {
+          doneResetHandle()
+        }
+      })
+      .catch(() => {
+        createResetCountDown()
+      })
+  }
+  getLanData()
+})
 </script>

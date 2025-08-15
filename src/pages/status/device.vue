@@ -1,17 +1,10 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0070') }}</h1>
+      <h1 class="page__title">{{ $t('trans0482') }}</h1>
     </div>
     <div class="page__content">
-      <div class="display-form">
-        <template v-for="(item, index) in basicInfo" :key="index">
-          <div class="display-form__item">
-            <div class="display-form__label">{{ item.label }}</div>
-            <div class="display-form__value">{{ item.value }}</div>
-          </div>
-        </template>
-      </div>
+      <fh-descriptions :data="basicInfo"></fh-descriptions>
     </div>
   </div>
 </template>
@@ -20,12 +13,13 @@
 import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
+import { getDevInfo } from '@/http/api'
 
 const { t } = useI18n()
-const { cleanData, defaultVal } = useDataClean()
+const { defaultDataObj, defaultVal } = useDataClean()
 
 const basicInfo = reactive({
-  modelName: {
+  model: {
     label: t('trans0540'),
     value: defaultVal,
   },
@@ -43,16 +37,19 @@ const basicInfo = reactive({
   },
 })
 
-const defaultDataObj = (info) => {
-  cleanData(info)
-  Object.keys(info).forEach((key) => {
-    const val = info[key] || defaultVal
-    info[key].value = val
-    info[key].show = true
+const getDevInfoData = () => {
+  getDevInfo().then(({ data }) => {
+    const thisBasicInfo = {
+      model: data.model,
+      sn: data.xponsn,
+      hwVersion: data.hwver,
+      swVersion: data.softver,
+    }
+    defaultDataObj(basicInfo, thisBasicInfo)
   })
 }
 
 onMounted(() => {
-  // defaultDataObj(basicInfo)
+  getDevInfoData()
 })
 </script>

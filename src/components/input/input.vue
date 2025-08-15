@@ -20,6 +20,7 @@
       <div class="input-group__prepend" v-if="slots.prepend">
         <slot name="prepend"></slot>
       </div>
+      <!-- :autocomplete="autocomplete" -->
       <input
         :tabindex="tabindex"
         v-bind="attrs"
@@ -28,9 +29,9 @@
         :type="showPassword ? (passwordVisible ? 'text' : 'password') : type"
         :disabled="inputDisabled"
         :readonly="readonly"
-        :autocomplete="autocomplete"
         :placeholder="placeholder"
         :name="name"
+        :id="id"
         :aria-label="currentLabel"
         ref="input"
         @compositionstart="handleCompositionStart"
@@ -81,7 +82,7 @@
 </template>
 
 <script setup>
-import { computed, ref, useSlots, useAttrs, inject } from 'vue'
+import { computed, ref, useSlots, useAttrs, inject, useTemplateRef } from 'vue'
 
 defineOptions({
   name: 'FhButton',
@@ -116,6 +117,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  notDisabled: {
+    type: Boolean,
+    default: false,
+  }, // Determine whether the input is not disabled. If true, it will override the disabled property.
   readonly: {
     type: Boolean,
     default: false,
@@ -140,6 +145,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isSelectCompChildNode: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const slots = useSlots()
@@ -154,13 +163,20 @@ const hovering = ref(false)
 const focused = ref(false)
 const isComposing = ref(false)
 const passwordVisible = ref(false)
+const input = useTemplateRef('input')
 const emits = defineEmits(['focus', 'blur', 'change', 'input', 'clear'])
 
 const inputDisabled = computed(() => {
+  if (props.notDisabled) {
+    return false
+  }
   return props.disabled || form?.disabled.value
 })
 const currentLabel = computed(() => {
   return props.label || formItem?.label.value || ''
+})
+const id = computed(() => {
+  return formItem?.id
 })
 const isWordLimitVisible = computed(() => {
   return (
@@ -181,7 +197,7 @@ const showClear = computed(() => {
   )
 })
 const showPwdVisible = computed(() => {
-  return props.showPassword && !inputDisabled.value && !props.readonly && focused.value
+  return props.showPassword && !inputDisabled.value && !props.readonly //  && focused.value
 })
 const upperLimit = computed(() => {
   return attrs.maxlength
@@ -213,19 +229,17 @@ const handleInput = (event) => {
 const handleFocus = (event) => {
   focused.value = true
   emits('focus', event)
-  formItem?.clearValidate()
+  if (!props.isSelectCompChildNode) formItem?.clearValidate()
 }
 const handleBlur = (event) => {
   focused.value = false
   emits('blur', event)
-  setTimeout(() => {
-    formItem?.validate()
-  }, 100)
+  if (!props.isSelectCompChildNode && !formItem?.cancelBlurValidate.value) formItem?.validate()
 }
 const handleChange = (event) => {
   model.value = event.target.value
   emits('change', model.value)
-  formItem?.clearValidate()
+  if (!props.isSelectCompChildNode) formItem?.clearValidate()
 }
 const clear = (event) => {
   model.value = ''
@@ -250,7 +264,6 @@ const getSuffixVisible = () => {
   position: relative;
   display: inline-block;
   width: 100%;
-  max-width: @form-item-max-width;
   position: relative;
   .input__inner {
     font-size: @input-font-size;
@@ -405,7 +418,7 @@ const getSuffixVisible = () => {
     position: relative;
     border: @input-border;
     border-radius: @input-border-radius;
-    padding: 0 20px;
+    padding: 0 5px;
     width: 1px;
     white-space: nowrap;
 

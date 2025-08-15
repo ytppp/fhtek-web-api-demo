@@ -4,11 +4,11 @@
       <h1 class="page__title">{{ $t('trans0803') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form form--padding wifi-form" :model="remote">
+      <fh-form class="form form--padding" :model="remote">
         <fh-form-item :label="$t('trans0140')">
           <fh-select v-model="remote.interface" :options="interfaceOpts"> </fh-select>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0166')" label-position="left">
+        <fh-form-item :label="$t('trans0166')">
           {{ statusText }}
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
@@ -29,6 +29,8 @@ import { useI18n } from 'vue-i18n'
 import { reactive, ref, computed, onMounted } from 'vue'
 import { getPortMirr, setPortMirr } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { StartAndStop } from '@/util/constant'
+import { successTips } from '@/util/tool'
 
 enum Interface {
   all = 'All',
@@ -36,10 +38,6 @@ enum Interface {
   lan2 = 'LAN2',
   lan3 = 'LAN3',
   lan4 = 'LAN4',
-}
-enum Status {
-  start = 'start',
-  stop = 'stop',
 }
 
 const { defaultVal } = useDataClean()
@@ -68,38 +66,41 @@ const interfaceOpts = [
   // },
 ]
 const remote = reactive({
-  interface: 'All',
-  status: Status.stop,
+  interface: Interface.all,
+  status: StartAndStop.stop,
 })
 
-const isStart = computed(() => remote.status === Status.start)
-const isStop = computed(() => remote.status === Status.stop)
+const isStart = computed(() => remote.status === StartAndStop.start)
+const isStop = computed(() => remote.status === StartAndStop.stop)
 const statusText = computed(() => {
   if (loading.value) return defaultVal
-  if (remote.status === Status.start) {
-    return t('trans0557')
+  if (remote.status === StartAndStop.start) {
+    return t('trans0900')
   }
-  return t('trans0804')
+  return t('trans0901')
 })
 const start = () => {
-  remote.status = Status.start
-  save()
+  save(StartAndStop.start)
 }
 const stop = () => {
-  remote.status = Status.start
-  save()
+  save(StartAndStop.stop)
 }
 const getPortMirrData = () => {
   loading.value = true
-  getPortMirr().then(({ data }) => {
+  getPortMirr({
+    interface: remote.interface,
+  }).then(({ data }) => {
     loading.value = false
-    remote.interface = data.interface
     remote.status = data.status
   })
 }
 
-const save = () => {
-  setPortMirr(remote).then(() => {
+const save = (order) => {
+  setPortMirr({
+    interface: remote.interface,
+    order,
+  }).then(() => {
+    successTips()
     getPortMirrData()
   })
 }

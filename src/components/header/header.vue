@@ -9,7 +9,7 @@
     <div class="header__center-wrap">
       <div class="logo">
         <img class="logo__img" v-show="isNoAuthPage || !isMobile" :src="logoSrc" alt="" />
-        <!-- <span class="logo__title" v-show="(isNoAuthPage || !isMobile) && title">{{ title }}</span> -->
+        <span class="logo__title" v-show="(isNoAuthPage || !isMobile) && title">{{ title }}</span>
         <fh-icon
           class="logo__drawer-toggle"
           :name="`icon-${drawer ? 'close' : 'menu'}`"
@@ -75,9 +75,8 @@
 </template>
 
 <script>
-import { getPublicFile } from '@/util/tool'
+import { getPublicFile, handleLogout } from '@/util/tool'
 import { changeLanguage } from '@/i18n'
-import { logout } from '@/http/api'
 
 const LanguagesArr = [
   {
@@ -208,9 +207,7 @@ export default {
           message: this.$t('trans0021'),
         })
         .then(() => {
-          logout().then(() => {
-            this.$router.push('/login')
-          })
+          handleLogout()
         })
         .catch(() => {})
     },

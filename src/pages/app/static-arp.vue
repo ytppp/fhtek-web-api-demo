@@ -22,16 +22,16 @@
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model:visible="visible" :title="modalTitle">
+    <fh-modal v-model="visible" :title="modalTitle">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0140')" prop="interface">
-            <fh-select v-model="form.interface" :options="wanOptions"></fh-select>
+            <fh-select v-model="modalForm.interface" :options="wanOpts"></fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0179')" prop="ip">
             <fh-input v-model="modalForm.ip"></fh-input>
           </fh-form-item>
-          <fh-form-item :label="$t('trans0546')" prop="mac">
+          <fh-form-item :label="$t('trans0097')" prop="mac">
             <fh-input v-model="modalForm.mac"></fh-input>
           </fh-form-item>
           <fh-form-item class="form__submit-btn">
@@ -72,6 +72,7 @@ export default {
         ip: '',
         interface: '',
       },
+      wanOpts: [],
       mask: '255.255.255.0',
       index: -1,
       modalFormRules: {
@@ -172,7 +173,6 @@ export default {
           data.domain = this.modalForm.domain
           data.ip = this.modalForm.ip
           addStaticDns([data]).then((res) => {
-            this.visible = false
             this.getStaticDnsListData()
           })
         }
@@ -181,7 +181,6 @@ export default {
           data.domain = this.modalForm.domain
           data.ip = this.modalForm.ip
           editStaticDns([data]).then((res) => {
-            this.visible = false
             this.getStaticDnsListData()
           })
         }
@@ -198,17 +197,22 @@ export default {
       // todo
     },
     getStaticDnsListData() {
-      getStaticDnsList().then(({ data }) => {
-        const tableData = []
-        const { items } = data
-        items.forEach((item, i) => {
-          tableData.push({
-            ...item,
-            index: i,
+      getStaticDnsList()
+        .then(({ data }) => {
+          const tableData = []
+          const { items } = data
+          items.forEach((item, i) => {
+            tableData.push({
+              ...item,
+              index: i,
+            })
           })
+          this.data = tableData
         })
-        this.data = tableData
-      })
+        .catch(() => {})
+        .finally(() => {
+          this.visible = false
+        })
     },
   },
   created() {

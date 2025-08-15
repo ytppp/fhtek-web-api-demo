@@ -1,15 +1,15 @@
 <template>
-  <transition name="toast">
-    <teleport to="body">
-      <div class="toast" :class="`toast--${type}`" v-show="visible" id="toastEl">
+  <teleport to="body">
+    <transition name="toast" @after-leave="onAfterLeave">
+      <div class="toast" :class="`toast--${type}`" v-show="visible" id="toastEl" ref="toastRef">
         <span>{{ text }}</span>
       </div>
-    </teleport>
-  </transition>
+    </transition>
+  </teleport>
 </template>
 
 <script>
-import { ref, defineComponent, onMounted } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'FhToast',
@@ -37,10 +37,9 @@ export default defineComponent({
     startTimer() {
       this.timer = setTimeout(() => {
         this.visible = false
-        this.$el.addEventListener('transitionend', this.hide)
       }, this.duration)
     },
-    hide() {
+    onAfterLeave() {
       clearTimeout(this.timer)
       this.timer = null
       this.$emit('hide')

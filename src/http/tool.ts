@@ -1,10 +1,9 @@
 import { ResultEnum } from './config'
 import type { TAxiosRequestConfig, TAxiosError } from './type'
-import { router } from '@/router/index'
 import { translate } from '@/i18n/index'
 import loading from '@/components/loading/index.js'
 import toast from '@/components/toast/index.js'
-import { format } from '@/util/tool'
+import { format, handleLogout } from '@/util/tool'
 
 // 获取token
 export function getToken(): string {
@@ -54,18 +53,12 @@ const hideFullScreenLoading = () => {
 }
 
 const startLoading = () => {
-  // {
-  //   tip: translate('trans0576'),
-  // }
   loading.open()
 }
 
 //结束loading
 const endLoading = () => {
-  // loading.close()
-  setTimeout(() => {
-    loading.close()
-  }, 500)
+  loading.close()
 }
 
 // 处理HTTP状态码
@@ -148,27 +141,27 @@ export function handleBusinessError(response: any): boolean {
       flag = false
       break
     case ResultEnum.NOAUTH:
-      message = data.msg || translate('trans0696')
+      message = translate('trans0696') // data.msg || translate('trans0696')
       break
     case ResultEnum.OVERDUE:
-      message = data.msg || translate('trans0697')
-      router.push('/login')
+      message = translate('trans0697') // data.msg || translate('trans0697')
+      handleLogout(false)
       break
     case ResultEnum.INVALIDSESSION:
-      message = data.msg || translate('trans0698')
-      router.push('/login')
+      message = translate('trans0698') // data.msg || translate('trans0698')
+      handleLogout(false)
       break
     case ResultEnum.INVALIDJSON:
-      message = data.msg || translate('trans0699')
+      message = translate('trans0699') // data.msg || translate('trans0699')
       break
     case ResultEnum.HASLOGIN:
-      message = data.msg || translate('trans0012')
+      message = translate('trans0012') // data.msg || translate('trans0012')
       break
     case ResultEnum.INVALIDFILE:
-      message = data.msg || translate('trans0700')
+      message = translate('trans0700') // data.msg || translate('trans0700')
       break
     default:
-      message = data.msg || translate('trans0701')
+      message = translate('trans0701') // data.msg || translate('trans0701')
   }
   if (config.toast && message.length) {
     toast(message)

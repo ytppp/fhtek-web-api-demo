@@ -1,32 +1,40 @@
 <template>
-  <div class="select" @click="open" v-clickoutside="close" ref="selectRef">
-    <fh-input
-      readonly
-      :disabled="selectDisabled"
-      :placeholder="selectPlaceholder"
-      :label="currentLabel"
-      v-model="selected.text"
-      @blur="inputBlurHandler"
-      @focus="inputFocusHandler"
-    >
-      <template v-slot:prefix v-if="slots.prefix">
-        <slot name="prefix"></slot>
-      </template>
-      <template #suffix>
-        <fh-icon
-          :class="['select__caret', 'input__icon', opened ? 'is-reverse' : '']"
-          name="icon-down"
-        ></fh-icon>
-      </template>
-    </fh-input>
+  <div
+    class="select"
+    :class="{ 'is-disabled': selectDisabled }"
+    @click="open"
+    v-clickoutside="close"
+    ref="selectRef"
+  >
+    <div class="select__input" ref="selectInputRef">
+      <fh-input
+        readonly
+        :disabled="selectDisabled"
+        :placeholder="selectPlaceholder"
+        :label="currentLabel"
+        :is-select-comp-child-node="true"
+        v-model="selected.text"
+        @blur="inputBlurHandler"
+        @focus="inputFocusHandler"
+      >
+        <template v-slot:prefix v-if="slots.prefix">
+          <slot name="prefix"></slot>
+        </template>
+        <template #suffix>
+          <fh-icon
+            :class="['select__caret', 'input__icon', opened ? 'is-reverse' : '']"
+            name="icon-down"
+          ></fh-icon>
+        </template>
+      </fh-input>
+    </div>
     <transition name="select">
-      <ul class="select__popup" v-show="opened">
+      <ul class="select__popup" ref="selectPopupRef" v-show="opened">
         <template v-if="options.length">
-          <!-- selected === option -->
           <li
             class="select__popup-item"
             :class="{
-              'is-selected': selected.value === option.value && selected.text === option.text,
+              'is-selected': selected.value === option.value,
             }"
             :key="option.value"
             @click.stop="select(option)"
@@ -46,9 +54,20 @@
 </template>
 
 <script setup>
-import { computed, inject, watch, nextTick, reactive, ref, onMounted, useSlots } from 'vue'
+import {
+  computed,
+  inject,
+  watch,
+  nextTick,
+  reactive,
+  ref,
+  onMounted,
+  useSlots,
+  useTemplateRef,
+} from 'vue'
 import { useI18n } from 'vue-i18n'
 import { scrollTo } from '@/util/tool'
+import { computePosition, flip, shift, offset } from '@floating-ui/vue'
 
 defineOptions({
   name: 'FhSelect',
@@ -72,11 +91,15 @@ const props = defineProps({
   name: String,
   placeholder: String,
   label: String,
+  beforeChange: {
+    type: Function,
+    default: () => {},
+  },
 })
 const model = defineModel({
   required: true,
 })
-const emit = defineEmits(['focus', 'blur', 'change', 'input'])
+const emit = defineEmits(['focus', 'blur', 'change'])
 
 const { t } = useI18n()
 const slots = useSlots()
@@ -85,7 +108,9 @@ const selected = reactive({
   text: '',
 })
 const opened = ref(false)
-const selectRef = ref(null)
+const selectRef = useTemplateRef('selectRef')
+const selectInputRef = useTemplateRef('selectInputRef')
+const selectPopupRef = useTemplateRef('selectPopupRef')
 
 const currentLabel = computed(() => {
   return props.label || formItem?.label.value || ''
@@ -97,6 +122,17 @@ const selectDisabled = computed(() => {
   return props.disabled || form?.disabled.value
 })
 
+watch(opened, (val) => {
+  if (val) {
+    formItem?.clearValidate()
+    window.addEventListener('resize', updatePosition)
+    window.addEventListener('scroll', updatePosition)
+  } else {
+    formItem?.validate()
+    window.removeEventListener('resize', updatePosition)
+    window.removeEventListener('scroll', updatePosition)
+  }
+})
 watch(
   () => model.value,
   () => setSelected(),
@@ -104,13 +140,27 @@ watch(
 watch(
   () => props.options,
   () => setSelected(),
+  {
+    deep: true,
+  },
 )
-
+const updatePosition = () => {
+  const { width } = selectInputRef.value.getBoundingClientRect()
+  computePosition(selectInputRef.value, selectPopupRef.value, {
+    placement: 'bottom-start',
+    middleware: [flip(), shift(), offset(6)],
+  }).then(({ x, y }) => {
+    Object.assign(selectPopupRef.value.style, {
+      width: `${width}px`,
+      left: `${x}px`,
+      top: `${y}px`,
+    })
+  })
+}
 const setSelected = () => {
   const option = props.options.filter((o) => o.value === model.value)[0] || {
     text: model.value,
   }
-  // selected = option
   selected.value = option.value
   selected.text = option.text
 }
@@ -127,23 +177,19 @@ const scrollToSelect = () => {
   })
 }
 const select = (option) => {
-  // selected = option
+  if (model.value === option.value) return
+  if (props.beforeChange) props.beforeChange()
   selected.value = option.value
   selected.text = option.text
-  opened.value = false
-  emit('input', selected.value)
-  if (model.value !== selected.value) {
-    change()
-  }
-}
-const change = () => {
   model.value = selected.value
   emit('change', selected.value)
+  opened.value = false
 }
 const open = () => {
   if (!props.disabled) {
     opened.value = !opened.value
     if (opened.value) {
+      updatePosition()
       scrollToSelect()
     }
   }
@@ -157,7 +203,6 @@ const inputBlurHandler = () => {
 const inputFocusHandler = () => {
   emit('focus')
 }
-
 onMounted(() => {
   setSelected()
 })
@@ -165,9 +210,14 @@ onMounted(() => {
 
 <style lang="less">
 .select {
-  position: relative;
   width: 100%;
-  max-width: @form-item-max-width;
+  &.is-disabled {
+    .input {
+      .input__inner {
+        cursor: not-allowed;
+      }
+    }
+  }
   .select__caret {
     transition: transform 0.2s linear;
     &.is-reverse {
@@ -175,8 +225,7 @@ onMounted(() => {
     }
   }
   .input {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 100%;
     .input__inner {
       cursor: pointer;
     }
@@ -184,11 +233,10 @@ onMounted(() => {
   .select__popup {
     position: absolute;
     z-index: 2000;
-    left: -1px;
-    right: -1px;
-    top: 52px;
+    top: 0;
+    left: 0;
     font-size: 14px;
-    max-height: 200px;
+    max-height: 238px;
     background: @select-popup-background-color;
     border-radius: 5px;
     border: 1px solid @select-popup-border-color;
@@ -196,7 +244,7 @@ onMounted(() => {
   }
   .select__popup-item {
     list-style: none;
-    padding: 17px 10px;
+    padding: 10px;
     line-height: 1;
     cursor: pointer;
     width: 100%;

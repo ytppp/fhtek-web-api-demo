@@ -4,15 +4,21 @@
       <div style="text-align: center">
         <img class="signin-form__img" :src="logoSrc" alt="" />
       </div>
-      <fh-form ref="form" :disabled="formDisabled" :model="userinfo" :rules="rules">
-        <fh-form-item prop="username">
+      <fh-form
+        label-position="top"
+        ref="form"
+        :disabled="formDisabled"
+        :model="userinfo"
+        :rules="rules"
+      >
+        <fh-form-item prop="username" :cancel-blur-validate="true">
           <fh-input :placeholder="$t('trans0621')" v-model="userinfo.username" clearable>
             <template #prefix>
               <fh-icon name="icon-user" class="input__icon"></fh-icon>
             </template>
           </fh-input>
         </fh-form-item>
-        <fh-form-item prop="password">
+        <fh-form-item prop="password" :cancel-blur-validate="true">
           <fh-input
             type="password"
             :placeholder="$t('trans0622')"
@@ -57,6 +63,7 @@ import {
   isValidSymbol,
   getStringByte,
   specialChar,
+  successTips,
 } from '@/util/tool'
 import { Role } from '@/util/constant'
 import { login } from '@/http/api'
@@ -122,9 +129,10 @@ export default {
         login(this.userinfo)
           .then(({ data }) => {
             // const { role } = data
-            const role = Role.super
+            const role = Role.super // data.role
             sessionStorage.setItem('role', role)
-            sessionStorage.setItem('loginuser', this.userinfo.username)
+            sessionStorage.setItem('login_user', this.userinfo.username)
+            // successTips('trans0806')
             this.$router.push('/home')
           })
           .finally(() => {

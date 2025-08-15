@@ -1,82 +1,174 @@
 <template>
   <div class="page">
     <div class="page__header">
-      <h1 class="page__title">{{ $t('trans0751') }}</h1>
+      <h1 class="page__title">{{ $t('trans0757') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form modal-form" ref="formRef" :model="form">
-        <fh-form-item label="LAN1">
-          <fh-select v-model="form.lan1" :options="modeList"> </fh-select>
+      <fh-form class="form" :model="form" v-if="isMobile">
+        <fh-form-item :label="SsidText[Lan1]">
+          <fh-select
+            @change="(val: string) => changePort(val, Lan1)"
+            v-model="form[Lan1]"
+            :options="modeList"
+          >
+          </fh-select>
         </fh-form-item>
-        <fh-form-item label="LAN2">
-          <fh-select v-model="form.lan2" :options="modeList"> </fh-select>
+        <fh-form-item :label="SsidText[Lan2]">
+          <fh-select
+            @change="(val: string) => changePort(val, Lan2)"
+            v-model="form[Lan2]"
+            :options="modeList"
+          >
+          </fh-select>
         </fh-form-item>
-        <fh-form-item label="LAN3">
-          <fh-select v-model="form.lan3" :options="modeList"> </fh-select>
+        <fh-form-item :label="SsidText[Lan3]">
+          <fh-select
+            @change="(val: string) => changePort(val, Lan3)"
+            v-model="form[Lan3]"
+            :options="modeList"
+          >
+          </fh-select>
         </fh-form-item>
-        <fh-form-item label="LAN4">
-          <fh-select v-model="form.lan4" :options="modeList"> </fh-select>
-        </fh-form-item>
-        <fh-form-item class="form__submit-btn">
-          <fh-button @click="save" block>
-            {{ $t('trans0002') }}
-          </fh-button>
+        <fh-form-item :label="SsidText[Lan4]">
+          <fh-select
+            @change="(val: string) => changePort(val, Lan4)"
+            v-model="form[Lan4]"
+            :options="modeList"
+          >
+          </fh-select>
         </fh-form-item>
       </fh-form>
+      <fh-table
+        :columns="columns"
+        :data-source="tableData"
+        :show-index="false"
+        :show-row-checkbox="false"
+        :border="true"
+        :hover="false"
+        v-else
+      >
+        <template #[Lan1]="scope">
+          <fh-select
+            @change="(val) => changePort(val, Lan1)"
+            v-model="scope.row[Lan1]"
+            :options="modeList"
+          ></fh-select>
+        </template>
+        <template #[Lan2]="scope">
+          <fh-select
+            @change="(val) => changePort(val, Lan2)"
+            v-model="scope.row[Lan2]"
+            :options="modeList"
+          ></fh-select>
+        </template>
+        <template #[Lan3]="scope">
+          <fh-select
+            @change="(val) => changePort(val, Lan3)"
+            v-model="scope.row[Lan3]"
+            :options="modeList"
+          ></fh-select>
+        </template>
+        <template #[Lan4]="scope">
+          <fh-select
+            @change="(val) => changePort(val, Lan4)"
+            v-model="scope.row[Lan4]"
+            :options="modeList"
+          ></fh-select>
+        </template>
+      </fh-table>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useDataClean } from '@/hooks/data-clean'
-import { format } from '@/util/tool'
+import { Lan1, Lan2, Lan3, Lan4, SsidText, Mode, ModeText } from '@/util/constant'
+import { getLanSpeed, setLanSpeed } from '@/http/api'
+import { successTips } from '@/util/tool'
+import { useIsMobile } from '@/hooks/is-mobile'
 
-enum Mode {
-  auto = 'auto/auto',
-  h10 = '10M/Half',
-  f10 = '10M/Full',
-  h100 = '100M/Half',
-  f100 = '100M/Full',
-  f1000 = '1000M/Full',
-}
 const { t } = useI18n()
-const { cleanData, defaultVal } = useDataClean()
-const formRef = ref(null)
+const { isMobile } = useIsMobile()
+const tableData = reactive([])
 const form = reactive({
-  lan1: '',
-  lan2: '',
-  lan3: '',
-  lan4: '',
+  [Lan1]: '',
+  [Lan2]: '',
+  [Lan3]: '',
+  [Lan4]: '',
 })
-const modeList = reactive([
+const columns = reactive([
   {
-    text: t('trans0487'),
+    key: Lan1,
+    title: SsidText[Lan1],
+  },
+  {
+    key: Lan2,
+    title: SsidText[Lan2],
+  },
+  {
+    key: Lan3,
+    title: SsidText[Lan3],
+  },
+  {
+    key: Lan4,
+    title: SsidText[Lan4],
+  },
+])
+const modeList = [
+  {
+    text: ModeText[Mode.auto],
     value: Mode.auto,
   },
   {
-    text: '10M/Half Duplex',
+    text: ModeText[Mode.h10],
     value: Mode.h10,
   },
   {
-    text: '10M/Full Duplex',
+    text: ModeText[Mode.f10],
     value: Mode.f10,
   },
   {
-    text: '100M/Half Duplex',
+    text: ModeText[Mode.h100],
     value: Mode.h100,
   },
   {
-    text: '100M/Full Duplex',
+    text: ModeText[Mode.f100],
     value: Mode.f100,
   },
   {
-    text: '1000M/Full Duplex',
+    text: ModeText[Mode.f1000],
     value: Mode.f1000,
   },
-])
-const save = () => {
-  // todo
+]
+const changePort = (val: string, type: string) => {
+  setLanSpeed({
+    ifname: type,
+    speed: val,
+  }).then(() => {
+    successTips()
+    getLanSpeedData()
+  })
 }
+const getLanSpeedData = () => {
+  getLanSpeed().then(({ data }) => {
+    const { items } = data
+    const thisTableData = [
+      {
+        [Lan1]: items.find((item) => item.ifname === Lan1).speed,
+        [Lan2]: items.find((item) => item.ifname === Lan2).speed,
+        [Lan3]: items.find((item) => item.ifname === Lan3).speed,
+        [Lan4]: items.find((item) => item.ifname === Lan4).speed,
+      },
+    ]
+    Object.assign(tableData, thisTableData)
+    form[Lan1] = items.find((item) => item.ifname === Lan1).speed
+    form[Lan2] = items.find((item) => item.ifname === Lan2).speed
+    form[Lan3] = items.find((item) => item.ifname === Lan3).speed
+    form[Lan4] = items.find((item) => item.ifname === Lan4).speed
+  })
+}
+onMounted(() => {
+  getLanSpeedData()
+})
 </script>

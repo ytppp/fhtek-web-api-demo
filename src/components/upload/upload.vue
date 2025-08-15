@@ -32,6 +32,7 @@
         :multiple="multiple"
         :accept="accept"
         :name="name"
+        :id="id"
         :disabled="uploadDisabled"
         hidden="hidden"
       />
@@ -62,23 +63,20 @@
                 </div>
               </div>
             </div>
-            <div class="upgradeing" v-if="!uploadSuccess">
-              <span
-                :class="{ upgradeing__loading: uploadLoading, upgradeing__fail: uploadFail }"
-                class="upgradeing__loading"
+            <div class="upgradeing" v-if="uploadLoading || uploadSuccess">
+              <div
+                class="upgradeing__loading-bar"
+                :class="{
+                  'upgradeing__loading-bar--loading': uploadLoading,
+                  'upgradeing__loading-bar--success': uploadSuccess,
+                }"
                 :style="{ width: width }"
-              ></span>
-              <div v-if="uploadLoading" class="upgradeing__percent">{{ width }}</div>
+              ></div>
             </div>
+            <div v-if="uploadLoading" class="upgradeing__percent">{{ width }}</div>
           </div>
           <div class="delete-wrap">
-            <img
-              src="@/assets/images/ic_delete.png"
-              alt=""
-              width="24"
-              v-if="!uploadDisabled"
-              @click="cancel(file)"
-            />
+            <img src="@/assets/images/ic_delete.png" alt="" width="24" @click="cancel(file)" />
           </div>
         </div>
         <div class="file__error" v-if="uploadFail">{{ err || $t('trans0206') }}</div>
@@ -161,8 +159,11 @@ export default {
     }
   },
   computed: {
+    id() {
+      return this.formItem?.id
+    },
     uploadDisabled() {
-      return this.disabled || (this.form || {}).disabled.value || this.uploadLoading
+      return this.disabled || this.form?.disabled.value || this.uploadLoading
     },
     uploadSuccess() {
       return this.status === UploadStatus.success
@@ -373,10 +374,10 @@ export default {
       color: @upload-file-text-color;
       border-radius: 5px;
       background: @upload-background-color;
-      padding: 20px;
+      padding: 10px;
       .icon-wrap {
         background: @upload-icon-background-color;
-        padding: 10px;
+        padding: 5px;
         border-radius: 50%;
         img {
           width: 38px;
@@ -386,7 +387,7 @@ export default {
       }
       .des-cnt {
         position: relative;
-        margin-left: 20px;
+        margin-left: 10px;
         flex: 1;
         .description {
           color: @upload-file-description-color;
@@ -432,35 +433,30 @@ export default {
         }
         .upgradeing {
           width: 100%;
-          display: flex;
-          flex-direction: column;
           height: 3px;
           background: @upload-progress-color;
           margin-top: 10px;
           margin-bottom: 10px;
           border-radius: 1.5px;
-          .upgradeing__loading {
-            display: inline-block;
-            height: 3px;
-            transition: width 1s ease;
-            background: @upload-progress-completed-color;
-          }
-          .upgradeing__fail {
-            display: inline-block;
-            height: 3px;
-            background: @upload-error-text-color;
+          .upgradeing__loading-bar {
+            height: 100%;
+            &.upgradeing__loading-bar--loading {
+              transition: width 1s ease;
+              background: @upload-progress-completed-color !important;
+            }
+            &.upgradeing__loading-bar--success {
+              background: @upload-progress-completed-color;
+            }
           }
           .upgradeing__percent {
             font-size: 12px;
             color: @upload-file-text-color;
-            display: flex;
-            align-items: flex-end;
             margin-top: 8px;
           }
         }
       }
       .delete-wrap {
-        margin-left: 20px;
+        margin-left: 10px;
         img {
           cursor: pointer;
         }

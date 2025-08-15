@@ -1,16 +1,21 @@
 <template>
-  <transition name="wrap">
-    <teleport to="body" :disabled="!isAppendBody">
-      <div v-bind="attrs" ref="wrapRef" class="wrap" v-show="model">
-        <div class="wrap__mask" :style="wrapStyleObj" @click="close" @touchstart="close"></div>
+  <teleport to="body" :disabled="!isAppendBody">
+    <transition name="wrap">
+      <div ref="wrapRef" class="wrap" v-show="visible">
+        <div
+          class="wrap__mask"
+          :style="wrapStyleObj"
+          @click="wrapClose"
+          @touchstart="wrapClose"
+        ></div>
         <slot></slot>
       </div>
-    </teleport>
-  </transition>
+    </transition>
+  </teleport>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch, useAttrs, onMounted, onUnmounted } from 'vue'
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 
 defineOptions({
   name: 'FhPopup',
@@ -38,70 +43,74 @@ const props = defineProps({
     default: false,
   }, // functional component must be set true
 })
-const model = defineModel('visible', {
-  type: Boolean,
-  default: false,
-})
-const attrs = useAttrs()
-const overflow = ref('')
+const visible = ref(false)
 const wrapRef = ref(null)
+// const overflow = ref('')
 
 const wrapStyleObj = computed(() => {
   return {
     backgroundColor: props.wrapBgColor,
   }
 })
-const parentNode = computed(() => {
-  if (props.isAppendBody) {
-    return document.body
-  } else if (props.isManual) {
-    return wrapRef.value.parentNode.parentNode // mount-node's parent node
+// const parentNode = computed(() => {
+//   if (props.isAppendBody) {
+//     return document.body
+//   } else if (props.isManual) {
+//     return wrapRef.value.parentNode.parentNode // mount-node's parent node
+//   } else {
+//     return wrapRef.value.parentNode
+//   }
+// })
+
+watch(visible, (val) => {
+  if (val) {
+    wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
+    // overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
+    // if (parentNode.value) {
+    //   parentNode.value.style.overflow = 'hidden'
+    //   parentNode.value.addEventListener('touchmove', preventDefault, false)
+    // }
   } else {
-    return wrapRef.value.parentNode
+    // if (parentNode.value) {
+    //   parentNode.value.style.overflow = overflow.value
+    //   parentNode.value.removeEventListener('touchmove', preventDefault, false)
+    // }
   }
 })
 
-watch(
-  () => model.value,
-  (val) => {
-    if (val) {
-      wrapRef.value.style.position = props.isAppendBody ? 'fixed' : 'absolute'
-      overflow.value = parentNode.value ? parentNode.value.style.overflow : ''
-      parentNode.value.style.overflow = 'hidden'
-      parentNode.value.addEventListener('touchmove', preventDefault, false)
-    } else {
-      parentNode.value.style.overflow = overflow.value
-      parentNode.value.removeEventListener('touchmove', preventDefault, false)
-    }
-  },
-)
+// const preventDefault = (e) => {
+//   e.preventDefault()
+// }
+const wrapClose = () => {
+  if (!props.closeOnClickWrap) {
+    return
+  }
+  close()
+}
+const close = () => {
+  if (props.beforeClose) {
+    props.beforeClose()
+  }
+  visible.value = false
+}
+const open = () => {
+  visible.value = true
+}
 
 onMounted(() => {
   // prevent auto open
   if (props.isManual) {
-    model.value = true
+    visible.value = true
   }
 })
 
 onUnmounted(() => {
-  model.value = false
+  visible.value = false
 })
-
-const preventDefault = (e) => {
-  e.preventDefault()
-}
-const close = () => {
-  if (!props.closeOnClickWrap) {
-    return
-  }
-  if (props.beforeClose) {
-    props.beforeClose()
-  }
-  model.value = false
-}
 
 defineExpose({
   close,
+  open,
 })
 </script>
 
@@ -115,16 +124,22 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 1;
-  &.wrap-enter-active {
-    transition: all 0.3s ease-in;
-  }
-  &.wrap-leave-active {
-    transition: all 0.3s ease-out;
-  }
+  transition: opacity 0.3s ease;
   &.wrap-enter-from,
   &.wrap-leave-to {
     opacity: 0;
+  }
+  &.wrap-enter-from .modal,
+  &.wrap-leave-to .modal {
+    transform: scale(1.1);
+  }
+  &.wrap-enter-from .dialog,
+  &.wrap-leave-to .dialog {
+    transform: scale(1.1);
+  }
+  &.wrap-enter-from .upgrade,
+  &.wrap-leave-to .upgrade {
+    transform: scale(1.1);
   }
   .wrap__mask {
     z-index: -1;

@@ -5,28 +5,45 @@
     </div>
     <div class="page__content">
       <div class="page__table">
-        <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false">
+        <fh-table
+          :columns="columns"
+          :data-source="data"
+          :show-row-checkbox="false"
+          :show-header="isShowAddBtn"
+        >
           <template #operationgroup>
-            <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">{{
-              $t('trans0164')
-            }}</fh-button>
+            <fh-icon
+              class="page__header-icon"
+              v-if="isShowAddBtn"
+              @click="openAddModal"
+              name="icon-add"
+              :title="$t('trans0164')"
+            />
           </template>
           <template #enable="scope">
             <fh-switch v-model="scope.row.enable" @change="toggleStatus(scope.row)" />
           </template>
           <template #operation="scope">
-            <fh-button type="text" @click="openEditModal(scope.row)">{{
-              $t('trans0165')
-            }}</fh-button>
-            <fh-button type="text" @click="del">{{ $t('trans0111') }}</fh-button>
+            <fh-icon
+              class="page__header-icon"
+              @click="openEditModal(scope.row)"
+              name="icon-edit-square"
+              :title="$t('trans0165')"
+            />
+            <fh-icon
+              class="page__header-icon"
+              @click="del(scope.row)"
+              name="icon-delete"
+              :title="$t('trans0111')"
+            />
           </template>
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model:visible="visible" :title="modalTitle">
+    <fh-modal v-model="visible" :title="modalTitle">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
-          <fh-form-item :label="$t('trans0166')" label-position="left">
+          <fh-form-item :label="$t('trans0166')">
             <fh-switch v-model="modalForm.enable" />
           </fh-form-item>
           <fh-form-item :label="$t('trans0140')" prop="interface">
@@ -56,9 +73,10 @@
 </template>
 
 <script>
-import { ModalType } from '@/util/constant'
+import { ModalType, ServiceType } from '@/util/constant'
 import { getWan, getDdns, addDdns, editDdns, delDdns } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { successTips } from '@/util/tool'
 
 const { convertBooleanStatus } = useDataClean()
 const maxRuleNum = 1
@@ -78,6 +96,7 @@ const serverList = servers.map((val) => ({
 }))
 
 export default {
+  name: 'DdnsPage',
   data() {
     return {
       maxRuleNum,
@@ -134,7 +153,7 @@ export default {
           title: this.$t('trans0053'),
         },
         {
-          key: 'Active',
+          key: 'enable',
           title: this.$t('trans0166'),
           width: '60',
         },
@@ -149,6 +168,9 @@ export default {
     isAdd() {
       return this.modalType === ModalType.add
     },
+    isEdit() {
+      return this.modalType === ModalType.edit
+    },
     modalTitle() {
       return this.isAdd ? this.$t('trans0164') : this.$t('trans0165')
     },
@@ -156,7 +178,8 @@ export default {
   methods: {
     openAddModal() {
       this.modalForm.enable = true
-      this.modalForm.interface = this.wanList[0].value
+      this.modalForm.id = ''
+      this.modalForm.interface = this.wanList[0]?.value ?? ''
       this.modalForm.domain = ''
       this.modalForm.username = ''
       this.modalForm.password = ''
@@ -165,7 +188,8 @@ export default {
       this.visible = true
     },
     openEditModal(row) {
-      this.modalForm.enable = row.Active
+      this.modalForm.enable = row.enable
+      this.modalForm.id = row.id
       this.modalForm.interface = row.interface
       this.modalForm.domain = row.domain
       this.modalForm.username = row.username
@@ -175,13 +199,11 @@ export default {
       this.visible = true
     },
     toggleStatus(row) {
-      this.modalForm.enable = !row.Active
       const data = {
-        id: this.modalForm.id,
-        enable: convertBooleanStatus(this.modalForm.enable),
+        id: row.id,
+        enable: convertBooleanStatus(row.enable),
       }
       editDdns([data]).then(() => {
-        this.visible = false
         this.getDdnsList()
       })
     },
@@ -197,45 +219,60 @@ export default {
         }
         if (this.isAdd) {
           addDdns([data]).then(() => {
-            this.visible = false
+            successTips()
             this.getDdnsList()
           })
         }
         if (this.isEdit) {
           data.id = this.modalForm.id
           editDdns([data]).then(() => {
-            this.visible = false
+            successTips()
             this.getDdnsList()
           })
         }
       }
     },
-    del() {
+    del(row) {
       delDdns({ id: row.id }).then((res) => {
+        successTips('trans0410')
         this.getDdnsList()
       })
     },
     getDdnsList() {
-      getDdns().then(({ data }) => {
-        const tableData = []
-        const { items } = data
-        items.forEach((item, i) => {
-          tableData.push({
-            ...item,
-            Active: convertBooleanStatus(item.Active),
-            index: i,
+      getDdns()
+        .then(({ data }) => {
+          const tableData = []
+          const { items } = data
+          items.forEach((item, i) => {
+            tableData.push({
+              ...item,
+              enable: convertBooleanStatus(item.enable),
+              index: i,
+            })
           })
+          this.data = tableData
         })
-        this.data = tableData
-      })
+        .catch(() => {})
+        .finally(() => {
+          this.visible = false
+        })
     },
     getWanData() {
       getWan().then(({ data }) => {
         const { items } = data
-        this.wanList = items.map((item) => ({
-          value: item.id,
-          text: item.id,
-        }))
+        const wanList = []
+        items.forEach((item) => {
+          if (
+            item.serviceType === ServiceType.INTERNET ||
+            item.serviceType === ServiceType.TR069_INTERNET
+          ) {
+            wanList.push({
+              value: item.id,
+              text: item.wanName,
+            })
+          }
+        })
+        this.wanList = wanList
       })
     },
   },

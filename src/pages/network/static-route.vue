@@ -5,31 +5,46 @@
     </div>
     <div class="page__content">
       <div class="page__table">
-        <fh-table :columns="columns" :data-source="diplayData" :show-row-checkbox="false">
+        <fh-table
+          :columns="columns"
+          :data-source="diplayData"
+          :show-row-checkbox="false"
+          :show-header="isShowAddBtn"
+        >
           <template #filtergroup>
             <fh-select v-model="display" :options="displayOptions"></fh-select>
           </template>
           <template #operationgroup>
-            <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
-              {{ $t('trans0164') }}
-            </fh-button>
+            <fh-icon
+              class="page__header-icon"
+              v-if="isShowAddBtn"
+              @click="openAddModal"
+              name="icon-add"
+              :title="$t('trans0164')"
+            />
           </template>
           <template #operation="scope">
-            <fh-button type="text" @click="openEditModal(scope.row)">
-              {{ $t('trans0165') }}
-            </fh-button>
-            <fh-button type="text" @click="del(scope.row)">
-              {{ $t('trans0111') }}
-            </fh-button>
+            <fh-icon
+              class="page__header-icon"
+              @click="openEditModal(scope.row)"
+              name="icon-edit-square"
+              :title="$t('trans0165')"
+            />
+            <fh-icon
+              class="page__header-icon"
+              @click="del(scope.row)"
+              name="icon-delete"
+              :title="$t('trans0111')"
+            />
           </template>
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model:visible="visible" :title="modalTitle">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
-          <fh-form-item :label="$t('trans0770')">
-            <fh-radio-group v-model="modalForm.type">
+          <fh-form-item :label="$t('trans0135')">
+            <fh-radio-group v-model="modalForm.type" @change="changeIpType">
               <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
                 {{ item.text }}
               </fh-radio>
@@ -56,12 +71,49 @@
 </template>
 
 <script>
-import { isIP, isMulticast, isLoopback, isNetworkIP, isBoardcastIP, format } from '@/util/tool'
-import { getWan, getStaticRoute, addStaticRoute, editStaticRoute, delStaticRoute } from '@/http/api'
-import { ModalType, IP } from '@/util/constant'
+import {
+  isIP,
+  isMulticast,
+  isLoopback,
+  isNetworkIP,
+  isBoardcastIP,
+  format,
+  cidrToSubnetMask,
+  ip2int,
+  getIpAfter,
+  isValidIpv6AddrExtra,
+  successTips,
+} from '@/util/tool'
+import {
+  getWanInfo,
+  getStaticRoute,
+  addStaticRoute,
+  editStaticRoute,
+  delStaticRoute,
+} from '@/http/api'
+import { ModalType, IP, NetType } from '@/util/constant'
 
 const maxRuleNum = 16
 const all = 'all'
+function isValidStaticRouteMask(ip, mask) {
+  if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
+  if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
+  return false
+}
+function isValidMask(ip) {
+  if (ip.split('.').filter((val) => val).length !== 4) return false
+  const i = ip2int(ip).toString(2).padStart(32, '0')
+  const result = i.split('10')
+  // result.length !== 2
+  if (result.length > 2) {
+    return false
+  }
+  // 有效mask
+  if (result[0].includes('0') || (result[1] && result[1].includes('1'))) {
+    return false
+  }
+  return true
+}
 export default {
   data() {
     return {
@@ -97,12 +149,14 @@ export default {
       ],
       modalForm: {
         id: '',
+        index: -1,
         type: '',
+        type_pre: '',
         target: '',
         gateway: '',
         interface: '',
       },
-      index: -1,
+      lanIp: '',
       modalFormRules: {
         interface: [
           {
@@ -120,29 +174,37 @@ export default {
               const parts = value.split('/')
               if (parts.length !== 2) return false
               const ip = parts[0]
-              const suffix = parseInt(parts[1])
+              let suffix = parts[1]
               if (this.isIpv4 && isIP(ip)) {
-                if (
-                  isMulticast(ip) ||
-                  isLoopback(ip) ||
-                  isNetworkIP(ip, suffix) ||
-                  isBoardcastIP(ip, suffix)
-                )
+                const flag = isValidMask(suffix)
+                const mask = cidrToSubnetMask(parseInt(suffix))
+                if (!flag && !mask) return false
+                const maskVal = flag ? suffix : mask
+                // isNetworkIP(ip, maskVal) || sBoardcastIP(ip, maskVal)
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal)) {
                   return false
-                if (!this.lanIp && this.lanIp === ip) return false
+                }
+                if (!this.lanIp && this.lanIp === ip) {
+                  return false
+                }
+                return true
               }
               if (this.isIpv6 && isIP(ip, IP.IPv6)) {
+                suffix = parseInt(suffix)
                 if (!isValidIpv6AddrExtra(ip) || (suffix < 0 && suffix > 128)) {
                   return false
                 }
+                return true
               }
-              return true
+              return false
             },
-            message: this.$t('trans0397'),
+            message: this.$t('trans0566').format(this.$t('trans0792')),
           },
           {
             rule: (value) =>
-              !this.data.some((item) => item.index !== this.index && item.target === value),
+              !this.data.some(
+                (item) => item.index !== this.modalForm.index && item.target === value,
+              ),
             message: this.$t('trans0399'),
           },
         ],
@@ -153,17 +215,16 @@ export default {
           },
           {
             rule: (value) => {
-              if (value.trim().length <= 255) return true
               if ((this.isIpv4 && isIP(value)) || (this.isIpv6 && isIP(value, IP.IPv6))) return true
               return false
             },
-            message: this.$t('trans0116'),
+            message: this.$t('trans0566').format(this.$t('trans0656')),
           },
-          {
-            rule: (value) =>
-              !this.data.some((item) => item.index !== this.index && item.domain === value),
-            message: this.$t('trans0405'),
-          },
+          // {
+          //   rule: (value) =>
+          //     !this.data.some((item) => item.index !== this.modalForm.index && item.gateway === value),
+          //   message: this.$t('trans0405'),
+          // },
         ],
       },
       columns: [
@@ -203,7 +264,7 @@ export default {
       return this.modalForm.type === IP.IPv6
     },
     wanOptions() {
-      return this.wanList
+      return this.wanList.filter((item) => item.type === this.modalForm.type)
     },
     placeholderTips() {
       if (this.isIpv4) {
@@ -220,78 +281,108 @@ export default {
     },
   },
   methods: {
+    changeIpType() {
+      this.modalForm.interface = ''
+    },
+    handleClose() {
+      this.$refs.modalForm.clearValidate()
+    },
     openAddModal() {
       this.modalForm.id = -1
-      this.modalForm.type = IP.IPv4
+      this.modalForm.type_pre = this.modalForm.type = IP.IPv4
       this.modalForm.target = ''
       this.modalForm.gateway = ''
       this.modalForm.interface = ''
-      this.index = -1
+      this.modalForm.index = -1
       this.modalType = ModalType.add
       this.visible = true
     },
     openEditModal(row) {
       this.modalForm.id = row.id
-      this.modalForm.type = row.type
+      this.modalForm.type_pre = this.modalForm.type = row.type
       this.modalForm.target = row.target
       this.modalForm.gateway = row.gateway
       this.modalForm.interface = row.interface
-      this.index = row.index
+      this.modalForm.index = row.index
       this.modalType = ModalType.edit
       this.visible = true
     },
     save() {
       if (this.$refs.modalForm.validate()) {
         const data = {}
+        if (this.isIpv4) {
+          const parts = this.modalForm.target.split('/')
+          data.target = parts[0]
+          data.mask = parts[1]
+        }
+        if (this.isIpv6) {
+          data.target = this.modalForm.target
+        }
         if (this.isAdd) {
           data.type = this.modalForm.type
-          data.target = this.modalForm.target
           data.gateway = this.modalForm.gateway
           data.interface = this.modalForm.interface
-          addStaticRoute([data]).then((res) => {
-            this.visible = false
+          addStaticRoute(data).then((res) => {
+            successTips()
             this.getStaticRouteListData()
           })
         }
         if (this.isEdit) {
+          data.type_pre = this.modalForm.type_pre
           data.id = this.modalForm.id
           data.type = this.modalForm.type
-          data.target = this.modalForm.target
           data.gateway = this.modalForm.gateway
           data.interface = this.modalForm.interface
-          editStaticRoute([data]).then((res) => {
-            this.visible = false
+          editStaticRoute(data).then((res) => {
+            successTips()
             this.getStaticRouteListData()
           })
         }
       }
     },
     del(row) {
-      delStaticRoute({ id: row.id }).then((res) => {
+      delStaticRoute({ id: row.id, type: row.type }).then((res) => {
+        successTips('trans0410')
         this.getStaticRouteListData()
       })
     },
     getWanData() {
-      getWan().then(({ data }) => {
+      getWanInfo().then(({ data }) => {
         const { items } = data
-        this.wanList = items.map((item) => ({
-          value: item.id,
-          text: item.id,
-        }))
+        if (items.length === 0) {
+          return
+        }
+        const wanList = []
+        items.forEach((item) => {
+          if (item.protocol !== NetType.bridge) {
+            wanList.push({
+              value: item.interface,
+              text: item.wanname,
+              type: item.ipv4.length ? IP.IPv4 : item.ipv6.length ? IP.IPv6 : '',
+            })
+          }
+        })
+        this.wanList = wanList
       })
     },
     getStaticRouteListData() {
-      getStaticRoute().then(({ data }) => {
-        const tableData = []
-        const { items } = data
-        items.forEach((item, i) => {
-          tableData.push({
-            ...item,
-            index: i,
+      getStaticRoute()
+        .then(({ data }) => {
+          const tableData = []
+          const { items } = data
+          items.forEach((item, i) => {
+            tableData.push({
+              ...item,
+              target: item.type === IP.IPv4 ? `${item.target}/${item.mask}` : item.target,
+              index: i,
+            })
           })
+          this.data = tableData
         })
-        this.data = tableData
-      })
+        .catch(() => {})
+        .finally(() => {
+          this.visible = false
+        })
     },
   },
   created() {

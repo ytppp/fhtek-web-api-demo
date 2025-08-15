@@ -1,7 +1,7 @@
 <template>
   <div class="table">
     <div class="table__header" v-if="showHeader">
-      <div class="table__filter-group" v-if="$slots.operationgroup">
+      <div class="table__filter-group" v-if="$slots.filtergroup">
         <slot name="filtergroup"></slot>
       </div>
       <div class="table__title" v-if="title || $slots.title">
@@ -10,6 +10,21 @@
       </div>
       <div class="table__operation-group" v-if="$slots.operationgroup">
         <slot name="operationgroup"></slot>
+      </div>
+    </div>
+    <div class="table__header" v-if="showSearch">
+      <div class="table__filter-group">
+        <fh-input
+          v-model="inputVal"
+          :placeholder="$t('trans0854')"
+          class="table__header-search-input"
+        ></fh-input>
+        <fh-icon
+          class="page__header-icon"
+          @click="search"
+          name="icon-search"
+          :title="$t('trans0863')"
+        />
       </div>
     </div>
     <div class="table__main" ref="tableWrap" @scroll="handleScroll">
@@ -25,32 +40,40 @@
           <tr class="table-main__header-row" v-for="(row, rowIndex) in headerRows" :key="rowIndex">
             <template v-for="(col, colIndex) in row" :key="`${rowIndex}-${colIndex}`">
               <th
-                class="table-main__cell table-main__checkbox"
+                class="table-main__cell"
                 :class="{
                   'table-main__cell--fixed': isFixedLeft(col),
                   'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                 }"
-                :style="`${isFixedLeft(col) ? 'position: sticky; left: 0' : ''}`"
+                :style="{
+                  position: isFixedLeft(col) ? 'sticky' : '',
+                  left: isFixedLeft(col) ? '0' : '',
+                  ...cellStyle(col),
+                  ...getItemStyle(col),
+                }"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 ref="checkboxCol"
                 v-if="col.key === 'checkbox'"
-              >
-                <div class="com-cell" :style="cellStyle"></div>
-              </th>
+              ></th>
               <th
-                class="table-main__cell table-main__index"
+                class="table-main__cell"
                 :class="{
                   'table-main__cell--fixed': isFixedLeft(col),
                   'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                 }"
-                :style="`${isFixedLeft(col) ? `position: sticky; left: ${isShowRowCheckbox && isShowIndex ? '50px' : '0'}` : ''}`"
+                :style="{
+                  position: isFixedLeft(col) ? 'sticky' : '',
+                  left: isFixedLeft(col) ? (isShowRowCheckbox && isShowIndex ? '50px' : '0') : '',
+                  ...cellStyle(col),
+                  ...cellStyle(col),
+                }"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 ref="indexCol"
                 v-else-if="col.key === 'index'"
               >
-                <div class="com-cell" :style="cellStyle">{{ $t('trans0454') }}</div>
+                {{ $t('trans0454') }}
               </th>
               <th
                 class="table-main__cell"
@@ -58,32 +81,40 @@
                   'table-main__cell--fixed': isFixedRight(col),
                   'table-main__cell--fixed-right-last': isFixedRightLast(colIndex),
                 }"
-                :style="`${isFixedRight(col) ? 'position: sticky; right: 0' : ''}`"
+                :style="{
+                  position: isFixedRight(col) ? 'sticky' : '',
+                  right: isFixedRight(col) ? '0' : '',
+                  ...getItemStyle(col),
+                  ...cellStyle(col),
+                }"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 ref="rowOperationCol"
                 v-else-if="col.key === 'operation'"
               >
-                <div class="com-cell" :style="cellStyle">{{ $t('trans0141') }}</div>
+                {{ $t('trans0141') }}
               </th>
               <th
                 class="table-main__cell"
                 :title="col.title"
-                :style="getItemStyle(col)"
+                :style="{
+                  ...getItemStyle(col),
+                  ...cellStyle(col),
+                }"
                 :colspan="col.colspan"
                 :rowspan="col.rowspan"
                 :ref="col.key"
                 v-else
               >
-                <div class="cell" :style="cellStyle">{{ col.title }}</div>
+                {{ col.title }}
               </th>
             </template>
           </tr>
         </thead>
         <tbody class="table-main__content">
-          <template v-if="dataSource.length">
+          <template v-if="dataSourceDisplay.length">
             <tr
-              v-for="(item, index) in dataSource"
+              v-for="(item, index) in dataSourceDisplay"
               :key="index"
               class="table-main__content-row"
               :class="{
@@ -94,28 +125,36 @@
             >
               <template v-for="(col, colIndex) in leafColumns" :key="col.key">
                 <td
-                  class="table-main__cell table-main__checkbox"
+                  class="table-main__cell"
                   :class="{
                     'table-main__cell--fixed': isFixedLeft(col),
                     'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                   }"
-                  :style="`${isFixedLeft(col) ? 'position: sticky; left: 0' : ''}`"
+                  :style="{
+                    position: isFixedLeft(col) ? 'sticky' : '',
+                    left: isFixedLeft(col) ? '0' : '',
+                    ...cellStyle(col),
+                    ...getItemStyle(col),
+                  }"
                   v-if="col.key === 'checkbox'"
                 >
-                  <div class="com-cell" :style="cellStyle">
-                    <fh-checkbox @change="(val) => select(val, item)" />
-                  </div>
+                  <fh-checkbox @change="(val) => select(val, item)" />
                 </td>
                 <td
-                  class="table-main__cell table-main__index"
+                  class="table-main__cell"
                   :class="{
                     'table-main__cell--fixed': isFixedLeft(col),
                     'table-main__cell--fixed-left-last': isFixedLeftLast(colIndex),
                   }"
-                  :style="`${isFixedLeft(col) ? `position: sticky; left: ${isShowRowCheckbox && isShowIndex ? '50px' : '0'}` : ''}`"
+                  :style="{
+                    position: isFixedLeft(col) ? 'sticky' : '',
+                    left: isFixedLeft(col) ? (isShowRowCheckbox && isShowIndex ? '50px' : '0') : '',
+                    ...cellStyle(col),
+                    ...getItemStyle(col),
+                  }"
                   v-else-if="col.key === 'index'"
                 >
-                  <div class="com-cell" :style="cellStyle">{{ index + 1 }}</div>
+                  {{ index + 1 }}
                 </td>
                 <td
                   class="table-main__cell"
@@ -123,19 +162,28 @@
                     'table-main__cell--fixed': isFixedRight(col),
                     'table-main__cell--fixed-right-last': isFixedRightLast(colIndex),
                   }"
-                  :style="`${isFixedRight(col) ? 'position: sticky; right: 0' : ''}`"
+                  :style="{
+                    position: isFixedRight(col) ? 'sticky' : '',
+                    right: isFixedRight(col) ? '0' : '',
+                    ...getItemStyle(col),
+                    ...cellStyle(col),
+                  }"
                   v-else-if="col.key === 'operation'"
                 >
-                  <div class="com-cell" :style="cellStyle">
-                    <slot name="operation" :row="item"></slot>
-                  </div>
+                  <slot name="operation" :row="item"></slot>
                 </td>
-                <td class="table-main__cell" :style="getItemStyle(col)" v-else>
-                  <div class="cell" :style="cellStyle" :title="item[col.key]">
-                    <slot :name="col.key" :row="item">
-                      {{ item[col.key] ? item[col.key] : '-' }}
-                    </slot>
-                  </div>
+                <td
+                  class="table-main__cell"
+                  :style="{
+                    ...getItemStyle(col),
+                    ...cellStyle(col),
+                  }"
+                  :title="item[col.key]"
+                  v-else
+                >
+                  <slot :name="col.key" :row="item">
+                    {{ cellContent(item, col.key) }}
+                  </slot>
                 </td>
               </template>
             </tr>
@@ -148,6 +196,14 @@
         </tbody>
       </table>
     </div>
+    <div class="table__pagination" v-if="showPagination">
+      <fh-pagination
+        :total="dataSource.length"
+        :default-current="pagination.current"
+        :default-pageSize="pagination.pageSize"
+        @change="changePagination"
+      ></fh-pagination>
+    </div>
     <div class="table__footer" v-if="footer || $slots.footer">
       <template v-if="footer"> {{ footer }} </template>
       <slot name="footer" v-else></slot>
@@ -156,73 +212,11 @@
 </template>
 
 <script>
-/**
- * 从多维对象数组中提取指定维度的数据
- * @param {Array} array - 多维对象数组
- * @param {number} targetDepth - 目标维度（从0开始）
- * @param {string} childrenKey - 包含子数组的属性名（默认为'children'）
- * @returns {Array} 包含指定维度所有元素的数组（不包含子维度）
- */
-function extractDimension(array, targetDepth, childrenKey = 'children') {
-  // 参数验证
-  if (!Array.isArray(array)) {
-    throw new TypeError('第一个参数必须是数组')
-  }
+import { useDataClean } from '@/hooks/data-clean'
+import { findObjectsWithValue } from '@/util/tool'
+import { extractDimension, flatten } from './table-util'
 
-  if (typeof targetDepth !== 'number' || targetDepth < 0) {
-    throw new TypeError('目标维度必须是非负整数')
-  }
-
-  if (typeof childrenKey !== 'string') {
-    throw new TypeError('子维度键名必须是字符串')
-  }
-
-  const result = []
-
-  /**
-   * 递归遍历多维数组
-   * @param {Array} currentArray - 当前处理的数组
-   * @param {number} currentDepth - 当前深度
-   */
-  function traverse(currentArray, currentDepth) {
-    for (const item of currentArray) {
-      // 检查是否是对象（处理对象数组）
-      const isObject = item !== null && typeof item === 'object' && !Array.isArray(item)
-
-      if (currentDepth === targetDepth) {
-        // 到达目标维度，提取数据
-
-        // 克隆对象，排除子维度
-        if (isObject) {
-          const clonedItem = { ...item }
-          result.push(clonedItem)
-        } else {
-          // 非对象元素直接添加
-          result.push(item)
-        }
-      } else if (isObject && item[childrenKey] && Array.isArray(item[childrenKey])) {
-        // 继续遍历子维度
-        traverse(item[childrenKey], currentDepth + 1)
-      }
-    }
-  }
-
-  traverse(array, 0)
-  return result
-}
-/**
- * 将嵌套的列数组扁平化，将所有子列提取到一个一维数组中。
- * @param {Array} columns - 包含嵌套列对象的数组，每个列对象可能包含 `children` 属性，该属性是一个子列数组。
- * @returns {Array} - 扁平化后的一维列数组。
- */
-function flatten(columns) {
-  return columns.reduce((acc, col) => {
-    if (Array.isArray(col.children) && col.children.length > 0) {
-      return [...acc, ...flatten(col.children)]
-    }
-    return [...acc, col]
-  }, [])
-}
+const { defaultVal } = useDataClean()
 const Fixed = {
   left: 'left',
   right: 'right',
@@ -242,15 +236,23 @@ export default {
     footer: String,
     showRowCheckbox: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     showIndex: {
       type: Boolean,
       default: true,
     },
-    stripe: {
+    showPagination: {
       type: Boolean,
       default: false,
+    },
+    showSearch: {
+      type: Boolean,
+      default: false,
+    },
+    stripe: {
+      type: Boolean,
+      default: true,
     },
     border: {
       type: Boolean,
@@ -258,7 +260,7 @@ export default {
     },
     hover: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     showTableHeader: {
       type: Boolean,
@@ -266,12 +268,12 @@ export default {
     },
     showHeader: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     fixed: {
       type: Boolean,
       default: true,
-    }, // 受否固定列，
+    }, // 是否固定列，
     align: {
       type: String,
       default: 'center',
@@ -286,9 +288,28 @@ export default {
       isScrollLeft: false,
       isScrollRight: false,
       isShowScroll: false,
+      pagination: {
+        current: 1,
+        pageSize: 20,
+      },
+      inputVal: '',
+      filterVal: '',
     }
   },
   computed: {
+    dataSourceDisplay() {
+      if (!this.showPagination) {
+        return this.dataSource
+      }
+      if (!this.showSearch) {
+        return this.dataSource
+      }
+      const data = findObjectsWithValue(this.dataSource, this.filterVal)
+      const { current, pageSize } = this.pagination
+      const start = (current - 1) * pageSize
+      const end = current * pageSize
+      return data.slice(start, end)
+    },
     isShowOperation() {
       return this.$slots.operation
     },
@@ -296,13 +317,7 @@ export default {
       return this.showIndex
     },
     isShowRowCheckbox() {
-      return this.showRowCheckbox && this.dataSource.length
-    },
-    cellStyle() {
-      return {
-        textAlign: this.align,
-        height: '100%',
-      }
+      return this.showRowCheckbox
     },
     columnsNew() {
       let list = []
@@ -311,6 +326,8 @@ export default {
           key: 'checkbox',
           title: '',
           fixed: Fixed.left,
+          width: '50',
+          minWidth: '50',
         })
       }
       if (this.isShowIndex) {
@@ -318,6 +335,8 @@ export default {
           key: 'index',
           title: '',
           fixed: Fixed.left,
+          width: '50',
+          minWidth: '50',
         })
       }
       list = [...list, ...this.columns]
@@ -326,6 +345,7 @@ export default {
           key: 'operation',
           title: '',
           fixed: Fixed.right,
+          minWidth: '100',
         })
       }
       return list
@@ -382,6 +402,19 @@ export default {
   },
   emits: ['select', 'click-row'],
   methods: {
+    search() {
+      this.filterVal = this.inputVal
+    },
+    changePagination(current, currentPageSize) {
+      this.pagination.current = current
+      this.pagination.pageSize = currentPageSize
+    },
+    cellContent(item, key) {
+      if (Array.isArray(item[key]) && !item[key].length) {
+        return defaultVal
+      }
+      return item[key] ? item[key] : defaultVal
+    },
     isFixedLeft(col) {
       return col.fixed === Fixed.left && this.isShowScroll && this.isScrollRight
     },
@@ -396,11 +429,18 @@ export default {
     isFixedRightLast(index) {
       return this.leafColumns[index - 1]?.fixed !== Fixed.right
     },
+    cellStyle(col) {
+      return {
+        textAlign: col.textAlign ? col.textAlign : this.align,
+        height: '100%',
+      }
+    },
     getItemStyle(col) {
-      return this.dataSource.length
+      return this.dataSourceDisplay.length
         ? {
             width: col.width && `${col.width}px`,
-            maxWidth: col.width && `${col.width}px`,
+            minWidth: col.minWidth ? `${col.minWidth}px` : col.width ? `${col.width}px` : 'auto',
+            maxWidth: col.maxWidth ? `${col.maxWidth}px` : col.width ? `${col.width}px` : 'auto',
           }
         : {}
     },
@@ -470,7 +510,7 @@ export default {
   width: 100%;
   .table__header {
     position: relative;
-    height: 85px;
+    height: 50px;
   }
   .table__title {
     display: flex;
@@ -487,12 +527,10 @@ export default {
   .table__filter-group,
   .table__operation-group {
     position: absolute;
-    top: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
-    > * {
-      margin: 0 4px;
-    }
   }
   .table__filter-group {
     left: 0;
@@ -505,8 +543,23 @@ export default {
     overflow-x: auto;
     overflow-y: hidden;
   }
-  .table__footer {
-    padding: 10px;
+  .table__footer,
+  .table__pagination {
+    padding: 10px 0;
+  }
+  .table__header-search-input {
+    margin-right: 5px;
+    .input__inner {
+      height: 28px;
+    }
+  }
+  .table__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    @media screen and (max-width: 768px) {
+      justify-content: center;
+    }
   }
   .table-main {
     table-layout: fixed;
@@ -527,24 +580,39 @@ export default {
       }
     }
     .table-main__header-row {
-      background-color: @table-background-color;
       .table-main__cell {
-        font-weight: 400;
+        font-weight: 600;
+        background-color: @table-header-background-color;
+        &.table-main__cell--fixed {
+          background-color: @table-header-background-color;
+        }
       }
     }
     .table-main__content-row {
-      background-color: @table-background-color;
+      .table-main__cell {
+        background-color: @table-background-color;
+      }
       &:last-child {
         .table-main__cell {
           border-bottom: none;
         }
       }
       &.is-stripe {
-        background-color: #fafafa;
+        .table-main__cell {
+          background-color: #fafafa;
+          &.table-main__cell--fixed {
+            background-color: #fafafa;
+          }
+        }
       }
       &.is-hover {
         &:hover {
-          background-color: #f5f7fa;
+          .table-main__cell {
+            background-color: #f5f7fa !important;
+            &.table-main__cell--fixed {
+              background-color: #f5f7fa !important;
+            }
+          }
         }
       }
       &.empty-row {
@@ -559,13 +627,17 @@ export default {
     }
     .table-main__cell {
       z-index: 1;
-      padding: 12px 0;
+      padding: 12px 5px;
       font-size: 16px;
       color: #262626;
       border-bottom: 1px solid #c9c9c9;
+      box-sizing: border-box;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-all;
       &.table-main__cell--fixed {
         z-index: 2;
-        background-color: @table-background-color;
         &.table-main__cell--fixed-left-last,
         &.table-main__cell--fixed-right-last {
           &::after {
@@ -594,26 +666,6 @@ export default {
         }
       }
     }
-    .table-main__index,
-    .table-main__checkbox {
-      width: 50px;
-      min-width: 50px;
-    }
-  }
-  .com-cell {
-    box-sizing: border-box;
-    padding-left: 5px;
-    padding-right: 5px;
-    white-space: nowrap;
-  }
-  .cell {
-    box-sizing: border-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    word-break: break-all;
-    padding-left: 5px;
-    padding-right: 5px;
   }
 }
 </style>

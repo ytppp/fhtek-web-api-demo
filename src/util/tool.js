@@ -1,4 +1,9 @@
-import { IP } from './constant.js'
+import { logout } from '@/http/api'
+import { router, loginPath } from '@/router/index'
+import { IP } from './constant'
+import { translate } from '@/i18n/index'
+import toast from '@/components/toast/index.js'
+
 const domainReg = /^(https?:\/\/)?([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
 const ipReg =
   /^(?:(?:\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}(?:\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])$/
@@ -11,8 +16,7 @@ const IPBReg =
 const IPCReg =
   /^192\.168\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[0-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[0-9])$/
 
-export function getLangUsed() {
-  var lang = VITE_CUSTOMER_CONFIG.defaultLanguage
+export function getLangUsed(lang) {
   if (localStorage && localStorage.getItem('lang')) {
     lang = localStorage.getItem('lang')
   }
@@ -108,7 +112,7 @@ export function isValidLength(value, min = 8, max = 24) {
 }
 
 export const specialChar = '!#$*+-.=?@_~'
-export function isValidSymbol(value, ruleReg = /^[a-zA-Z0-9!#$\*\+\-.=\?@_~]+$/) {
+export function isValidSymbol(value, ruleReg = /^[\w!#$*+\-.=?@_~]+$/i) {
   if (!value) {
     return false
   }
@@ -206,22 +210,25 @@ function ipRule(ip, mask) {
   }
   return true
 }
+function isIPC(ip) {
+  return IPCReg.test(ip)
+}
 // 是否为私有地址
-function isPrivateIP(ip) {
+export function isPrivateIP(ip) {
   return IPAReg.test(ip) || IPBReg.test(ip) || isIPC(ip)
 }
 // 是否为网络地址
 // eg:
 //  ip: 192.168.110.0 mask: 255.255.255.0 true
 //  ip: 192.168.0.0 mask: 255.255.0.0 true
-export function isNetworkIP(ip, mask) {
+export function isNetworkIP(ip, mask = '255.255.255.0') {
   const bip = ip2int(ip)
   const bmask = ip2int(mask)
   const r = (bip & bmask) >>> 0 // >>>0去掉符号位
   return r === bip
 }
 // 是否是广播地址
-export function isBoardcastIP(ip, mask) {
+export function isBoardcastIP(ip, mask = '255.255.255.0') {
   const bip = ip2int(ip)
   const bmask = ~ip2int(mask)
   const r = (bip | bmask) >>> 0 // >>>0去掉符号位
@@ -292,7 +299,7 @@ export function validationCharacterRange(val, minLen, maxLen) {
 }
 
 // 简化 ipv6 地址转化完整 ipv6 地址
-function tranSimIpv6ToFullIpv6(simpeIpv6) {
+export function tranSimIpv6ToFullIpv6(simpeIpv6) {
   simpeIpv6 = simpeIpv6.toUpperCase()
   // ipv6地址有8段，每段4个字符
   const Ipv6Len = 8,
@@ -340,6 +347,7 @@ export function isValidIpv6AddrExtra(value) {
   let ipv6OfAll0 = new Array(8).fill(''.padStart(4, '0')).join(':') // Ipv6 address of all '0'
   let ipv6OfAllF = new Array(8).fill(''.padStart(4, 'F')).join(':') // Ipv6 address of all 'F'
   let ipv6End1 = `${new Array(7).fill(''.padStart(4, '0')).join(':')}:0001` // ::1
+
   if (
     fullAddr.startsWith('FF') ||
     fullAddr.startsWith('FE80') ||
@@ -415,7 +423,7 @@ export function isValidVal(val, minLen, maxLen) {
   return isValidName(val)
 }
 
-function isValidName(name) {
+export function isValidName(name) {
   for (let i = 0; i < name.length; i++) {
     if (isNameUnsafe(name.charAt(i)) == true) {
       return false
@@ -446,4 +454,163 @@ export function isValidDomain(value, flag = true) {
     ? /^(https?:\/\/)?([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
     : /^([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
   return domainReg.test(value)
+}
+function isMulticastMac(mac) {
+  const number = mac.split(':')[0]
+  const result = Number.parseInt(number, 16) & 0x01
+  return result === 0x01
+}
+export const isMac = (mac) => {
+  const macRegex = /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/
+  return macRegex.test(mac)
+  // 检查组播
+  // return !isMulticastMac(mac)
+}
+export function isValidUrlName(url) {
+  let invalidArray = ['www', 'com', 'org', 'net', 'edu', 'www.', '.com', '.org', '.net', '.edu']
+  if (isValidAscii(url) != '') {
+    return false
+  }
+  if (isValidName(url) == false) {
+    return false
+  }
+  if (url.includes('http://') || url.includes('https://')) {
+    return false
+  }
+  for (let i = 0; i < url.length; i++) {
+    if (url.charAt(i) == '\\') {
+      return false
+    }
+  }
+  for (let i = 0; i < invalidArray.length; i++) {
+    if (url == invalidArray[i]) {
+      return false
+    }
+  }
+  return true
+}
+
+export function isValidUnixPath(path) {
+  // 匹配 Unix 路径（如 /path/to/file 或 ./file）
+  const pattern = /^(?:\/|(?:\.\/)?(?:[^\/\0]+\/)*[^\/\0]+)$/
+  return !pattern.test(path)
+}
+
+export const formatDuration = (value) => {
+  const YEAR = 365 // 定义一年有多少天
+  const MONTH = 30 // 定义一月有多少天
+  const HOUR = 3600 // 定义一小时有多少秒
+  const timeArr = []
+
+  const splits = [YEAR * 24 * HOUR, MONTH * 24 * HOUR, 24 * HOUR, HOUR, 60]
+  splits.forEach((val) => {
+    let duration = 0
+    if (value >= val) {
+      duration = parseInt(value / val, 10)
+      value -= duration * val
+    }
+    timeArr.push(duration)
+  })
+  // 添加剩下的秒数
+  timeArr.push(value)
+  return timeArr
+}
+
+export function cidrToSubnetMask(prefixLength) {
+  if (typeof prefixLength !== 'number' || prefixLength < 0 || prefixLength > 32) {
+    return false
+  }
+
+  let binaryMask = ''
+  for (let i = 0; i < 32; i++) {
+    binaryMask += i < prefixLength ? '1' : '0'
+  }
+
+  const segments = []
+  for (let i = 0; i < 4; i++) {
+    const start = i * 8
+    const end = start + 8
+    segments.push(parseInt(binaryMask.substring(start, end), 2))
+  }
+
+  return segments.join('.')
+}
+
+// 格式化网络数据流量单位，value的初始单位应为B
+export const formatNetworkData = (value) => {
+  const units = ['KB', 'MB', 'GB', 'TB', 'PB']
+  let index = -1
+  value = Number(value)
+  if (!value) {
+    return { value, unit: '' }
+  }
+  if (!Number.isNaN(value)) {
+    do {
+      value /= 1024
+      index += 1
+    } while (value > 1024 && index < units.length - 1)
+    return {
+      value: value.toFixed(2),
+      unit: units[index],
+    }
+  }
+  return { value: '', unit: '' }
+}
+
+export const handleLogout = (isLogout = true) => {
+  if (isLogout) {
+    logout().then(() => {
+      sessionStorage.clear()
+      router.push(loginPath)
+    })
+  } else {
+    sessionStorage.clear()
+    router.push(loginPath)
+  }
+}
+
+export const successTips = (msg = 'trans0791') => {
+  toast({
+    duration: 2000,
+    text: translate(msg),
+    type: 'success',
+  })
+}
+
+export const search = (database, searchVal) => {
+  return database.filter((row) => {
+    return row.filter((col) => {
+      return col.toLowerCase().includes(searchVal.toLowerCase())
+    })
+  })
+}
+
+/**
+ * 查找对象数组中包含特定值的所有对象
+ * @param {Array} database - 要搜索的对象数组
+ * @param {*} searchVal - 要查找的值
+ * @returns {Array} 包含该值的所有对象组成的数组
+ */
+export const findObjectsWithValue = (database, searchVal) => {
+  if (!Array.isArray(database)) {
+    return []
+  }
+
+  if (searchVal === undefined || searchVal === null || !searchVal) {
+    return database
+  }
+
+  return database.filter((obj) => {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        if (obj[key] === null || obj[key] === undefined) {
+          continue
+        }
+        if (obj[key].toString().toLowerCase().includes(searchVal.toString().toLowerCase())) {
+          return true
+        }
+      }
+    }
+    return false
+  })
 }

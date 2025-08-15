@@ -3,30 +3,38 @@
     <div class="page__header">
       <h1 class="page__title">{{ format($t('trans0544'), [$t('trans0050')]) }}</h1>
     </div>
-    <div class="page__content page__content--padding-small">
+    <div class="page__content">
       <div class="page__sub-header">
         <h2 class="page__title">{{ $t('trans0119') }}</h2>
       </div>
-      <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
+      <fh-form
+        class="form form--padding"
+        ref="wifiFormRef"
+        :model="wifi"
+        :rules="rules"
+        :disabled="formDisabled"
+      >
         <fh-form-item :label="$t('trans0711')">
           <fh-select @change="changeSsid" v-model="wifi.id" :options="ssidOpts"> </fh-select>
         </fh-form-item>
         <fh-form-item :label="$t('trans0712')" prop="ssid">
           <fh-input v-model="wifi.ssid"> </fh-input>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0796')" label-position="left" :label-width="labelWidth">
+        <fh-form-item :label="$t('trans0796')">
           <fh-switch v-model="wifi.enable"> </fh-switch>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0797')" label-position="left" :label-width="labelWidth">
+        <fh-form-item :label="$t('trans0797')">
           <fh-switch v-model="wifi.hide"> </fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0747')" prop="sta">
-          <fh-input v-model="wifi.sta"> </fh-input>
+          <fh-input v-model="wifi.sta" :not-disabled="staNotDisabledProp"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0031')">
-          <fh-select v-model="wifi.encrypt" :options="encrypts"> </fh-select>
+          <fh-select v-model="wifi.encrypt" :options="encryptsOpts"> </fh-select>
+          <template #extra>
+            <fh-alert v-if="encryptTip" :title="encryptTip" type="info" show-icon />
+          </template>
         </fh-form-item>
-        <fh-alert v-if="encryptTip" :title="encryptTip" type="info" show-icon> </fh-alert>
         <fh-form-item :label="$t('trans0030')" v-if="!isEncryptNone" prop="password">
           <fh-input
             v-model="wifi.password"
@@ -37,116 +45,90 @@
           >
           </fh-input>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0798')" label-position="left">
+        <fh-form-item :label="$t('trans0798')" v-if="isSsidac1">
           <fh-switch v-model="wifi.enableWps"> </fh-switch>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
-          <fh-button @click="save" block>
+          <fh-button @click="save" :not-disabled="staNotDisabledProp" block>
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
       </fh-form>
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0799') }}</h2>
-      </div>
-      <fh-form class="form form--padding wifi-form" ref="wifiFormRef" :model="wifi" :rules="rules">
-        <fh-form-item :label="$t('trans0711')">
-          <fh-select v-model="wps.id" :options="ssidOpts"> </fh-select>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0800')" label-position="left">
-          {{ wps.status }}
-        </fh-form-item>
-        <fh-form-item class="form__submit-btn">
-          <fh-button block>
-            {{ $t('trans0557') }}
-          </fh-button>
-        </fh-form-item>
-      </fh-form>
+      <template v-if="isEnableWps">
+        <div class="page__sub-header">
+          <h2 class="page__title">{{ $t('trans0799') }}</h2>
+        </div>
+        <fh-form class="form form--padding" :wps="wifi">
+          <fh-form-item :label="$t('trans0800')">
+            {{ wpsStatusText }}
+          </fh-form-item>
+          <fh-form-item class="form__submit-btn">
+            <fh-button @click="start" block v-if="isStart">
+              {{ $t('trans0557') }}
+            </fh-button>
+            <fh-button @click="stop" block v-if="isStop">
+              {{ $t('trans0804') }}
+            </fh-button>
+          </fh-form-item>
+        </fh-form>
+      </template>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, inject, onMounted } from 'vue'
+import { computed, reactive, ref, onMounted, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isValidLength, isValidSymbol, format, specialChar, isValidInteger } from '@/util/tool'
+import {
+  isValidLength,
+  isValidSymbol,
+  format,
+  specialChar,
+  isValidInteger,
+  successTips,
+} from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
-import { getWifi5g, setWifi5g, getWps, setWps } from '@/http/api'
+import { getWifi5g, setWifi5g, getWps, setWps, getMesh, getWifi5gAdv } from '@/http/api'
+import { useCountDown } from '@/hooks/countdown'
+import { StartAndStop, Encrypts, encrypts, WpsStatus, SsidText, Ssidac1 } from '@/util/constant'
 
 defineOptions({
   name: 'b5gBasicPage',
 })
-enum Encrypts {
-  none = 'none',
-  wpaWpa2PskTkip = 'psk-mixed+tkip',
-  wpaWpa2PskCcmp = 'psk-mixed+ccmp',
-  wpaWpa2PskTkipCcmp = 'psk-mixed+tkip+ccmp',
-  wpa2Wpa3PskSaeCcmp = 'sae-mixed',
-  wpaPskCcmp = 'psk+ccmp',
-  wpaPskTkip = 'psk+tkip',
-  wpa2PskTkip = 'psk2+tkip',
-  wpa3SaeCcmp = 'sae',
-}
-enum WpsStatus {}
-const dialog = inject('dialog')
+
+const loading = ref(false)
 const { t } = useI18n()
-const { convertBooleanStatus } = useDataClean()
-const wifiFormRef = ref(null)
-const labelWidth = '110px'
-const encrypts = [
-  {
-    value: Encrypts.none,
-    text: 'Open',
-  },
-  {
-    value: Encrypts.wpaWpa2PskTkip,
-    text: 'WPA/WPA2-PSK(TKIP)',
-  },
-  {
-    value: Encrypts.wpaWpa2PskCcmp,
-    text: 'WPA/WPA2-PSK(CCMP)',
-  },
-  {
-    value: Encrypts.wpaWpa2PskTkipCcmp,
-    text: 'WPA/WPA2-PSK(TKIP|CCMP)',
-  },
-  {
-    value: Encrypts.wpa2Wpa3PskSaeCcmp,
-    text: 'WPA2/WPA3-PSK/SAE(CCMP)',
-  },
-  {
-    value: Encrypts.wpaPskCcmp,
-    text: 'WPA-PSK(CCMP)',
-  },
-  {
-    value: Encrypts.wpaPskTkip,
-    text: 'WPA-PSK(TKIP)',
-  },
-  {
-    value: Encrypts.wpa2PskTkip,
-    text: 'WPA2-PSK(TKIP)',
-  },
-  {
-    value: Encrypts.wpa3SaeCcmp,
-    text: 'WPA3-SAE(CCMP)',
-  },
-]
+const { convertBooleanStatus, defaultVal } = useDataClean()
+const wifiFormRef = useTemplateRef('wifiFormRef')
+const enableSteering = ref(false)
+const timeout = 2 * 60 * 1000
+const interval = 5000
 const ssidOpts = reactive([])
 const ssidList = reactive([])
+const wifiEnable = ref(false)
+const encryptsOpts = encrypts
 const wifi = reactive({
   id: '',
   ssid: '',
   sta: 0,
   enable: false,
+  enableInitial: false,
   hide: false,
   encrypt: Encrypts.none,
   password: '',
   enableWps: false,
+  enableWpsInitial: false,
 })
 const wps = reactive({
   id: '',
   status: '',
 })
+const WpsText = {
+  [WpsStatus.idle]: t('trans0807'),
+  [WpsStatus.inProgress]: t('trans0808'),
+  [WpsStatus.configured]: t('trans0809'),
+  [WpsStatus.unknown]: t('trans0807'),
+}
 const rules = reactive({
   ssid: [
     {
@@ -187,7 +169,14 @@ const rules = reactive({
     },
   ],
 })
-
+const wpsStatusText = computed(() => {
+  if (loading.value) return defaultVal
+  return WpsText[wps.status]
+})
+const isStart = computed(() =>
+  [WpsStatus.idle, WpsStatus.unknown, WpsStatus.configured].includes(wps.status),
+)
+const isStop = computed(() => wps.status === WpsStatus.inProgress)
 const isEncryptNone = computed(() => {
   return wifi.encrypt === Encrypts.none
 })
@@ -197,32 +186,96 @@ const encryptTip = computed(() => {
   }
   return ''
 })
+const isSsidac1 = computed(() => {
+  return wifi.id === Ssidac1
+})
+const isEnableWps = computed(() => {
+  return wifi.enableWpsInitial && wifi.enableInitial && isSsidac1.value && wifiEnable.value
+})
+const formDisabled = computed(() => {
+  return enableSteering.value || !wifiEnable.value
+})
+const staNotDisabledProp = computed(() => {
+  return wifiEnable.value
+})
 
-const getWifiData = () => {
-  getWifi5g().then(({ data }) => {
-    const { items } = data
+const start = () => {
+  saveWps(StartAndStop.start)
+}
+const stop = () => {
+  saveWps(StartAndStop.stop)
+}
+const saveWps = (order: StartAndStop) => {
+  setWps({
+    id: wps.id,
+    order,
+  }).then(() => {
+    getWpsData()
+  })
+}
+const doingHandle = () => {
+  getWpsData()
+}
+const getWpsData = () => {
+  wps.id = wifi.id
+  loading.value = true
+  getWps({
+    id: wps.id,
+  }).then(({ data }) => {
+    loading.value = false
+    switch (data.status) {
+      case WpsStatus.idle:
+        wps.status = WpsStatus.idle
+        break
+      case WpsStatus.inProgress:
+        wps.status = WpsStatus.inProgress
+        break
+      case WpsStatus.configured:
+        wps.status = WpsStatus.configured
+        break
+      default:
+        wps.status = WpsStatus.unknown
+        break
+    }
+    if (wps.status === WpsStatus.inProgress) {
+      createCountDown()
+    }
+    if (wps.status === WpsStatus.idle || wps.status === WpsStatus.configured) {
+      cleanCountDown()
+    }
+  })
+}
+const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle)
+const getWifiData = (id?: string) => {
+  Promise.all([getWifi5g(), getWifi5gAdv()]).then(([res1, res2]) => {
+    const items = res1.data.items
     if (items.length === 0) {
       return
     }
+    wifiEnable.value = convertBooleanStatus(res2.data.enable)
     const ssidOptsList = items.map((item) => ({
       value: item.id,
-      text: `SSIDAC${item.id}`,
+      text: SsidText[item.id],
     }))
     Object.assign(ssidList, items)
     Object.assign(ssidOpts, ssidOptsList)
-    wifi.id = items[0].id
+    wifi.id = id ? id : items[0].id
     changeSsid()
   })
 }
 const changeSsid = () => {
   const thisSsid = ssidList.find((item) => item.id === wifi.id)
+  if (!thisSsid) return
   wifi.ssid = thisSsid.name
   wifi.sta = thisSsid.max_sta
-  wifi.enable = convertBooleanStatus(thisSsid.enable)
+  wifi.enableInitial = wifi.enable = convertBooleanStatus(thisSsid.enable)
   wifi.hide = convertBooleanStatus(thisSsid.enable_hide)
   wifi.encrypt = thisSsid.auth_mode
   wifi.password = thisSsid.pre_shared_key
-  wifi.enableWps = convertBooleanStatus(thisSsid.enable_wps)
+  wifi.enableWpsInitial = wifi.enableWps = convertBooleanStatus(thisSsid.enable_wps)
+  if (isEnableWps.value) {
+    getWpsData()
+  }
 }
 const save = () => {
   if (wifiFormRef.value?.validate()) {
@@ -236,23 +289,19 @@ const save = () => {
       pre_shared_key: wifi.password,
       enable_wps: convertBooleanStatus(wifi.enableWps),
     }
-    setWifi5g(data)
+    setWifi5g(data).then(() => {
+      successTips()
+      getWifiData(wifi.id)
+    })
   }
+}
+const getMeshData = () => {
+  getMesh().then(({ data }) => {
+    enableSteering.value = convertBooleanStatus(data.steering)
+  })
 }
 onMounted(() => {
   getWifiData()
+  getMeshData()
 })
 </script>
-
-<style lang="less">
-.wifi-form {
-  .form-item {
-    .form-item__extra {
-      margin-left: 0px !important;
-    }
-  }
-  .page__sub-header {
-    margin-bottom: 20px;
-  }
-}
-</style>

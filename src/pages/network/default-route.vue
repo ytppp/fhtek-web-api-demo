@@ -23,8 +23,8 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive } from 'vue'
-import { getWan, getDefaultRoute, setDefaultRoute } from '@/http/api'
-import { IP } from '@/util/constant'
+import { getWanInfo, getDefaultRoute, setDefaultRoute } from '@/http/api'
+import { NetType } from '@/util/constant'
 
 const ipv4WanOpts = reactive([])
 const ipv6WanOpts = reactive([])
@@ -45,22 +45,24 @@ const getDefaultRouteData = () => {
 }
 
 const getWanData = () => {
-  getWan().then(({ data }) => {
+  getWanInfo().then(({ data }) => {
     const { items } = data
     const ipv4WanList: any[] = []
     const ipv6WanList: any[] = []
     items.forEach((item: any) => {
-      if (item.protocol === IP.IPv4 || item.protocol === IP.mix) {
-        ipv4WanList.push({
-          value: item.id,
-          text: item.id,
-        })
-      }
-      if (item.protocol === IP.IPv6 || item.protocol === IP.mix) {
-        ipv6WanList.push({
-          value: item.id,
-          text: item.id,
-        })
+      if (item.protocol !== NetType.bridge) {
+        if (item.ipv4.length) {
+          ipv4WanList.push({
+            value: item.interface,
+            text: item.wanname,
+          })
+        }
+        if (item.ipv6.length) {
+          ipv6WanList.push({
+            value: item.interface,
+            text: item.wanname,
+          })
+        }
       }
     })
     Object.assign(ipv4WanOpts, ipv4WanList)

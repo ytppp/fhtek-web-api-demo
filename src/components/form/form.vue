@@ -1,16 +1,20 @@
 <template>
-  <form ref="form">
+  <form :id="id">
     <slot></slot>
   </form>
 </template>
 
 <script setup>
-import { ref, provide, computed } from 'vue'
+import { ref, provide, computed, watch, useId } from 'vue'
+import { useIsMobile } from '@/hooks/is-mobile'
 
 defineOptions({
   name: 'FhForm',
   componentName: 'Form',
 })
+
+const id = useId()
+const { isMobile } = useIsMobile()
 
 const props = defineProps({
   model: {
@@ -25,25 +29,31 @@ const props = defineProps({
   },
   labelPosition: {
     type: String,
-    default: 'top', // when set to left or right, label-width must be set
+    default: '', // value: top, left, right. when set to left or right, label-width must be set
   },
   labelWidth: {
     type: String,
+    default: '230px',
   },
 })
 
+const selfLabelPosition = ref('')
 const potentialLabelWidthArr = ref([])
 const formItems = ref([])
 
-const registerFormItem = (validates) => {
-  formItems.value.push(validates)
-}
 const autoLabelWidth = computed(() => {
   if (!potentialLabelWidthArr.value.length) return 0
   const max = Math.max(...potentialLabelWidthArr.value)
   return max ? `${max}px` : ''
 })
 
+watch(isMobile, (val) => (selfLabelPosition.value = val ? 'top' : 'right'), {
+  immediate: true,
+})
+
+const registerFormItem = (validates) => {
+  formItems.value.push(validates)
+}
 const validate = () => {
   let result = true
   formItems.value.forEach((validates) => {
@@ -81,7 +91,7 @@ provide('form', {
   registerLabelWidth,
   deregisterLabelWidth,
   labelWidth: computed(() => props.labelWidth),
-  labelPosition: computed(() => props.labelPosition),
+  labelPosition: computed(() => props.labelPosition || selfLabelPosition.value),
   rules: computed(() => props.rules),
   model: computed(() => props.model),
   disabled: computed(() => props.disabled),

@@ -1,6 +1,7 @@
 <template>
   <svg @click="click" @mouseover="hover" @mouseout="out" class="svg-icon" aria-hidden="true">
     <use :xlink:href="iconName"></use>
+    <title>{{ title }}</title>
   </svg>
 </template>
 
@@ -18,6 +19,9 @@ const props = defineProps({
     default: '',
   },
   hoverName: {
+    type: String,
+  },
+  title: {
     type: String,
   },
 })
@@ -52,5 +56,9 @@ const out = () => {
   vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
+  cursor: pointer;
+  + .svg-icon {
+    margin-left: 5px;
+  }
 }
 </style>

@@ -5,16 +5,11 @@
     </div>
     <div class="page__content">
       <fh-form class="form" ref="form" :model="form" :rules="rules">
-        <fh-form-item :label="$t('trans0254')" label-position="left">
-          <fh-switch
-            @change="switchEnable"
-            :active-value="EnableStatus.yes"
-            :inactive-value="EnableStatus.no"
-            v-model="form.enable"
-          />
+        <fh-form-item :label="$t('trans0254')">
+          <fh-switch @change="switchEnable" v-model="form.enable" />
         </fh-form-item>
-        <template v-if="isEnabled">
-          <fh-form-item :label="$t('trans0155')">
+        <template v-if="form.enable">
+          <fh-form-item :label="$t('trans0140')">
             <fh-select v-model="form.wan" :options="wanList"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0642')" prop="ip">
@@ -32,22 +27,31 @@
 </template>
 
 <script>
-import { EnableStatus } from '@/util/constant'
-import { isIP, getIpBefore, isNetworkIP, isBoardcastIP, isMulticast, isLoopback } from '@/util/tool'
-import { getDmz, setDmz, getLan, getWanList } from '@/http/api'
+import {
+  isIP,
+  getIpBefore,
+  isNetworkIP,
+  isBoardcastIP,
+  isMulticast,
+  isLoopback,
+  successTips,
+} from '@/util/tool'
+import { getDmz, setDmz, getLan, getWan } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
+import { ServiceType } from '@/util/constant'
 
+const { convertBooleanStatus } = useDataClean()
 export default {
   name: 'DmzPage',
   data() {
     return {
-      EnableStatus,
       lanIp: '',
       form: {
         wan: '',
-        enable: EnableStatus.no,
+        enable: false,
         ip: '',
       },
-      formEnable: EnableStatus.no,
+      formEnable: false,
       mask: '255.255.255.0',
       rules: {
         ip: [
@@ -86,26 +90,20 @@ export default {
       wanList: [],
     }
   },
-  computed: {
-    isEnabled() {
-      return this.form.enable === EnableStatus.yes
-    },
-    isInitEnabled() {
-      return this.formEnable === EnableStatus.yes
-    },
-  },
   methods: {
     save() {
       if (this.$refs.form.validate()) {
         setDmz({
-          wan: this.form.ip,
-          enable: this.form.mask,
+          wan: this.form.wan,
+          enable: convertBooleanStatus(this.form.enable),
           ip: this.form.ip,
+        }).then(() => {
+          successTips()
         })
       }
     },
     switchEnable() {
-      if (this.isInitEnabled) {
+      if (this.formEnable) {
         this.save()
       }
     },
@@ -119,20 +117,27 @@ export default {
         const { wan, enable, ip } = data
         this.form = {
           wan,
-          enable,
+          enable: convertBooleanStatus(enable),
           ip,
         }
         this.formEnable = this.form.enable
       })
     },
     getWanListData() {
-      getWanList().then(({ data }) => {
+      getWan().then(({ data }) => {
+        const { items } = data
         const wanList = []
-        data.map((item) => {
-          wanList.push({
-            value: item.name,
-            text: item.name,
-          })
+        items.forEach((item) => {
+          if (
+            item.serviceType === ServiceType.INTERNET ||
+            item.serviceType === ServiceType.TR069_INTERNET ||
+            item.serviceType === ServiceType.VOICE_INTERNET
+          ) {
+            wanList.push({
+              value: item.id,
+              text: item.wanName,
+            })
+          }
         })
         this.wanList = wanList
       })

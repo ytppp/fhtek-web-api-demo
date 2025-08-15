@@ -2,11 +2,12 @@
   <fh-popup
     :close-on-click-wrap="closeOnClickWrap"
     :is-append-body="isAppendBody"
-    :before-close="beforeClose"
-    v-model:visible="model"
+    :before-close="onBeforeClose"
+    :wrap-bg-color="wrapBgColor"
     ref="popupRef"
   >
     <div
+      v-bind="$attrs"
       class="modal"
       :style="{ width: fullscreen ? '100%' : width, height: fullscreen ? '100%' : 'auto' }"
     >
@@ -34,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref, useSlots } from 'vue'
+import { ref, useSlots, watch } from 'vue'
 import FhPopup from '@/components/popup/popup.vue'
 
 defineOptions({
@@ -66,10 +67,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   }, // When set to false, perent node must set position
-  // wrapBgColor: {
-  //   type: String,
-  //   default: 'rgba(0, 0, 0, 0.4)',
-  // },
+  wrapBgColor: {
+    type: String,
+    default: 'rgba(0, 0, 0, 0.4)',
+  },
 })
 const model = defineModel({
   type: Boolean,
@@ -77,8 +78,21 @@ const model = defineModel({
 })
 const slots = useSlots()
 const popupRef = ref(null)
+watch(model, (val) => {
+  if (val) {
+    popupRef.value.open()
+  } else {
+    popupRef.value.close()
+  }
+})
+const onBeforeClose = () => {
+  if (props.beforeClose) {
+    props.beforeClose()
+  }
+  model.value = false
+}
 const close = () => {
-  popupRef.value.close()
+  model.value = false
 }
 </script>
 
@@ -89,6 +103,7 @@ const close = () => {
   border-radius: 5px;
   box-shadow: 0 2px 12px 0 @modal-shadow-color;
   box-sizing: border-box;
+  transition: all 0.3s ease;
   .modal__header {
     font-size: 16px;
     font-weight: bold;

@@ -26,20 +26,20 @@ const strategyB = {
   meshRole: [MeshRole.controller],
 }
 let menus = [
-  {
-    url: '/home',
-    text: 'trans0006',
-    icon: 'icon-home',
-    config,
-  },
+  // {
+  //   url: '/home',
+  //   text: 'trans0006',
+  //   icon: 'icon-home',
+  //   config,
+  // },
   {
     url: '/status',
     text: 'trans0166',
-    icon: 'icon-ellipsis',
+    icon: 'icon-xitongzhuangtai',
     children: [
       {
         url: '/status/device',
-        text: 'trans0070',
+        text: 'trans0899',
         config,
       },
       {
@@ -49,13 +49,37 @@ let menus = [
       },
       {
         url: '/status/wlan',
-        text: 'trans0628',
+        text: 'trans0017',
         config,
+        children: [
+          {
+            url: '/status/wlan/info',
+            text: 'trans0931',
+            config,
+          },
+          {
+            url: '/status/wlan/devices',
+            text: 'trans0932',
+            config,
+          },
+        ],
       },
       {
         url: '/status/lan',
-        text: 'trans0715',
+        text: 'trans0156',
         config,
+        children: [
+          {
+            url: '/status/lan/info',
+            text: 'trans0936',
+            config,
+          },
+          {
+            url: '/status/lan/devices',
+            text: 'trans0628',
+            config,
+          },
+        ],
       },
       {
         url: '/status/optical',
@@ -64,7 +88,7 @@ let menus = [
       },
       {
         url: '/status/voip',
-        text: 'trans0718',
+        text: 'trans0732',
         config,
       },
       {
@@ -74,12 +98,17 @@ let menus = [
       },
       {
         url: '/status/sta',
-        text: 'trans0747',
+        text: 'trans0082',
         config,
       },
       {
         url: '/status/usb',
-        text: 'trans0748',
+        text: 'trans0813',
+        config,
+      },
+      {
+        url: '/status/vpn',
+        text: 'trans0647',
         config,
       },
     ],
@@ -103,6 +132,23 @@ let menus = [
         url: '/network/lan',
         text: 'trans0156',
         config,
+        children: [
+          {
+            url: '/network/lan/ipv4',
+            text: 'trans0456',
+            config,
+          },
+          {
+            url: '/network/lan/ipv6',
+            text: 'trans0457',
+            config,
+          },
+          // {
+          //   url: '/network/lan/ipv6-new',
+          //   text: 'trans0457',
+          //   config,
+          // },
+        ],
       },
       {
         url: '/network/port-setting',
@@ -141,26 +187,78 @@ let menus = [
         text: 'trans0793',
         config,
       },
+      // {
+      //   url: '/network/default-route',
+      //   text: 'trans0795',
+      //   config,
+      // },
       {
-        url: '/network/default-route',
-        text: 'trans0795',
+        url: '/network/mesh',
+        text: 'trans0568',
         config,
+      },
+      {
+        url: '/network/vpn',
+        text: 'trans0647',
+        config,
+      },
+      {
+        url: '/network/voip',
+        text: 'trans0732',
+        config,
+        children: [
+          {
+            url: '/network/wlan/basic-voip',
+            text: 'trans0546',
+            config,
+          },
+          {
+            url: '/network/wlan/advanced-voip',
+            text: 'trans0579',
+            config,
+          },
+        ],
       },
     ],
   },
   {
-    url: '/safety',
+    url: '/security',
     text: 'trans0031',
-    icon: 'icon-earth',
+    icon: 'icon-anquan',
     children: [
       {
-        url: '/safety/firewall',
+        url: '/security/firewall',
         text: 'trans0060',
         config,
       },
       {
-        url: '/safety/url-filter',
-        text: 'trans0058',
+        url: '/security/url-filter',
+        text: 'trans0832',
+        config,
+      },
+      {
+        url: '/security/mac-filter',
+        text: 'trans0833',
+        config,
+      },
+      {
+        url: '/security/wifi-mac-filter',
+        text: 'trans0827',
+        config,
+      },
+      {
+        url: '/security/ipv4-filter',
+        text: 'trans0131',
+        config,
+      },
+      {
+        url: '/security/acl',
+        text: 'trans0059',
+        config,
+      },
+      {
+        url: '/security/dos',
+        text: 'trans0055',
         config,
       },
     ],
@@ -168,13 +266,18 @@ let menus = [
   {
     url: '/app',
     text: 'trans0244',
-    icon: 'icon-earth',
+    icon: 'icon-yingyong',
     children: [
       {
         url: '/app/port-mapping',
         text: 'trans0422',
         config,
       },
+      // {
+      //   url: '/app/port-trigger',
+      //   text: 'trans0427',
+      //   config,
+      // },
       {
         url: '/app/dmz',
         text: 'trans0254',
@@ -200,16 +303,16 @@ let menus = [
         text: 'trans0247',
         config,
       },
-      {
-        url: '/app/igmp-mld',
-        text: 'trans0248',
-        config,
-      },
-      {
-        url: '/app/static-arp',
-        text: 'trans0805',
-        config,
-      },
+      // {
+      //   url: '/app/igmp-mld',
+      //   text: 'trans0248',
+      //   config,
+      // },
+      // {
+      //   url: '/app/static-arp',
+      //   text: 'trans0805',
+      //   config,
+      // },
       {
         url: '/app/static-dns',
         text: 'trans0099',
@@ -217,7 +320,27 @@ let menus = [
       },
       {
         url: '/app/dhcp-static-ip',
-        text: 'trans0806',
+        text: 'trans0250',
+        config,
+      },
+      {
+        url: '/app/dhcpv6-static-ip',
+        text: 'trans0251',
+        config,
+      },
+      {
+        url: '/app/storage',
+        text: 'trans0810',
+        config,
+      },
+      {
+        url: '/app/samba',
+        text: 'trans0822',
+        config,
+      },
+      {
+        url: '/app/media-sharing',
+        text: 'trans0823',
         config,
       },
     ],
@@ -225,13 +348,8 @@ let menus = [
   {
     url: '/management',
     text: 'trans0183',
-    icon: 'icon-ellipsis',
+    icon: 'icon-setting',
     children: [
-      {
-        url: '/management/upgrade',
-        text: 'trans0187',
-        config,
-      },
       {
         url: '/management/user',
         text: 'trans0184',
@@ -240,6 +358,11 @@ let menus = [
       {
         url: '/management/device',
         text: 'trans0227',
+        config,
+      },
+      {
+        url: '/management/upgrade',
+        text: 'trans0187',
         config,
       },
       {

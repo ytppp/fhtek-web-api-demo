@@ -5,24 +5,39 @@
     </div>
     <div class="page__content">
       <div class="page__table">
-        <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false">
+        <fh-table
+          :columns="columns"
+          :data-source="data"
+          :show-row-checkbox="false"
+          :show-header="isShowAddBtn"
+        >
           <template #operationgroup>
-            <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
-              {{ $t('trans0164') }}
-            </fh-button>
+            <fh-icon
+              class="page__header-icon"
+              v-if="isShowAddBtn"
+              @click="openAddModal"
+              name="icon-add"
+              :title="$t('trans0164')"
+            />
           </template>
           <template #operation="scope">
-            <fh-button type="text" @click="openEditModal(scope.row)">
-              {{ $t('trans0165') }}
-            </fh-button>
-            <fh-button type="text" @click="del(scope.row)">
-              {{ $t('trans0111') }}
-            </fh-button>
+            <fh-icon
+              class="page__header-icon"
+              @click="openEditModal(scope.row)"
+              name="icon-edit-square"
+              :title="$t('trans0165')"
+            />
+            <fh-icon
+              class="page__header-icon"
+              @click="del(scope.row)"
+              name="icon-delete"
+              :title="$t('trans0111')"
+            />
           </template>
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model:visible="visible" :title="modalTitle">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleBeforeClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0256')" prop="domain">
@@ -50,6 +65,7 @@ import {
   isLoopback,
   isNetworkIP,
   isBoardcastIP,
+  successTips,
 } from '@/util/tool'
 import { getStaticDnsList, addStaticDns, editStaticDns, delStaticDns } from '@/http/api'
 import { ModalType } from '@/util/constant'
@@ -67,9 +83,9 @@ export default {
         id: '',
         domain: '',
         ip: '',
+        index: -1,
       },
       mask: '255.255.255.0',
-      index: -1,
       modalFormRules: {
         domain: [
           {
@@ -81,8 +97,19 @@ export default {
             message: this.$t('trans0116'),
           },
           {
-            rule: (value) =>
-              !this.data.some((item) => item.index !== this.index && item.domain === value),
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.domain === value
+              })
+              return flag
+            },
             message: this.$t('trans0405'),
           },
           // {
@@ -125,8 +152,19 @@ export default {
           //   message: this.$t('trans0117'),
           // },
           {
-            rule: (value) =>
-              !this.data.some((item) => item.index !== this.index && item.ip === value),
+            rule: (value) => {
+              let flag = true
+              let tempData = []
+              if (this.isAdd) {
+                tempData = this.data
+              } else {
+                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              }
+              flag = !tempData.some((item) => {
+                return item.ip === value
+              })
+              return flag
+            },
             message: this.$t('trans0399'),
           },
         ],
@@ -159,11 +197,14 @@ export default {
     },
   },
   methods: {
+    handleBeforeClose() {
+      this.$refs.modalForm.clearValidate()
+    },
     openAddModal() {
       this.modalForm.id = ''
       this.modalForm.domain = ''
       this.modalForm.ip = ''
-      this.index = -1
+      this.modalForm.index = -1
       this.modalType = ModalType.add
       this.visible = true
     },
@@ -171,7 +212,7 @@ export default {
       this.modalForm.id = row.id
       this.modalForm.domain = row.domain
       this.modalForm.ip = row.ip
-      this.index = row.index
+      this.modalForm.index = row.index
       this.modalType = ModalType.edit
       this.visible = true
     },
@@ -182,7 +223,7 @@ export default {
           data.domain = this.modalForm.domain
           data.ip = this.modalForm.ip
           addStaticDns([data]).then((res) => {
-            this.visible = false
+            successTips()
             this.getStaticDnsListData()
           })
         }
@@ -191,7 +232,7 @@ export default {
           data.domain = this.modalForm.domain
           data.ip = this.modalForm.ip
           editStaticDns([data]).then((res) => {
-            this.visible = false
+            successTips()
             this.getStaticDnsListData()
           })
         }
@@ -199,6 +240,7 @@ export default {
     },
     del(row) {
       delStaticDns({ id: row.id }).then((res) => {
+        successTips('trans0410')
         this.getStaticDnsListData()
       })
     },
@@ -208,17 +250,22 @@ export default {
       // todo
     },
     getStaticDnsListData() {
-      getStaticDnsList().then(({ data }) => {
-        const tableData = []
-        const { items } = data
-        items.forEach((item, i) => {
-          tableData.push({
-            ...item,
-            index: i,
+      getStaticDnsList()
+        .then(({ data }) => {
+          const tableData = []
+          const { items } = data
+          items.forEach((item, i) => {
+            tableData.push({
+              ...item,
+              index: i,
+            })
           })
+          this.data = tableData
         })
-        this.data = tableData
-      })
+        .catch(() => {})
+        .finally(() => {
+          this.visible = false
+        })
     },
   },
   created() {

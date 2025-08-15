@@ -5,30 +5,42 @@
     </div>
     <div class="page__content">
       <div class="page__table">
-        <fh-table :columns="columns" :data-source="data" :show-row-checkbox="false">
+        <fh-table
+          :columns="columns"
+          :data-source="data"
+          :show-row-checkbox="false"
+          :show-header="isShowAddBtn"
+        >
           <template #operationgroup>
-            <fh-button size="small" v-if="isShowAddBtn" @click="openAddModal">
-              {{ $t('trans0164') }}
-            </fh-button>
-          </template>
-          <template #enable="scope">
-            <fh-switch
-              :active-value="EnableStatus.yes"
-              :inactive-value="EnableStatus.no"
-              v-model="scope.row.enable"
-              @change="toggleStatus(scope.row)"
+            <fh-icon
+              class="page__header-icon"
+              v-if="isShowAddBtn"
+              @click="openAddModal"
+              name="icon-add"
+              :title="$t('trans0164')"
             />
           </template>
+          <template #enable="scope">
+            <fh-switch v-model="scope.row.enable" @change="toggleStatus(scope.row)" />
+          </template>
           <template #operation="scope">
-            <fh-button type="text" @click="openEditModal(scope.row)">
-              {{ $t('trans0165') }}
-            </fh-button>
-            <fh-button type="text" @click="del(scope.row)">{{ $t('trans0111') }}</fh-button>
+            <fh-icon
+              class="page__header-icon"
+              @click="openEditModal(scope.row)"
+              name="icon-edit-square"
+              :title="$t('trans0165')"
+            />
+            <fh-icon
+              class="page__header-icon"
+              @click="del(scope.row)"
+              name="icon-delete"
+              :title="$t('trans0111')"
+            />
           </template>
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model:visible="visible" :title="modalTitle" :before-close="handleClose">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
       <template #body>
         <fh-form
           class="form modal-form"
@@ -37,20 +49,16 @@
           :rules="modalFormRules"
           method="post"
         >
-          <fh-form-item :label="$t('trans0166')" label-position="left">
-            <fh-switch
-              :active-value="EnableStatus.yes"
-              :inactive-value="EnableStatus.no"
-              v-model="modalForm.enable"
-            />
+          <fh-form-item :label="$t('trans0166')">
+            <fh-switch v-model="modalForm.enable" />
           </fh-form-item>
-          <fh-form-item :label="$t('trans0424')">
+          <!-- <fh-form-item :label="$t('trans0424')">
             <fh-radio-group v-model="modalForm.mappingMode" @change="changeMappingMode">
               <fh-radio v-for="mode in mappingModes" :key="mode.value" :label="mode.value">
                 {{ mode.text }}
               </fh-radio>
             </fh-radio-group>
-          </fh-form-item>
+          </fh-form-item> -->
           <fh-form-item :label="$t('trans0426')" v-if="isTemp">
             <fh-select v-model="modalForm.temp" :options="tempList" @change="changeTempList">
             </fh-select>
@@ -59,7 +67,7 @@
             <fh-input v-model="modalForm.mappingName"></fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0135')">
-            <fh-select v-model="modalForm.protocol" :options="ProtocalList"> </fh-select>
+            <fh-select v-model="modalForm.protocol" :options="protocalList"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0446')" prop="extHost">
             <fh-input v-model="modalForm.extHost"></fh-input>
@@ -85,15 +93,13 @@
 </template>
 
 <script>
-import { ProtocolType, EnableStatus } from '@/util/constant'
-import { isValidInteger, isValidVal, isIP } from '@/util/tool'
+import { ModalType, ProtocolType } from '@/util/constant'
+import { isValidInteger, isValidVal, isIP, successTips } from '@/util/tool'
 import { getPortMapping, setPortMapping, editPortMapping, delPortMapping } from '@/http/api'
+import { useDataClean } from '@/hooks/data-clean'
 
-const maxRuleNum = 10
-const ModalType = {
-  add: 'add',
-  edit: 'edit',
-}
+const { convertBooleanStatus } = useDataClean()
+const maxRuleNum = 8
 const MappingMode = {
   customize: 'Customize',
   temp: 'Template',
@@ -174,24 +180,23 @@ const tempList = Temp.map((item) => ({
   value: item.name,
   text: item.name,
 }))
-
 export default {
   name: 'PortMappingPage',
   data() {
     return {
       maxRuleNum,
       modalType: ModalType.add,
-      EnableStatus,
       visible: false,
       modalForm: {
-        enable: EnableStatus.yes,
+        enable: true,
+        id: '',
         index: -1,
-        mappingMode: MappingMode.temp,
-        temp: Temp[0].name,
-        mappingName: Temp[0].name,
-        protocol: Temp[0].protocal,
+        mappingMode: MappingMode.customize,
+        temp: null,
+        mappingName: '',
+        protocol: ProtocolType.ALL,
         extHost: '',
-        extPort: Temp[0].extPort,
+        extPort: '',
         intHost: '',
         intPort: '',
       },
@@ -286,28 +291,19 @@ export default {
         },
       ],
       tempList,
-      ProtocalList: [
-        {
-          text: this.$t('trans0189'),
-          value: ProtocolType.ALL,
-        },
-        {
-          text: this.$t('trans0190'),
-          value: ProtocolType.TCP,
-        },
-        {
-          text: this.$t('trans0191'),
-          value: ProtocolType.UDP,
-        },
-      ],
+      protocalText: {
+        [ProtocolType.TCP]: this.$t('trans0190'),
+        [ProtocolType.UDP]: this.$t('trans0191'),
+        [ProtocolType.ICMP]: this.$t('trans0192'),
+        [ProtocolType.ALL]: this.$t('trans0158'),
+      },
       columns: [
         {
           key: 'mappingName',
           title: this.$t('trans0425'),
-          width: '100',
         },
         {
-          key: 'protocol',
+          key: 'protocolAlias',
           title: this.$t('trans0135'),
         },
         {
@@ -351,6 +347,26 @@ export default {
     isTemp() {
       return this.modalForm.mappingMode === MappingMode.temp
     },
+    protocalList() {
+      return [
+        {
+          text: this.protocalText[ProtocolType.ALL],
+          value: ProtocolType.ALL,
+        },
+        {
+          text: this.protocalText[ProtocolType.TCP],
+          value: ProtocolType.TCP,
+        },
+        {
+          text: this.protocalText[ProtocolType.UDP],
+          value: ProtocolType.UDP,
+        },
+        // {
+        //   value: this.protocalText[ProtocolType.ICMP],
+        //   text: this.$t('trans0192'),
+        // },
+      ]
+    },
   },
   methods: {
     handleClose() {
@@ -358,14 +374,15 @@ export default {
     },
     openAddModal() {
       this.modalForm = {
-        enable: EnableStatus.yes,
+        enable: true,
+        id: '',
         index: -1,
-        mappingMode: MappingMode.temp,
-        temp: Temp[0].name,
-        mappingName: Temp[0].name,
-        protocol: Temp[0].protocal,
+        mappingMode: MappingMode.customize,
+        temp: null,
+        mappingName: '',
+        protocol: ProtocolType.ALL,
         extHost: '',
-        extPort: Temp[0].extPort,
+        extPort: '',
         intHost: '',
         intPort: '',
       }
@@ -373,9 +390,9 @@ export default {
       this.visible = true
     },
     openEditModal(row) {
-      this.modalForm.index = row.index
       const item = Temp.find((temp) => temp.name === row.mappingName)
       this.modalForm = {
+        id: row.id,
         enable: row.enable,
         index: row.index,
         extHost: row.extHost,
@@ -383,7 +400,7 @@ export default {
         intHost: row.intHost,
         intPort: row.intPort,
         mappingName: row.mappingName,
-        protocol: row.protocol,
+        protocol: row.proto,
         mappingMode: !!item ? MappingMode.temp : MappingMode.customize,
         temp: !!item && item.name,
       }
@@ -392,49 +409,44 @@ export default {
     },
     save() {
       if (this.$refs.modalForm.validate()) {
-        const data = [
-          {
-            name: this.modalForm.mappingName,
-            proto: this.modalForm.protocol,
-            dest: this.modalForm.extHost,
-            dest_port: this.modalForm.extPort,
-            src: this.modalForm.intHost,
-            src_port: this.modalForm.intPort,
-            enable: this.modalForm.enable,
-          },
-        ]
+        const data = {
+          src: 'wan', // 传固定值
+          dest: 'lan', // 传固定值
+          target: 'DNAT', // 传固定值
+          name: this.modalForm.mappingName,
+          proto: this.modalForm.protocol,
+          src_ip: this.modalForm.extHost,
+          src_port: this.modalForm.extPort,
+          dest_ip: this.modalForm.intHost,
+          dest_port: this.modalForm.intPort,
+          enable: convertBooleanStatus(this.modalForm.enable),
+        }
         if (this.isEdit) {
-          data[0].id = this.modalForm.index
-          editPortMapping(data)
-            .then(() => {
-              this.visible = false
-            })
-            .then(() => {
-              this.getPortMappingData()
-            })
+          data.id = this.modalForm.id
+          editPortMapping([data]).then(() => {
+            successTips()
+            this.getPortMappingData()
+          })
         } else {
-          setPortMapping(data)
-            .then(() => {
-              this.visible = false
-            })
-            .then(() => {
-              this.getPortMappingData()
-            })
+          setPortMapping([data]).then(() => {
+            successTips()
+            this.getPortMappingData()
+          })
         }
       }
     },
     del(row) {
-      console.log(row.index)
       delPortMapping({
-        id: row.index,
+        id: row.id,
       }).then(() => {
+        successTips('trans0410')
         this.getPortMappingData()
       })
     },
     toggleStatus(row) {
       editPortMapping([
         {
-          id: row.index,
+          id: row.id,
           enable: row.enable,
         },
       ])
@@ -460,28 +472,34 @@ export default {
       this.modalForm.extPort = temp.extPort
       this.$refs.modalForm.clearValidate()
     },
-    getPortMappingData() {
-      getPortMapping().then(({ data }) => {
-        const tableData = []
-        const { items } = data
-        items.forEach((item) => {
-          tableData.push({
-            index: item.id || '',
-            mappingName: item.name || '',
-            protocol: item.proto || '',
-            extHost: item.dest || '',
-            extPort: item.dest_port || '',
-            intHost: item.src || '',
-            intPort: item.src_port || '',
-            enable: item.enable,
+    getPortMappingData(isInit = false) {
+      getPortMapping()
+        .then(({ data }) => {
+          const tableData = []
+          const { items } = data
+          items.forEach((item, index) => {
+            tableData.push({
+              ...item,
+              index: index,
+              mappingName: item.name,
+              protocolAlias: this.protocalText[item.proto],
+              extHost: item.src_ip,
+              extPort: item.src_port,
+              intHost: item.dest_ip,
+              intPort: item.dest_port,
+              enable: convertBooleanStatus(item.enable),
+            })
           })
+          this.data = tableData
         })
-        this.data = tableData
-      })
+        .catch(() => {})
+        .finally(() => {
+          if (!isInit) this.visible = false
+        })
     },
   },
   mounted() {
-    this.getPortMappingData()
+    this.getPortMappingData(false)
   },
 }
 </script>

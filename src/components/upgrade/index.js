@@ -1,14 +1,14 @@
 import { h } from 'vue'
 import FhUpgrade from './upgrade.vue'
-import { mergeOptions } from '@/util/tool'
+import { mergeOptions, handleLogout } from '@/util/tool'
 import { usePopup } from '@/hooks/popup'
-import Popup from '@/components/popup/popup.vue'
 
 const defaultOptions = {
   url: '',
   title: '',
   tip: '',
-  timeout: 300,
+  timeout: 80 * 1000,
+  interval: 1000,
   progressVisible: true,
 }
 let instance = null
@@ -18,19 +18,13 @@ export default {
     const opt = mergeOptions(defaultOptions, options)
     if (!instance) {
       instance = usePopup(
-        h(
-          Popup,
-          {
-            isManual: true,
+        h(FhUpgrade, {
+          ...opt,
+          onHide: () => {
+            this.close()
+            handleLogout(false)
           },
-          () =>
-            h(FhUpgrade, {
-              ...opt,
-              hideHandle: () => {
-                instance.close()
-              },
-            }),
-        ),
+        }),
       )
       instance.show()
     }
