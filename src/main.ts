@@ -23,13 +23,14 @@ String.prototype.format = function (...args) {
   return _this
 }
 
-window.addEventListener('beforeunload', function () {
-  if (navigator.sendBeacon) {
-    const data = JSON.stringify({ event: 'window_closed' })
-    navigator.sendBeacon('/action/logout', data)
-  } else {
-    logout()
-  }
-})
+// window.addEventListener('beforeunload', function () {
+//   if (!sessionStorage.getItem('login_user')) return
+//   if (navigator.sendBeacon) {
+//     localStorage.clear()
+//     navigator.sendBeacon('/action/logout')
+//   } else {
+//     logout()
+//   }
+// })
 
 app.mount('#app')
