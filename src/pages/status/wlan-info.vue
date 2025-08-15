@@ -218,7 +218,7 @@ const getWifi2gBasicData = () => {
       hideAlias: convertBooleanStatus(item.enable_hide) ? t('trans0103') : t('trans0054'),
       encryptAlias: encryptsText[item.auth_mode],
     }))
-    Object.assign(b24gSsidData, tableData)
+    b24gSsidData.splice(0, b24gSsidData.length, ...tableData)
   })
 }
 const getWifi5gBasicData = () => {
@@ -234,7 +234,7 @@ const getWifi5gBasicData = () => {
       hideAlias: convertBooleanStatus(item.enable_hide) ? t('trans0103') : t('trans0054'),
       encryptAlias: encryptsText[item.auth_mode],
     }))
-    Object.assign(b5gSsidData, tableData)
+    b5gSsidData.splice(0, b5gSsidData.length, ...tableData)
   })
 }
 onMounted(() => {

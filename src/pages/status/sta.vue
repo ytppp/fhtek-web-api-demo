@@ -196,8 +196,8 @@ const getStaInfoData = () => {
     //     lease: transformDuration(10000),
     //   })
     // }
-    Object.assign(dhcpData, thisDhcpData)
-    Object.assign(dhcpv6Data, thisDhcpv6Data)
+    dhcpData.splice(0, dhcpData.length, ...thisDhcpData)
+    dhcpv6Data.splice(0, dhcpv6Data.length, ...thisDhcpv6Data)
   })
 }
 onMounted(() => {

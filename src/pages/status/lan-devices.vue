@@ -89,7 +89,7 @@ const getLanDeviceData = () => {
     //     mac: `00:00:00:00:00:${i}`,
     //   })
     // }
-    Object.assign(lanData, lanTableData)
+    lanData.splice(0, lanData.length, ...lanTableData)
   })
 }
 const goMacFilter = (mac) => {

@@ -160,7 +160,7 @@ const getLanInfoData = () => {
     })
     defaultDataObj(basicInfo, thisBasicInfo)
     Object.assign(lanListData, thisLanListData)
-    Object.assign(interfaceData, thisInterfaceData)
+    interfaceData.splice(0, interfaceData.length, ...thisInterfaceData)
   })
 }
 const convertLan = (lanVal) => {
