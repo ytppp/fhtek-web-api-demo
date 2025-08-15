@@ -150,8 +150,8 @@ const getWlanDeviceData = () => {
     //     mac: `00:00:00:00:00:${i}`,
     //   })
     // }
-    Object.assign(b24gWlanData, b24gWlanTableData)
-    Object.assign(b5gWlanData, b5gWlanTableData)
+    b24gWlanData.splice(0, b24gWlanData.length, ...b24gWlanTableData)
+    b5gWlanData.splice(0, b5gWlanData.length, ...b5gWlanTableData)
   })
 }
 const goWifiMacFilterPage = (mac) => {
