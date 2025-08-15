@@ -306,7 +306,7 @@ const getDownloadList = () => {
         statusAilas: DownloadStatusText[item.status],
       })
     })
-    Object.assign(tableData, table)
+    tableData.splice(0, tableData.length, ...table)
   })
 }
 
