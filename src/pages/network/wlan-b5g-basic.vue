@@ -257,8 +257,8 @@ const getWifiData = (id?: string) => {
       value: item.id,
       text: SsidText[item.id],
     }))
-    Object.assign(ssidList, items)
-    Object.assign(ssidOpts, ssidOptsList)
+    ssidList.splice(0, ssidList.length, ...items)
+    ssidOpts.splice(0, ssidOpts.length, ...ssidOptsList)
     wifi.id = id ? id : items[0].id
     changeSsid()
   })

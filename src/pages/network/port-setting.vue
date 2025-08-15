@@ -161,7 +161,7 @@ const getLanSpeedData = () => {
         [Lan4]: items.find((item) => item.ifname === Lan4).speed,
       },
     ]
-    Object.assign(tableData, thisTableData)
+    tableData.splice(0, tableData.length, ...thisTableData)
     form[Lan1] = items.find((item) => item.ifname === Lan1).speed
     form[Lan2] = items.find((item) => item.ifname === Lan2).speed
     form[Lan3] = items.find((item) => item.ifname === Lan3).speed
