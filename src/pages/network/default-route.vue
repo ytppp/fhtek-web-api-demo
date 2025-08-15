@@ -65,8 +65,8 @@ const getWanData = () => {
         }
       }
     })
-    Object.assign(ipv4WanOpts, ipv4WanList)
-    Object.assign(ipv6WanOpts, ipv6WanList)
+    ipv4WanOpts.splice(0, ipv4WanOpts.length, ...ipv4WanList)
+    ipv6WanOpts.splice(0, ipv6WanOpts.length, ...ipv6WanList)
   })
 }
 

@@ -406,7 +406,7 @@ const getWanInfo = () => {
           text: voiceWan.wanName,
         },
       ]
-      Object.assign(voiceWanOpts, voiceWanList)
+      voiceWanOpts.splice(0, voiceWanOpts.length, ...voiceWanList)
       getVoipBasicSettingsData()
     }
   })

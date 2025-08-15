@@ -232,8 +232,8 @@ const getWanData = () => {
         }
       }
     })
-    Object.assign(ipv4Data, thisIpv4Data)
-    Object.assign(ipv6Data, thisIpv6Data)
+    ipv4Data.splice(0, ipv4Data.length, ...thisIpv4Data)
+    ipv6Data.splice(0, ipv6Data.length, ...thisIpv6Data)
   })
 }
 
