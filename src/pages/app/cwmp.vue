@@ -37,10 +37,14 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { getSwmpSettings, editSwmpSettings } from '@/http/api'
+import { successTips } from '@/util/tool'
+import { useDataClean } from '@/hooks/data-clean'
 
+const { t } = useI18n()
+const { convertBooleanStatus } = useDataClean()
 const formRef = ref(null)
 const form = reactive({
   enable: true,
@@ -74,7 +78,7 @@ const formRules = {
     {
       rule: (value) => value,
       message: t('trans0004'),
-    }
+    },
   ],
   terminalUser: [
     {
@@ -86,7 +90,36 @@ const formRules = {
     {
       rule: (value) => value,
       message: t('trans0004'),
-    }
+    },
   ],
 }
+const getSwmpSettingsData = () => {
+  getSwmpSettings().then(({ data }) => {
+    form.enable = convertBooleanStatus(data.enable) as boolean
+    form.interval = data.interval
+    form.url = data.server
+    form.platUser = data.platform_username
+    form.platPwd = data.platform_password
+    form.terminalUser = data.terminal_username
+    form.terminalPwd = data.terminal_password
+  })
+}
+const save = () => {
+  if (!formRef.value.validate()) return
+  editSwmpSettings({
+    enable: convertBooleanStatus(form.enable),
+    interval: form.interval,
+    server: form.url,
+    platform_username: form.platUser,
+    platform_password: form.platPwd,
+    terminal_username: form.terminalUser,
+    terminal_password: form.terminalPwd,
+  }).then(() => {
+    successTips()
+  })
+}
+
+onMounted(() => {
+  getSwmpSettingsData()
+})
 </script>
