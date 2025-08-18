@@ -684,3 +684,11 @@ export const setUpnpConfig = (params): Promise<ApiResponse<any>> => {
 export const getUpnpList = (): Promise<ApiResponse<any>> => {
   return http.get('getUpnpList')
 }
+
+export const getSwmpSettings = (): Promise<ApiResponse<any>> => {
+  return http.get('getSwmpSettings')
+}
+
+export const editSwmpSettings = (params): Promise<ApiResponse<any>> => {
+  return http.post('editSwmpSettings', createData(params))
+}
