@@ -5,11 +5,15 @@ const api = 'api'
 const createData = (data: any) => ({ data })
 
 export const login = (params): Promise<ApiResponse<any>> => {
-  return http.post('login', createData(params))
+  return http.post('login', createData(params), { autoLogoutApi: false })
 }
 
 export const logout = (): Promise<ApiResponse<any>> => {
-  return http.post('logout')
+  return http.post('logout', undefined, { autoLogoutApi: false })
+}
+
+export const getDevModel = (): Promise<ApiResponse<any>> => {
+  return http.get('getDevmodel', undefined, { toast: false, loading: false, autoLogoutApi: false })
 }
 
 export const getLan = (loading: boolean = true, toast = true): Promise<ApiResponse<any>> => {
@@ -625,10 +629,6 @@ export const setTime = (params): Promise<ApiResponse<any>> => {
 
 export const getDevInfo = (): Promise<ApiResponse<any>> => {
   return http.get('getDevinfo')
-}
-
-export const getDevModel = (): Promise<ApiResponse<any>> => {
-  return http.get('getDevmodel', undefined, { toast: false, loading: false })
 }
 
 export const getPonInfo = (): Promise<ApiResponse<any>> => {

@@ -154,7 +154,13 @@ export default {
                 tempData = this.data.filter((item) => item.index !== this.modalForm.index)
               }
               flag = !tempData.some((item) => {
-                return item.mac === value
+                let flag1 = false
+                if (item.id === this.all) {
+                  flag1 = true
+                } else {
+                  flag1 = item.id === this.modalForm.id
+                }
+                return flag1 && item.mac === value
               })
               return flag
             },

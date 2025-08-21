@@ -17,7 +17,7 @@
         :disabled="pingFormDisabled"
       >
         <fh-form-item :label="$t('trans0135')">
-          <fh-radio-group v-model="pingForm.type">
+          <fh-radio-group @change="changePingIpType" v-model="pingForm.type">
             <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
               {{ item.text }}
             </fh-radio>
@@ -63,7 +63,7 @@
         :disabled="tracerouteFormDisabled"
       >
         <fh-form-item :label="$t('trans0135')">
-          <fh-radio-group v-model="tracerouteForm.type">
+          <fh-radio-group @change="changeTracerouteIpType" v-model="tracerouteForm.type">
             <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
               {{ item.text }}
             </fh-radio>
@@ -98,7 +98,7 @@
 <script setup lang="ts">
 import { reactive, computed, useTemplateRef, ref, inject, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IP, NetType } from '@/util/constant'
+import { IP, NetType, WanStatus } from '@/util/constant'
 import { isIP, isValidInteger, isValidDomain } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { useCountDown } from '@/hooks/countdown'
@@ -214,7 +214,7 @@ const getWanData = () => {
       return
     }
     items.forEach((item) => {
-      if (item.protocol !== NetType.bridge) {
+      if (item.protocol !== NetType.bridge && item.status !== WanStatus.DOWN) {
         if (
           item.ipv4.length > 0 ||
           item.protocol === NetType.dhcp ||
@@ -312,6 +312,9 @@ const handlePing = () => {
   sessionStorage.setItem('ping', '1')
   createPingCountDown()
 }
+const changePingIpType = () => {
+  pingForm.interface = ''
+}
 
 const tracerouteResult = ref('')
 const tracerouteRef = useTemplateRef('tracerouteRef')
@@ -368,6 +371,9 @@ const handleTraceroute = () => {
   })
   sessionStorage.setItem('traceroute', '1')
   createTracerouteCountDown()
+}
+const changeTracerouteIpType = () => {
+  tracerouteForm.interface = ''
 }
 
 onMounted(() => {

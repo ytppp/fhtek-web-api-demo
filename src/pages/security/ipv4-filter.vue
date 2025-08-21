@@ -211,7 +211,10 @@ export default {
                 tempData = this.data.filter((item) => item.index !== this.modalForm.index)
               }
               flag = !tempData.some((item) => {
-                return item.src_ip === value
+                if (this.modalForm.proto === ProtocolType.ALL) {
+                  return item.src_ip === value
+                }
+                return item.proto === this.modalForm.proto && item.src_ip === value
               })
               return flag
             },
@@ -238,7 +241,10 @@ export default {
                 tempData = this.data.filter((item) => item.index !== this.modalForm.index)
               }
               flag = !tempData.some((item) => {
-                return item.dest_port === value
+                if (this.modalForm.proto === ProtocolType.ALL) {
+                  return item.dest_port === value
+                }
+                return item.proto === this.modalForm.proto && item.dest_port === value
               })
               return flag
             },

@@ -1213,12 +1213,14 @@ const wanRules = reactive({
     },
     {
       rule: (value) => {
+        let tempData = []
         if (isAdd.value) {
-          return !wanList.some((item) => item.vlan.id === value)
+          tempData = wanList
         }
         if (isEdit.value) {
-          return !wanList.some((item) => item.id !== wan.id && item.vlan.id === value)
+          tempData = wanList.filter((item) => item.id !== wan.id)
         }
+        return !tempData.some((item) => item.vlan.id === value || item.multiVlanId === value)
       },
       message: format(t('trans0678'), [t('trans0775')]),
     },
@@ -1234,14 +1236,16 @@ const wanRules = reactive({
     },
     {
       rule: (value) => {
+        let tempData = []
         if (isAdd.value) {
-          return !wanList.some((item) => item.vlan.id === value || item.multiVlanId === value)
+          tempData = wanList
         }
         if (isEdit.value) {
-          return !wanList.some(
-            (item) => item.id !== wan.id && (item.vlan.id === value || item.multiVlanId === value),
-          )
+          tempData = wanList.filter((item) => item.id !== wan.id)
         }
+        return !tempData.some(
+          (item) => item.vlan.id === value || item.multiVlanId === value,
+        )
       },
       message: format(t('trans0678'), [t('trans0777')]),
     },

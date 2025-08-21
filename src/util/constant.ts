@@ -247,3 +247,9 @@ export const ModeText = {
   [Mode.f100]: '100M/Full Duplex',
   [Mode.f1000]: '1000M/Full Duplex',
 }
+
+export enum WanStatus {
+  UP = 'UP',
+  DOWN = 'DOWN',
+  DISCONNECTED = 'DISCONNECTED',
+}
