@@ -5,15 +5,15 @@ const api = 'api'
 const createData = (data: any) => ({ data })
 
 export const login = (params): Promise<ApiResponse<any>> => {
-  return http.post('login', createData(params), { autoLogoutApi: false })
+  return http.post('login', createData(params))
 }
 
 export const logout = (): Promise<ApiResponse<any>> => {
-  return http.post('logout', undefined, { autoLogoutApi: false })
+  return http.post('logout')
 }
 
 export const getDevModel = (): Promise<ApiResponse<any>> => {
-  return http.get('getDevmodel', undefined, { toast: false, loading: false, autoLogoutApi: false })
+  return http.get('getDevmodel', undefined, { toast: false, loading: false })
 }
 
 export const getLan = (loading: boolean = true, toast = true): Promise<ApiResponse<any>> => {
