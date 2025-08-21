@@ -54,14 +54,14 @@
               <fh-form-item :label="$t('trans0150')" prop="name">
                 <fh-input name="AclRuleName" v-model="modalForm.name"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0136')" prop="src_ip">
+              <fh-form-item :label="$t('trans0136')" prop="src_ip" ref="srcIpRef">
                 <fh-input
                   name="src_ip"
                   v-model="modalForm.src_ip"
                   :placeholder="placeholderTips"
                 ></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0139')" prop="dest_port">
+              <fh-form-item :label="$t('trans0139')" prop="dest_port" ref="destPortRef">
                 <fh-input
                   name="dest_port"
                   v-model="modalForm.dest_port"
@@ -72,7 +72,7 @@
                 </template>
               </fh-form-item>
               <fh-form-item :label="$t('trans0135')">
-                <fh-select v-model="modalForm.proto" :options="protoList" name="proto"> </fh-select>
+                <fh-select v-model="modalForm.proto" :options="protoList" name="proto" @change="changeProto"> </fh-select>
               </fh-form-item>
               <fh-form-item class="form__submit-btn">
                 <fh-button id="submitbutton" @click="save" block>
@@ -429,6 +429,10 @@ export default {
         }
       })
     },
+    changeProto() {
+      this.$refs.srcIpRef.validate()
+      this.$refs.destPortRef.validate()
+    }
   },
   created() {
     this.getFirewallData()

@@ -64,9 +64,10 @@
             :rules="modalRules"
           >
             <fh-form-item :label="$t('trans0711')" prop="id">
-              <fh-select v-model="modalForm.id" :options="ssidOpts"> </fh-select>
+              <fh-select v-model="modalForm.id" :options="ssidOpts" @change="changeSsid">
+              </fh-select>
             </fh-form-item>
-            <fh-form-item :label="$t('trans0097')" prop="mac">
+            <fh-form-item :label="$t('trans0097')" prop="mac" ref="macRef">
               <fh-input v-model="modalForm.mac" :placeholder="$t('trans0396')"> </fh-input>
             </fh-form-item>
             <fh-form-item class="form__submit-btn">
@@ -356,6 +357,9 @@ export default {
           })
         }
       }
+    },
+    changeSsid() {
+      this.$refs.macRef.validate()
     },
   },
   async mounted() {
