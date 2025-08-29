@@ -253,3 +253,10 @@ export enum WanStatus {
   DOWN = 'DOWN',
   DISCONNECTED = 'DISCONNECTED',
 }
+
+export enum VoipConnetStatus {
+  idle = 'Idle',
+  ringing = 'Ringing',
+  ringback = 'Ringback',
+  connecting = 'Connect',
+}
