@@ -9,8 +9,9 @@
         ref="formRef"
         :model="form"
         :rules="rules"
-        v-if="hasVoipWan"
         label-width="260px"
+        :disabled="formDisabled"
+        v-if="hasVoipWan"
       >
         <!-- <fh-form-item :label="$t('trans0135')" prop="register.protocol">
           <fh-select v-model="form.protocol" :options="voipProtocolOpts"></fh-select>
@@ -56,7 +57,8 @@
             <fh-input v-model="form.outboundProxy.secProxy"> </fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0838')" prop="outboundProxy.secPort">
-            <fh-input v-model="form.outboundProxy.secPort" :placeholder="numPlaceholder"> </fh-input>
+            <fh-input v-model="form.outboundProxy.secPort" :placeholder="numPlaceholder">
+            </fh-input>
           </fh-form-item>
         </template>
         <template v-if="form.line1.active">
@@ -98,6 +100,9 @@
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
+        <fh-form-item v-if="formDisabled">
+          <fh-alert type="info" :title="$t('trans0904')" show-icon :center="false" />
+        </fh-form-item>
       </fh-form>
       <div style="padding-left: 20px; font-size: 16px" v-else>
         {{ $t('trans0604') }}
@@ -110,7 +115,7 @@
 import { ref, reactive, computed, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { isValidInteger, isValidSymbol, specialChar, successTips } from '@/util/tool'
-import { ServiceType } from '@/util/constant'
+import { ServiceType, VoipConnetStatus } from '@/util/constant'
 import { getWan, getVoipBasicSettings, setVoipBasicSettings } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -160,6 +165,7 @@ const form = reactive({
     account: '',
     password: '',
     active: false,
+    connetStatus: '',
   },
   line2: {
     enablePortSetting: false,
@@ -167,6 +173,7 @@ const form = reactive({
     account: '',
     password: '',
     active: false,
+    connetStatus: '',
   },
 })
 const numPlaceholder = '0-65535'
@@ -322,6 +329,12 @@ const rules = reactive({
     },
   ],
 })
+const formDisabled = computed(() => {
+  return (
+    form.line1.connetStatus !== VoipConnetStatus.idle ||
+    form.line2.connetStatus !== VoipConnetStatus.idle
+  )
+})
 const save = () => {
   if (!formRef.value.validate()) return
   const data = {
@@ -383,11 +396,13 @@ const getVoipBasicSettingsData = () => {
     form.line1.account = data.line1.account
     form.line1.password = data.line1.password
     form.line1.active = convertBooleanStatus(data.line1.active) as boolean
+    form.line1.connetStatus = data.line1.connetStatus
     form.line2.enablePortSetting = convertBooleanStatus(data.line2.enablePortSetting) as boolean
     form.line2.registrationStatus = data.line2.registrationStatus || defaultVal
     form.line2.account = data.line2.account
     form.line2.password = data.line2.password
     form.line2.active = convertBooleanStatus(data.line2.active) as boolean
+    form.line2.connetStatus = data.line2.connetStatus
   })
 }
 const getWanInfo = () => {

@@ -17,7 +17,10 @@
         <fh-form-item :label="$t('trans0825')" prop="sharingPath" v-if="form.enable">
           <fh-input v-model="form.sharingPath"></fh-input>
           <template #extra>
-            {{ $t('trans0826') }}
+            <ul style="list-style: disc">
+              <li>{{ $t('trans0826') }}</li>
+              <li>{{ $t('trans0855') }}</li>
+            </ul>
           </template>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
@@ -51,11 +54,10 @@ const form = reactive({
 const rules = {
   sharingPath: [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-    {
-      rule: (value) => isValidUnixPath(value),
+      rule: (value) => (value) => {
+        if (!value) return true
+        return isValidUnixPath(value)
+      },
       message: t('trans0830'),
     },
   ],

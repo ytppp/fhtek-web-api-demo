@@ -12,6 +12,10 @@ export const logout = (): Promise<ApiResponse<any>> => {
   return http.post('logout')
 }
 
+export const getDevModel = (): Promise<ApiResponse<any>> => {
+  return http.get('getDevmodel', undefined, { toast: false, loading: false })
+}
+
 export const getLan = (loading: boolean = true, toast = true): Promise<ApiResponse<any>> => {
   return http.post(
     api,
@@ -625,10 +629,6 @@ export const setTime = (params): Promise<ApiResponse<any>> => {
 
 export const getDevInfo = (): Promise<ApiResponse<any>> => {
   return http.get('getDevinfo')
-}
-
-export const getDevModel = (): Promise<ApiResponse<any>> => {
-  return http.get('getDevmodel', undefined, { toast: false, loading: false })
 }
 
 export const getPonInfo = (): Promise<ApiResponse<any>> => {

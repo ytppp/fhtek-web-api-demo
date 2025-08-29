@@ -54,7 +54,7 @@
               <fh-form-item :label="$t('trans0150')" prop="aclRuleName">
                 <fh-input name="AclRuleName" v-model="modalForm.aclRuleName"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0136')" prop="src_ip">
+              <fh-form-item :label="$t('trans0136')" prop="src_ip" ref="srcIpRef">
                 <fh-input
                   name="ScrIPAddrBegin"
                   v-model="modalForm.src_ip"
@@ -241,7 +241,10 @@ export default {
                 tempData = this.data.filter((item) => item.index !== this.modalForm.index)
               }
               flag = !tempData.some((item) => {
-                return item.src_ip === value
+                if (this.modalForm.application === Application.ALL) {
+                  return item.src_ip === value
+                }
+                return item.application === this.modalForm.application && item.src_ip === value
               })
               return flag
             },
@@ -392,6 +395,7 @@ export default {
     changeApplication() {
       this.modalForm.port = ApplicationPort[this.modalForm.application].port
       this.modalForm.proto = ApplicationPort[this.modalForm.application].proto
+      this.$refs.srcIpRef.validate()
     },
     del(row) {
       delAcl({

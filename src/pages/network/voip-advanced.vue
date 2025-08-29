@@ -10,6 +10,7 @@
         ref="formRef"
         :rules="rules"
         :model="form"
+        :disabled="formDisabled"
         v-if="hasVoipWan"
       >
         <fh-form-item label="RegistrationExpireTimer(s)" prop="registrationExpireTimer">
@@ -528,6 +529,9 @@
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
+        <fh-form-item v-if="formDisabled">
+          <fh-alert type="info" :title="$t('trans0121')" show-icon :center="false" />
+        </fh-form-item>
       </fh-form>
       <div style="padding-left: 20px; font-size: 16px" v-else>
         {{ $t('trans0604') }}
@@ -537,11 +541,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { specialChar, isValidInteger, isValidSymbol, successTips } from '@/util/tool'
-import { ServiceType } from '@/util/constant'
-import { getWan, getVoipAdvancedSettings, setVoipAdvancedSettings } from '@/http/api'
+import { ServiceType, VoipConnetStatus } from '@/util/constant'
+import {
+  getWan,
+  getVoipAdvancedSettings,
+  setVoipAdvancedSettings,
+  getVoipBasicSettings,
+} from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
 defineOptions({
@@ -590,6 +599,8 @@ const digitMapSpecialChar = '!#$*+-.=|?@_~[]'
 const digitMapSpecialReg = /^[\w!#$*+\-.=|?@_~[\]']+$/i
 const formRef = ref(null)
 const hasVoipWan = ref(false)
+const line1ConnetStatus = ref(VoipConnetStatus.idle)
+const line2ConnetStatus = ref(VoipConnetStatus.idle)
 const dmTModeOpts = [
   {
     value: DmTMode.dmShortTimer,
@@ -1411,6 +1422,12 @@ const rules = reactive({
     },
   ],
 })
+const formDisabled = computed(() => {
+  return (
+    line1ConnetStatus.value !== VoipConnetStatus.idle ||
+    line2ConnetStatus.value !== VoipConnetStatus.idle
+  )
+})
 const save = () => {
   if (!formRef.value.validate()) return
   const data = {
@@ -1773,6 +1790,12 @@ const getWanInfo = () => {
     if (hasVoipWan.value) {
       // todo
     }
+  })
+}
+const getVoipBasicSettingsData = () => {
+  getVoipBasicSettings().then(({ data }) => {
+    line1ConnetStatus.value = data.line1.connetStatus
+    line2ConnetStatus.value = data.line2.connetStatus
   })
 }
 onMounted(() => {

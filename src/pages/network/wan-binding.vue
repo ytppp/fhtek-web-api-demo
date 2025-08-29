@@ -56,7 +56,7 @@ import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
 import { getWanBinding, setWanBinding } from '@/http/api'
 import { SsidText } from '@/util/constant'
-import { successTips } from '@/util/tool'
+import { successTips, isValidInteger } from '@/util/tool'
 
 enum Mode {
   port = 'port',
@@ -110,11 +110,13 @@ const modalFormRules = reactive({
       rule: (value) => {
         const multiPairRegex = /^(\d+\/\d+)(;\d+\/\d+)*$/
         if (!multiPairRegex.test(value)) return false
-        const value2Arr = value
-          .split(';')
-          .map((val) => val.split('/'))
-          .map((val) => val[0])
-        return value2Arr.length === new Set(value2Arr).size
+        let value2Arr = value.split(';').map((val) => val.split('/'))
+        if (!value2Arr.flat().every((val) => isValidInteger(val, 1, 4094))) {
+          return false
+        } else {
+          value2Arr = value2Arr.map((val) => val[0])
+          return value2Arr.length === new Set(value2Arr).size
+        }
       },
       message: t('trans0566').format(t('trans0753')),
     },

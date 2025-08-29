@@ -49,18 +49,12 @@ import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, cidrToSubnetMask } from '@/util/tool'
 import { getWanInfo } from '@/http/api'
-import { NetType, netTypeText } from '@/util/constant'
+import { NetType, netTypeText, WanStatus as Status } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
 
 defineOptions({
   name: 'StatusWanPage',
 })
-
-enum Status {
-  UP = 'UP',
-  DOWN = 'DOWN',
-  DISCONNECTED = 'DISCONNECTED',
-}
 
 const { t } = useI18n()
 const { defaultVal } = useDataClean()

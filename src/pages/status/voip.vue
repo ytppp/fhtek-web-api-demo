@@ -20,7 +20,7 @@
 import { reactive, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
-import { ServiceType } from '@/util/constant'
+import { ServiceType, VoipConnetStatus } from '@/util/constant'
 import { getWan, getVoipBasicSettings } from '@/http/api'
 
 const { t } = useI18n()
@@ -28,6 +28,12 @@ const { defaultDataObj, defaultVal, convertBooleanStatus } = useDataClean()
 const hasVoipWan = ref(false)
 const isLine1Active = ref(false)
 const isLine2Active = ref(false)
+const VoipConnetStatusText = {
+  [VoipConnetStatus.idle]: t('trans0807'),
+  [VoipConnetStatus.connecting]: t('trans0853'),
+  [VoipConnetStatus.ringing]: t('trans0905'),
+  [VoipConnetStatus.ringback]: t('trans0859'),
+}
 const registerInfo = reactive({
   server: {
     label: t('trans0733'),
@@ -59,7 +65,7 @@ const line1Info = reactive({
     label: t('trans0739'),
     value: defaultVal,
   },
-  lineStatus: {
+  connetStatus: {
     label: t('trans0740'),
     value: defaultVal,
   },
@@ -77,7 +83,7 @@ const line2Info = reactive({
     label: t('trans0739'),
     value: defaultVal,
   },
-  lineStatus: {
+  connetStatus: {
     label: t('trans0740'),
     value: defaultVal,
   },
@@ -94,13 +100,13 @@ const getVoipBasicSettingsData = () => {
       name: t('trans0926').format(1),
       tel: data.line1.account,
       registerStatus: data.line1.registrationStatus,
-      lineStatus: '',
+      connetStatus: VoipConnetStatusText[data.line1.connetStatus as VoipConnetStatus],
     }
     const thisLine2Info = {
       name: t('trans0926').format(2),
       tel: data.line2.account,
       registerStatus: data.line2.registrationStatus,
-      lineStatus: '',
+      connetStatus: VoipConnetStatusText[data.line2.connetStatus as VoipConnetStatus],
     }
     isLine1Active.value = convertBooleanStatus(data.line1.active) as boolean
     isLine2Active.value = convertBooleanStatus(data.line2.active) as boolean

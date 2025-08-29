@@ -31,7 +31,10 @@
           <fh-form-item :label="$t('trans0814')" prop="path">
             <fh-input v-model="clientForm.path"></fh-input>
             <template #extra>
-              {{ $t('trans0818') }}
+              <ul style="list-style: disc">
+                <li>{{ $t('trans0818') }}</li>
+                <li>{{ $t('trans0855') }}</li>
+              </ul>
             </template>
           </fh-form-item>
           <fh-form-item class="form__submit-btn">
@@ -72,7 +75,10 @@
             <fh-form-item :label="$t('trans0825')" prop="rootPath">
               <fh-input v-model="serverForm.rootPath"></fh-input>
               <template #extra>
-                {{ $t('trans0819') }}
+                <ul style="list-style: disc">
+                  <li>{{ $t('trans0819') }}</li>
+                  <li>{{ $t('trans0855') }}</li>
+                </ul>
               </template>
             </fh-form-item>
           </template>
@@ -167,11 +173,10 @@ const clientFormRules = {
   ],
   path: [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-    {
-      rule: (value) => isValidUnixPath(value),
+      rule: (value) => {
+        if (!value) return true
+        return isValidUnixPath(value)
+      },
       message: t('trans0830'),
     },
   ],
@@ -209,11 +214,10 @@ const serverFormRules = {
   ],
   rootPath: [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-    {
-      rule: (value) => isValidUnixPath(value),
+      rule: (value) => {
+        if (!value) return true
+        return isValidUnixPath(value)
+      },
       message: t('trans0830'),
     },
   ],

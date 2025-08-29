@@ -8,15 +8,18 @@
         <fh-form-item :label="$t('trans0829')">
           <fh-switch v-model="form.enable"> </fh-switch>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0053')" prop="username">
-          <fh-input v-model="form.username"> </fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0185')" prop="pwd">
-          <fh-input v-model="form.pwd" type="password" show-password @blur="changePwd"> </fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0186')" prop="confirmPwd" ref="confirmPwd">
-          <fh-input v-model="form.confirmPwd" type="password" show-password> </fh-input>
-        </fh-form-item>
+        <template v-if="form.enable">
+          <fh-form-item :label="$t('trans0053')" prop="username">
+            <fh-input v-model="form.username"> </fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0185')" prop="pwd">
+            <fh-input v-model="form.pwd" type="password" show-password @blur="changePwd">
+            </fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0186')" prop="confirmPwd" ref="confirmPwd">
+            <fh-input v-model="form.confirmPwd" type="password" show-password> </fh-input>
+          </fh-form-item>
+        </template>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
             {{ $t('trans0002') }}
