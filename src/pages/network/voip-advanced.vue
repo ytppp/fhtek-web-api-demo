@@ -530,7 +530,7 @@
           </fh-button>
         </fh-form-item>
         <fh-form-item v-if="formDisabled">
-          <fh-alert type="info" :title="$t('trans0121')" show-icon :center="false" />
+          <fh-alert type="info" :title="$t('trans0904')" show-icon :center="false" />
         </fh-form-item>
       </fh-form>
       <div style="padding-left: 20px; font-size: 16px" v-else>
@@ -1464,7 +1464,7 @@ const save = () => {
       DigitMapEnable: convertBooleanStatus(form.digit_map.enableDigitMap),
       DigitMap1: form.digit_map.digitMap,
       DigitMapSpecialEnable: convertBooleanStatus(form.digit_map.enableDigitMapSpecial),
-      digitMapSpecial: form.digit_map.digitMapSpecial,
+      DigitMapSpecial: form.digit_map.digitMapSpecial,
       PBXPrefixEnable: convertBooleanStatus(form.digit_map.enablePBXPrefix),
       PBXPrefix: form.digit_map.pbxPrefix,
       PBXDialSecondaryEnable: convertBooleanStatus(form.digit_map.enablePBXDialSecondary),
