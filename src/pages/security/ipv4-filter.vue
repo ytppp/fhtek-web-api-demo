@@ -72,7 +72,13 @@
                 </template>
               </fh-form-item>
               <fh-form-item :label="$t('trans0135')">
-                <fh-select v-model="modalForm.proto" :options="protoList" name="proto" @change="changeProto"> </fh-select>
+                <fh-select
+                  v-model="modalForm.proto"
+                  :options="protoList"
+                  name="proto"
+                  @change="changeProto"
+                >
+                </fh-select>
               </fh-form-item>
               <fh-form-item class="form__submit-btn">
                 <fh-button id="submitbutton" @click="save" block>
@@ -160,22 +166,22 @@ export default {
             rule: (value) => isValidVal(value, 1, 32),
             message: this.$t('trans0167'),
           },
-          {
-            rule: (value) => {
-              let flag = true
-              let tempData = []
-              if (this.isAdd) {
-                tempData = this.data
-              } else {
-                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
-              }
-              flag = !tempData.some((item) => {
-                return item.name === value
-              })
-              return flag
-            },
-            message: this.$t('trans0678').format(this.$t('trans0150')),
-          },
+          // {
+          //   rule: (value) => {
+          //     let flag = true
+          //     let tempData = []
+          //     if (this.isAdd) {
+          //       tempData = this.data
+          //     } else {
+          //       tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+          //     }
+          //     flag = !tempData.some((item) => {
+          //       return item.name === value
+          //     })
+          //     return flag
+          //   },
+          //   message: this.$t('trans0678').format(this.$t('trans0150')),
+          // },
         ],
         src_ip: [
           {
@@ -201,25 +207,25 @@ export default {
             },
             message: this.$t('trans0566').format(this.$t('trans0136')),
           },
-          {
-            rule: (value) => {
-              let flag = true
-              let tempData = []
-              if (this.isAdd) {
-                tempData = this.data
-              } else {
-                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
-              }
-              flag = !tempData.some((item) => {
-                if (this.modalForm.proto === ProtocolType.ALL) {
-                  return item.src_ip === value
-                }
-                return item.proto === this.modalForm.proto && item.src_ip === value
-              })
-              return flag
-            },
-            message: this.$t('trans0678').format(this.$t('trans0136')),
-          },
+          // {
+          //   rule: (value) => {
+          //     let flag = true
+          //     let tempData = []
+          //     if (this.isAdd) {
+          //       tempData = this.data
+          //     } else {
+          //       tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+          //     }
+          //     flag = !tempData.some((item) => {
+          //       if (this.modalForm.proto === ProtocolType.ALL) {
+          //         return item.src_ip === value
+          //       }
+          //       return item.proto === this.modalForm.proto && item.src_ip === value
+          //     })
+          //     return flag
+          //   },
+          //   message: this.$t('trans0678').format(this.$t('trans0136')),
+          // },
         ],
         dest_port: [
           {
@@ -231,25 +237,25 @@ export default {
             },
             message: this.$t('trans0566').format(this.$t('trans0139')),
           },
-          {
-            rule: (value) => {
-              let flag = true
-              let tempData = []
-              if (this.isAdd) {
-                tempData = this.data
-              } else {
-                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
-              }
-              flag = !tempData.some((item) => {
-                if (this.modalForm.proto === ProtocolType.ALL) {
-                  return item.dest_port === value
-                }
-                return item.proto === this.modalForm.proto && item.dest_port === value
-              })
-              return flag
-            },
-            message: this.$t('trans0678').format(this.$t('trans0139')),
-          },
+          // {
+          //   rule: (value) => {
+          //     let flag = true
+          //     let tempData = []
+          //     if (this.isAdd) {
+          //       tempData = this.data
+          //     } else {
+          //       tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+          //     }
+          //     flag = !tempData.some((item) => {
+          //       if (this.modalForm.proto === ProtocolType.ALL) {
+          //         return item.dest_port === value
+          //       }
+          //       return item.proto === this.modalForm.proto && item.dest_port === value
+          //     })
+          //     return flag
+          //   },
+          //   message: this.$t('trans0678').format(this.$t('trans0139')),
+          // },
         ],
       },
       protoText: {
@@ -386,6 +392,26 @@ export default {
         proto: this.modalForm.proto,
         name: this.modalForm.name,
       }
+      let tempData = []
+      if (this.isAdd) {
+        tempData = this.data
+      } else {
+        tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+      }
+      const flag = !tempData.some((item) => {
+        return (
+          item.name === this.modalForm.name &&
+          item.src_ip === this.modalForm.src_ip &&
+          item.dest_port === this.modalForm.dest_port
+        )
+      })
+      if (!flag) {
+        this.$toast({
+          text: this.$t('trans0678').format(this.$t('trans0112')),
+          type: 'error',
+        })
+        return
+      }
       if (this.isAdd) {
         addIpv4Filter([data]).then(() => {
           successTips()
@@ -432,7 +458,7 @@ export default {
     changeProto() {
       this.$refs.srcIpRef.validate()
       this.$refs.destPortRef.validate()
-    }
+    },
   },
   created() {
     this.getFirewallData()
