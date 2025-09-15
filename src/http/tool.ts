@@ -101,7 +101,7 @@ export function checkStatus(error: TAxiosError): void {
       message = translate('trans0692')
       break
     default:
-      message = translate(format('trans0693', [status]))
+      message = format(translate('trans0693'), [status])
   }
   if (error.config.toast) {
     toast(message)
@@ -159,6 +159,9 @@ export function handleBusinessError(response: any): boolean {
       break
     case ResultEnum.INVALIDFILE:
       message = translate('trans0700') // data.msg || translate('trans0700')
+      break
+    case ResultEnum.LOGIN_3_TIMES_FAILED:
+      message = format(translate('trans0011'), [3]) // data.msg || translate('trans0700')
       break
     default:
       message = translate('trans0701') // data.msg || translate('trans0701')
