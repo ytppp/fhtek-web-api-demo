@@ -13,7 +13,7 @@ export const logout = (): Promise<ApiResponse<any>> => {
 }
 
 export const getDevModel = (): Promise<ApiResponse<any>> => {
-  return http.get('getDevmodel', undefined, { toast: false, loading: false })
+  return http.get('getDevmodel', undefined, { toast: false, loading: false, cancel: false })
 }
 
 export const getLan = (loading: boolean = true, toast = true): Promise<ApiResponse<any>> => {
