@@ -70,7 +70,7 @@
             <fh-select v-model="modalForm.protocol" :options="protocalList"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0446')" prop="extHost">
-            <fh-input v-model="modalForm.extHost"></fh-input>
+            <fh-input v-model="modalForm.extHost" :placeholder="placeholderTips"></fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0273')" prop="extPort">
             <fh-input name="ExternalPort" v-model="modalForm.extPort"></fh-input>
@@ -94,7 +94,16 @@
 
 <script>
 import { ModalType, ProtocolType } from '@/util/constant'
-import { isValidInteger, isValidVal, isIP, successTips } from '@/util/tool'
+import {
+  isValidInteger,
+  isValidVal,
+  isIP,
+  successTips,
+  cidrToSubnetMask,
+  isMulticast,
+  isLoopback,
+  format,
+} from '@/util/tool'
 import { getPortMapping, setPortMapping, editPortMapping, delPortMapping } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -180,6 +189,25 @@ const tempList = Temp.map((item) => ({
   value: item.name,
   text: item.name,
 }))
+function isValidStaticRouteMask(ip, mask) {
+  if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
+  if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
+  return false
+}
+function isValidMask(ip) {
+  if (ip.split('.').filter((val) => val).length !== 4) return false
+  const i = ip2int(ip).toString(2).padStart(32, '0')
+  const result = i.split('10')
+  // result.length !== 2
+  if (result.length > 2) {
+    return false
+  }
+  // 有效mask
+  if (result[0].includes('0') || (result[1] && result[1].includes('1'))) {
+    return false
+  }
+  return true
+}
 export default {
   name: 'PortMappingPage',
   data() {
@@ -231,8 +259,24 @@ export default {
             message: this.$t('trans0004'),
           },
           {
-            rule: (value) => isIP(value),
-            message: this.$t('trans0397'),
+            rule: (value) => {
+              const parts = value.split('/')
+              if (parts.length !== 2) return false
+              const ip = parts[0]
+              const suffix = parts[1]
+              if (isIP(ip)) {
+                const flag = isValidMask(suffix)
+                const mask = cidrToSubnetMask(parseInt(suffix))
+                if (!flag && !mask) return false
+                const maskVal = flag ? suffix : mask
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal)) {
+                  return false
+                }
+                return true
+              }
+              return false
+            },
+            message: this.$t('trans0566').format(this.$t('trans0446')),
           },
         ],
         extPort: [
@@ -367,6 +411,9 @@ export default {
         // },
       ]
     },
+    placeholderTips() {
+      return `${format(this.$t('trans0598'), [this.$t('trans0456')])}/${this.$t('trans0459')}`
+    },
   },
   methods: {
     handleClose() {
@@ -447,7 +494,7 @@ export default {
       editPortMapping([
         {
           id: row.id,
-          enable: row.enable,
+          enable: convertBooleanStatus(row.enable),
         },
       ])
     },
