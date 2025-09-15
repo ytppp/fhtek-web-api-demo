@@ -9,6 +9,7 @@ export enum ResultEnum {
   INVALIDJSON = 10004,
   HASLOGIN = 10005,
   INVALIDFILE = 10006,
+  LOGIN_3_TIMES_FAILED = 10012
 }
 
 const defaultUrl = '/action'

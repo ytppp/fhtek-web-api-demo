@@ -1788,7 +1788,7 @@ const getWanInfo = () => {
       )
     })
     if (hasVoipWan.value) {
-      // todo
+      getVoipBasicSettingsData()
     }
   })
 }

@@ -215,6 +215,7 @@ function isIPC(ip) {
 }
 // 是否为私有地址
 export function isPrivateIP(ip) {
+  console.log(IPAReg.test(ip), IPBReg.test(ip), isIPC(ip))
   return IPAReg.test(ip) || IPBReg.test(ip) || isIPC(ip)
 }
 // 是否为网络地址
