@@ -70,7 +70,7 @@
             <fh-select v-model="modalForm.protocol" :options="protocalList"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0446')" prop="extHost">
-            <fh-input v-model="modalForm.extHost"></fh-input>
+            <fh-input v-model="modalForm.extHost" :placeholder="placeholderTips"></fh-input>
           </fh-form-item>
           <fh-form-item :label="$t('trans0273')" prop="extPort">
             <fh-input name="ExternalPort" v-model="modalForm.extPort"></fh-input>
@@ -102,6 +102,7 @@ import {
   cidrToSubnetMask,
   isMulticast,
   isLoopback,
+  format,
 } from '@/util/tool'
 import { getPortMapping, setPortMapping, editPortMapping, delPortMapping } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -258,25 +259,24 @@ export default {
             message: this.$t('trans0004'),
           },
           {
-            rule: (value) => isIP(value),
-            message: this.$t('trans0397'),
-          },
-          {
             rule: (value) => {
               const parts = value.split('/')
               if (parts.length !== 2) return false
               const ip = parts[0]
               const suffix = parts[1]
-              const flag = isValidMask(suffix)
-              const mask = cidrToSubnetMask(parseInt(suffix))
-              if (!flag && !mask) return false
-              const maskVal = flag ? suffix : mask
-              if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal)) {
-                return false
+              if (isIP(ip)) {
+                const flag = isValidMask(suffix)
+                const mask = cidrToSubnetMask(parseInt(suffix))
+                if (!flag && !mask) return false
+                const maskVal = flag ? suffix : mask
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal)) {
+                  return false
+                }
+                return true
               }
-              return true
+              return false
             },
-            message: this.$t('trans0566').format(this.$t('trans0792')),
+            message: this.$t('trans0566').format(this.$t('trans0446')),
           },
         ],
         extPort: [
@@ -410,6 +410,9 @@ export default {
         //   text: this.$t('trans0192'),
         // },
       ]
+    },
+    placeholderTips() {
+      return `${format(this.$t('trans0598'), [this.$t('trans0456')])}/${this.$t('trans0459')}`
     },
   },
   methods: {
