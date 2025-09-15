@@ -447,7 +447,7 @@ export default {
       editPortMapping([
         {
           id: row.id,
-          enable: row.enable,
+          enable: convertBooleanStatus(row.enable),
         },
       ])
     },
