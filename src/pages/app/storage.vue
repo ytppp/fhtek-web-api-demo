@@ -245,12 +245,10 @@ const columns = reactive([
   {
     key: 'url',
     title: t('trans0812'),
-    width: '180',
   },
   {
     key: 'path',
     title: t('trans0814'),
-    width: '180',
   },
   {
     key: 'statusAilas',
