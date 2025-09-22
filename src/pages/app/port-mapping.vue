@@ -103,6 +103,7 @@ import {
   isMulticast,
   isLoopback,
   format,
+  getIpAfter,
 } from '@/util/tool'
 import { getPortMapping, setPortMapping, editPortMapping, delPortMapping } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
