@@ -98,6 +98,7 @@ export default {
           enable: convertBooleanStatus(this.form.enable),
           ip: this.form.ip,
         }).then(() => {
+          this.formEnable = this.form.enable
           successTips()
         })
       }

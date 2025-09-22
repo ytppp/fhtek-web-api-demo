@@ -44,11 +44,18 @@
           </fh-form-item>
         </fh-form>
         <div class="page__table">
-          <fh-table
-            :columns="columns"
-            :data-source="tableData"
-            :show-row-checkbox="false"
-          ></fh-table>
+          <fh-table :columns="columns" :data-source="tableData" :show-row-checkbox="false">
+            <template #url="scope">
+              <fh-popover :title="scope.row.url">
+                <div class="ellipsis" style="width: 100px">{{ scope.row.url }}</div>
+              </fh-popover>
+            </template>
+            <template #path="scope">
+              <fh-popover :title="scope.row.path">
+                <div class="ellipsis" style="width: 100px">{{ scope.row.path }}</div>
+              </fh-popover>
+            </template>
+          </fh-table>
         </div>
         <div class="page__sub-header">
           <h2 class="page__title">{{ $t('trans0815') }}</h2>
@@ -238,10 +245,12 @@ const columns = reactive([
   {
     key: 'url',
     title: t('trans0812'),
+    width: '180',
   },
   {
     key: 'path',
     title: t('trans0814'),
+    width: '180',
   },
   {
     key: 'statusAilas',
