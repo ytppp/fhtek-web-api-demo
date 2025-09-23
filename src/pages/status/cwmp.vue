@@ -4,42 +4,57 @@
       <h1 class="page__title">{{ $t('trans0249') }}</h1>
     </div>
     <div class="page__content">
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0741') }}</h2>
+      <template v-if="enableCwmp">
+        <div class="page__sub-header">
+          <h2 class="page__title">{{ $t('trans0741') }}</h2>
+        </div>
+        <fh-descriptions :data="interaction"></fh-descriptions>
+      </template>
+      <div style="padding-left: 20px; font-size: 16px" v-else>
+        {{ $t('trans0909') }}
       </div>
-      <fh-descriptions :data="interaction"></fh-descriptions>
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0742') }}</h2>
-      </div>
-      <fh-descriptions :data="business"></fh-descriptions>
     </div>
   </div>
 </template>
 
-<script setup>
-import { reactive, ref } from 'vue'
+<script lang="ts" setup>
+import { reactive, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
-import { format } from '@/util/tool'
+import { getSwmpStatus } from '@/http/api'
+import { CwmpStatus } from '@/util/constant'
 
 const { t } = useI18n()
-const { cleanData, defaultVal } = useDataClean()
-
+const { defaultDataObj, defaultVal, convertBooleanStatus } = useDataClean()
+const enableCwmp = ref(false)
+const CwmpStatusText = {
+  [CwmpStatus.ReportedSuccessfully]: t('trans0910'),
+  [CwmpStatus.ReportedFail]: t('trans0911'),
+  [CwmpStatus.Tring]: t('trans0653'),
+}
 const interaction = reactive({
+  url: {
+    label: t('trans0912'),
+    value: defaultVal,
+  },
   inform: {
     label: t('trans0743'),
     value: defaultVal,
   },
-  request: {
-    label: t('trans0734'),
-    value: defaultVal,
-  },
 })
 
-const business = reactive({
-  status: {
-    label: t('trans0744'),
-    value: defaultVal,
-  },
+const getSwmpStatusData = () => {
+  getSwmpStatus().then(({ data }) => {
+    enableCwmp.value = convertBooleanStatus(data.enable) as boolean
+    const thisInteraction = {
+      url: data.server,
+      inform: CwmpStatusText[data.inform_Status as CwmpStatus],
+    }
+    defaultDataObj(interaction, thisInteraction)
+  })
+}
+
+onMounted(() => {
+  getSwmpStatusData()
 })
 </script>

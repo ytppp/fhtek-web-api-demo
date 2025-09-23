@@ -692,3 +692,7 @@ export const getSwmpSettings = (): Promise<ApiResponse<any>> => {
 export const editSwmpSettings = (params): Promise<ApiResponse<any>> => {
   return http.post('editSwmpSettings', createData(params))
 }
+
+export const getSwmpStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getSwmpStatus')
+}

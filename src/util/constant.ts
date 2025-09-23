@@ -260,3 +260,9 @@ export enum VoipConnetStatus {
   ringback = 'Ringback',
   connecting = 'Connect',
 }
+
+export enum CwmpStatus {
+  ReportedSuccessfully = '0',
+  ReportedFail = '1',
+  Tring = '2',
+}
