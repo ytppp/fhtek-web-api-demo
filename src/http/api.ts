@@ -57,12 +57,12 @@ export const setLanSpeed = (params): Promise<ApiResponse<any>> => {
   return http.post(`SetLanSpeed`, createData(params))
 }
 
-export const getWan = (): Promise<ApiResponse<any>> => {
-  return http.get(`GetWan`, undefined, { timeout: 20000 })
+export const getWan = (loading: boolean = true): Promise<ApiResponse<any>> => {
+  return http.get(`GetWan`, undefined, { timeout: 20000, loading })
 }
 
 export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
-  return http.post(`GetPortBindInfo`, createData(params))
+  return http.post(`GetPortBindInfo`, createData(params), { loading: false })
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {

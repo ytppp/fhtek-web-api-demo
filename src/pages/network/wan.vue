@@ -737,8 +737,8 @@ const p8021Options = (max: number) => {
 const rangeTips = (text: string, min: string, max: string) => {
   return format(t('trans0373'), [text, min, max])
 }
-const getWanList = (id?: string) => {
-  getWan().then(({ data }) => {
+const getWanList = (loading: boolean = true, id?: string) => {
+  getWan(loading).then(({ data }) => {
     const { items, total } = data
     const wanOptsList = []
     wanList.length = 0
@@ -890,7 +890,7 @@ const save = () => {
     if (isAdd.value) {
       addWan(newWan).then(() => {
         successTips()
-        getWanList()
+        getWanList(false)
       })
     }
     if (isEdit.value) {
@@ -898,7 +898,7 @@ const save = () => {
       editWan(newWan).then(({ data }) => {
         successTips()
         const { id } = data
-        getWanList(id)
+        getWanList(false, id)
       })
     }
   }
@@ -913,7 +913,7 @@ const delWanConn = () => {
     .then(() => {
       deleteWan({ id: wan.id }).then(() => {
         successTips('trans0410')
-        getWanList()
+        getWanList(false)
       })
     })
     .catch(() => {})
@@ -1243,9 +1243,7 @@ const wanRules = reactive({
         if (isEdit.value) {
           tempData = wanList.filter((item) => item.id !== wan.id)
         }
-        return !tempData.some(
-          (item) => item.vlan.id === value || item.multiVlanId === value,
-        )
+        return !tempData.some((item) => item.vlan.id === value || item.multiVlanId === value)
       },
       message: format(t('trans0678'), [t('trans0777')]),
     },
