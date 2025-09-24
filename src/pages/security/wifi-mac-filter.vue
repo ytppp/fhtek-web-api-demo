@@ -11,9 +11,9 @@
         <template v-if="form.enable">
           <fh-form-item :label="$t('trans0104')">
             <fh-radio-group v-model="form.mode" @change="changeFilterMode">
-              <fh-radio v-for="mode in filteringModes" :key="mode.value" :label="mode.value">{{
-                mode.text
-              }}</fh-radio>
+              <fh-radio v-for="mode in filteringModes" :key="mode.value" :label="mode.value">
+                {{ mode.text }}
+              </fh-radio>
             </fh-radio-group>
           </fh-form-item>
         </template>
@@ -156,7 +156,7 @@ export default {
               }
               flag = !tempData.some((item) => {
                 let flag1 = false
-                if (item.id === this.all) {
+                if (this.modalForm.id === this.all || item.id === this.all) {
                   flag1 = true
                 } else {
                   flag1 = item.id === this.modalForm.id

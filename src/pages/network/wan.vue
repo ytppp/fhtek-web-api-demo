@@ -838,6 +838,9 @@ const initWanForm = (wanInfo: any = '') => {
 }
 const save = () => {
   if (wanRef.value.validate()) {
+    if (wan.serviceType === ServiceType.TR069 || wan.serviceType === ServiceType.VOICE) {
+      wan.lan = []
+    }
     const newWan = {
       enable: convertBooleanStatus(wan.enable),
       serviceType: wan.serviceType,

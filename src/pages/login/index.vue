@@ -6,7 +6,7 @@
       </div>
       <fh-form
         label-position="top"
-        ref="form"
+        ref="formRef"
         :disabled="formDisabled"
         :model="userinfo"
         :rules="rules"
@@ -31,7 +31,10 @@
           </fh-input>
         </fh-form-item>
         <fh-form-item class="signin-form__action">
-          <fh-button block @click="login" :plain="false">{{ $t('trans0616') }}</fh-button>
+          <fh-button block @click="doLogin" :plain="false">{{ $t('trans0616') }}</fh-button>
+        </fh-form-item>
+        <fh-form-item v-show="alert">
+          <fh-alert :title="alert" type="error"> </fh-alert>
         </fh-form-item>
       </fh-form>
       <div class="signin__forget">
@@ -56,7 +59,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import {
   getPublicFile,
   isValidLength,
@@ -67,100 +72,127 @@ import {
 } from '@/util/tool'
 import { Role } from '@/util/constant'
 import { login } from '@/http/api'
+import { ResultEnum } from '@/http/config'
+import { router } from '@/router/index'
+import { useSessionStorage } from '@/hooks/session-storage'
+import { useCountDown } from '@/hooks/countdown'
 
-export default {
-  data() {
-    return {
-      visible: false,
-      delayTime: 60,
-      filt_lock_timer: null,
-      formDisabled: false,
-      logoSrc: getPublicFile(VITE_CUSTOMER_CONFIG.logo),
-      userinfo: {
-        username: '',
-        password: '',
-      },
-      rules: {
-        username: [
-          {
-            rule: (value) => value,
-            message: this.$t('trans0004'),
-          },
-          {
-            rule: (value) => getStringByte(value) <= 64,
-            message: this.$t('trans0005').format(this.$t('trans0053')),
-          },
-        ],
-        password: [
-          {
-            rule: (value) => value,
-            message: this.$t('trans0004'),
-          },
-          {
-            rule: (value) => isValidLength(value, 8, 64),
-            message: this.$t('trans0003').format(this.$t('trans0196'), 8, 64),
-          },
-          {
-            rule: (value) => isValidSymbol(value),
-            message: this.$t('trans0013').format(
-              this.$t('trans0196'),
-              this.$t('trans0042').format(specialChar),
-            ),
-          },
-        ],
-      },
-    }
-  },
-  computed: {
-    footerInfo() {
-      return `&copy;&nbsp;${this.$t('trans0009')}&nbsp;${this.$t('trans0008')}`
+const logoSrc = getPublicFile(VITE_CUSTOMER_CONFIG.logo)
+
+const { t } = useI18n()
+const formRef = ref(null)
+const visible = ref(false)
+const alert = ref('')
+const formDisabled = ref(false)
+const userinfo = reactive({
+  username: '',
+  password: '',
+})
+const rules = reactive({
+  username: [
+    {
+      rule: (value) => value,
+      message: t('trans0004'),
     },
-  },
-  methods: {
-    toggleModalVisible(visible) {
-      this.visible = visible
+    {
+      rule: (value) => getStringByte(value) <= 64,
+      message: t('trans0005').format(t('trans0053')),
     },
-    clearValidate() {
-      this.$refs.form.clearValidate()
+  ],
+  password: [
+    {
+      rule: (value) => value,
+      message: t('trans0004'),
     },
-    login() {
-      if (this.$refs.form.validate()) {
-        this.formDisabled = true
-        login(this.userinfo)
-          .then(({ data }) => {
-            // const { role } = data
-            const role = Role.super // data.role
-            sessionStorage.setItem('role', role)
-            sessionStorage.setItem('login_user', this.userinfo.username)
-            // successTips('trans0806')
-            this.$router.push('/home')
-          })
-          .finally(() => {
-            this.formDisabled = false
-          })
-      }
+    {
+      rule: (value) => isValidLength(value, 8, 64),
+      message: t('trans0003').format(t('trans0196'), 8, 64),
     },
-    onKeyDown(e, el, fn) {
-      if (typeof fn !== 'function') {
-        return
-      }
-      let key = 0
-      if (window.event) {
-        key = window.event.keyCode
-      } else if (e) {
-        key = e.which
-      }
-      if (key == 13 && document.activeElement.id != el) {
-        fn()
-      }
+    {
+      rule: (value) => isValidSymbol(value),
+      message: t('trans0013').format(t('trans0196'), t('trans0042').format(specialChar)),
     },
-  },
-  created() {},
-  mounted() {
-    document.onkeypress = (e) => this.onKeyDown(e, 'loginbutton', this.login)
-  },
-  beforeUnmount() {},
+  ],
+})
+
+const footerInfo = computed(() => {
+  return `&copy;&nbsp;${t('trans0009')}&nbsp;${t('trans0008')}`
+})
+
+const {
+  value: login3TimesUser,
+  setValue: setDelayTime,
+  removeItem: clearDelayTime,
+} = useSessionStorage('login3TimesUser', { username: '', time: 0 })
+
+const toggleModalVisible = (val) => {
+  visible.value = val
 }
+const clearValidate = () => {
+  formRef.value.clearValidate()
+}
+const doLogin = () => {
+  if (formRef.value.validate()) {
+    formDisabled.value = true
+    login(userinfo)
+      .then(({ data }) => {
+        // const { role } = data
+        const role = Role.super // data.role
+        sessionStorage.setItem('role', role)
+        sessionStorage.setItem('login_user', userinfo.username)
+        // successTips('trans0806')
+        router.push('/home')
+      })
+      .catch((err) => {
+        if (err.code === ResultEnum.LOGIN_3_TIMES_FAILED) {
+          setDelayTime({ username: userinfo.username, time: 60 })
+          filt_lock_time()
+        } else {
+          formDisabled.value = false
+        }
+      })
+  }
+}
+const onKeyDown = (e, el, fn) => {
+  if (typeof fn !== 'function') {
+    return
+  }
+  let key = 0
+  if (window.event) {
+    key = window.event.keyCode
+  } else if (e) {
+    key = e.which
+  }
+  if (key == 13 && document.activeElement.id != el) {
+    fn()
+  }
+}
+const filt_lock_time = () => {
+  createCountDown()
+}
+const doingHandle = () => {
+  const login3TimesUsername = login3TimesUser.value.username
+  let login3TimesTime = login3TimesUser.value.time
+  alert.value = t('trans0010').format(login3TimesTime)
+  if (--login3TimesTime > -1) {
+    userinfo.username = login3TimesUsername
+    formDisabled.value = true
+    setDelayTime({ username: login3TimesUsername, time: login3TimesTime })
+  } else {
+    clearDelayTime()
+    cleanCountDown()
+    formDisabled.value = false
+    alert.value = ''
+  }
+}
+const { createCountDown, cleanCountDown } = useCountDown(-1, 1000, doingHandle)
+
+onMounted(() => {
+  document.onkeypress = (e) => onKeyDown(e, 'loginbutton', doLogin)
+  if (login3TimesUser.value.time > 0) {
+    filt_lock_time()
+  }
+})
 </script>
 
 <style lang="less">

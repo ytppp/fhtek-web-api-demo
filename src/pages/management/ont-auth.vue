@@ -22,6 +22,9 @@
           </fh-form-item>
           <fh-form-item :label="$t('trans0196')" prop="password.password">
             <fh-input v-model="form.password.password"> </fh-input>
+            <template #extra>
+              {{ $t('trans0913') }}
+            </template>
           </fh-form-item>
         </template>
         <fh-form-item class="form__submit-btn">

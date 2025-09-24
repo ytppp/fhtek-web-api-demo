@@ -696,3 +696,7 @@ export const editSwmpSettings = (params): Promise<ApiResponse<any>> => {
 export const getSwmpStatus = (): Promise<ApiResponse<any>> => {
   return http.get('getSwmpStatus')
 }
+
+export const getLoginTimeout = (): Promise<ApiResponse<any>> => {
+  return http.get('getLogintimeout', undefined, { loading: false, toast: false, cancel: false })
+}

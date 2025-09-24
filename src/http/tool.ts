@@ -143,10 +143,10 @@ export function handleBusinessError(response: any): boolean {
     case ResultEnum.NOAUTH:
       message = translate('trans0696') // data.msg || translate('trans0696')
       break
-    case ResultEnum.OVERDUE:
-      message = translate('trans0697') // data.msg || translate('trans0697')
-      handleLogout(false)
-      break
+    // case ResultEnum.OVERDUE:
+    //   message = translate('trans0697') // data.msg || translate('trans0697')
+    //   handleLogout(false)
+    //   break
     case ResultEnum.INVALIDSESSION:
       message = translate('trans0698') // data.msg || translate('trans0698')
       handleLogout(false)

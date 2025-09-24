@@ -71,9 +71,10 @@
 
 <script>
 import { getMenu } from '@/util/menu'
-import { isMobileDevice, isObjArrHasVal } from '@/util/tool'
-import { getDevModel } from '@/http/api'
+import { isMobileDevice, isObjArrHasVal, handleLogout } from '@/util/tool'
+import { getDevModel, getLoginTimeout } from '@/http/api'
 import { loginPath } from '@/router'
+import { useDataClean } from '@/hooks/data-clean'
 
 // 若多维对象数组中存在某个值，返回其顶级对象
 const getTopObjFromObjArr = (arr, val, childNodeName = 'children', keyName = 'url') => {
@@ -98,6 +99,7 @@ const getObjFromObjArr = (arr, childNodeName = 'children', keyName = 'url') => {
   }
   return menu
 }
+const { convertBooleanStatus } = useDataClean()
 export default {
   data() {
     return {
@@ -109,6 +111,7 @@ export default {
       asideBgColor: '#DDDDDD',
       isMobile: false,
       drawer: false,
+      loginTimeoutTimer: null,
     }
   },
   computed: {
@@ -139,6 +142,7 @@ export default {
   watch: {
     $route(val) {
       this.url = val.path
+      this.startLoginTimeoutCheck()
     },
   },
   methods: {
@@ -193,10 +197,32 @@ export default {
         sessionStorage.setItem('product_name', this.title)
       })
     },
+    getLoginTimeoutData() {
+      getLoginTimeout().then(({ data }) => {
+        if (convertBooleanStatus(data.timeout)) {
+          handleLogout(false)
+        }
+      })
+    },
+    startLoginTimeoutCheck() {
+      if (this.loginTimeoutTimer) return
+      this.loginTimeoutTimer = setInterval(() => {
+        if (this.isNoAuthPage) {
+          this.stopLoginTimeoutCheck()
+        } else {
+          this.getLoginTimeoutData()
+        }
+      }, 1000 * 10)
+    },
+    stopLoginTimeoutCheck() {
+      clearInterval(this.loginTimeoutTimer)
+      this.loginTimeoutTimer = null
+    },
   },
   mounted() {
     this.getDevInfoData()
     this.changeScreen()
+    this.startLoginTimeoutCheck()
     if (window.addEventListener) {
       window.addEventListener('resize', this.changeScreen)
     } else if (window.attachEvent) {
@@ -204,6 +230,7 @@ export default {
     }
   },
   beforeUnmount() {
+    this.stopLoginTimeoutCheck()
     if (window.addEventListener) {
       window.removeEventListener('resize', this.changeScreen)
     } else if (window.attachEvent) {

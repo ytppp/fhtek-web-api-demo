@@ -96,7 +96,8 @@ export default {
             rule: (value) => {
               if (value === '::1') return false
               // 这里只需要输入一个 ipv6 的后四位, 所以临时补全一个ipv6地址,方便做校验
-              const ip = tranSimIpv6ToFullIpv6(`${defaultIpv6Prefix}${value}`)
+              const ip = `${defaultIpv6Prefix}${value}`
+              console.log(ip)
               return isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip)
             },
             message: this.$t('trans0566').format(this.$t('trans0414')),
