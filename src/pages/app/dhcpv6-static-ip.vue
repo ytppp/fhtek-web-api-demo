@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { isIP, isMac, isValidIpv6AddrExtra, successTips, tranSimIpv6ToFullIpv6 } from '@/util/tool'
+import { isIP, isMac, isValidIpv6AddrExtra, successTips } from '@/util/tool'
 import {
   getLan,
   getDhcpStaticIp,

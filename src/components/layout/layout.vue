@@ -200,7 +200,7 @@ export default {
     getLoginTimeoutData() {
       getLoginTimeout().then(({ data }) => {
         if (convertBooleanStatus(data.timeout)) {
-          handleLogout(false)
+          handleLogout()
         }
       })
     },
