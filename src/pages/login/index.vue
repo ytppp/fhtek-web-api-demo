@@ -137,8 +137,8 @@ const doLogin = () => {
     login(userinfo)
       .then(({ data }) => {
         // const { role } = data
-        const role = Role.super // data.role
-        sessionStorage.setItem('role', role)
+        // const role = Role.super // data.role
+        sessionStorage.setItem('role', userinfo.username)
         sessionStorage.setItem('login_user', userinfo.username)
         // successTips('trans0806')
         router.push('/home')
