@@ -271,6 +271,7 @@ import {
   specialChar,
   isValidInteger,
   successTips,
+  tranSimIpv6ToFullIpv6,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { getLan, getWan, addWan, editWan, deleteWan, getPortBindInfo } from '@/http/api'
@@ -1271,12 +1272,21 @@ const wanRules = reactive({
         const parts = value.split('/')
         if (parts.length === 2) {
           const ip = parts[0]
+          const fullIp = tranSimIpv6ToFullIpv6(ip)
           const prefix = parseInt(parts[1])
-          if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && prefix >= 0 && prefix <= 128) {
+          if (
+            isIP(ip, IP.IPv6) &&
+            isValidIpv6AddrExtra(ip) &&
+            (fullIp !== '2200:3366::1' ||
+              fullIp !== '2200:3366::1/10' ||
+              fullIp !== '2200:3366::1/65') &&
+            prefix >= 16 &&
+            prefix <= 64
+          ) {
             return true
           }
         }
-        return isIP(value, IP.IPv6)
+        return false
       },
       message: t('trans0397'),
     },
