@@ -357,6 +357,7 @@ export function isValidIpv6AddrExtra(value) {
     fullAddr.startsWith('FEC0') ||
     fullAddr.startsWith('FECC') ||
     fullAddr.startsWith('FC00') ||
+    fullAddr.startsWith('FD00') ||
     fullAddr === ipv6OfAll0 ||
     fullAddr === ipv6OfAllF ||
     fullAddr === ipv6End1
