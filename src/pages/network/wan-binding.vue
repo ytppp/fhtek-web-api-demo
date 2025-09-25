@@ -22,7 +22,7 @@
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model="visible" :title="$t('trans0165')">
+    <fh-modal v-model="visible" :title="$t('trans0165')" :before-close="handleClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalFormRef" :model="form" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0754')">
@@ -131,6 +131,9 @@ const openEditModal = (row) => {
   form.mode = row.type
   form.pair = row.vlanpair
   visible.value = true
+}
+const handleClose = () => {
+  modalFormRef.value.clearValidate()
 }
 const save = () => {
   if (!modalFormRef.value.validate()) return

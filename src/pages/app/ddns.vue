@@ -40,7 +40,7 @@
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model="visible" :title="modalTitle">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0166')">
@@ -206,6 +206,9 @@ export default {
       editDdns([data]).then(() => {
         this.getDdnsList()
       })
+    },
+    handleClose() {
+      this.$refs.modalForm.clearValidate()
     },
     save() {
       if (this.$refs.modalForm.validate()) {
