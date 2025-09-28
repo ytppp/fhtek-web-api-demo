@@ -400,9 +400,9 @@ export default {
       }
       const flag = !tempData.some((item) => {
         return (
-          item.name === this.modalForm.name &&
           item.src_ip === this.modalForm.src_ip &&
-          item.dest_port === this.modalForm.dest_port
+          item.dest_port === this.modalForm.dest_port &&
+          item.proto === this.modalForm.proto
         )
       })
       if (!flag) {
