@@ -264,6 +264,7 @@ const getWifiData = (id?: string) => {
   })
 }
 const changeSsid = () => {
+  wifiFormRef.value?.clearValidate()
   const thisSsid = ssidList.find((item) => item.id === wifi.id)
   if (!thisSsid) return
   wifi.ssid = thisSsid.name
