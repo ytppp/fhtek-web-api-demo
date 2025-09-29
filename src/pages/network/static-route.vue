@@ -75,11 +75,8 @@ import {
   isIP,
   isMulticast,
   isLoopback,
-  isNetworkIP,
-  isBoardcastIP,
   format,
   cidrToSubnetMask,
-  ip2int,
   isValidIpv6AddrExtra,
   successTips,
   isValidStaticRouteMask,
@@ -160,7 +157,6 @@ export default {
               if (this.isIpv4 && isIP(ip)) {
                 const mask = cidrToSubnetMask(parseInt(suffix))
                 if (!mask) return false
-                // isNetworkIP(ip, maskVal) || sBoardcastIP(ip, maskVal)
                 if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, mask)) {
                   return false
                 }
