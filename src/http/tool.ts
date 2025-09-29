@@ -63,7 +63,7 @@ const endLoading = () => {
 
 const showToast = (
   message: string,
-  configInShowToast: boolean = true,
+  configInShowToast: boolean,
   isShowToast: boolean = true,
 ): void => {
   if (configInShowToast && isShowToast) {
