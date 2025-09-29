@@ -55,6 +55,9 @@
           </fh-form-item>
           <fh-form-item :label="$t('trans0792')" prop="target">
             <fh-input v-model="modalForm.target" :placeholder="placeholderTips"></fh-input>
+            <template #extra>
+              {{ placeholderTips }}
+            </template>
           </fh-form-item>
           <fh-form-item :label="$t('trans0656')" prop="gateway">
             <fh-input v-model="modalForm.gateway"></fh-input>

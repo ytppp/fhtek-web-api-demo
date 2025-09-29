@@ -71,6 +71,9 @@
           </fh-form-item>
           <fh-form-item :label="$t('trans0446')" prop="extHost">
             <fh-input v-model="modalForm.extHost" :placeholder="placeholderTips"></fh-input>
+            <template #extra>
+              {{ placeholderTips }}
+            </template>
           </fh-form-item>
           <fh-form-item :label="$t('trans0273')" prop="extPort">
             <fh-input name="ExternalPort" v-model="modalForm.extPort"></fh-input>

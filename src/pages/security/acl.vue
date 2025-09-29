@@ -60,6 +60,9 @@
                   v-model="modalForm.src_ip"
                   :placeholder="placeholderTips"
                 ></fh-input>
+                <template #extra>
+                  {{ placeholderTips }}
+                </template>
               </fh-form-item>
               <!-- <fh-form-item :label="$t('trans0153')">
             <fh-select
