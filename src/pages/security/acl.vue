@@ -103,17 +103,12 @@ import {
   isMulticast,
   isLoopback,
   successTips,
-  getIpAfter,
+  isValidStaticRouteMask,
 } from '@/util/tool'
 import { ModalType, ProtocolType } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
 import { getAcl, addAcl, editAcl, delAcl, getFirewall } from '@/http/api'
 
-function isValidStaticRouteMask(ip, mask) {
-  if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
-  if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
-  return false
-}
 const { convertBooleanStatus } = useDataClean()
 const Interface = {
   wan: 'wan',

@@ -103,7 +103,7 @@ import {
   isMulticast,
   isLoopback,
   format,
-  getIpAfter,
+  isValidStaticRouteMask,
 } from '@/util/tool'
 import { getPortMapping, setPortMapping, editPortMapping, delPortMapping } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -190,25 +190,6 @@ const tempList = Temp.map((item) => ({
   value: item.name,
   text: item.name,
 }))
-function isValidStaticRouteMask(ip, mask) {
-  if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
-  if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
-  return false
-}
-function isValidMask(ip) {
-  if (ip.split('.').filter((val) => val).length !== 4) return false
-  const i = ip2int(ip).toString(2).padStart(32, '0')
-  const result = i.split('10')
-  // result.length !== 2
-  if (result.length > 2) {
-    return false
-  }
-  // 有效mask
-  if (result[0].includes('0') || (result[1] && result[1].includes('1'))) {
-    return false
-  }
-  return true
-}
 export default {
   name: 'PortMappingPage',
   data() {
@@ -266,11 +247,9 @@ export default {
               const ip = parts[0]
               const suffix = parts[1]
               if (isIP(ip)) {
-                const flag = isValidMask(suffix)
                 const mask = cidrToSubnetMask(parseInt(suffix))
-                if (!flag && !mask) return false
-                const maskVal = flag ? suffix : mask
-                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal)) {
+                if (!mask) return false
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, mask)) {
                   return false
                 }
                 return true

@@ -270,6 +270,21 @@ export function isValidMask(ip) {
   return true
 }
 
+export function isValidMaskSpecial(ip) {
+  if (ip.split('.').filter((val) => val).length !== 4) return false
+  const i = ip2int(ip).toString(2).padStart(32, '0')
+  const result = i.split('10')
+  // result.length !== 2
+  if (result.length > 2) {
+    return false
+  }
+  // 有效mask
+  if (result[0].includes('0') || (result[1] && result[1].includes('1'))) {
+    return false
+  }
+  return true
+}
+
 function isNameUnsafeEx(compareChar) {
   if (compareChar.charCodeAt(0) > 32 && compareChar.charCodeAt(0) < 127)
     return false // found no unsafe chars, return false
@@ -614,4 +629,10 @@ export const findObjectsWithValue = (database, searchVal) => {
     }
     return false
   })
+}
+
+export function isValidStaticRouteMask(ip, mask) {
+  if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
+  if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
+  return false
 }
