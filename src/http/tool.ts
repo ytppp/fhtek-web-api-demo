@@ -61,8 +61,12 @@ const endLoading = () => {
   loading.close()
 }
 
-const showToast = (message: string, isShowToast: boolean = true): void => {
-  if (isShowToast) {
+const showToast = (
+  message: string,
+  configInShowToast: boolean = true,
+  isShowToast: boolean = true,
+): void => {
+  if (configInShowToast && isShowToast) {
     toast(message)
   }
 }
@@ -109,7 +113,7 @@ export function checkStatus(error: TAxiosError): void {
     default:
       message = format(translate('trans0693'), [status])
   }
-  showToast(message)
+  showToast(message, error.config.toast)
 }
 
 // 处理错误信息
@@ -124,7 +128,7 @@ export function handleNetworkError(error: TAxiosError): void {
       message = error.message
     }
   }
-  showToast(message)
+  showToast(message, error.config.toast)
 }
 
 // 处理业务错误
@@ -144,37 +148,37 @@ export function handleBusinessError(response: any): boolean {
       break
     case ResultEnum.NOAUTH:
       message = translate('trans0696') // data.msg || translate('trans0696')
-      showToast(message)
+      showToast(message, config.toast)
       break
     case ResultEnum.OVERDUE:
       message = translate('trans0697') // data.msg || translate('trans0697')
-      showToast(message, false)
+      showToast(message, config.toast, false)
       handleLogout(false)
       break
     case ResultEnum.INVALIDSESSION:
       message = translate('trans0698') // data.msg || translate('trans0698')
-      showToast(message)
+      showToast(message, config.toast)
       handleLogout(false)
       break
     case ResultEnum.INVALIDJSON:
       message = translate('trans0699') // data.msg || translate('trans0699')
-      showToast(message)
+      showToast(message, config.toast)
       break
     case ResultEnum.HASLOGIN:
       message = translate('trans0012') // data.msg || translate('trans0012')
-      showToast(message)
+      showToast(message, config.toast)
       break
     case ResultEnum.INVALIDFILE:
       message = translate('trans0700') // data.msg || translate('trans0700')
-      showToast(message)
+      showToast(message, config.toast)
       break
     case ResultEnum.LOGIN_3_TIMES_FAILED:
       message = format(translate('trans0011'), [3]) // data.msg || translate('trans0700')
-      showToast(message)
+      showToast(message, config.toast)
       break
     default:
       message = translate('trans0701') // data.msg || translate('trans0701')
-      showToast(message)
+      showToast(message, config.toast)
   }
   return flag
 }
