@@ -121,6 +121,7 @@ export default {
       maxRuleNum,
       modalType: ModalType.add,
       wanList: [],
+      wanText: {},
       visible: false,
       display: all,
       displayOptions: [
@@ -283,6 +284,7 @@ export default {
   methods: {
     changeIpType() {
       this.modalForm.interface = ''
+      this.$refs.modalForm.clearValidate()
     },
     handleClose() {
       this.$refs.modalForm.clearValidate()
@@ -353,6 +355,7 @@ export default {
           return
         }
         const wanList = []
+        const wanText = {}
         items.forEach((item) => {
           if (item.protocol !== NetType.bridge) {
             wanList.push({
@@ -360,9 +363,12 @@ export default {
               text: item.wanname,
               type: item.ipv4.length ? IP.IPv4 : item.ipv6.length ? IP.IPv6 : '',
             })
+            wanText[item.interface] = item.wanname
           }
         })
         this.wanList = wanList
+        this.wanText = wanText
+        this.getStaticRouteListData()
       })
     },
     getStaticRouteListData() {
@@ -374,6 +380,7 @@ export default {
             tableData.push({
               ...item,
               target: item.type === IP.IPv4 ? `${item.target}/${item.mask}` : item.target,
+              interface: this.wanText[item.interface],
               index: i,
             })
           })
@@ -387,7 +394,6 @@ export default {
   },
   created() {
     this.getWanData()
-    this.getStaticRouteListData()
   },
 }
 </script>

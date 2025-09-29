@@ -61,6 +61,12 @@ const endLoading = () => {
   loading.close()
 }
 
+const showToast = (message: string, isShowToast: boolean = true): void => {
+  if (isShowToast) {
+    toast(message)
+  }
+}
+
 // 处理HTTP状态码
 export function checkStatus(error: TAxiosError): void {
   const status = error.response?.status
@@ -103,9 +109,7 @@ export function checkStatus(error: TAxiosError): void {
     default:
       message = format(translate('trans0693'), [status])
   }
-  if (error.config.toast) {
-    toast(message)
-  }
+  showToast(message)
 }
 
 // 处理错误信息
@@ -120,9 +124,7 @@ export function handleNetworkError(error: TAxiosError): void {
       message = error.message
     }
   }
-  if (error.config.toast) {
-    toast(message)
-  }
+  showToast(message)
 }
 
 // 处理业务错误
@@ -142,38 +144,37 @@ export function handleBusinessError(response: any): boolean {
       break
     case ResultEnum.NOAUTH:
       message = translate('trans0696') // data.msg || translate('trans0696')
+      showToast(message)
       break
     case ResultEnum.OVERDUE:
       message = translate('trans0697') // data.msg || translate('trans0697')
+      showToast(message, false)
       handleLogout(false)
       break
     case ResultEnum.INVALIDSESSION:
       message = translate('trans0698') // data.msg || translate('trans0698')
+      showToast(message)
       handleLogout(false)
       break
     case ResultEnum.INVALIDJSON:
       message = translate('trans0699') // data.msg || translate('trans0699')
+      showToast(message)
       break
     case ResultEnum.HASLOGIN:
       message = translate('trans0012') // data.msg || translate('trans0012')
+      showToast(message)
       break
     case ResultEnum.INVALIDFILE:
       message = translate('trans0700') // data.msg || translate('trans0700')
+      showToast(message)
       break
     case ResultEnum.LOGIN_3_TIMES_FAILED:
       message = format(translate('trans0011'), [3]) // data.msg || translate('trans0700')
+      showToast(message)
       break
     default:
       message = translate('trans0701') // data.msg || translate('trans0701')
-  }
-  if (config.toast && message.length) {
-    toast(message)
+      showToast(message)
   }
   return flag
-}
-
-function showToast(message: string, isShowToast: boolean = true): void {
-  if (isShowToast) {
-    toast(message)
-  }
 }
