@@ -911,7 +911,7 @@
   "trans0911": "Reported fail",
   "trans0912": "ACS server",
   "trans0913": "Only supports ASCII mode",
-  "trans0914": "trans0914",
+  "trans0914": "For %s, only numbers greater than %d can be entered",
   "trans0915": "trans0915",
   "trans0916": "trans0916",
   "trans0917": "Report User Number",

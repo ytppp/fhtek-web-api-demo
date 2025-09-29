@@ -911,7 +911,7 @@
   "trans0911": "上报失败",
   "trans0912": "ACS 服务器",
   "trans0913": "仅支持ASCII方式",
-  "trans0914": "trans0914",
+  "trans0914": "%s只能填写大于 %d 的数字",
   "trans0915": "trans0915",
   "trans0916": "trans0916",
   "trans0917": "Report User Number",

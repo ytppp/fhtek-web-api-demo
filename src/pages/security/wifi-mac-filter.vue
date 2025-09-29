@@ -359,7 +359,9 @@ export default {
       }
     },
     changeSsid() {
-      this.$refs.macRef.validate()
+      if (this.modalForm.mac) {
+        this.$refs.macRef.validate()
+      }
     },
   },
   async mounted() {

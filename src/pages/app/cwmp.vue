@@ -8,7 +8,7 @@
         <fh-form-item :label="$t('trans0259')">
           <fh-switch v-model="form.enable"> </fh-switch>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0260')" prop="Interval">
+        <fh-form-item :label="$t('trans0260')" prop="interval">
           <fh-input v-model="form.interval"></fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0261')" prop="url">
@@ -40,7 +40,7 @@
 import { reactive, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getSwmpSettings, editSwmpSettings } from '@/http/api'
-import { successTips } from '@/util/tool'
+import { successTips, isValidInteger, isValidDomain } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 
 const { t } = useI18n()
@@ -61,11 +61,19 @@ const formRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidInteger(value, 1, Infinity),
+      message: t('trans0914').format(t('trans0260'), 1),
+    },
   ],
   url: [
     {
       rule: (value) => value,
       message: t('trans0004'),
+    },
+    {
+      rule: (value) => isValidDomain(value),
+      message: t('trans0566').format(t('trans0261')),
     },
   ],
   platUser: [
