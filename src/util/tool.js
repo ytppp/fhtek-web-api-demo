@@ -621,3 +621,9 @@ export function isValidStaticRouteMask(ip, mask) {
   if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
   return false
 }
+
+export function isHexadecimal(input) {
+  const str = typeof input === 'string' ? input : String(input)
+  const hexRegex = /^[0-9a-fA-F]+$/
+  return hexRegex.test(str)
+}
