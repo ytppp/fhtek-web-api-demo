@@ -1,4 +1,3 @@
-3
 <template>
   <div class="page">
     <div class="page__header">
@@ -13,7 +12,7 @@
         ref="wifiFormRef"
         :model="wifi"
         :rules="rules"
-        :disabled="!wifiEnable"
+        :disabled="formDisabled"
       >
         <fh-form-item :label="$t('trans0711')">
           <fh-select @change="changeSsid" v-model="wifi.id" :options="ssidOpts"> </fh-select>
@@ -89,7 +88,7 @@ import {
   successTips,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
-import { getWifi2g, setWifi2g, getWps, setWps, getWifi2gAdv } from '@/http/api'
+import { getWifi2g, setWifi2g, getWps, setWps, getMesh, getWifi2gAdv } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
 import { StartAndStop, Encrypts, encrypts, WpsStatus, SsidText, Ssid1 } from '@/util/constant'
 
@@ -101,6 +100,7 @@ const loading = ref(false)
 const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
 const wifiFormRef = useTemplateRef('wifiFormRef')
+const enableSteering = ref(false)
 const timeout = 2 * 60 * 1000
 const interval = 5000
 const ssidOpts = reactive([])
@@ -192,6 +192,9 @@ const isSsid1 = computed(() => {
 const isEnableWps = computed(() => {
   return wifi.enableWpsInitial && wifi.enableInitial && isSsid1.value && wifiEnable.value
 })
+const formDisabled = computed(() => {
+  return enableSteering.value || !wifiEnable.value
+})
 
 const start = () => {
   saveWps(StartAndStop.start)
@@ -258,7 +261,7 @@ const getWifiData = (id?: string) => {
   })
 }
 const changeSsid = () => {
-  wifiFormRef.value?.clearValidate()
+  wifiFormRef.value?.validate()
   const thisSsid = ssidList.find((item) => item.id === wifi.id)
   if (!thisSsid) return
   wifi.ssid = thisSsid.name
@@ -290,7 +293,13 @@ const save = () => {
     })
   }
 }
+const getMeshData = () => {
+  getMesh().then(({ data }) => {
+    enableSteering.value = convertBooleanStatus(data.steering) as boolean
+  })
+}
 onMounted(() => {
   getWifiData()
+  getMeshData()
 })
 </script>

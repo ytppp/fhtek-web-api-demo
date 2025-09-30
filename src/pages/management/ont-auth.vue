@@ -81,6 +81,10 @@ const rules = {
       rule: (value) => isValidLength(value, 1, 24),
       message: format(t('trans0003'), [t('trans0781'), 1, 24]),
     },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: t('trans0013').format(t('trans0196'), t('trans0042').format(specialChar)),
+    },
   ],
   'loid.checkCode': [
     {
@@ -89,6 +93,10 @@ const rules = {
         return isValidLength(value, 1, 12)
       },
       message: format(t('trans0003'), [t('trans0768'), 1, 12]),
+    },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: t('trans0013').format(t('trans0196'), t('trans0042').format(specialChar)),
     },
   ],
   'password.password': [
