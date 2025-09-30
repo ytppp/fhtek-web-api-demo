@@ -766,7 +766,7 @@
   "trans0766": "Proxy Server",
   "trans0767": "Proxy Server Port",
   "trans0768": "Check code",
-  "trans0769": "%s must have %d hex digits,or %d characters that end with %d hexdigits",
+  "trans0769": "%s must have %d characters that end with %d hex digits",
   "trans0770": "Secondary Proxy Server",
   "trans0771": "VLAN Mode",
   "trans0772": "TAG",

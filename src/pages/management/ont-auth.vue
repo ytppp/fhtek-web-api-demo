@@ -134,10 +134,8 @@ const rules = {
       message: t('trans0004'),
     },
     {
-      rule: (value) =>
-        (value.length === 16 && isHexadecimal(value)) ||
-        (value.length === 12 && isHexadecimal(getLastCharsByIndex(value, 8))),
-      message: format(t('trans0769'), [t('trans0541'), 16, 12, 8]),
+      rule: (value) => value.length === 12 && isHexadecimal(getLastCharsByIndex(value, 8)),
+      message: format(t('trans0769'), [t('trans0541'), 12, 8]),
     },
   ],
 }
