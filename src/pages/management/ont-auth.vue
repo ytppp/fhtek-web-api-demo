@@ -108,8 +108,11 @@ const rules = {
       message: format(t('trans0003'), [t('trans0768'), 1, 12]),
     },
     {
-      rule: (value) => isValidSymbol(value),
-      message: t('trans0013').format(t('trans0196'), t('trans0042').format(specialChar)),
+      rule: (value) => {
+        if (!value) return true
+        return isValidSymbol(value)
+      },
+      message: t('trans0013').format(t('trans0768'), t('trans0042').format(specialChar)),
     },
   ],
   'password.password': [

@@ -5,9 +5,6 @@
     </div>
     <div class="page__content">
       <template v-if="enableCwmp">
-        <div class="page__sub-header">
-          <h2 class="page__title">{{ $t('trans0741') }}</h2>
-        </div>
         <fh-descriptions :data="interaction"></fh-descriptions>
       </template>
       <div style="padding-left: 20px; font-size: 16px" v-else>
