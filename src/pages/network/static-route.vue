@@ -220,7 +220,7 @@ export default {
           title: this.$t('trans0656'),
         },
         {
-          key: 'interface',
+          key: 'interfaceAlias',
           title: this.$t('trans0140'),
         },
       ],
@@ -362,7 +362,7 @@ export default {
             tableData.push({
               ...item,
               target: item.type === IP.IPv4 ? `${item.target}/${item.mask}` : item.target,
-              interface: this.wanText[item.interface],
+              interfaceAlias: this.wanText[item.interface],
               index: i,
             })
           })

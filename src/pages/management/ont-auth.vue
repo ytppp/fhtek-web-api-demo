@@ -40,21 +40,15 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  isValidLength,
-  format,
-  isValidSymbol,
-  specialChar,
-  successTips,
-  isHexadecimal,
-} from '@/util/tool'
+import { isValidLength, format, isValidSymbol, successTips, isHexadecimal } from '@/util/tool'
 import { getOntAuth, editOntAuth } from '@/http/api'
 
 enum AuthMode {
   loid = 'LOID',
   password = 'sn',
 }
-
+const specialChar = '!#+-.=?@_~'
+const ruleReg = /^[\w!#+\-.=?@_~]+$/i
 const { t } = useI18n()
 const authModeOpts = [
   {
@@ -95,7 +89,7 @@ const rules = {
       message: format(t('trans0003'), [t('trans0781'), 1, 24]),
     },
     {
-      rule: (value) => isValidSymbol(value),
+      rule: (value) => isValidSymbol(value, ruleReg),
       message: t('trans0013').format(t('trans0196'), t('trans0042').format(specialChar)),
     },
   ],
@@ -110,7 +104,7 @@ const rules = {
     {
       rule: (value) => {
         if (!value) return true
-        return isValidSymbol(value)
+        return isValidSymbol(value, ruleReg)
       },
       message: t('trans0013').format(t('trans0768'), t('trans0042').format(specialChar)),
     },
@@ -126,7 +120,7 @@ const rules = {
     {
       rule: (value) => {
         if (!value) return true
-        return isValidSymbol(value)
+        return isValidSymbol(value, ruleReg)
       },
       message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
     },

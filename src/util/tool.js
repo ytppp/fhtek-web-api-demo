@@ -451,9 +451,12 @@ export function isObjExistVal(obj, val) {
 }
 
 export function isValidDomain(value, flag = true) {
+  // const domainReg = flag
+  //   ? /^(https?:\/\/)?([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
+  //   : /^([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
   const domainReg = flag
-    ? /^(https?:\/\/)?([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
-    : /^([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
+    ? /^(https?:\/\/)?(?:(?:[a-zA-Z0-9\u00a1-\uffff](?:[a-zA-Z0-9\u00a1-\uffff-_]{0,61}[a-zA-Z0-9\u00a1-\uffff])?\.)+[a-zA-Z\u00a1-\uffff]{2,}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?::\d{1,5})?$/
+    : /^(?:(?:[a-zA-Z0-9\u00a1-\uffff](?:[a-zA-Z0-9\u00a1-\uffff-_]{0,61}[a-zA-Z0-9\u00a1-\uffff])?\.)+[a-zA-Z\u00a1-\uffff]{2,}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?::\d{1,5})?$/
   return domainReg.test(value)
 }
 function isMulticastMac(mac) {
@@ -518,7 +521,7 @@ export const formatDuration = (value) => {
 }
 
 export function cidrToSubnetMask(prefixLength) {
-  if (typeof prefixLength !== 'number' || prefixLength < 0 || prefixLength > 32) {
+  if (typeof prefixLength !== 'number' || prefixLength <= 0 || prefixLength > 32) {
     return false
   }
 
