@@ -54,7 +54,7 @@
             <fh-select v-model="modalForm.interface" :options="wanOptions"></fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0792')" prop="target">
-            <fh-input v-model="modalForm.target" :placeholder="placeholderTips"></fh-input>
+            <fh-input v-model="modalForm.target"></fh-input>
             <template #extra>
               {{ placeholderTips }}
             </template>

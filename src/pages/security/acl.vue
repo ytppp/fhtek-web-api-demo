@@ -55,11 +55,7 @@
                 <fh-input name="AclRuleName" v-model="modalForm.aclRuleName"></fh-input>
               </fh-form-item>
               <fh-form-item :label="$t('trans0136')" prop="src_ip" ref="srcIpRef">
-                <fh-input
-                  name="ScrIPAddrBegin"
-                  v-model="modalForm.src_ip"
-                  :placeholder="placeholderTips"
-                ></fh-input>
+                <fh-input name="ScrIPAddrBegin" v-model="modalForm.src_ip"></fh-input>
                 <template #extra>
                   {{ placeholderTips }}
                 </template>

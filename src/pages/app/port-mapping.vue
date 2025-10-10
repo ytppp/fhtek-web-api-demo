@@ -70,7 +70,7 @@
             <fh-select v-model="modalForm.protocol" :options="protocalList"> </fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0446')" prop="extHost">
-            <fh-input v-model="modalForm.extHost" :placeholder="placeholderTips"></fh-input>
+            <fh-input v-model="modalForm.extHost"></fh-input>
             <template #extra>
               {{ placeholderTips }}
             </template>
