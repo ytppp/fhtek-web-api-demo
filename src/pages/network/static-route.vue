@@ -157,6 +157,7 @@ export default {
               if (parts.length !== 2) return false
               const ip = parts[0]
               let suffix = parts[1]
+              if (!suffix) return false
               if (this.isIpv4 && isIP(ip)) {
                 const mask = cidrToSubnetMask(parseInt(suffix))
                 if (!mask) return false
@@ -170,7 +171,7 @@ export default {
               }
               if (this.isIpv6 && isIP(ip, IP.IPv6)) {
                 suffix = parseInt(suffix)
-                if (!isValidIpv6AddrExtra(ip) || (suffix < 0 && suffix > 128)) {
+                if (!isValidIpv6AddrExtra(ip) || suffix < 0 || suffix > 128) {
                   return false
                 }
                 return true

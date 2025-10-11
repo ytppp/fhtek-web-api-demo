@@ -90,7 +90,7 @@ const rules = {
     },
     {
       rule: (value) => isValidSymbol(value, ruleReg),
-      message: t('trans0013').format(t('trans0196'), t('trans0042').format(specialChar)),
+      message: t('trans0013').format(t('trans0781'), t('trans0042').format(specialChar)),
     },
   ],
   'loid.checkCode': [

@@ -1152,12 +1152,13 @@ const wanRules = reactive({
     {
       rule: (value) => {
         const parts = value.split('/')
-        if (parts.length === 2) {
-          const ip = parts[0]
-          const prefix = parseInt(parts[1])
-          if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && prefix >= 0 && prefix <= 128) {
-            return true
-          }
+        if (parts.length !== 2) return false
+        const ip = parts[0]
+        let suffix = parts[1]
+        if (!suffix) return false
+        suffix = parseInt(suffix)
+        if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && suffix >= 0 && suffix <= 128) {
+          return true
         }
         return isIP(value, IP.IPv6)
       },
