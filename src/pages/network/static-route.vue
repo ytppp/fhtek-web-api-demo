@@ -171,10 +171,9 @@ export default {
               }
               if (this.isIpv6 && isIP(ip, IP.IPv6)) {
                 suffix = parseInt(suffix)
-                if (!isValidIpv6AddrExtra(ip) || suffix < 0 || suffix > 128) {
-                  return false
+                if (isValidIpv6AddrExtra(ip) && suffix > 0 && suffix <= 128) {
+                  return true
                 }
-                return true
               }
               return false
             },
