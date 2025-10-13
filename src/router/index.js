@@ -401,14 +401,14 @@ export const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (to.path !== loginPath) {
-    if (sessionStorage.getItem('login_user')) {
+    if (sessionStorage.getItem('logged_user')) {
       http.cancelAllRequests()
       next()
     } else {
       next(loginPath)
     }
   } else {
-    if (sessionStorage.getItem('login_user')) {
+    if (sessionStorage.getItem('logged_user')) {
       next('/home')
     } else {
       next()

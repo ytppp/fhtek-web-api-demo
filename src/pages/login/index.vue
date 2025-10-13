@@ -76,6 +76,7 @@ import { ResultEnum } from '@/http/config'
 import { router } from '@/router/index'
 import { useSessionStorage } from '@/hooks/session-storage'
 import { useCountDown } from '@/hooks/countdown'
+import { useAppStore } from '@/stores/app-store'
 
 const logoSrc = getPublicFile(VITE_CUSTOMER_CONFIG.logo)
 
@@ -84,6 +85,7 @@ const formRef = ref(null)
 const visible = ref(false)
 const alert = ref('')
 const formDisabled = ref(false)
+const appStore = useAppStore()
 const userinfo = reactive({
   username: '',
   password: '',
@@ -105,8 +107,8 @@ const rules = reactive({
       message: t('trans0004'),
     },
     {
-      rule: (value) => isValidLength(value, 8, 64),
-      message: t('trans0003').format(t('trans0196'), 8, 64),
+      rule: (value) => isValidLength(value, 1, 64),
+      message: t('trans0003').format(t('trans0196'), 1, 64),
     },
     {
       rule: (value) => isValidSymbol(value),
@@ -135,12 +137,9 @@ const doLogin = () => {
   if (formRef.value.validate()) {
     formDisabled.value = true
     login(userinfo)
-      .then(({ data }) => {
-        // const { role } = data
-        // const role = Role.super // data.role
-        sessionStorage.setItem('role', userinfo.username)
-        sessionStorage.setItem('login_user', userinfo.username)
-        // successTips('trans0806')
+      .then(() => {
+        appStore.setRole(userinfo.username as Role)
+        appStore.setLoggedUser(userinfo.username)
         router.push('/home')
       })
       .catch((err) => {

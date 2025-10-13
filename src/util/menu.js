@@ -2,22 +2,18 @@ import { RouterMode, Role, customers, MeshRole } from './constant'
 import { format } from './tool'
 import { translate } from '@/i18n/index'
 
-const name = VITE_CUSTOMER_CONFIG.name
-const role = Role.super // sessionStorage.getItem('role')
-const mode = RouterMode.router // sessionStorage.getItem('mode')
-const meshRole = MeshRole.controller // sessionStorage.getItem('meshRole')
 // menu default config
 const config = {
   show: true,
-  auth: [Role.admin, Role.super],
+  auth: [Role.super, Role.admin],
   mode: [RouterMode.router, RouterMode.bridge],
   meshRole: [MeshRole.controller, MeshRole.agent],
 }
 const strategyA = {
   show: true,
-  auth: [Role.admin, Role.super],
-  mode: [RouterMode.router],
-  meshRole: [MeshRole.controller],
+  auth: [Role.super],
+  mode: [RouterMode.router, RouterMode.bridge],
+  meshRole: [MeshRole.controller, MeshRole.agent],
 }
 const strategyB = {
   show: true,
@@ -30,8 +26,16 @@ let menus = [
   //   url: '/home',
   //   text: 'trans0006',
   //   icon: 'icon-home',
-  //   config,
-  // },
+  //   config: {
+  //     ...config,
+  //     show: false,
+  //   },
+  //   // customers: {
+  //   //   [customers.demo]: {
+  //   //     show: false,
+  //   //   },
+  //   // },
+  // }, // config demo
   {
     url: '/status',
     text: 'trans0166',
@@ -94,7 +98,7 @@ let menus = [
       {
         url: '/status/cwmp',
         text: 'trans0249',
-        config,
+        config: strategyA,
       },
       {
         url: '/status/sta',
@@ -126,7 +130,7 @@ let menus = [
       {
         url: '/network/wan-binding',
         text: 'trans0751',
-        config,
+        config: strategyA,
       },
       {
         url: '/network/lan',
@@ -145,8 +149,7 @@ let menus = [
           },
           // {
           //   url: '/network/lan/ipv6-new',
-          //   text: 'trans0457',
-          //   config,
+          //   text: 'trans0457'
           // },
         ],
       },
@@ -185,12 +188,11 @@ let menus = [
       {
         url: '/network/static-route',
         text: 'trans0793',
-        config,
+        config: strategyA,
       },
       // {
       //   url: '/network/default-route',
-      //   text: 'trans0795',
-      //   config,
+      //   text: 'trans0795'
       // },
       {
         url: '/network/mesh',
@@ -217,7 +219,7 @@ let menus = [
       {
         url: '/security/url-filter',
         text: 'trans0832',
-        config,
+        config: strategyA,
       },
       {
         url: '/security/mac-filter',
@@ -242,7 +244,7 @@ let menus = [
       {
         url: '/security/dos',
         text: 'trans0055',
-        config,
+        config: strategyA,
       },
     ],
   },
@@ -258,8 +260,7 @@ let menus = [
       },
       // {
       //   url: '/app/port-trigger',
-      //   text: 'trans0427',
-      //   config,
+      //   text: 'trans0427'
       // },
       {
         url: '/app/dmz',
@@ -279,22 +280,20 @@ let menus = [
       {
         url: '/app/cwmp',
         text: 'trans0271',
-        config,
+        config: strategyA,
       },
       {
         url: '/app/time',
         text: 'trans0247',
-        config,
+        config: strategyA,
       },
       // {
       //   url: '/app/igmp-mld',
-      //   text: 'trans0248',
-      //   config,
+      //   text: 'trans0248'
       // },
       // {
       //   url: '/app/static-arp',
-      //   text: 'trans0805',
-      //   config,
+      //   text: 'trans0805'
       // },
       {
         url: '/app/static-dns',
@@ -319,7 +318,7 @@ let menus = [
       {
         url: '/app/samba',
         text: 'trans0822',
-        config,
+        config: strategyA,
       },
       {
         url: '/app/media-sharing',
@@ -329,17 +328,16 @@ let menus = [
       {
         url: '/network/voip',
         text: 'trans0732',
-        config,
         children: [
           {
             url: '/network/wlan/basic-voip',
             text: 'trans0546',
-            config,
+            config: strategyA,
           },
           {
             url: '/network/wlan/advanced-voip',
             text: 'trans0579',
-            config,
+            config: strategyA,
           },
         ],
       },
@@ -373,7 +371,7 @@ let menus = [
       {
         url: '/management/terminal',
         text: 'trans0401',
-        config,
+        config: strategyA,
       },
       {
         url: '/management/ont-auth',
@@ -393,14 +391,14 @@ let menus = [
           {
             url: '/management/diagnose/remote',
             text: 'trans0803',
-            config,
+            config: strategyA,
           },
         ],
       },
     ],
   },
 ]
-export function getMenu() {
+export function getMenu(name, role, mode, meshRole) {
   console.log('Init menus...')
   console.log(`customer is: ${name}`)
   if (!role || !mode || !meshRole) {

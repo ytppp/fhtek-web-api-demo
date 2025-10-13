@@ -10,7 +10,7 @@ let CUSTOMER_ID = ''
 if (process.env.CUSTOMER_ID) {
   CUSTOMER_ID = `${process.env.CUSTOMER_ID}`
 } else {
-  CUSTOMER_ID = 'fhtek'
+  CUSTOMER_ID = 'totalplay' // fhtek
 }
 
 // https://vite.dev/config/

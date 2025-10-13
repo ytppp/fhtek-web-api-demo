@@ -4,14 +4,15 @@ export const DefaultVal = '-'
 export const customers = {
   demo: 'demo',
   fhtek: 'fhtek',
+  totalplay: 'totalplay',
 }
-export const RouterMode = {
-  router: '0',
-  bridge: '3',
+export enum RouterMode {
+  router = '0',
+  bridge = '3',
 }
-export const Role = {
-  super: 'root',
-  admin: 'admin',
+export enum Role {
+  super = 'root',
+  admin = 'admin',
 }
 export const FileType = {
   config: '1',

@@ -2,18 +2,20 @@ import { createApp } from 'vue'
 import registerComponents from './register-components'
 import registerI18n from './i18n/index'
 import registerRouter from './router'
+import registerPinia from './stores'
 import { setFavicon, getPublicFile, setDocTitle } from './util/tool'
 import App from './App.vue'
-import { logout } from '@/http/api'
 import '@/assets/style/main.less'
+import(`@/assets/style/customer-conf/${VITE_CUSTOMER_CONFIG.name}/custom.less`)
 
 const app = createApp(App)
 
-registerI18n(app)
 registerRouter(app)
+registerPinia(app)
+registerI18n(app)
 registerComponents(app)
-setFavicon(getPublicFile(`${VITE_CUSTOMER_CONFIG.favicon}`))
-setDocTitle(VITE_CUSTOMER_CONFIG.title)
+if (VITE_CUSTOMER_CONFIG.favicon) setFavicon(getPublicFile(`${VITE_CUSTOMER_CONFIG.favicon}`))
+if (VITE_CUSTOMER_CONFIG.title) setDocTitle(VITE_CUSTOMER_CONFIG.title)
 
 String.prototype.format = function (...args) {
   let _this = this
@@ -22,15 +24,5 @@ String.prototype.format = function (...args) {
   })
   return _this
 }
-
-// window.addEventListener('beforeunload', function () {
-//   if (!sessionStorage.getItem('login_user')) return
-//   if (navigator.sendBeacon) {
-//     localStorage.clear()
-//     navigator.sendBeacon('/action/logout')
-//   } else {
-//     logout()
-//   }
-// })
 
 app.mount('#app')

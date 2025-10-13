@@ -28,8 +28,10 @@
 </template>
 
 <script>
+import { mapStores } from 'pinia'
 import { isValidLength, isValidSymbol, specialChar, handleLogout, successTips } from '@/util/tool'
 import { getAccount, setAccount } from '@/http/api'
+import { useAppStore } from '@/stores/app-store'
 
 export default {
   data() {
@@ -85,6 +87,9 @@ export default {
       roleOpts: [],
       userList: [],
     }
+  },
+  computed: {
+    ...mapStores(useAppStore),
   },
   methods: {
     changePwd() {
@@ -142,8 +147,8 @@ export default {
     },
   },
   created() {
-    this.form.username = this.usernameStoraged = sessionStorage.getItem('login_user')
-    this.form.role = sessionStorage.getItem('role')
+    this.form.username = this.usernameStoraged = this.appStore.loggedUser
+    this.form.role = this.appStore.role
   },
   mounted() {
     this.getAccountData()

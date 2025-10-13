@@ -70,11 +70,13 @@
 </template>
 
 <script>
+import { mapStores, mapActions } from 'pinia'
 import { getMenu } from '@/util/menu'
 import { isMobileDevice, isObjArrHasVal, handleLogout } from '@/util/tool'
 import { getDevModel, getLoginTimeout } from '@/http/api'
 import { loginPath } from '@/router'
 import { useDataClean } from '@/hooks/data-clean'
+import { useAppStore } from '@/stores/app-store'
 
 // 若多维对象数组中存在某个值，返回其顶级对象
 const getTopObjFromObjArr = (arr, val, childNodeName = 'children', keyName = 'url') => {
@@ -115,6 +117,7 @@ export default {
     }
   },
   computed: {
+    ...mapStores(useAppStore),
     isNoAuthPage() {
       return [loginPath, '/guide'].includes(this.url)
     },
@@ -122,7 +125,12 @@ export default {
       return this.childMenus.length > 0
     },
     menus() {
-      return getMenu()
+      return getMenu(
+        VITE_CUSTOMER_CONFIG.name,
+        this.appStore.role,
+        this.appStore.mode,
+        this.appStore.meshRole,
+      )
     },
     childMenus() {
       if (!this.url.length) return
@@ -146,6 +154,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useAppStore, ['loadFromStorage']),
     isToolbarActive(menu) {
       if (menu.children) {
         return isObjArrHasVal(menu.children, this.url)
@@ -218,6 +227,9 @@ export default {
       clearInterval(this.loginTimeoutTimer)
       this.loginTimeoutTimer = null
     },
+  },
+  created() {
+    this.loadFromStorage()
   },
   mounted() {
     this.getDevInfoData()
