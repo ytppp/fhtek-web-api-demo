@@ -29,7 +29,7 @@ let menus = [
   //   config: {
   //     ...config,
   //     show: false,
-  //   },
+  //   }, 只需要给最下层节点配置
   //   // customers: {
   //   //   [customers.demo]: {
   //   //     show: false,
@@ -149,7 +149,8 @@ let menus = [
           },
           // {
           //   url: '/network/lan/ipv6-new',
-          //   text: 'trans0457'
+          //   text: 'trans0457',
+          //   config
           // },
         ],
       },
@@ -192,7 +193,8 @@ let menus = [
       },
       // {
       //   url: '/network/default-route',
-      //   text: 'trans0795'
+      //   text: 'trans0795',
+      //   config
       // },
       {
         url: '/network/mesh',
@@ -260,7 +262,8 @@ let menus = [
       },
       // {
       //   url: '/app/port-trigger',
-      //   text: 'trans0427'
+      //   text: 'trans0427',
+      //   config
       // },
       {
         url: '/app/dmz',
@@ -289,11 +292,13 @@ let menus = [
       },
       // {
       //   url: '/app/igmp-mld',
-      //   text: 'trans0248'
+      //   text: 'trans0248',
+      //   config
       // },
       // {
       //   url: '/app/static-arp',
-      //   text: 'trans0805'
+      //   text: 'trans0805',
+      //   config
       // },
       {
         url: '/app/static-dns',
