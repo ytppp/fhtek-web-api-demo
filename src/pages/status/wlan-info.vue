@@ -145,7 +145,7 @@ const b24gSsidColumns = reactive([
   },
   {
     key: 'name',
-    title: t('trans0051'),
+    title: t('trans0712'),
   },
   {
     key: 'enableAlias',
@@ -167,7 +167,7 @@ const b5gSsidColumns = reactive([
   },
   {
     key: 'name',
-    title: t('trans0051'),
+    title: t('trans0712'),
   },
   {
     key: 'enableAlias',

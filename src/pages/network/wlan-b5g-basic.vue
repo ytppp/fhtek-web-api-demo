@@ -136,11 +136,11 @@ const rules = reactive({
     },
     {
       rule: (value) => isValidLength(value, 1, 32),
-      message: format(t('trans0003'), [t('trans0051'), 1, 32]),
+      message: format(t('trans0003'), [t('trans0712'), 1, 32]),
     },
     {
       rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0051'), format(t('trans0042'), [specialChar])]),
+      message: format(t('trans0013'), [t('trans0712'), format(t('trans0042'), [specialChar])]),
     },
   ],
   password: [

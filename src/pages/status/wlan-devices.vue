@@ -79,7 +79,7 @@ const wlanDevicesColumns = reactive([
   },
   {
     key: 'ssid',
-    title: t('trans0051'),
+    title: t('trans0712'),
   },
   {
     key: 'ip',

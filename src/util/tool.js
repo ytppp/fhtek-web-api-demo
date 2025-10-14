@@ -496,7 +496,7 @@ export function isValidUrlName(url) {
 
 export function isValidUnixPath(path) {
   // 匹配 Unix 路径（如 /path/to/file 或 ./file）
-  const pattern = /^(?:\/|\.\/)([a-zA-Z0-9_\-]+\/)*[a-zA-Z0-9_\-]*\/?$/
+  const pattern = /^(?:\/|\.{1,2}\/)?([a-zA-Z0-9_\-]+\/)*[a-zA-Z0-9_\-]*\/?$/
   return pattern.test(path)
 }
 
