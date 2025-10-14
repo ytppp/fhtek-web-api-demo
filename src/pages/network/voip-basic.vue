@@ -43,9 +43,9 @@
         <fh-form-item :label="$t('trans0786')" prop="proxy.secPort">
           <fh-input v-model="form.proxy.secPort" :placeholder="numPlaceholder"> </fh-input>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0817')">
+        <!-- <fh-form-item :label="$t('trans0817')">
           <fh-switch v-model="form.outboundProxy.enable"></fh-switch>
-        </fh-form-item>
+        </fh-form-item> -->
         <template v-if="form.outboundProxy.enable">
           <fh-form-item :label="$t('trans0831')" prop="outboundProxy.proxy">
             <fh-input v-model="form.outboundProxy.proxy"> </fh-input>
