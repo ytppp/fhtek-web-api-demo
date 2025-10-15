@@ -8,7 +8,7 @@ CUR_PNPM_VER_MINOR := $(shell echo $(CUR_PNPM_VER) | cut -f2 -d.)
 CUR_PNPM_VER_PATCH := $(shell echo $(CUR_PNPM_VER) | cut -f3 -d.)
 IS_PNPM_OK := $(shell [ $(CUR_PNPM_VER_MAJOR) -gt $(MIN_PNPM_VER_MAJOR) -o \( $(CUR_PNPM_VER_MAJOR) -eq $(MIN_PNPM_VER_MAJOR) -a \( $(CUR_PNPM_VER_MINOR) -gt $(MIN_PNPM_VER_MINOR) -o \( $(CUR_PNPM_VER_MINOR) -eq $(MIN_PNPM_VER_MINOR) -a $(CUR_PNPM_VER_PATCH) -ge $(MIN_PNPM_VER_PATCH) \)  \) \) ] && echo true)
 
-CUSTOMER_LIST = demo fhtek
+CUSTOMER_LIST = demo fhtek totalplay
 
 ifndef CUSTOMER_ID
 $(error CUSTOMER_ID required)
