@@ -320,7 +320,7 @@ const getDownloadList = () => {
     tableData.splice(0, tableData.length, ...table)
     if (tableData.length) {
       const index = tableData.length - 1
-      clientForm.url = tableData[index].url
+      clientForm.url = tableData[index].url.substring(UrlAppend.length)
       clientForm.port = tableData[index].port
       clientForm.username = tableData[index].username
       clientForm.password = tableData[index].password
