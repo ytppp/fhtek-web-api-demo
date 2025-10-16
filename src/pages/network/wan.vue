@@ -64,7 +64,7 @@
               </fh-radio>
             </fh-radio-group>
           </fh-form-item>
-          <fh-form-item :label="t('trans0092')" prop="mtu">
+          <fh-form-item :label="t('trans0092')" prop="mtu" ref="mtuRef">
             <fh-input v-model="wan.mtu"></fh-input>
             <template #extra>{{ getMtuTips().tips }}</template>
           </fh-form-item>
@@ -306,6 +306,7 @@ const appStore = useAppStore()
 const { t } = useI18n()
 const dialog = inject('dialog')
 const wanRef = useTemplateRef('wanRef')
+const mtuRef = useTemplateRef('mtuRef')
 const ipRef = useTemplateRef('ipRef')
 const maskRef = useTemplateRef('maskRef')
 const gatewayRef = useTemplateRef('gatewayRef')
@@ -671,9 +672,11 @@ const changeLinkMode = () => {
   } else {
     wan.ipv4.netType = NetType.dhcp
   }
+  mtuRef.value?.clearValidate()
   initMtu()
 }
 const changeProtocol = () => {
+  mtuRef.value?.clearValidate()
   initMtu()
 }
 const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
