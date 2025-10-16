@@ -89,8 +89,18 @@ import {
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { getWifi5g, setWifi5g, getWps, setWps, getWifi5gAdv } from '@/http/api'
+import {
+  StartAndStop,
+  Encrypts,
+  encrypts,
+  WpsStatus,
+  SsidText,
+  Ssidac1,
+  Ssidac4,
+  Role,
+} from '@/util/constant'
 import { useCountDown } from '@/hooks/countdown'
-import { StartAndStop, Encrypts, encrypts, WpsStatus, SsidText, Ssidac1 } from '@/util/constant'
+import { useAppStore } from '@/stores/app-store'
 
 defineOptions({
   name: 'b5gBasicPage',
@@ -99,6 +109,7 @@ defineOptions({
 const loading = ref(false)
 const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
+const appStore = useAppStore()
 const wifiFormRef = useTemplateRef('wifiFormRef')
 const timeout = 2 * 60 * 1000
 const interval = 5000
@@ -249,10 +260,15 @@ const getWifiData = (id?: string) => {
       return
     }
     wifiEnable.value = convertBooleanStatus(res2.data.enable)
-    const ssidOptsList = items.map((item) => ({
-      value: item.id,
-      text: SsidText[item.id],
-    }))
+    const ssidOptsList = []
+    items.forEach((item) => {
+      if (appStore.role === Role.super || (appStore.role === Role.admin && item.id !== Ssidac4)) {
+        ssidOptsList.push({
+          value: item.id,
+          text: SsidText[item.id],
+        })
+      }
+    })
     ssidList.splice(0, ssidList.length, ...items)
     ssidOpts.splice(0, ssidOpts.length, ...ssidOptsList)
     wifi.id = id ? id : items[0].id

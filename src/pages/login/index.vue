@@ -137,8 +137,8 @@ const doLogin = () => {
   if (formRef.value.validate()) {
     formDisabled.value = true
     login(userinfo)
-      .then(() => {
-        appStore.setRole(userinfo.username as Role)
+      .then(({ data }) => {
+        appStore.setRole(data.role as Role)
         appStore.setLoggedUser(userinfo.username)
         router.push('/home')
       })

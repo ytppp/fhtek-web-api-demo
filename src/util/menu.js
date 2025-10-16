@@ -76,12 +76,12 @@ let menus = [
           {
             url: '/status/lan/info',
             text: 'trans0936',
-            config,
+            config: strategyA,
           },
           {
             url: '/status/lan/devices',
             text: 'trans0628',
-            config,
+            config: strategyA,
           },
         ],
       },
@@ -93,7 +93,7 @@ let menus = [
       {
         url: '/status/voip',
         text: 'trans0732',
-        config,
+        config: strategyA,
       },
       {
         url: '/status/cwmp',
@@ -140,12 +140,12 @@ let menus = [
           {
             url: '/network/lan/ipv4',
             text: 'trans0456',
-            config,
+            config: strategyA,
           },
           {
             url: '/network/lan/ipv6',
             text: 'trans0457',
-            config,
+            config: strategyA,
           },
           // {
           //   url: '/network/lan/ipv6-new',
@@ -366,7 +366,7 @@ let menus = [
       {
         url: '/management/upgrade',
         text: 'trans0187',
-        config,
+        config: strategyA,
       },
       {
         url: '/management/log',
@@ -391,7 +391,7 @@ let menus = [
           {
             url: '/management/diagnose/internet',
             text: 'trans0553',
-            config,
+            config: strategyA,
           },
           {
             url: '/management/diagnose/remote',

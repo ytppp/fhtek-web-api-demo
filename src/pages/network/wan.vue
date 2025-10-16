@@ -4,7 +4,13 @@
       <h1 class="page__title">{{ $t('trans0014') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form form--small wan-form" ref="wanRef" :model="wan" :rules="wanRules">
+      <fh-form
+        class="form form--small wan-form"
+        ref="wanRef"
+        :model="wan"
+        :rules="wanRules"
+        :disabled="appStore.role === Role.admin"
+      >
         <fh-form-item :label="t('trans0140')">
           <div style="display: flex; align-items: center">
             <fh-select
@@ -19,7 +25,7 @@
               @click="delWanConn"
               name="icon-delete"
               :title="$t('trans0759')"
-              v-if="isEdit"
+              v-if="isEdit && appStore.role === Role.super"
             />
           </div>
         </fh-form-item>
@@ -250,6 +256,7 @@ import {
   Ssidac4,
   NetType,
   netTypeText,
+  Role,
 } from '@/util/constant'
 import {
   format,
@@ -274,6 +281,7 @@ import {
   tranSimIpv6ToFullIpv6,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
+import { useAppStore } from '@/stores/app-store'
 import { getLan, getWan, addWan, editWan, deleteWan, getPortBindInfo } from '@/http/api'
 
 defineOptions({
@@ -294,6 +302,7 @@ enum LinkMode {
 }
 const maxRuleNum = 8
 const { convertBooleanStatus } = useDataClean()
+const appStore = useAppStore()
 const { t } = useI18n()
 const dialog = inject('dialog')
 const wanRef = useTemplateRef('wanRef')
