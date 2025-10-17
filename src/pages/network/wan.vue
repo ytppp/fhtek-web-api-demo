@@ -18,6 +18,7 @@
               v-model="wan.id"
               :before-change="beforeChangeWan"
               :options="wanOpts"
+              :not-disabled="true"
               @change="changeWan"
             ></fh-select>
             <fh-icon
@@ -755,7 +756,7 @@ const getWanList = (loading: boolean = true, id?: string) => {
     const { items, total } = data
     const wanOptsList = []
     wanList.length = 0
-    if (total < maxRuleNum) {
+    if (total < maxRuleNum && appStore.role === Role.super) {
       wanOptsList.push({
         value: ModalType.add,
         text: t('trans0760'),

@@ -49,8 +49,9 @@ import { reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, cidrToSubnetMask } from '@/util/tool'
 import { getWanInfo } from '@/http/api'
-import { NetType, netTypeText, WanStatus as Status } from '@/util/constant'
+import { NetType, netTypeText, WanStatus as Status, Role } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
+import { useAppStore } from '@/stores/app-store'
 
 defineOptions({
   name: 'StatusWanPage',
@@ -58,6 +59,7 @@ defineOptions({
 
 const { t } = useI18n()
 const { defaultVal } = useDataClean()
+const appStore = useAppStore()
 const StatusText = {
   [Status.UP]: t('trans0652'),
   [Status.DOWN]: t('trans0853'),
@@ -185,6 +187,7 @@ const ipv6Columns = reactive([
 ])
 const ipv4Data = reactive([])
 const ipv6Data = reactive([])
+const clubWifiVlanId = VITE_CUSTOMER_CONFIG.clubWifiVlanId
 
 const getWanData = () => {
   getWanInfo().then(({ data }) => {
@@ -252,7 +255,11 @@ const getWanData = () => {
       ) {
         thisIpv6Data.push(tableItem)
       }
-      if (item.protocol === NetType.bridge) {
+      if (
+        item.protocol === NetType.bridge &&
+        (appStore.role === Role.super ||
+          (appStore.role === Role.admin && clubWifiVlanId && item.vid !== clubWifiVlanId))
+      ) {
         thisIpv4Data.push(tableItem)
         thisIpv6Data.push(tableItem)
       }

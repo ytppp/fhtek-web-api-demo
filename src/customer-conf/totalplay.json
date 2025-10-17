@@ -4,5 +4,6 @@
   "languages": ["zh-CN", "en-US"],
   "defaultLanguage": "en-US",
   "favicon": "",
-  "logo": "/images/customer-conf/totalplay/logo.png"
+  "logo": "/images/customer-conf/totalplay/logo.png",
+  "clubWifiVlanId": "417"
 }

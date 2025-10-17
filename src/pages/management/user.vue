@@ -132,7 +132,7 @@ export default {
         }
         const roleOpts = items.map((item) => ({
           value: item.name,
-          text: item.name,
+          text: item.role,
         }))
         this.roleOpts = roleOpts
         this.userList = items

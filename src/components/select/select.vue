@@ -10,6 +10,7 @@
       <fh-input
         readonly
         :disabled="selectDisabled"
+        :not-disabled="notDisabled"
         :placeholder="selectPlaceholder"
         :label="currentLabel"
         :is-select-comp-child-node="true"
@@ -95,6 +96,10 @@ const props = defineProps({
     type: Function,
     default: () => {},
   },
+  notDisabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 const model = defineModel({
   required: true,
@@ -119,6 +124,7 @@ const selectPlaceholder = computed(() => {
   return typeof props.placeholder !== 'undefined' ? props.placeholder : t('trans0001')
 })
 const selectDisabled = computed(() => {
+  if (props.notDisabled) return false
   return props.disabled || form?.disabled.value
 })
 
