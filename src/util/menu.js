@@ -449,7 +449,7 @@ export function getMenu(name, role, mode, meshRole) {
     })
     return parents
   }
-  const menuGenerate = generateMenu(menusInitial, name)
-  const menuFilter = filterMenu(menuGenerate, role, mode, meshRole)
-  return menuFilter
+  const menuGenerated = generateMenu(menusInitial, name)
+  const menuFilterd = filterMenu(menuGenerated, role, mode, meshRole)
+  return menuFilterd
 }
