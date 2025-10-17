@@ -407,7 +407,7 @@ export function getMenu(name, role, mode, meshRole) {
   console.log('Init menus...')
   console.log(`customer is: ${name}`)
   if (!role || !mode || !meshRole) {
-    return menus
+    return menusInitial
   }
   console.log(`role is: ${role}`)
   console.log(`mode is: ${mode}`)
