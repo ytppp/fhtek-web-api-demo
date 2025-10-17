@@ -125,6 +125,7 @@ export default {
       return this.childMenus.length > 0
     },
     menus() {
+      console.log('123')
       return getMenu(
         VITE_CUSTOMER_CONFIG.name,
         this.appStore.role,

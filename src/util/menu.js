@@ -21,7 +21,7 @@ const strategyB = {
   mode: [RouterMode.router, RouterMode.bridge],
   meshRole: [MeshRole.controller],
 }
-let menus = [
+const menusInitial = [
   // {
   //   url: '/home',
   //   text: 'trans0006',
@@ -449,7 +449,7 @@ export function getMenu(name, role, mode, meshRole) {
     })
     return parents
   }
-  menus = generateMenu(menus, name)
-  menus = filterMenu(menus, role, mode, meshRole)
-  return menus
+  const menuGenerate = generateMenu(menusInitial, name)
+  const menuFilter = filterMenu(menuGenerate, role, mode, meshRole)
+  return menuFilter
 }
