@@ -9,7 +9,7 @@
         ref="wanRef"
         :model="wan"
         :rules="wanRules"
-        :disabled="appStore.role === Role.admin"
+        :disabled="appStore.isAdmin"
       >
         <fh-form-item :label="t('trans0140')">
           <div style="display: flex; align-items: center">
@@ -26,7 +26,7 @@
               @click="delWanConn"
               name="icon-delete"
               :title="$t('trans0759')"
-              v-if="isEdit && appStore.role === Role.super"
+              v-if="isEdit && appStore.isSuper"
             />
           </div>
         </fh-form-item>
@@ -756,7 +756,7 @@ const getWanList = (loading: boolean = true, id?: string) => {
     const { items, total } = data
     const wanOptsList = []
     wanList.length = 0
-    if (total < maxRuleNum && appStore.role === Role.super) {
+    if (total < maxRuleNum && appStore.isSuper) {
       wanOptsList.push({
         value: ModalType.add,
         text: t('trans0760'),

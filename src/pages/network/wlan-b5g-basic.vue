@@ -262,7 +262,7 @@ const getWifiData = (id?: string) => {
     wifiEnable.value = convertBooleanStatus(res2.data.enable)
     const ssidOptsList = []
     items.forEach((item) => {
-      if (appStore.role === Role.super || (appStore.role === Role.admin && item.id !== Ssidac4)) {
+      if (appStore.isSuper || (appStore.isAdmin && item.id !== Ssidac4)) {
         ssidOptsList.push({
           value: item.id,
           text: SsidText[item.id],

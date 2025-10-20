@@ -257,8 +257,7 @@ const getWanData = () => {
       }
       if (
         item.protocol === NetType.bridge &&
-        (appStore.role === Role.super ||
-          (appStore.role === Role.admin && clubWifiVlanId && item.vid !== clubWifiVlanId))
+        (appStore.isSuper || (appStore.isAdmin && clubWifiVlanId && item.vid !== clubWifiVlanId))
       ) {
         thisIpv4Data.push(tableItem)
         thisIpv6Data.push(tableItem)

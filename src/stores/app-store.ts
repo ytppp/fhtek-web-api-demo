@@ -16,6 +16,10 @@ export const useAppStore = defineStore('app', {
     meshRole: MeshRole.controller,
     loggedUser: null,
   }),
+  getters: {
+    isSuper: (state) => state.role && state.role === Role.super,
+    isAdmin: (state) => state.role && state.role === Role.admin,
+  },
   actions: {
     setRole(role: Role) {
       this.role = role
