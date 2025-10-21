@@ -189,11 +189,8 @@ export default {
         ],
         gateway: [
           {
-            rule: (value) => value.trim(),
-            message: this.$t('trans0004'),
-          },
-          {
             rule: (value) => {
+              if (!value) return true
               if (
                 (this.isIpv4 && isIP(value) && !isLoopback(value) && !isMulticast(value)) ||
                 (this.isIpv6 && isIP(value, IP.IPv6))
