@@ -17,6 +17,7 @@
               @click="openEditModal(scope.row)"
               name="icon-edit-square"
               :title="$t('trans0165')"
+              v-if="scope.row.mode !== Mode.L2"
             />
           </template>
         </fh-table>
@@ -61,10 +62,18 @@ import { successTips, isValidInteger } from '@/util/tool'
 enum Mode {
   port = 'port',
   vlan = 'vlan',
+  L2 = 'L2',
 }
 const { t } = useI18n()
 const { defaultVal } = useDataClean()
 
+const l2Text = 'L2'
+const l2PortText = 'L2 port'
+const ModeText = {
+  [Mode.port]: t('trans0755'),
+  [Mode.vlan]: t('trans0756'),
+  [Mode.L2]: l2Text,
+}
 const modalFormRef = useTemplateRef('modalFormRef')
 const visible = ref(false)
 const columns = reactive([
@@ -123,6 +132,17 @@ const modalFormRules = reactive({
   ],
 })
 const isVlan = computed(() => form.mode === Mode.vlan)
+const getPairText = (type, vlanpair) => {
+  if (type === Mode.port) {
+    return defaultVal
+  }
+  if (type === Mode.vlan) {
+    return vlanpair
+  }
+  if (type === Mode.L2) {
+    return l2PortText
+  }
+}
 const openEditModal = (row) => {
   form.index = row.index
   form.id = row.id
@@ -157,8 +177,8 @@ const getWanBindingData = () => {
         tableData.push({
           ...item,
           port: SsidText[item.ifname],
-          mode: item.type === Mode.port ? t('trans0755') : t('trans0756'),
-          pair: item.type === Mode.port ? defaultVal : item.vlanpair,
+          mode: ModeText[item.type],
+          pair: getPairText(item.type, item.vlanpair),
           index: i,
         })
       })
