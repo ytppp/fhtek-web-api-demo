@@ -25,6 +25,7 @@
           <fh-icon
             :class="['select__caret', 'input__icon', opened ? 'is-reverse' : '']"
             name="icon-down"
+            @click.stop="() => {}"
           ></fh-icon>
         </template>
       </fh-input>

@@ -12,9 +12,15 @@
         :disabled="appStore.isAdmin"
       >
         <fh-form-item :label="t('trans0140')">
-          <div style="display: flex; align-items: center">
+          <div
+            style="display: flex; align-items: center"
+            :style="isMobile ? { width: '100%' } : {}"
+          >
             <fh-select
-              style="width: 300px; margin-right: 4px"
+              :style="{
+                width: isMobile && appStore.isAdmin ? '100%' : '300px',
+                marginRight: appStore.isSuper ? '4px' : '0px',
+              }"
               v-model="wan.id"
               :before-change="beforeChangeWan"
               :options="wanOpts"
@@ -236,6 +242,7 @@
 import { ref, computed, reactive, onMounted, watch, inject, useTemplateRef } from 'vue'
 import cloneDeep from 'lodash-es/cloneDeep'
 import { useI18n } from 'vue-i18n'
+import { useIsMobile } from '@/hooks/is-mobile'
 import {
   IP,
   VlanMode,
@@ -257,7 +264,6 @@ import {
   Ssidac4,
   NetType,
   netTypeText,
-  Role,
 } from '@/util/constant'
 import {
   format,
@@ -304,6 +310,7 @@ enum LinkMode {
 const maxRuleNum = 8
 const { convertBooleanStatus } = useDataClean()
 const appStore = useAppStore()
+const { isMobile } = useIsMobile()
 const { t } = useI18n()
 const dialog = inject('dialog')
 const wanRef = useTemplateRef('wanRef')

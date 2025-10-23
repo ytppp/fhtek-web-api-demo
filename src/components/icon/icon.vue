@@ -1,5 +1,5 @@
 <template>
-  <svg @click.stop="click" @mouseover="hover" @mouseout="out" class="svg-icon" aria-hidden="true">
+  <svg @click="click" @mouseover="hover" @mouseout="out" class="svg-icon" aria-hidden="true">
     <use :xlink:href="iconName"></use>
     <title>{{ title }}</title>
   </svg>
