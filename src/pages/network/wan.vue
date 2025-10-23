@@ -485,11 +485,11 @@ const serviceTypesInit = [
     text: 'VOICE',
     show: true,
   },
-  {
-    value: ServiceType.VOICE_INTERNET,
-    text: 'VOICE_INTERNET',
-    show: true,
-  },
+  // {
+  //   value: ServiceType.VOICE_INTERNET,
+  //   text: 'VOICE_INTERNET',
+  //   show: true,
+  // },
 ]
 const linkModeOptions = [
   {
