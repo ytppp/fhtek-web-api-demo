@@ -25,7 +25,7 @@
           <fh-icon
             :class="['select__caret', 'input__icon', opened ? 'is-reverse' : '']"
             name="icon-down"
-            @click.stop="() => {}"
+            @click="stopPropagation"
           ></fh-icon>
         </template>
       </fh-input>
@@ -151,6 +151,9 @@ watch(
     deep: true,
   },
 )
+const stopPropagation = (event) => {
+  if (selectDisabled.value) event.stopPropagation()
+}
 const updatePosition = () => {
   const { width } = selectInputRef.value.getBoundingClientRect()
   computePosition(selectInputRef.value, selectPopupRef.value, {
