@@ -103,8 +103,11 @@ import {
   isLoopback,
   successTips,
   isValidStaticRouteMask,
+  isIP,
+  isValidIpv6AddrExtra,
+  tranSimIpv6ToFullIpv6,
 } from '@/util/tool'
-import { ModalType, ProtocolType } from '@/util/constant'
+import { ModalType, ProtocolType, IP } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
 import { getAcl, addAcl, editAcl, delAcl, getFirewall } from '@/http/api'
 
@@ -210,18 +213,34 @@ export default {
               const parts = value.split('/')
               if (parts.length !== 2) return false
               const ip = parts[0]
-              const suffix = parts[1]
-              if (isPrivateIP(ip)) {
-                const mask = cidrToSubnetMask(parseInt(suffix))
-                if (!mask) return false
-                // isNetworkIP(ip, mask) || sBoardcastIP(ip, mask)
-                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, mask)) {
-                  return false
+              let suffix = parts[1]
+              if (isIP(ip, IP.IPv4)) {
+                if (isPrivateIP(ip)) {
+                  const mask = cidrToSubnetMask(parseInt(suffix))
+                  if (!mask) return false
+                  // isNetworkIP(ip, mask) || sBoardcastIP(ip, mask)
+                  if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, mask)) {
+                    return false
+                  }
+                  if (!this.lanIp && this.lanIp === ip) {
+                    return false
+                  }
+                  return true
                 }
-                if (!this.lanIp && this.lanIp === ip) {
-                  return false
+              }
+              if (isIP(ip, IP.IPv6)) {
+                const fullIp = tranSimIpv6ToFullIpv6(ip)
+                suffix = parseInt(suffix)
+                if (
+                  isValidIpv6AddrExtra(ip) &&
+                  (fullIp !== '2200:3366::1' ||
+                    fullIp !== '2200:3366::1/10' ||
+                    fullIp !== '2200:3366::1/65') &&
+                  suffix >= 16 &&
+                  suffix <= 64
+                ) {
+                  return true
                 }
-                return true
               }
               return false
             },
@@ -315,7 +334,7 @@ export default {
       return this.isAdd ? this.$t('trans0164') : this.$t('trans0165')
     },
     placeholderTips() {
-      return `${this.$t('trans0598').format(this.$t('trans0456'))}/${this.$t('trans0459')}`
+      return `${this.$t('trans0598').format(this.$t('trans0456'))}/${this.$t('trans0459')} | ${this.$t('trans0598').format(this.$t('trans0457'))}/${this.$t('trans0477')}`
     },
     applicationList() {
       return [

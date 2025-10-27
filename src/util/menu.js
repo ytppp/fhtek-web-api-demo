@@ -76,12 +76,12 @@ const menusInitial = [
           {
             url: '/status/lan/info',
             text: 'trans0936',
-            config: strategyA,
+            config,
           },
           {
             url: '/status/lan/devices',
             text: 'trans0628',
-            config: strategyA,
+            config,
           },
         ],
       },
@@ -93,7 +93,7 @@ const menusInitial = [
       {
         url: '/status/voip',
         text: 'trans0732',
-        config: strategyA,
+        config,
       },
       {
         url: '/status/cwmp',
@@ -140,12 +140,12 @@ const menusInitial = [
           {
             url: '/network/lan/ipv4',
             text: 'trans0456',
-            config: strategyA,
+            config,
           },
           {
             url: '/network/lan/ipv6',
             text: 'trans0457',
-            config: strategyA,
+            config,
           },
           // {
           //   url: '/network/lan/ipv6-new',
@@ -172,7 +172,7 @@ const menusInitial = [
           {
             url: '/network/wlan/advanced-24g',
             text: format(translate('trans0611'), [translate('trans0049')]),
-            config,
+            config: strategyA,
           },
           {
             url: '/network/wlan/basic-5g',
@@ -182,7 +182,7 @@ const menusInitial = [
           {
             url: '/network/wlan/advanced-5g',
             text: format(translate('trans0611'), [translate('trans0050')]),
-            config,
+            config: strategyA,
           },
         ],
       },
@@ -323,7 +323,7 @@ const menusInitial = [
       {
         url: '/app/samba',
         text: 'trans0822',
-        config: strategyA,
+        config,
       },
       {
         url: '/app/media-sharing',
@@ -366,7 +366,7 @@ const menusInitial = [
       {
         url: '/management/upgrade',
         text: 'trans0187',
-        config: strategyA,
+        config,
       },
       {
         url: '/management/log',
@@ -386,12 +386,11 @@ const menusInitial = [
       {
         url: '/management/diagnose',
         text: 'trans0802',
-        config,
         children: [
           {
             url: '/management/diagnose/internet',
             text: 'trans0553',
-            config: strategyA,
+            config,
           },
           {
             url: '/management/diagnose/remote',
