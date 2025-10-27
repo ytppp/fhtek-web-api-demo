@@ -93,7 +93,7 @@ import {
 } from '@/http/api'
 import { ModalType, IP, NetType } from '@/util/constant'
 
-const maxRuleNum = 16
+const maxRuleNum = 32
 const all = 'all'
 export default {
   data() {
