@@ -575,6 +575,18 @@ export const getTracerouteResults = (): Promise<ApiResponse<any>> => {
   return http.get('getTracerouteResults')
 }
 
+export const startInformUpload = (params): Promise<ApiResponse<any>> => {
+  return http.post('startInformUpload', createData(params))
+}
+
+export const informUploadStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getInformUploadStatus', undefined, { loading: false, toast: false })
+}
+
+export const getInformUploadResults = (): Promise<ApiResponse<any>> => {
+  return http.get('getInformUploadResults')
+}
+
 export const startReset = (): Promise<ApiResponse<any>> => {
   return http.post('reset')
 }

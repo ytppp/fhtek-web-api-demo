@@ -122,6 +122,7 @@ const Application = {
   FTP: 'ftp',
   SNMP: 'snmp',
   SSH: 'ssh',
+  FTP: 'ftp',
 }
 const ApplicationPort = {
   [Application.TELNET]: {
@@ -139,6 +140,10 @@ const ApplicationPort = {
   [Application.PING]: {
     port: '',
     proto: ProtocolType.ICMP,
+  },
+  [Application.FTP]: {
+    port: '21',
+    proto: ProtocolType.TCP,
   },
   [Application.ALL]: {
     port: '',
@@ -200,11 +205,8 @@ export default {
         ],
         src_ip: [
           {
-            rule: (value) => value,
-            message: this.$t('trans0004'),
-          },
-          {
             rule: (value) => {
+              if (!value) return true
               const parts = value.split('/')
               if (parts.length !== 2) return false
               const ip = parts[0]
@@ -227,6 +229,7 @@ export default {
           },
           {
             rule: (value) => {
+              if (!value) return true
               let flag = true
               let tempData = []
               if (this.isAdd) {
@@ -268,6 +271,7 @@ export default {
         [Application.TELNET]: this.$t('trans0162'),
         [Application.SNMP]: this.$t('trans0163'),
         [Application.SSH]: this.$t('trans0402'),
+        [Application.FTP]: this.$t('trans0160'),
       },
       columns: [
         {
@@ -338,6 +342,10 @@ export default {
         {
           value: Application.SSH,
           text: this.applicationText[Application.SSH],
+        },
+        {
+          value: Application.FTP,
+          text: this.applicationText[Application.FTP],
         },
         // {
         //   value: Application.SNMP,

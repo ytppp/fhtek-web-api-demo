@@ -307,6 +307,7 @@ enum LinkMode {
   ip = 'IP',
   ppp = 'PPP',
 }
+const clubWifiVlanId = VITE_CUSTOMER_CONFIG.clubWifiVlanId
 const maxRuleNum = 8
 const { convertBooleanStatus } = useDataClean()
 const appStore = useAppStore()
@@ -771,10 +772,15 @@ const getWanList = (loading: boolean = true, id?: string) => {
     }
     if (total) {
       items.forEach((item) => {
-        wanOptsList.push({
-          value: item.id,
-          text: item.wanName,
-        })
+        if (
+          appStore.isSuper ||
+          (appStore.isAdmin && clubWifiVlanId && item.vlan.id && item.vlan.id !== clubWifiVlanId)
+        ) {
+          wanOptsList.push({
+            value: item.id,
+            text: item.wanName,
+          })
+        }
       })
     }
     wanOpts.splice(0, wanOpts.length, ...wanOptsList)
@@ -783,7 +789,7 @@ const getWanList = (loading: boolean = true, id?: string) => {
       initWanForm()
       return
     }
-    wan.id = id ? id : items[items.length - 1].id
+    wan.id = id ? id : wanOptsList[wanOptsList.length - 1].value
     modalType.value = ModalType.edit
     initWan()
   })
@@ -1013,6 +1019,16 @@ const wanRules = reactive({
                   item.serviceType === ServiceType.VOICE ||
                   item.serviceType === ServiceType.VOICE_INTERNET,
               )
+          }
+        }
+        if (value === ServiceType.IPTV) {
+          if (isAdd.value) {
+            return !wanList.some((item) => item.serviceType === ServiceType.IPTV)
+          }
+          if (isEdit.value) {
+            return !wanList
+              .filter((item) => item.id !== wan.id)
+              .some((item) => item.serviceType === ServiceType.IPTV)
           }
         }
         return true

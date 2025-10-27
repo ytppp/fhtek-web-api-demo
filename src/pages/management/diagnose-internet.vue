@@ -91,6 +91,24 @@
       <div class="diagnose__result" v-if="tracerouteResult && tracerouteSuccessFlag">
         <pre>{{ tracerouteResult }}</pre>
       </div>
+      <div class="page__sub-header">
+        <h2 class="page__title">{{ $t('trans0915') }}</h2>
+      </div>
+      <fh-form
+        class="form form--padding"
+        :model="informUploadForm"
+        name="informUploadForm"
+        :disabled="informUploadFormDisabled"
+      >
+        <fh-form-item class="form__submit-btn">
+          <fh-button @click="informUpload" block>
+            {{ $t('trans0916') }}
+          </fh-button>
+        </fh-form-item>
+        <fh-form-item :label="$t('trans0920')" v-if="informUploadForm.result">
+          {{ informUploadResult }}
+        </fh-form-item>
+      </fh-form>
     </div>
   </div>
 </template>
@@ -109,10 +127,13 @@ import {
   startTraceroute,
   tracerouteStatus,
   getTracerouteResults,
+  startInformUpload,
+  informUploadStatus,
+  getInformUploadResults,
   getWanInfo,
 } from '@/http/api'
 
-type OperateType = 'ping' | 'traceroute'
+type OperateType = 'ping' | 'traceroute' | 'informUpload'
 
 enum Order {
   start = '1',
@@ -376,6 +397,58 @@ const changeTracerouteIpType = () => {
   tracerouteForm.interface = ''
 }
 
+const informUploadForm = ref({
+  result: '',
+})
+const informUploadFormDisabled = ref(false)
+const informUploadResult = computed(() => {
+  const resultMap = {
+    '1': t('trans0921'),
+    '2': t('trans0944'),
+    '3': t('trans0403'),
+    '4': t('trans0945'),
+    '5': t('trans0946'),
+  }
+  return resultMap[informUploadForm.value.result]
+})
+let cleanInformUploadCountDown: () => void
+const checkInformUploadStatus = () => informUploadStatus().then(({ data }) => data.status)
+const doingInformUploadHandle = createDoingHandle(checkInformUploadStatus, () =>
+  cleanInformUploadCountDown(),
+)
+const doneInformUploadHandle = createDoneHandle('informUpload', () =>
+  getInformUploadResults()
+    .then(({ data }) => {
+      informUploadForm.value.result = data.result
+    })
+    .catch(() => {
+      informUploadForm.value.result = t('trans0563')
+    }),
+)
+const {
+  createCountDown: createInformUploadCountDown,
+  cleanCountDown: _cleanInformUploadCountDown,
+} = useCountDown(timeout, interval, doingInformUploadHandle, doneInformUploadHandle)
+cleanInformUploadCountDown = _cleanInformUploadCountDown
+const informUpload = () => {
+  informUploadForm.value.result = ''
+  startInformUpload({
+    order: Order.start,
+  }).then(({ data }) => {
+    const status = data.status
+    if (status === Status.testing) {
+      handleInformUpload()
+    }
+  })
+}
+const handleInformUpload = () => {
+  loading.open({
+    tip: t('trans0921'),
+  })
+  sessionStorage.setItem('informUpload', '1')
+  createInformUploadCountDown()
+}
+
 onMounted(() => {
   getWanData()
   if (sessionStorage.getItem('ping') === '1') {
@@ -399,6 +472,18 @@ onMounted(() => {
         createTracerouteCountDown()
       } else if (status === Status.done || status === Status.idle) {
         doneTracerouteHandle()
+      }
+    })
+  }
+  if (sessionStorage.getItem('informUpload') === '1') {
+    loading.open({
+      tip: t('trans0921'),
+    })
+    checkInformUploadStatus().then((status) => {
+      if (status === Status.testing) {
+        createInformUploadCountDown()
+      } else if (status === Status.done || status === Status.idle) {
+        doneInformUploadHandle()
       }
     })
   }
