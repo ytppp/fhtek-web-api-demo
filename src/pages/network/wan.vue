@@ -1021,16 +1021,16 @@ const wanRules = reactive({
               )
           }
         }
-        if (value === ServiceType.IPTV) {
-          if (isAdd.value) {
-            return !wanList.some((item) => item.serviceType === ServiceType.IPTV)
-          }
-          if (isEdit.value) {
-            return !wanList
-              .filter((item) => item.id !== wan.id)
-              .some((item) => item.serviceType === ServiceType.IPTV)
-          }
-        }
+        // if (value === ServiceType.IPTV) {
+        //   if (isAdd.value) {
+        //     return !wanList.some((item) => item.serviceType === ServiceType.IPTV)
+        //   }
+        //   if (isEdit.value) {
+        //     return !wanList
+        //       .filter((item) => item.id !== wan.id)
+        //       .some((item) => item.serviceType === ServiceType.IPTV)
+        //   }
+        // }
         return true
       },
       message: format(t('trans0678'), [t('trans0763')]),
