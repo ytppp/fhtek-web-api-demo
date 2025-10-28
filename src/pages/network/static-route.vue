@@ -340,7 +340,16 @@ export default {
             wanList.push({
               value: item.interface,
               text: item.wanname,
-              type: item.ipv4.length ? IP.IPv4 : item.ipv6.length ? IP.IPv6 : '',
+              type:
+                item.ipv4.length ||
+                item.protocol === NetType.dhcp ||
+                item.protocol === NetType.pppoe
+                  ? IP.IPv4
+                  : item.ipv6.length ||
+                      item.protocol === NetType.slaac ||
+                      item.protocol === NetType.dhcpv6
+                    ? IP.IPv6
+                    : '',
             })
             wanText[item.interface] = item.wanname
           }
