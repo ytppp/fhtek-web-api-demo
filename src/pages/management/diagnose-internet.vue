@@ -143,6 +143,7 @@ enum Status {
   testing = '1',
   done = '2',
   idle = '3',
+  fail = '4',
 }
 
 const { t } = useI18n()
@@ -408,6 +409,7 @@ const informUploadResult = computed(() => {
     '3': t('trans0403'),
     '4': t('trans0945'),
     '5': t('trans0946'),
+    '6': t('trans0911'),
   }
   return resultMap[informUploadForm.value.result]
 })
@@ -416,15 +418,15 @@ const checkInformUploadStatus = () => informUploadStatus().then(({ data }) => da
 const doingInformUploadHandle = createDoingHandle(checkInformUploadStatus, () =>
   cleanInformUploadCountDown(),
 )
-const doneInformUploadHandle = createDoneHandle('informUpload', () =>
+const getInformUploadResultsData = () =>
   getInformUploadResults()
     .then(({ data }) => {
       informUploadForm.value.result = data.result
     })
     .catch(() => {
       informUploadForm.value.result = t('trans0563')
-    }),
-)
+    })
+const doneInformUploadHandle = createDoneHandle('informUpload', getInformUploadResultsData)
 const {
   createCountDown: createInformUploadCountDown,
   cleanCountDown: _cleanInformUploadCountDown,
@@ -438,6 +440,12 @@ const informUpload = () => {
     const status = data.status
     if (status === Status.testing) {
       handleInformUpload()
+    }
+    if (status === Status.done) {
+      getInformUploadResultsData()
+    }
+    if (status === Status.fail) {
+      informUploadForm.value.result = '6'
     }
   })
 }
