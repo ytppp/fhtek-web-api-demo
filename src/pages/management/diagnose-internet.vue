@@ -91,24 +91,26 @@
       <div class="diagnose__result" v-if="tracerouteResult && tracerouteSuccessFlag">
         <pre>{{ tracerouteResult }}</pre>
       </div>
-      <div class="page__sub-header">
-        <h2 class="page__title">{{ $t('trans0915') }}</h2>
-      </div>
-      <fh-form
-        class="form form--padding"
-        :model="informUploadForm"
-        name="informUploadForm"
-        :disabled="informUploadFormDisabled"
-      >
-        <fh-form-item class="form__submit-btn">
-          <fh-button @click="informUpload" block>
-            {{ $t('trans0916') }}
-          </fh-button>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0920')" v-if="informUploadForm.result">
-          {{ informUploadResult }}
-        </fh-form-item>
-      </fh-form>
+      <template v-if="appStore.isSuper">
+        <div class="page__sub-header">
+          <h2 class="page__title">{{ $t('trans0915') }}</h2>
+        </div>
+        <fh-form
+          class="form form--padding"
+          :model="informUploadForm"
+          name="informUploadForm"
+          :disabled="informUploadFormDisabled"
+        >
+          <fh-form-item class="form__submit-btn">
+            <fh-button @click="informUpload" block>
+              {{ $t('trans0916') }}
+            </fh-button>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0920')" v-if="informUploadForm.result">
+            {{ informUploadResult }}
+          </fh-form-item>
+        </fh-form>
+      </template>
     </div>
   </div>
 </template>
@@ -120,6 +122,7 @@ import { IP, NetType, WanStatus } from '@/util/constant'
 import { isIP, isValidInteger, isValidDomain } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { useCountDown } from '@/hooks/countdown'
+import { useAppStore } from '@/stores/app-store'
 import {
   startPing,
   pingStatus,
@@ -147,6 +150,7 @@ enum Status {
 }
 
 const { t } = useI18n()
+const appStore = useAppStore()
 const { defaultVal } = useDataClean()
 const loading = inject('loading')
 const timeout = 1000 * 60 * 2 // 2 minutes

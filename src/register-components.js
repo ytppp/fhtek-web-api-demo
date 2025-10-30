@@ -24,6 +24,7 @@ import FhStep from './components/step/step.vue'
 import FhTable from './components/table/table.vue'
 import FhTableNew from './components/table/table-new.vue'
 import FhPagination from './components/pagination/pagination.vue'
+import FhMarkdownPreview from './components/markdown-preview/markdown-preview.vue'
 
 import clickoutside from './components/directives/clickoutside.js'
 import vloading from './components/directives/loading.js'
@@ -60,6 +61,7 @@ const registerComponents = (app) => {
   app.component('FhTable', FhTableNew)
   app.component('FhDescriptions', FhDescriptions)
   app.component('FhPagination', FhPagination)
+  app.component('FhMarkdownPreview', FhMarkdownPreview)
 
   app.directive('clickoutside', clickoutside)
   app.directive('loading', vloading)

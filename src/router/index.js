@@ -61,6 +61,7 @@ import terminal from '../pages/management/terminal.vue'
 import ontAuth from '../pages/management/ont-auth.vue'
 import internetDiagnose from '../pages/management/diagnose-internet.vue'
 import remoteDiagnose from '../pages/management/diagnose-remote.vue'
+import help from '../pages/help/index.vue'
 
 export const loginPath = '/login'
 
@@ -391,6 +392,11 @@ export const router = createRouter({
       path: '/management/diagnose/remote',
       name: 'oremote-diagnose',
       component: remoteDiagnose,
+    },
+    {
+      path: '/help',
+      name: 'help',
+      component: help,
     },
     {
       path: '/:pathMatch(.*)*',

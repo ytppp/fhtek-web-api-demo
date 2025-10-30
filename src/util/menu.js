@@ -318,7 +318,7 @@ const menusInitial = [
       {
         url: '/app/storage',
         text: 'trans0810',
-        config,
+        config: strategyA,
       },
       {
         url: '/app/samba',
@@ -366,7 +366,7 @@ const menusInitial = [
       {
         url: '/management/upgrade',
         text: 'trans0187',
-        config,
+        config: strategyA,
       },
       {
         url: '/management/log',
@@ -400,6 +400,12 @@ const menusInitial = [
         ],
       },
     ],
+  },
+  {
+    url: '/help',
+    text: 'trans0947',
+    icon: 'icon-setting',
+    config,
   },
 ]
 export function getMenu(name, role, mode, meshRole) {

@@ -131,6 +131,33 @@ export const delIpv4Filter = (params): Promise<ApiResponse<any>> => {
   })
 }
 
+export const getIpv4FilterUp = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter_up:get',
+  })
+}
+
+export const addIpv4FilterUp = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter_up:add',
+    data: params,
+  })
+}
+
+export const editIpv4FilterUp = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter_up:edit',
+    data: params,
+  })
+}
+
+export const delIpv4FilterUp = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter_up:delete',
+    data: params,
+  })
+}
+
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
   return http.get('wifi.b24g.basic:get')
 }
