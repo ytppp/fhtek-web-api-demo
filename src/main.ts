@@ -1,8 +1,9 @@
 import { createApp } from 'vue'
 import registerComponents from './register-components'
 import registerI18n from './i18n/index'
-import registerRouter from './router'
+import registerRouter from './router/index'
 import registerPinia from './stores'
+import registerMarkdownPreview from './register-markdown-preview'
 import { setFavicon, getPublicFile, setDocTitle } from './util/tool'
 import App from './App.vue'
 import '@/assets/style/main.less'
@@ -14,6 +15,7 @@ registerRouter(app)
 registerPinia(app)
 registerI18n(app)
 registerComponents(app)
+registerMarkdownPreview(app)
 if (VITE_CUSTOMER_CONFIG.favicon) setFavicon(getPublicFile(`${VITE_CUSTOMER_CONFIG.favicon}`))
 if (VITE_CUSTOMER_CONFIG.title) setDocTitle(VITE_CUSTOMER_CONFIG.title)
 

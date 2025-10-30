@@ -1,6 +1,7 @@
 import { createPinia } from 'pinia'
+import type { App } from 'vue'
 
-function registerPinia(app) {
+function registerPinia(app: App) {
   const pinia = createPinia()
   app.use(pinia)
 }

@@ -323,7 +323,7 @@ const menusInitial = [
       {
         url: '/app/samba',
         text: 'trans0822',
-        config,
+        config: strategyA,
       },
       {
         url: '/app/media-sharing',

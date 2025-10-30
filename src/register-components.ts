@@ -1,3 +1,5 @@
+import type { App } from 'vue'
+
 import FhButton from './components/button/button.vue'
 import FhDescriptions from './components/descriptions/descriptions.vue'
 import FhIcon from './components/icon/icon.vue'
@@ -35,7 +37,7 @@ import loading from '@/components/loading'
 import upgrade from '@/components/upgrade'
 
 // Dialog 等组件需要手动导入
-const registerComponents = (app) => {
+const registerComponents = (app: App) => {
   app.component('FhButton', FhButton)
   app.component('FhIcon', FhIcon)
   app.component('FhInput', FhInput)

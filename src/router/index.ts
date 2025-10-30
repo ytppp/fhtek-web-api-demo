@@ -1,3 +1,4 @@
+import type { App } from 'vue'
 import { createWebHashHistory, createRouter } from 'vue-router'
 import { http } from '@/http'
 
@@ -422,7 +423,7 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
-function registerRouter(app) {
+function registerRouter(app: App) {
   app.use(router)
 }
 
