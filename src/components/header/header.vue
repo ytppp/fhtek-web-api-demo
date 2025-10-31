@@ -44,6 +44,7 @@
           :class="{ open: showPopup }"
           @mouseenter="setLangPopupVisible(true)"
           @mouseleave="setLangPopupVisible(false)"
+          v-if="Languages.length > 1"
         >
           <div class="current" @click.stop="setLangPopupVisible(true)">
             <span class="current-text">{{ language.text }}</span>
@@ -63,6 +64,11 @@
               </li>
             </ul>
           </transition>
+        </div>
+        <!-- help -->
+        <div class="exit" @click="handleHelpClick" v-if="!isNoAuthPage">
+          <span class="exit-text">{{ $t('trans0947') }}</span>
+          <fh-icon name="icon-version" class="exit-mobile"></fh-icon>
         </div>
         <!-- exit -->
         <div class="exit" @click="exit" v-if="!isNoAuthPage">
@@ -213,6 +219,9 @@ export default {
     },
     close() {
       this.showPopup = false
+    },
+    handleHelpClick() {
+      this.$router.push({ path: '/help' })
     },
   },
   mounted() {
@@ -477,7 +486,7 @@ export default {
     .exit {
       display: inline-block;
       cursor: pointer;
-      margin-left: 50px;
+      margin-left: 25px;
       font-size: 18px;
       .exit-text {
         &:hover {

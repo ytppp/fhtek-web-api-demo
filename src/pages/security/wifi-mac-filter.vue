@@ -84,7 +84,7 @@
 
 <script>
 import { isMac, format, successTips } from '@/util/tool'
-import { FilteringModes, ModalType, SsidText } from '@/util/constant'
+import { FilteringModes, ModalType, SsidText, Ssid4, Ssidac4 } from '@/util/constant'
 import {
   getWifiMacFilterStatus,
   setWifiMacFilterStatus,
@@ -283,7 +283,7 @@ export default {
           },
         ]
         ;[...wifi2g, ...wifi5g].forEach((item) => {
-          if (convertBooleanStatus(item.enable)) {
+          if (convertBooleanStatus(item.enable) && item.id !== Ssid4 && item.id !== Ssidac4) {
             ssidOpts.push({
               value: item.id,
               text: SsidText[item.id],
