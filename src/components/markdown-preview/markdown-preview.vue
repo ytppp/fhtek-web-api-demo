@@ -44,7 +44,7 @@
       @click="isMobileView = !isMobileView"
       v-if="isMobile && showToc"
     >
-      {{ isMobileView ? '关闭目录' : '显示目录' }}
+      {{ isMobileView ? $t('trans0951') : $t('trans0950') }}
     </fh-button>
   </div>
 </template>
