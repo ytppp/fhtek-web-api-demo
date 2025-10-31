@@ -141,13 +141,13 @@ const checkActiveHeading = (): void => {
   for (let i = tocItems.value.length - 1; i >= 0; i--) {
     const item = tocItems.value[i]
     if (!item) continue
-    const element = document.getElementById(tocItems.value[i].id)
+    const element = document.getElementById(item.id)
     const scrollPosition =
       window.scrollY + props.scrollOffset + (element ? element.getBoundingClientRect().height : 0)
     if (element && element.offsetTop <= scrollPosition) {
       // 只有当激活项变化时才更新，避免不必要的滚动
-      if (activeAnchor.value !== tocItems.value[i].id) {
-        activeAnchor.value = tocItems.value[i].id
+      if (activeAnchor.value !== item.id) {
+        activeAnchor.value = item.id
         // 自动滚动目录到当前激活项
         scrollTocToActiveItem()
       }
