@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, Ref, ref } from 'vue'
+import { onMounted, onUnmounted, type Ref, ref } from 'vue'
 
 // 定义可监听的事件类型
 type ActiveEventType =
@@ -12,7 +12,7 @@ type ActiveEventType =
 
 // 钩子函数的参数类型
 interface UseInactiveDetectorOptions {
-  // 超时时间(毫秒)，默认30秒
+  // 超时时间(毫秒)，默认10秒
   timeout?: number
   // 需要监听的事件列表，默认包含常用事件
   events?: ActiveEventType[]
@@ -36,10 +36,9 @@ export function useInactiveDetector(
   onInactive: () => void,
   options: UseInactiveDetectorOptions = {},
 ): InactiveDetectorResult {
-  // 解构配置并设置默认值
   const {
-    timeout = 30 * 1000,
-    events = ['mousemove', 'click', 'keydown', 'touchstart', 'scroll'],
+    timeout = 10 * 1000,
+    events = ['mousemove', 'click', 'keydown', 'touchstart', 'scroll', 'drag', 'input'],
   } = options
 
   // 存储计时器ID
@@ -51,20 +50,20 @@ export function useInactiveDetector(
    * 重置计时器
    */
   const resetTimer = (): void => {
-    // 如果处于闲置状态，重置为活跃状态
-    if (isInactive.value) {
-      isInactive.value = false
-    }
+    if (isInactive.value) return
 
     // 清除已有的计时器
     if (timeoutId) {
       window.clearTimeout(timeoutId)
+      timeoutId = null
     }
+
+    onInactive()
+    isInactive.value = true
 
     // 设置新的计时器
     timeoutId = window.setTimeout(() => {
-      isInactive.value = true
-      onInactive()
+      isInactive.value = false
     }, timeout)
   }
 
@@ -90,6 +89,7 @@ export function useInactiveDetector(
     })
     if (timeoutId) {
       window.clearTimeout(timeoutId)
+      timeoutId = null
     }
   })
 

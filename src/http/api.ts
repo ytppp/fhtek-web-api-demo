@@ -485,10 +485,18 @@ export const delUrlFilterItem = (params): Promise<ApiResponse<any>> => {
   return http.post('delUrlFilterItem', createData(params))
 }
 
-export const getUsb = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'storage.usb.status:get',
-  })
+export const getUsb = (
+  loading: boolean = true,
+  toast: boolean = true,
+  cancel: boolean = true,
+): Promise<ApiResponse<any>> => {
+  return http.post(
+    api,
+    {
+      method: 'storage.usb.status:get',
+    },
+    { loading, toast, cancel },
+  )
 }
 
 export const usbDownload = (params): Promise<ApiResponse<any>> => {
