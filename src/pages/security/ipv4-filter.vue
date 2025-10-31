@@ -89,6 +89,12 @@
                   {{ placeholderTips }}
                 </template>
               </fh-form-item>
+              <fh-form-item :label="$t('trans0138')" prop="dest_ip" ref="destIpRef">
+                <fh-input name="dest_ip" v-model="modalForm.dest_ip"></fh-input>
+                <template #extra>
+                  {{ placeholderTips }}
+                </template>
+              </fh-form-item>
               <fh-form-item
                 :label="$t('trans0139')"
                 prop="dest_port"
@@ -137,6 +143,12 @@
               </fh-form-item>
               <fh-form-item :label="$t('trans0136')" prop="src_ip" ref="srcIpRefUp">
                 <fh-input name="src_ipUp" v-model="modalFormUp.src_ip"></fh-input>
+                <template #extra>
+                  {{ placeholderTips }}
+                </template>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0138')" prop="dest_ip" ref="destIpRefUp">
+                <fh-input name="dest_ipUp" v-model="modalFormUp.dest_ip"></fh-input>
                 <template #extra>
                   {{ placeholderTips }}
                 </template>
@@ -242,6 +254,7 @@ export default {
         index: -1,
         id: '',
         src_ip: '',
+        dest_ip: '',
         dest_port: '',
         enable: true,
         name: '',
@@ -251,6 +264,7 @@ export default {
         index: -1,
         id: '',
         src_ip: '',
+        dest_ip: '',
         dest_port: '',
         enable: true,
         name: '',
@@ -292,6 +306,27 @@ export default {
             message: this.$t('trans0566').format(this.$t('trans0136')),
           },
         ],
+        dest_ip: [
+          {
+            rule: (value) => {
+              if (!value) return true
+              const parts = value.split('/')
+              if (parts.length !== 2) return false
+              const ip = parts[0]
+              const suffix = parts[1]
+              if (isPrivateIP(ip)) {
+                const mask = cidrToSubnetMask(parseInt(suffix))
+                if (!mask) return false
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, mask)) {
+                  return false
+                }
+                return true
+              }
+              return false
+            },
+            message: this.$t('trans0566').format(this.$t('trans0136')),
+          },
+        ],
         dest_port: [
           {
             rule: (value) => {
@@ -313,6 +348,10 @@ export default {
         {
           key: 'src_ip',
           title: this.$t('trans0136'),
+        },
+        {
+          key: 'dest_ip',
+          title: this.$t('trans0138'),
         },
         {
           key: 'dest_port',
@@ -400,6 +439,7 @@ export default {
         dest_port: '',
         enable: true,
         name: '',
+        dest_ip: '',
         proto: ProtocolType.ALL,
       }
     },
@@ -415,6 +455,7 @@ export default {
         index: row.index,
         id: row.id,
         src_ip: row.src_ip,
+        dest_ip: row.dest_ip,
         dest_port: row.dest_port,
         enable: row.enable,
         name: row.name,
@@ -476,6 +517,7 @@ export default {
         dest: isUp ? Interface.wan : Interface.lan,
         target: 'REJECT',
         src_ip: modalForm.src_ip,
+        dest_ip: modalForm.dest_ip,
         dest_port: modalForm.dest_port || '',
         enabled: convertBooleanStatus(modalForm.enable),
         proto: modalForm.proto,
