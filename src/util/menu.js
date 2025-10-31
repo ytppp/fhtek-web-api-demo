@@ -401,12 +401,6 @@ const menusInitial = [
       },
     ],
   },
-  // {
-  //   url: '/help',
-  //   text: 'trans0947',
-  //   icon: 'icon-setting',
-  //   config,
-  // },
 ]
 export function getMenu(name, role, mode, meshRole) {
   console.log('Init menus...')

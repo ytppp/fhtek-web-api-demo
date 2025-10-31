@@ -1,7 +1,6 @@
 <template>
   <div class="page">
     <div class="page__content">
-      <!-- :show-toc="false" -->
       <fh-markdown-preview :content="helpContent" />
     </div>
   </div>
