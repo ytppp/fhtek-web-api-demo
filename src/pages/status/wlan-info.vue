@@ -215,7 +215,7 @@ const getWifi2gBasicData = () => {
     }
     const tableData = []
     items.forEach((item) => {
-      if (item.id !== Ssid4) {
+      if (appStore.isSuper || (appStore.isAdmin && item.id !== Ssid4)) {
         tableData.push({
           ...item,
           ssid: SsidText[item.id],
@@ -236,7 +236,7 @@ const getWifi5gBasicData = () => {
     }
     const tableData = []
     items.forEach((item) => {
-      if (item.id !== Ssidac4) {
+      if (appStore.isSuper || (appStore.isAdmin && item.id !== Ssidac4)) {
         tableData.push({
           ...item,
           ssid: SsidText[item.id],
