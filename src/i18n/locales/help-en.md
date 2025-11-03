@@ -8,39 +8,39 @@
 
 ### 1.2 WAN
 
-- Shows Connection message shows WAN connection status, ONU IP address, Subnet mask, default gateway, DNS server message.
+- Shows WAN information:Connection status,ONU IP address, Subnet mask, Default gateway, DNS server message.
 
 ### 1.3 Optical
 
-- Shows connection and PON Information, PON Information shows link status, link performance statistic, PON module information.
+- Shows PON information:PON link status, link performance statistic, PON module information.
 
 ### 1.4 WLan
 
-- Shows WLAN interface message. WLAN interface message include host name, ssid info, device ip and device mac，authentication and encryption information。
+- Shows WLAN interface and connected STA information: WLAN interface information include SSID name,Channel,encryption;connected STA information include ip,mac,host name.
 
 ### 1.5 VoIP
 
-- VoIP info shows service status and phone number; service status includes registered and not registered; phone number shows registered phone number.
+- Shows service connected status and phone number; service information is registered status; phone number is registered phone number.
 
 ### 1.6 LAN
 
-- Shows Ethernet interface message. From this page you can see the user-side Ethernet port information.
+- Shows Ethernet interface information.From this page you can see the user-side Ethernet port information.
 
 ### 1.7 CWMP Status
 
-- Shows interactive information and the Platform information.
+- Shows connection status and the ACS Platform information.
 
 ### 1.8 DHCP Information
 
-- Shows DHCPV4 and DHCPV6 Server message. You can query basic DHCPv4 and DHCPv6 information, including the DUID, IPv6 address.
+- Shows DHCPV4 and DHCPV6 released IP message.You can see the connected STA's information including the DUID,IP address,lease time.
 
 ### 1.9 USB
 
-- Shows USB status, connected or disconnected.
+- Shows USB connetion status:connected or disconnected.
 
 ### 1.10 VPN
 
-- Shows vpn status, vpn type, ip address, default gateway.
+- Shows vpn information:vpn type, ip address, default gateway.
 
 ## 2. Network
 
@@ -48,55 +48,51 @@
 
 #### （1）Configurations display
 
-- WAN configurations info: include TR069 WAN (cwmp service), VOIP WAN, INTERNET WAN, IPTV WAN etc.
+- WAN configurations information: include TR069 WAN (cwmp service), VOIP WAN, INTERNET WAN, IPTV WAN etc.
 
 #### （2）Operating
 
 - WAN: Setup WAN configurations and show the final settings on the interface.
-  - Add new WAN connection: click "New" to add a new WAN connection; click "Delete Connection" to delete WAN connection.
+  - Add new WAN connection: click "New Connection" to add a new WAN; click "Delete Connection" to delete WAN.
   - Alias Name: Name of WAN connections
   - Binding: Binding each LAN port, SSID to corresponding WAN port (interface).
-  - Mode: include Route and Bridge mode. Route has three connection mode: DHCP (get IP from ISP), Static (get static ip from ISP) and PPPoE. Bridge mode can configure device to bridge between LAN and ISP, it can let two or more network like on the same LAN connection.
-  - Link Mode: including IPoE and PPPoE. according actual network to choose correspond mode to establish connection.
-  - IP protocol version: choose IP version, usually use IPv4, also can choose Ipv6 to support Ipv6, if choose IPv4/v6, will use IPv4/v6 simultaneously.
-  - PPPoE: ISP will provide account, fill as below: account, password, service name, dial rule. this mode can get IP via PPPoE.
-  - DHCP: device will get IP from ISP through DHCP server.
-  - Static: get static IP from ISP. input info includes: IP address, subnet mask, main DNS service, backup DNS server... IP address must be a correct template: x.x.x.x, for ex: 192.168.0.100.
+  - Mode: include Route and Bridge mode. Route has three connection mode: DHCP (get IP from ISP), Static (get static ip from ISP) and PPPoE. Bridge mode can configure device to be a bridge between LAN and ISP.
+  - IP protocol version: choose IP version, usually use IPv4, also can choose Ipv6 to support Ipv6, if choose IPv4/v6, WAN connection will support IPv4/v6 simultaneously.
+  - PPPoE: ISP will provide account, fill as below: account, password. this mode can get IP via PPPoE from ISP.
+  - DHCP: device will get IP from ISP through DHCP protocol.
+  - Static: get static IP information from ISP. input info includes: IP address, subnet mask, main DNS service, backup DNS server... IP address must be a correct template: x.x.x.x, for ex: 192.168.0.100.
   - VLAN: Used to distinguish different services for ISP.
-  - IGMP Proxy: using for IPTV service, WAN supply IPTV service need to been configured in 'IGMP/MLD Configuration' page.
-  - Style of Acquiring IPv6: getting IPv6 address via DHCP or SLAAC (two dynamic method), also can set static IPv6 address according to real network status.
+  - Style of Acquiring IPv6: getting IPv6 address via DHCP or SLAAC (dynamic method), also can set static IPv6 address according to real network status.
   - Other Supports: 802.1p/q 'NAT' IGMP Proxy etc.
 
 ### 2.2 WAN Bind
 
-- Port Binding to set LAN to WAN port binding rules, include port binding and VlAN binding two methods. For port binding, data will go out via correspond WAN port; for port + VLAN binding, data will go out via correspond WAN port with binding VLAN. Port add VLAN as m1/n1 VLAN pair and m1 is LAN side VLAN, n1 is WAN side VLAN, multiple VLAN pair is separate by ";".
+- WAN Binding to set LAN ports to WAN port binding rules, include port binding and VlAN binding two methods. For port binding, data will go out via correspond WAN port; for port + VLAN binding, data will go out via correspond WAN port with binding VLAN. Port add VLAN as m1/n1 VLAN pair and m1 is LAN side VLAN, n1 is WAN side VLAN, multiple VLAN pair is separate by ";".
 
 ### 2.3 LAN
 
-- IP Address: IP address of device, user can access device GUI via the IP address.
-- IPv4 configuration: Settings of ipv4 DHCP service. include server release time (1min, 1hour, 1day, 1week), address pool and mode (DHCP server or DHCP relay). the GUI also show the DHCP configurations of current.
+- IP Address: IP address of device, user can access device GUI via this IP address.
+- IPv4 configuration: Settings of ipv4 DHCP service. include server release time (1min, 1hour, 1day, 1week). the GUI also show the DHCP configurations of current.
 - IPv6 configuration: Can configure RA to open LAN side address distribution service to let LAN device get IPv6 address via RA, also can configure to IPV6 DHCP server.
 
 ### 2.4 WLAN 2.4G
 
 - Wireless Band: Support two band: 2.4G
 - Enable Wireless: enable or disable WLAN 2.4G
-- Mode (2.4G band): can choose 802.11b, 802.11g, 802.11n, 802.11b/g mixed and 802.11b/g/n mixed mode.
+- Mode (2.4G band): can choose 802.11b, 802.11g, 802.11n, 802.11ax, 802.11b/g/n mixed and 802.11b/g/n/ax mixed mode.
 - Channel selection: select appropriate channel according to network list. To avoid signal interference, should separate AP to different channel, suggest use auto selection mode.
 - SSID index: SSID serial number, using to choose different SSID.
 - SSID: SSID name, can be any character, length can not over 32 characters, Upper/Lower case should be distinguished.
 - Bandwith: choose Wireless network bandwith in 802.11n, 802.11ac or any other mixed mode.
 - SSID enable: enable the current SSID which be choosed.
 - SSID Hide: enable/disable SSID broadcast, if enabled device (ONU) won't broadcast SSID.
-- Security: can configure SSID with secure parameters, include OPEN, WPA-PSK, WPA2-PSK, WPA-PSK/WPA2-PSK and correspond encryption.
-- WPA pre-shared key: configure shared key.
-- WPA encryption: choose encryption.
+- Security: configure SSID with secure parameters, include OPEN, WPA-PSK, WPA2-PSK, WPA3-SAE,WPA-PSK/WPA2-PSK,WPA2-PSK/WPA3-SAE and correspond encryption.
 
 ### 2.5 WLAN 5G
 
 - Wireless Band: Support two band: 5G
 - Enable Wireless: enable or disable WLAN 5G
-- Mode (5G band): can choose 802.a, 802.11a/n mixed, 802.11ac/n mixed, 802.11ac/a/n mixed mode.
+- Mode (5G band): can choose 802.a, 802.ax,802.11a/n mixed, 802.11ac/n mixed, 802.11ac/a/n mixed mode.
 - Channel selection: select appropriate channel according to network list. To avoid signal interference, should separate AP to different channel, suggest use auto selection mode.
 - SSID index: SSID serial number, using to choose different SSID.
 - SSID: SSID name, can be any character, length can not over 32 characters, Upper/Lower case should be distinguished.
@@ -104,8 +100,6 @@
 - SSID enable: enable the current SSID which be choosed.
 - SSID Hide: enable/disable SSID broadcast, if enabled device (ONU) won't broadcast SSID.
 - Security: can configure SSID with secure parameters, include OPEN, WPA-PSK, WPA2-PSK, WPA-PSK/WPA2-PSK and correspond encryption.
-- WPA pre-shared key: configure shared key.
-- WPA encryption: choose encryption.
 
 ### 2.6 Static Route
 
@@ -115,19 +109,19 @@
 
 #### （2）Operating
 
-- Static Route: Add or delete static route rules, include setup destination network address subnet mask, gateway address and interface of the rule. at least one of 'gateway address' or 'interface' should be choosed.
+- Static Route: Add or delete static route rules, include setup destination network address,subnet mask,gateway address and interface of the rule. at least one of 'gateway address' or 'interface' should be choosed.
 
 ### 2.7 Mesh
 
 - Activate or not.
-- Set Device Role.
-- Display Current Device Role.
-- Enable or Disable Steering.
-- Trigger EasyMesh On-board.
+- Set Mesh Device work Role.
+- Display current device Role.
+- Enable or Disable band steering.
+- Trigger easyMesh on-board.
 
 ### 2.8 Vpn
 
-- From this page, you can view the vpn information and configure the vpn.
+- From this page, you can view the vpn information and configure the vpn function.
 
 ## 3. Security
 
@@ -136,7 +130,7 @@
 #### （1）Configurations display
 
 - Enable: firewall enabled or not.
-- Firewall level: High, Middle, Low, User-defined.
+- Firewall level:High,Middle,Low,User-defined,for "User-defined" mode,user can configure firewall by yourself,for other modes,firewall will be configured automaticly according the level.
 
 #### （2）Operating
 
@@ -146,8 +140,8 @@
 
 #### （1）Configurations display
 
-- Activate or not.
-- Current filter rules.
+- Show activate or not.
+- Show current filter rules.
 
 #### （2）Operating
 
@@ -161,20 +155,19 @@
 
 ### 3.3 Wi-Fi MAC Filtering
 
-- You can configure MAC filter to prohibit some PCs from accessing the Internet.
+- You can configure MAC filter to prohibit STAS to accessing the WLAN network.
 
 ### 3.4 IPV4 Filter
 
 #### （1）Configurations display
 
-- Activate or not.
-- Current filter rules.
+- Show activate or not.
+- show current filter rules.
 
 #### （2）Operating
 
 - Setup
   - IPV4 Filter
-  - Filter mode: Blacklist and Whitelist. data packages which be matched will be droped in black list mode, in white list mode be reversed.
   - Add: add one filter rule; Delete: delete one or more choosen rules.
 
 - Filter list: port filter rule list which has been configuated.
@@ -183,8 +176,8 @@
 ### 3.5 ACL
 
 - A maximum of 8 ACL entries can be configured.
-- On this page, you can configure network access control based on a single WAN interface. Access to a WAN interface is allowed from the configured source addresses. If no source address is configured, access to the WAN interface from any address is allowed.
-- An IPv6 WAN interface supports access only in HTTP mode and does not support access in TELNET, FTP, SSH, or PING mode.
+- On this page, you can configure network access control,include two directions: upstream and downstream.
+- ACL application include HTTP,FTP,SSH,and PING mode.
 
 ### 3.6 DOS
 
@@ -194,8 +187,8 @@
 
 #### （1）Configurations display
 
-- Activate or not.
-- Current filter rules.
+- Show activate or not.
+- Show current filter rules.
 
 #### （2）Operating
 
@@ -213,7 +206,7 @@
 
 #### （1）Configurations display
 
-- dynamic domain name rules.
+- Show dynamic domain name rules.
 
 #### （2）Operating
 
@@ -224,7 +217,7 @@
 
 #### （1）Port Mapping configurations display
 
-- （无具体内容）
+- Show Mapping rules completed
 
 #### （2）Operating
 
@@ -238,7 +231,7 @@
 
 #### （2）Operating
 
-- Setup UPnP function via webpage, choose checkbox can enable UPnP service, Otherwise service will be disable.
+- Setup UPnP function via webpage, choose checkbox can enable UPnP service, Otherwise service will be disabled.
 
 ### 4.4 VoIP Setup
 
