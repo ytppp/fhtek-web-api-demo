@@ -254,13 +254,15 @@ export default {
           const tableData = []
           const { items } = data
           items.forEach((item, i) => {
-            tableData.push({
-              ...item,
-              idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
-              pre_id: item.id,
-              pre_mac: item.mac,
-              index: i,
-            })
+            if (item.id !== Ssid4 && item.id !== Ssidac4) {
+              tableData.push({
+                ...item,
+                idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
+                pre_id: item.id,
+                pre_mac: item.mac,
+                index: i,
+              })
+            }
           })
           this.data = tableData
         })

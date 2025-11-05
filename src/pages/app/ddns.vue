@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { ModalType, ServiceType } from '@/util/constant'
+import { ModalType, ServiceType, WanMode } from '@/util/constant'
 import { getWan, getDdns, addDdns, editDdns, delDdns } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { successTips } from '@/util/tool'
@@ -266,8 +266,9 @@ export default {
         const wanList = []
         items.forEach((item) => {
           if (
-            item.serviceType === ServiceType.INTERNET ||
-            item.serviceType === ServiceType.TR069_INTERNET
+            (item.serviceType === ServiceType.INTERNET ||
+              item.serviceType === ServiceType.TR069_INTERNET) &&
+            item.wanMode === WanMode.route
           ) {
             wanList.push({
               value: item.id,
