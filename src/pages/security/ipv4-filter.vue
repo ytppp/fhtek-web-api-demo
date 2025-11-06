@@ -484,7 +484,7 @@ export default {
           enabled: convertBooleanStatus(row.enable),
         },
       ]).then(() => {
-        successTips('trans0410')
+        successTips()
         this[fetchMethod]()
       })
     },
