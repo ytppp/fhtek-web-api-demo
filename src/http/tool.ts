@@ -176,6 +176,10 @@ export function handleBusinessError(response: any): boolean {
       message = format(translate('trans0011'), [3]) // data.msg || translate('trans0700')
       showToast(message, config.toast)
       break
+    case ResultEnum.VLAN_HAS_EXISTED:
+      message = translate('trans0952') // data.msg || translate('trans0952')
+      showToast(message, config.toast)
+      break
     default:
       message = translate('trans0701') // data.msg || translate('trans0701')
       showToast(message, config.toast)

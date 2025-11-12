@@ -10,6 +10,7 @@ export enum ResultEnum {
   HASLOGIN = 10005,
   INVALIDFILE = 10006,
   LOGIN_3_TIMES_FAILED = 10012,
+  VLAN_HAS_EXISTED = 10013,
 }
 
 const defaultUrl = '/action'
