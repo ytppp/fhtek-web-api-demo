@@ -6,8 +6,8 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import path from 'path'
 
-let CUSTOMER_ID = '' // fhtek
-let WIFI_VERSION = ''
+let CUSTOMER_ID = 'demo'
+let WIFI_VERSION = 'v6'
 if (process.env.CUSTOMER_ID) {
   CUSTOMER_ID = process.env.CUSTOMER_ID
 }
