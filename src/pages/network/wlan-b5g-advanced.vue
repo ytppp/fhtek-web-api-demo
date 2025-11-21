@@ -146,10 +146,6 @@ const b5gModeInit = [
         text: '80MHz',
       },
       {
-        value: BandWidths5G.b20m40,
-        text: '20/40MHz',
-      },
-      {
         value: BandWidths5G.b20m40m80m160,
         text: '20/40/80/160MHz',
       },
@@ -171,10 +167,6 @@ const b5gModeInit = [
       {
         value: BandWidths5G.b80,
         text: '80MHz',
-      },
-      {
-        value: BandWidths5G.b20m40,
-        text: '20/40MHz',
       },
       {
         value: BandWidths5G.b20m40m80m160,
@@ -200,10 +192,6 @@ const b5gModeInit = [
         text: '80MHz',
       },
       {
-        value: BandWidths5G.b20m40,
-        text: '20/40MHz',
-      },
-      {
         value: BandWidths5G.b20m40m80m160,
         text: '20/40/80/160MHz',
       },
@@ -225,10 +213,6 @@ const b5gModeInit = [
       {
         value: BandWidths5G.b80,
         text: '80MHz',
-      },
-      {
-        value: BandWidths5G.b20m40,
-        text: '20/40MHz',
       },
       {
         value: BandWidths5G.b20m40m80m160,
