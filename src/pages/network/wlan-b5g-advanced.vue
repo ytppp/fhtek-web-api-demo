@@ -39,6 +39,7 @@
 import { reactive, ref, inject, onMounted, computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, isValidInteger, successTips } from '@/util/tool'
+import { WifiVersion } from '@/util/constant'
 import { getWifi5gAdv, setWifi5gAdv } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -58,6 +59,7 @@ enum SelectMode5G {
   modeACNA = '14', // 802.11a/n/ac 显示全部频宽
   modeACN = '15', // 802.11n/ac 显示全部频宽
   modeAx = '17', // 802.11a/n/ac/ax 显示全部频宽
+  modeBE = '23', // 802.11a/n/ac/ax/be 显示全部频宽
 }
 enum Powermodes {
   low = '50', // 50%
@@ -95,26 +97,144 @@ const { t } = useI18n()
 const channelCurrent = ref('0')
 const wifiEnableInitial = ref(false)
 const wifiFormRef = useTemplateRef('wifiFormRef')
-const modeOpts = [
+const b5gModeInit = [
   {
     value: SelectMode5G.modeAonly,
     text: '802.11a',
+    show: true,
+    bw: [
+      {
+        value: BandWidths5G.b20,
+        text: '20MHz',
+      },
+    ],
   },
   {
     value: SelectMode5G.modeANmixed,
     text: '802.11a/n',
+    show: true,
+    bw: [
+      {
+        value: BandWidths5G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths5G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths5G.b20m40,
+        text: '20/40MHz',
+      },
+    ],
   },
   {
     value: SelectMode5G.modeACNA,
     text: '802.11a/n/ac',
+    show: true,
+    bw: [
+      {
+        value: BandWidths5G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths5G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths5G.b80,
+        text: '80MHz',
+      },
+      {
+        value: BandWidths5G.b20m40,
+        text: '20/40MHz',
+      },
+      {
+        value: BandWidths5G.b20m40m80m160,
+        text: '20/40/80/160MHz',
+      },
+    ],
   },
   {
     value: SelectMode5G.modeACN,
     text: '802.11n/ac',
+    show: true,
+    bw: [
+      {
+        value: BandWidths5G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths5G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths5G.b80,
+        text: '80MHz',
+      },
+      {
+        value: BandWidths5G.b20m40,
+        text: '20/40MHz',
+      },
+      {
+        value: BandWidths5G.b20m40m80m160,
+        text: '20/40/80/160MHz',
+      },
+    ],
   },
   {
     value: SelectMode5G.modeAx,
     text: '802.11a/n/ac/ax',
+    show: true,
+    bw: [
+      {
+        value: BandWidths5G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths5G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths5G.b80,
+        text: '80MHz',
+      },
+      {
+        value: BandWidths5G.b20m40,
+        text: '20/40MHz',
+      },
+      {
+        value: BandWidths5G.b20m40m80m160,
+        text: '20/40/80/160MHz',
+      },
+    ],
+  },
+  {
+    value: SelectMode5G.modeBE,
+    text: '802.11a/n/ac/ax/be',
+    show: VITE_CUSTOMER_CONFIG.wifiVersion === WifiVersion.v7,
+    bw: [
+      {
+        value: BandWidths5G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths5G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths5G.b80,
+        text: '80MHz',
+      },
+      {
+        value: BandWidths5G.b20m40,
+        text: '20/40MHz',
+      },
+      {
+        value: BandWidths5G.b20m40m80m160,
+        text: '20/40/80/160MHz',
+      },
+    ],
   },
 ]
 const b5gChannelsInit = [
@@ -275,49 +395,11 @@ const rules = reactive({
 const specialBandwidths = [BandWidths5G.b20]
 const specialChannels = [Channels5G.ch116, Channels5G.ch165]
 
+const modeOpts = computed(() => {
+  return b5gModeInit.filter((item) => item.show)
+})
 const bwOpts = computed(() => {
-  if (wifi.mode === SelectMode5G.modeAonly) {
-    return [
-      {
-        value: BandWidths5G.b20,
-        text: '20MHz',
-      },
-    ]
-  } else if (wifi.mode === SelectMode5G.modeANmixed) {
-    return [
-      {
-        value: BandWidths5G.b20,
-        text: '20MHz',
-      },
-      {
-        value: BandWidths5G.b40,
-        text: '40MHz',
-      },
-      {
-        value: BandWidths5G.b20m40,
-        text: '20/40MHz',
-      },
-    ]
-  } else {
-    return [
-      {
-        value: BandWidths5G.b20,
-        text: '20MHz',
-      },
-      {
-        value: BandWidths5G.b40,
-        text: '40MHz',
-      },
-      {
-        value: BandWidths5G.b80,
-        text: '80MHz',
-      },
-      {
-        value: BandWidths5G.b20m40m80m160,
-        text: '20/40/80/160MHz',
-      },
-    ]
-  }
+  return modeOpts.value.find((item) => item.value === wifi.mode)?.bw || []
 })
 const channelOpts = computed(() => {
   return b5gChannelsInit.filter((item) => {

@@ -39,6 +39,7 @@
 import { reactive, ref, inject, onMounted, computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, isValidInteger, successTips } from '@/util/tool'
+import { WifiVersion } from '@/util/constant'
 import { getWifi2gAdv, setWifi2gAdv } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -57,6 +58,7 @@ enum SelectMode24G {
   modeg = '4', // 802.11g
   modeb = '1', // 802.11b
   modeAx = '16', // 802.11b/g/n/ax 显示全部频宽
+  modeBE = '22', // 802.11b/g/n/ax/be 显示全部频宽
 }
 enum Powermodes {
   low = '50', // 50%
@@ -85,30 +87,115 @@ const { t } = useI18n()
 const channelCurrent = ref('0')
 const wifiEnableInitial = ref(false)
 const wifiFormRef = useTemplateRef('wifiFormRef')
-const modeOpts = [
+const b24gModeInit = [
   {
     value: SelectMode24G.modeb,
     text: '802.11b',
+    show: true,
+    bw: [
+      {
+        value: BandWidths24G.b20,
+        text: '20MHz',
+      },
+    ],
   },
   {
     value: SelectMode24G.modeg,
     text: '802.11g',
+    show: true,
+    bw: [
+      {
+        value: BandWidths24G.b20,
+        text: '20MHz',
+      },
+    ],
   },
   {
     value: SelectMode24G.moden,
     text: '802.11n',
+    show: true,
+    bw: [
+      {
+        value: BandWidths24G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths24G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths24G.b20m40,
+        text: '20/40MHz',
+      },
+    ],
   },
   {
     value: SelectMode24G.modebgmix,
     text: '802.11b/g',
+    show: true,
+    bw: [
+      {
+        value: BandWidths24G.b20,
+        text: '20MHz',
+      },
+    ],
   },
   {
     value: SelectMode24G.modebgnmix,
     text: '802.11b/g/n',
+    show: true,
+    bw: [
+      {
+        value: BandWidths24G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths24G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths24G.b20m40,
+        text: '20/40MHz',
+      },
+    ],
   },
   {
     value: SelectMode24G.modeAx,
     text: '802.11b/g/n/ax',
+    show: true,
+    bw: [
+      {
+        value: BandWidths24G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths24G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths24G.b20m40,
+        text: '20/40MHz',
+      },
+    ],
+  },
+  {
+    value: SelectMode24G.modeBE,
+    text: '802.11b/g/n/ax/be',
+    show: VITE_CUSTOMER_CONFIG.wifiVersion === WifiVersion.v7,
+    bw: [
+      {
+        value: BandWidths24G.b20,
+        text: '20MHz',
+      },
+      {
+        value: BandWidths24G.b40,
+        text: '40MHz',
+      },
+      {
+        value: BandWidths24G.b20m40,
+        text: '20/40MHz',
+      },
+    ],
   },
 ]
 const channelOpts = reactive([
@@ -169,33 +256,12 @@ const channelOpts = reactive([
     text: Channels24G.ch13,
   },
 ])
+
+const modeOpts = computed(() => {
+  return b24gModeInit.filter((item) => item.show)
+})
 const bwOpts = computed(() => {
-  if (
-    wifi.mode === SelectMode24G.moden ||
-    wifi.mode === SelectMode24G.modebgnmix ||
-    wifi.mode === SelectMode24G.modeAx
-  ) {
-    return [
-      {
-        value: BandWidths24G.b20,
-        text: '20MHz',
-      },
-      {
-        value: BandWidths24G.b40,
-        text: '40MHz',
-      },
-      {
-        value: BandWidths24G.b20m40,
-        text: '20/40MHz',
-      },
-    ]
-  }
-  return [
-    {
-      value: BandWidths24G.b20,
-      text: '20MHz',
-    },
-  ]
+  return modeOpts.value.find((item) => item.value === wifi.mode)?.bw || []
 })
 const powerOpts = [
   {
@@ -282,11 +348,10 @@ const save = () => {
   }
 }
 const setWifi2gAdvData = (data) => {
-  setWifi2gAdv(data)
-    .then(() => {
-      successTips()
-      getWifi2gData()
-    })
+  setWifi2gAdv(data).then(() => {
+    successTips()
+    getWifi2gData()
+  })
 }
 onMounted(() => {
   getWifi2gData()

@@ -6,6 +6,10 @@ export const customers = {
   fhtek: 'fhtek',
   totalplay: 'totalplay',
 }
+export enum WifiVersion {
+  v6 = 'v6',
+  v7 = 'v7',
+}
 export enum RouterMode {
   router = '0',
   bridge = '3',
