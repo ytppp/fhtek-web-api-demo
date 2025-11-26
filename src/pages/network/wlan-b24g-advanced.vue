@@ -42,6 +42,7 @@ import { format, isValidInteger, successTips } from '@/util/tool'
 import { WifiVersion } from '@/util/constant'
 import { getWifi2gAdv, setWifi2gAdv } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
+import { useAppStore } from '@/stores/app-store'
 
 defineOptions({
   name: 'b24gAdvancedPage',
@@ -84,6 +85,7 @@ enum Channels24G {
 const dialog = inject('dialog')
 const { convertBooleanStatus } = useDataClean()
 const { t } = useI18n()
+const appStore = useAppStore()
 const channelCurrent = ref('0')
 const wifiEnableInitial = ref(false)
 const wifiFormRef = useTemplateRef('wifiFormRef')
@@ -181,7 +183,7 @@ const b24gModeInit = [
   {
     value: SelectMode24G.modeBE,
     text: '802.11b/g/n/ax/be',
-    show: VITE_CUSTOMER_CONFIG.wifiVersion === WifiVersion.v7,
+    show: appStore.isWifiV7,
     bw: [
       {
         value: BandWidths24G.b20,

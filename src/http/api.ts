@@ -747,3 +747,16 @@ export const getSwmpStatus = (): Promise<ApiResponse<any>> => {
 export const getLoginTimeout = (): Promise<ApiResponse<any>> => {
   return http.get('getLogintimeout', undefined, { loading: false, toast: false, cancel: false })
 }
+
+export const getWifiMlo = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wifi.mlo:get',
+  })
+}
+
+export const setWifiMlo = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'wifi.mlo:set',
+    data: params
+  })
+}

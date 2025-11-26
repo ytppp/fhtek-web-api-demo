@@ -130,6 +130,7 @@ export default {
         this.appStore.role,
         this.appStore.mode,
         this.appStore.meshRole,
+        this.appStore.wifiVersion,
       )
     },
     childMenus() {

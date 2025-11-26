@@ -1,4 +1,4 @@
-import { RouterMode, Role, customers, MeshRole } from './constant'
+import { RouterMode, Role, customers, MeshRole, WifiVersion } from './constant'
 import { format } from './tool'
 import { translate } from '@/i18n/index'
 
@@ -8,18 +8,21 @@ const config = {
   auth: [Role.super, Role.admin],
   mode: [RouterMode.router, RouterMode.bridge],
   meshRole: [MeshRole.controller, MeshRole.agent],
+  wifiVersion: [WifiVersion.v6, WifiVersion.v7],
 }
 const strategyA = {
   show: true,
   auth: [Role.super],
   mode: [RouterMode.router, RouterMode.bridge],
   meshRole: [MeshRole.controller, MeshRole.agent],
+  wifiVersion: [WifiVersion.v6, WifiVersion.v7],
 }
 const strategyB = {
   show: true,
   auth: [Role.admin, Role.super],
   mode: [RouterMode.router, RouterMode.bridge],
   meshRole: [MeshRole.controller],
+  wifiVersion: [WifiVersion.v6, WifiVersion.v7],
 }
 const menusInitial = [
   // {
@@ -164,6 +167,14 @@ const menusInitial = [
         text: 'trans0017',
         config,
         children: [
+          {
+            url: '/network/wlan/mlo',
+            text: 'trans0954',
+            config: {
+              ...config,
+              wifiVersion: [WifiVersion.v7],
+            },
+          },
           {
             url: '/network/wlan/basic-24g',
             text: format(translate('trans0544'), [translate('trans0049')]),
@@ -402,15 +413,16 @@ const menusInitial = [
     ],
   },
 ]
-export function getMenu(name, role, mode, meshRole) {
+export function getMenu(name, role, mode, meshRole, wifiVersion) {
   console.log('Init menus...')
   console.log(`customer is: ${name}`)
-  if (!role || !mode || !meshRole) {
+  if (!role || !mode || !meshRole || !wifiVersion) {
     return menusInitial
   }
   console.log(`role is: ${role}`)
   console.log(`mode is: ${mode}`)
   console.log(`meshRole is: ${meshRole}`)
+  console.log(`wifiVersion is: ${wifiVersion}`)
   const generateMenu = (menus, name) => {
     menus.forEach((menu) => {
       if (menu.children) {
@@ -424,11 +436,11 @@ export function getMenu(name, role, mode, meshRole) {
     })
     return menus
   }
-  const filterMenu = (menus, role, mode, meshRole) => {
+  const filterMenu = (menus, role, mode, meshRole, wifiVersion) => {
     const parents = []
     menus.forEach((menu) => {
       if (menu.children) {
-        const filteredChildren = filterMenu(menu.children, role, mode, meshRole)
+        const filteredChildren = filterMenu(menu.children, role, mode, meshRole, wifiVersion)
         if (filteredChildren.length) {
           parents.push({
             ...menu,
@@ -440,7 +452,8 @@ export function getMenu(name, role, mode, meshRole) {
           menu.config.show &&
           menu.config.auth.includes(role) &&
           menu.config.mode.includes(mode) &&
-          menu.config.meshRole.includes(meshRole)
+          menu.config.meshRole.includes(meshRole) &&
+          menu.config.wifiVersion.includes(wifiVersion)
         ) {
           parents.push(menu)
         }
@@ -449,6 +462,6 @@ export function getMenu(name, role, mode, meshRole) {
     return parents
   }
   const menuGenerated = generateMenu(menusInitial, name)
-  const menuFilterd = filterMenu(menuGenerated, role, mode, meshRole)
+  const menuFilterd = filterMenu(menuGenerated, role, mode, meshRole, wifiVersion)
   return menuFilterd
 }

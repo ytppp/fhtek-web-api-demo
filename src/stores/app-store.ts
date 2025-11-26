@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import { Role, RouterMode, MeshRole } from '@/util/constant'
+import { Role, RouterMode, MeshRole, WifiVersion } from '@/util/constant'
 
 interface AppState {
   role: Role | null
   mode: RouterMode
   meshRole: MeshRole
+  wifiVersion: WifiVersion
   loggedUser: string | null
 }
 
@@ -14,11 +14,14 @@ export const useAppStore = defineStore('app', {
     role: null,
     mode: RouterMode.router,
     meshRole: MeshRole.controller,
+    wifiVersion: WifiVersion.v6,
     loggedUser: null,
   }),
   getters: {
     isSuper: (state) => state.role && state.role === Role.super,
     isAdmin: (state) => state.role && state.role === Role.admin,
+    isWifiV6: (state) => state.wifiVersion === WifiVersion.v6,
+    isWifiV7: (state) => state.wifiVersion === WifiVersion.v7,
   },
   actions: {
     setRole(role: Role) {
@@ -29,9 +32,9 @@ export const useAppStore = defineStore('app', {
       this.mode = mode
       sessionStorage.setItem('mode', mode)
     },
-    setMeshMode(meshRole: MeshRole) {
-      this.meshRole = meshRole
-      sessionStorage.setItem('meshRole', meshRole)
+    setWifiVersion(wifiVersion: WifiVersion) {
+      this.wifiVersion = wifiVersion
+      sessionStorage.setItem('wifiVersion', wifiVersion)
     },
     setLoggedUser(user: string) {
       this.loggedUser = user
@@ -41,11 +44,13 @@ export const useAppStore = defineStore('app', {
       const savedRole = sessionStorage.getItem('role') as Role | null
       const savedMode = RouterMode.router // sessionStorage.getItem('mode') as RouterMode | null
       const savedMeshRole = MeshRole.controller // sessionStorage.getItem('meshRole') as MeshRole | null
+      const savedWifiVersion = sessionStorage.getItem('wifiVersion') as WifiVersion | null
       const savedLoggedUser = sessionStorage.getItem('logged_user')
 
       if (savedRole) this.role = savedRole
       if (savedMode) this.mode = savedMode
       if (savedMeshRole) this.meshRole = savedMeshRole
+      if (savedWifiVersion) this.wifiVersion = savedWifiVersion
       if (savedLoggedUser) this.loggedUser = savedLoggedUser
     },
   },

@@ -21,6 +21,7 @@ import wanBinding from '../pages/network/wan-binding.vue'
 import lan from '../pages/network/lan.vue'
 import lanipv6 from '../pages/network/lan-ipv6.vue'
 import lanipv6New from '../pages/network/lan-ipv6-old.vue'
+import mlo from '../pages/network/mlo.vue'
 import basicB24g from '../pages/network/wlan-b24g-basic.vue'
 import advancedB24g from '../pages/network/wlan-b24g-advanced.vue'
 import basicB5g from '../pages/network/wlan-b5g-basic.vue'
@@ -177,6 +178,11 @@ export const router = createRouter({
     //   name: 'lanipv6New',
     //   component: lanipv6New,
     // },
+    {
+      path: '/network/wlan/mlo',
+      name: 'mlo',
+      component: mlo,
+    },
     {
       path: '/network/wlan/basic-24g',
       name: 'basicB24g',
