@@ -89,11 +89,12 @@ export enum FilteringModes {
   blackList = '0',
   whiteList = '1',
 }
-
-export const Lan1 = 'lan1'
-export const Lan2 = 'lan2'
-export const Lan3 = 'lan3'
-export const Lan4 = 'lan4'
+export const lan = 'lan'
+export const Lan1 = `${lan}1`
+export const Lan2 = `${lan}2`
+export const Lan3 = `${lan}3`
+export const Lan4 = `${lan}4`
+export const Lan5 = `${lan}5`
 export const Ssid1 = 'ssid1'
 export const Ssid2 = 'ssid2'
 export const Ssid3 = 'ssid3'
@@ -108,6 +109,7 @@ export const SsidText = {
   [Lan2]: 'LAN2',
   [Lan3]: 'LAN3',
   [Lan4]: 'LAN4',
+  [Lan5]: 'LAN5',
   [Ssid1]: 'SSID1',
   [Ssid2]: 'SSID2',
   [Ssid3]: 'SSID3',
