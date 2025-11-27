@@ -244,6 +244,9 @@ export enum Mode {
   h100 = '100half',
   f100 = '100full',
   f1000 = '1000full',
+  f10000 = '10000full',
+  f5000 = '5000full',
+  f2500 = '2500full',
 }
 
 export const ModeText = {
@@ -253,6 +256,9 @@ export const ModeText = {
   [Mode.h100]: '100M/Half Duplex',
   [Mode.f100]: '100M/Full Duplex',
   [Mode.f1000]: '1000M/Full Duplex',
+  [Mode.f10000]: '10000M/Full Duplex',
+  [Mode.f5000]: '5000M/Full Duplex',
+  [Mode.f2500]: '2500M/Full Duplex',
 }
 
 export enum WanStatus {

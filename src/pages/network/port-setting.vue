@@ -5,11 +5,15 @@
     </div>
     <div class="page__content">
       <fh-form class="form" :model="form" v-if="isMobile">
-        <fh-form-item :label="SsidText[`${lan}${i}` as SsidKeyType]" v-for="i in total" :key="i">
+        <fh-form-item
+          :label="SsidTextPort[`${lan}${i}` as SsidKeyType]"
+          v-for="i in total"
+          :key="i"
+        >
           <fh-select
             @change="(val: string) => changePort(val, `${lan}${i}`)"
             v-model="form[`${lan}${i}` as SsidKeyType]"
-            :options="modeList"
+            :options="`${lan}${i}` === Lan5 ? modeListLan5 : modeList"
           >
           </fh-select>
         </fh-form-item>
@@ -27,7 +31,7 @@
           <fh-select
             @change="(val: string) => changePort(val, `${lan}${i}`)"
             v-model="scope.row[`${lan}${i}`]"
-            :options="modeList"
+            :options="`${lan}${i}` === Lan5 ? modeListLan5 : modeList"
           ></fh-select>
         </template>
       </fh-table>
@@ -37,7 +41,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import { lan, SsidText, Mode, ModeText } from '@/util/constant'
+import { lan, Lan5, SsidText, Mode, ModeText } from '@/util/constant'
 import { getLanSpeed, setLanSpeed } from '@/http/api'
 import { successTips } from '@/util/tool'
 import { useIsMobile } from '@/hooks/is-mobile'
@@ -55,6 +59,10 @@ const total = ref(4)
 const tableData = ref<PortType[]>([])
 const form = ref<PortType>({})
 const columns = ref<Column[]>([])
+const SsidTextPort = {
+  ...SsidText,
+  [Lan5]: 'LAN5(10G)',
+}
 const modeList = [
   {
     text: ModeText[Mode.auto],
@@ -81,6 +89,21 @@ const modeList = [
     value: Mode.f1000,
   },
 ]
+const modeListLan5 = [
+  ...modeList,
+  {
+    text: ModeText[Mode.f10000],
+    value: Mode.f10000,
+  },
+  {
+    text: ModeText[Mode.f5000],
+    value: Mode.f5000,
+  },
+  {
+    text: ModeText[Mode.f2500],
+    value: Mode.f2500,
+  },
+]
 const changePort = (val: string, type: string) => {
   setLanSpeed({
     ifname: type,
@@ -100,7 +123,7 @@ const getLanSpeedData = () => {
       const info = items.find((item: { ifname: string }) => item.ifname === `${lan}${i}`)
       thisColumns.push({
         key: info.ifname,
-        title: SsidText[info.ifname as keyof typeof SsidText],
+        title: SsidTextPort[info.ifname as keyof typeof SsidText],
       })
       thisForm[info.ifname as keyof typeof SsidText] = info.speed
     }
