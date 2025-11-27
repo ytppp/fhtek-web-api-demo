@@ -122,14 +122,16 @@
         <template v-if="isHidePortBinding">
           <fh-form-item :label="t('trans0755')">
             <fh-checkbox-group class="wan-form__checkbox-group" v-model="wan.lan">
-              <fh-checkbox
-                v-for="item in lanOptions"
-                :key="item.value"
-                :label="item.value"
-                :disabled="item.readonly"
-              >
-                {{ SsidText[item.value] }}
-              </fh-checkbox>
+              <template v-for="item in lanOptions">
+                <fh-checkbox
+                  :key="item.value"
+                  :label="item.value"
+                  :disabled="item.readonly"
+                  v-if="item.show"
+                >
+                  {{ SsidText[item.value] }}
+                </fh-checkbox>
+              </template>
             </fh-checkbox-group>
           </fh-form-item>
         </template>
@@ -254,6 +256,7 @@ import {
   Lan2,
   Lan3,
   Lan4,
+  Lan5,
   Ssid1,
   Ssid2,
   Ssid3,
@@ -328,50 +331,67 @@ const lanOptions = reactive([
   {
     value: Lan1,
     readonly: false,
+    show: true,
   },
   {
     value: Lan2,
     readonly: false,
+    show: true,
   },
   {
     value: Lan3,
     readonly: false,
+    show: true,
   },
   {
     value: Lan4,
     readonly: false,
+    show: true,
+  },
+  {
+    value: Lan5,
+    readonly: false,
+    show: appStore.isWifiV7,
   },
   {
     value: Ssid1,
     readonly: false,
+    show: true,
   },
   {
     value: Ssid2,
     readonly: false,
+    show: true,
   },
   {
     value: Ssid3,
     readonly: false,
+    show: true,
   },
   {
     value: Ssid4,
     readonly: false,
+    show: true,
   },
   {
     value: Ssidac1,
     readonly: false,
+    show: true,
   },
   {
     value: Ssidac2,
     readonly: false,
+    show: true,
   },
   {
     value: Ssidac3,
     readonly: false,
+    show: true,
   },
   {
     value: Ssidac4,
     readonly: false,
+    show: true,
   },
 ])
 const ipOptions = [
