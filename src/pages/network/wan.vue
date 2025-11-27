@@ -310,6 +310,11 @@ enum LinkMode {
   ip = 'IP',
   ppp = 'PPP',
 }
+interface PortItem {
+  value: string
+  readonly: boolean
+  show: boolean
+}
 const clubWifiVlanId = VITE_CUSTOMER_CONFIG.clubWifiVlanId
 const maxRuleNum = 8
 const { convertBooleanStatus } = useDataClean()
@@ -327,71 +332,71 @@ const ipv6Dns2Ref = useTemplateRef('ipv6Dns2Ref')
 const modalType = ref(ModalType.add)
 const lanIp = ref('')
 
-const lanOptions = reactive([
+const lanOptions = ref<PortItem[]>([
   {
     value: Lan1,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Lan2,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Lan3,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Lan4,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Lan5,
     readonly: false,
-    show: appStore.isWifiV7,
+    show: false,
   },
   {
     value: Ssid1,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Ssid2,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Ssid3,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Ssid4,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Ssidac1,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Ssidac2,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Ssidac3,
     readonly: false,
-    show: true,
+    show: false,
   },
   {
     value: Ssidac4,
     readonly: false,
-    show: true,
+    show: false,
   },
 ])
 const ipOptions = [
@@ -992,8 +997,12 @@ const getLanData = () => {
 const getPortBind = (id = '') => {
   getPortBindInfo({ id }).then(({ data }) => {
     const { items } = data
-    items.forEach((item) => {
-      lanOptions.find((lan) => lan.value === item.id).readonly = convertBooleanStatus(item.readonly)
+    items.forEach((item: { id: string; readonly: '0' | '1' }) => {
+      const portItem = lanOptions.value.find((lan) => lan.value === item.id)
+      if (portItem) {
+        portItem.readonly = convertBooleanStatus(item.readonly) as boolean
+        portItem.show = true
+      }
     })
   })
 }
