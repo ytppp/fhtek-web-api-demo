@@ -90,18 +90,29 @@ const modeList = [
   },
 ]
 const modeListLan5 = [
-  ...modeList,
   {
-    text: ModeText[Mode.f10000],
-    value: Mode.f10000,
+    text: ModeText[Mode.auto],
+    value: Mode.auto,
+  },
+  {
+    text: ModeText[Mode.f100],
+    value: Mode.f100,
+  },
+  {
+    text: ModeText[Mode.f1000],
+    value: Mode.f1000,
+  },
+  {
+    text: ModeText[Mode.f2500],
+    value: Mode.f2500,
   },
   {
     text: ModeText[Mode.f5000],
     value: Mode.f5000,
   },
   {
-    text: ModeText[Mode.f2500],
-    value: Mode.f2500,
+    text: ModeText[Mode.f10000],
+    value: Mode.f10000,
   },
 ]
 const changePort = (val: string, type: string) => {
