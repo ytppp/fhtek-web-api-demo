@@ -749,14 +749,9 @@ export const getLoginTimeout = (): Promise<ApiResponse<any>> => {
 }
 
 export const getWifiMlo = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.mlo:get',
-  })
+  return http.get('wifi.mlo:get')
 }
 
 export const setWifiMlo = (params): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'wifi.mlo:set',
-    data: params
-  })
+  return http.post('wifi.mlo:set', createData(params))
 }
