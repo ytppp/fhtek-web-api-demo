@@ -67,6 +67,7 @@ import {
   getLan,
 } from '@/http/api'
 import { useCountDown } from '@/hooks/countdown'
+import { useAppStore } from '@/stores/app-store'
 import { handleLogout } from '@/util/tool'
 
 defineOptions({
@@ -89,6 +90,7 @@ const loading = inject('loading')
 const toast = inject('toast')
 const uploader = useTemplateRef('uploader')
 const lanIp = ref('')
+const appStore = useAppStore()
 
 function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: () => void) {
   return () => {
@@ -102,6 +104,7 @@ function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: (
 }
 function createDoneHandle(key: string) {
   return () => {
+    window.location.reload()
     sessionStorage.setItem(key, '0')
     loading.close()
   }
@@ -122,20 +125,22 @@ const { createCountDown: createResetCountDown, cleanCountDown: _cleanResetCountD
   useCountDown(timeout, interval, doingResetHandle, doneResetHandle)
 cleanRebootCountDown = _cleanRebootCountDown
 cleanResetCountDown = _cleanResetCountDown
-
+const createRebootCountDownAlias = () =>
+  createRebootCountDown(() => appStore.stopLoginTimeoutCheck())
+const createResetCountDownAlias = () => createResetCountDown(() => appStore.stopLoginTimeoutCheck())
 const handleReboot = () => {
   loading.open({
     tip: t('trans0229'),
   })
   sessionStorage.setItem('reboot', '1')
-  createRebootCountDown()
+  createRebootCountDownAlias()
 }
 const handleReset = () => {
   loading.open({
     tip: t('trans0617'),
   })
   sessionStorage.setItem('reset', '1')
-  createResetCountDown()
+  createResetCountDownAlias()
 }
 const reboot = () => {
   dialog
@@ -254,13 +259,13 @@ onMounted(() => {
     checkRebootStatus()
       .then((status) => {
         if (status === Status.doing) {
-          createRebootCountDown()
+          createRebootCountDownAlias()
         } else if (status === Status.done) {
           doneRebootHandle()
         }
       })
       .catch(() => {
-        createRebootCountDown()
+        createRebootCountDownAlias()
       })
   }
   if (sessionStorage.getItem('reset') === '1') {
@@ -270,13 +275,13 @@ onMounted(() => {
     checkResetStatus()
       .then((status) => {
         if (status === Status.doing) {
-          createResetCountDown()
+          createResetCountDownAlias()
         } else if (status === Status.done) {
           doneResetHandle()
         }
       })
       .catch(() => {
-        createResetCountDown()
+        createResetCountDownAlias()
       })
   }
   getLanData()

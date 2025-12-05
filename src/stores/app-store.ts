@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia'
 import { Role, RouterMode, MeshRole, WifiVersion } from '@/util/constant'
+import { useDataClean } from '@/hooks/data-clean'
+import { handleLogout } from '@/util/tool'
+import { getLoginTimeout } from '@/http/api'
 
 interface AppState {
   role: Role | null
@@ -7,8 +10,9 @@ interface AppState {
   meshRole: MeshRole
   wifiVersion: WifiVersion
   loggedUser: string | null
+  loginTimeoutTimer: number | null
 }
-
+const { convertBooleanStatus } = useDataClean()
 export const useAppStore = defineStore('app', {
   state: (): AppState => ({
     role: null,
@@ -16,6 +20,7 @@ export const useAppStore = defineStore('app', {
     meshRole: MeshRole.controller,
     wifiVersion: WifiVersion.v6,
     loggedUser: null,
+    loginTimeoutTimer: null,
   }),
   getters: {
     isSuper: (state) => state.role && state.role === Role.super,
@@ -52,6 +57,27 @@ export const useAppStore = defineStore('app', {
       if (savedMeshRole) this.meshRole = savedMeshRole
       if (savedWifiVersion) this.wifiVersion = savedWifiVersion
       if (savedLoggedUser) this.loggedUser = savedLoggedUser
+    },
+    startLoginTimeoutCheck(isNoAuthPage: boolean) {
+      if (this.loginTimeoutTimer) return
+      this.loginTimeoutTimer = setInterval(() => {
+        if (isNoAuthPage) {
+          this.stopLoginTimeoutCheck()
+        } else {
+          this.getLoginTimeoutData()
+        }
+      }, 1000 * 10)
+    },
+    stopLoginTimeoutCheck() {
+      clearInterval(this.loginTimeoutTimer!)
+      this.loginTimeoutTimer = null
+    },
+    getLoginTimeoutData() {
+      getLoginTimeout().then(({ data }) => {
+        if (convertBooleanStatus(data.timeout)) {
+          handleLogout()
+        }
+      })
     },
   },
 })

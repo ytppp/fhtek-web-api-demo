@@ -27,7 +27,9 @@
 </template>
 
 <script>
+import { mapStores } from 'pinia'
 import { upload, getUpgradeStatus } from '@/http/api'
+import { useAppStore } from '@/stores/app-store'
 
 export default {
   data() {
@@ -37,6 +39,9 @@ export default {
       formDisabled: false,
       isHasfile: false,
     }
+  },
+  computed: {
+    ...mapStores(useAppStore),
   },
   methods: {
     handleUploadError() {
@@ -76,6 +81,7 @@ export default {
         })
     },
     upgrading() {
+      this.appStore.stopLoginTimeoutCheck()
       this.$upgrade.open({
         title: this.$t('trans0468'),
         tip: this.$t('trans0203'),

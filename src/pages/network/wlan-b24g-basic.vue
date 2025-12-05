@@ -146,28 +146,28 @@ const rules = reactive({
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
     },
-    {
-      rule: (value) => isValidLength(value, 1, 32),
-      message: format(t('trans0003'), [t('trans0712'), 1, 32]),
-    },
-    {
-      rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0712'), format(t('trans0042'), [specialChar])]),
-    },
+    // {
+    //   rule: (value) => isValidLength(value, 1, 32),
+    //   message: format(t('trans0003'), [t('trans0712'), 1, 32]),
+    // },
+    // {
+    //   rule: (value) => isValidSymbol(value),
+    //   message: format(t('trans0013'), [t('trans0712'), format(t('trans0042'), [specialChar])]),
+    // },
   ],
   password: [
     {
       rule: (value) => !!value.trim(),
       message: t('trans0004'),
     },
-    {
-      rule: (value) => isValidLength(value, 8, 63),
-      message: format(t('trans0003'), [t('trans0196'), 8, 63]),
-    },
-    {
-      rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
-    },
+    // {
+    //   rule: (value) => isValidLength(value, 8, 63),
+    //   message: format(t('trans0003'), [t('trans0196'), 8, 63]),
+    // },
+    // {
+    //   rule: (value) => isValidSymbol(value),
+    //   message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
+    // },
   ],
   sta: [
     {
