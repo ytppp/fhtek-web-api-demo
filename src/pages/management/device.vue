@@ -104,9 +104,9 @@ function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: (
 }
 function createDoneHandle(key: string) {
   return () => {
-    window.location.reload()
     sessionStorage.setItem(key, '0')
     loading.close()
+    window.location.reload()
   }
 }
 
