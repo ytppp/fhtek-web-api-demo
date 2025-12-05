@@ -95,6 +95,7 @@ export const Lan2 = `${lan}2`
 export const Lan3 = `${lan}3`
 export const Lan4 = `${lan}4`
 export const Lan5 = `${lan}5`
+export const Lan5_10GE = `${Lan5}(10GE)`
 export const Ssid1 = 'ssid1'
 export const Ssid2 = 'ssid2'
 export const Ssid3 = 'ssid3'
@@ -118,6 +119,7 @@ export const SsidText = {
   [Ssidac2]: 'SSIDAC2',
   [Ssidac3]: 'SSIDAC3',
   [Ssidac4]: 'SSIDAC4',
+  [Lan5_10GE]: 'LAN5(10GE)',
 }
 
 export enum MeshRole {

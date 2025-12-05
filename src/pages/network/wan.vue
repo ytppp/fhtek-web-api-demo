@@ -129,7 +129,7 @@
                   :disabled="item.readonly"
                   v-if="item.show"
                 >
-                  {{ SsidText[item.value] }}
+                  {{ SsidText[item.title] }}
                 </fh-checkbox>
               </template>
             </fh-checkbox-group>
@@ -257,6 +257,7 @@ import {
   Lan3,
   Lan4,
   Lan5,
+  Lan5_10GE,
   Ssid1,
   Ssid2,
   Ssid3,
@@ -314,6 +315,7 @@ interface PortItem {
   value: string
   readonly: boolean
   show: boolean
+  title: string
 }
 const clubWifiVlanId = VITE_CUSTOMER_CONFIG.clubWifiVlanId
 const maxRuleNum = 8
@@ -336,66 +338,79 @@ const lanOptions = ref<PortItem[]>([
   {
     value: Lan1,
     readonly: false,
+    title: Lan1,
     show: false,
   },
   {
     value: Lan2,
     readonly: false,
+    title: Lan2,
     show: false,
   },
   {
     value: Lan3,
     readonly: false,
+    title: Lan3,
     show: false,
   },
   {
     value: Lan4,
     readonly: false,
+    title: Lan4,
     show: false,
   },
   {
     value: Lan5,
     readonly: false,
+    title: Lan5_10GE,
     show: false,
   },
   {
     value: Ssid1,
     readonly: false,
+    title: Ssid1,
     show: false,
   },
   {
     value: Ssid2,
     readonly: false,
+    title: Ssid2,
     show: false,
   },
   {
     value: Ssid3,
     readonly: false,
+    title: Ssid3,
     show: false,
   },
   {
     value: Ssid4,
     readonly: false,
+    title: Ssid4,
     show: false,
   },
   {
     value: Ssidac1,
     readonly: false,
+    title: Ssidac1,
     show: false,
   },
   {
     value: Ssidac2,
     readonly: false,
+    title: Ssidac2,
     show: false,
   },
   {
     value: Ssidac3,
     readonly: false,
+    title: Ssidac3,
     show: false,
   },
   {
     value: Ssidac4,
     readonly: false,
+    title: Ssidac4,
     show: false,
   },
 ])
