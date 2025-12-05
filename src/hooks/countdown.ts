@@ -16,7 +16,7 @@ export const useCountDown = (
   doneHandle?: () => void,
 ) => {
   let timer: number | null = null
-  const createCountDown = (fn?: () => void) => {
+  const createCountDown = () => {
     if (timer !== null) {
       return
     }
@@ -25,7 +25,6 @@ export const useCountDown = (
     if (doingHandle) {
       doingHandle(countdown)
     }
-    if (fn) fn()
     timer = setInterval(() => {
       if (!countdown && timeout !== -1) {
         cleanCountDown()

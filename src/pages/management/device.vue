@@ -125,9 +125,14 @@ const { createCountDown: createResetCountDown, cleanCountDown: _cleanResetCountD
   useCountDown(timeout, interval, doingResetHandle, doneResetHandle)
 cleanRebootCountDown = _cleanRebootCountDown
 cleanResetCountDown = _cleanResetCountDown
-const createRebootCountDownAlias = () =>
-  createRebootCountDown(() => appStore.stopLoginTimeoutCheck())
-const createResetCountDownAlias = () => createResetCountDown(() => appStore.stopLoginTimeoutCheck())
+const createRebootCountDownAlias = () => {
+  appStore.stopLoginTimeoutCheck()
+  createRebootCountDown()
+}
+const createResetCountDownAlias = () => {
+  appStore.stopLoginTimeoutCheck()
+  createResetCountDown()
+}
 const handleReboot = () => {
   loading.open({
     tip: t('trans0229'),
