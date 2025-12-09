@@ -257,7 +257,6 @@ import {
   Lan3,
   Lan4,
   Lan5,
-  Lan5_10GE,
   Ssid1,
   Ssid2,
   Ssid3,
@@ -362,7 +361,7 @@ const lanOptions = ref<PortItem[]>([
   {
     value: Lan5,
     readonly: false,
-    title: Lan5_10GE,
+    title: Lan5,
     show: false,
   },
   {

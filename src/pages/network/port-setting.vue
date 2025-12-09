@@ -6,7 +6,7 @@
     <div class="page__content">
       <fh-form class="form" :model="form" v-if="isMobile">
         <fh-form-item
-          :label="SsidTextPort[`${lan}${i}` as SsidKeyType]"
+          :label="SsidText[`${lan}${i}` as SsidKeyType]"
           v-for="i in total"
           :key="i"
         >
@@ -59,10 +59,6 @@ const total = ref(4)
 const tableData = ref<PortType[]>([])
 const form = ref<PortType>({})
 const columns = ref<Column[]>([])
-const SsidTextPort = {
-  ...SsidText,
-  [Lan5]: 'LAN5(10G)',
-}
 const modeList = [
   {
     text: ModeText[Mode.auto],
@@ -134,7 +130,7 @@ const getLanSpeedData = () => {
       const info = items.find((item: { ifname: string }) => item.ifname === `${lan}${i}`)
       thisColumns.push({
         key: info.ifname,
-        title: SsidTextPort[info.ifname as keyof typeof SsidText],
+        title: SsidText[info.ifname as keyof typeof SsidText],
       })
       thisForm[info.ifname as keyof typeof SsidText] = info.speed
     }

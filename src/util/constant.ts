@@ -95,7 +95,6 @@ export const Lan2 = `${lan}2`
 export const Lan3 = `${lan}3`
 export const Lan4 = `${lan}4`
 export const Lan5 = `${lan}5`
-export const Lan5_10GE = `${Lan5}(10GE)`
 export const Ssid1 = 'ssid1'
 export const Ssid2 = 'ssid2'
 export const Ssid3 = 'ssid3'
@@ -110,7 +109,7 @@ export const SsidText = {
   [Lan2]: 'LAN2',
   [Lan3]: 'LAN3',
   [Lan4]: 'LAN4',
-  [Lan5]: 'LAN5',
+  [Lan5]: 'LAN5(10GE)',
   [Ssid1]: 'SSID1',
   [Ssid2]: 'SSID2',
   [Ssid3]: 'SSID3',
@@ -119,7 +118,6 @@ export const SsidText = {
   [Ssidac2]: 'SSIDAC2',
   [Ssidac3]: 'SSIDAC3',
   [Ssidac4]: 'SSIDAC4',
-  [Lan5_10GE]: 'LAN5(10GE)',
 }
 
 export enum MeshRole {
@@ -257,10 +255,10 @@ export const ModeText = {
   [Mode.f10]: '10M/Full Duplex',
   [Mode.h100]: '100M/Half Duplex',
   [Mode.f100]: '100M/Full Duplex',
-  [Mode.f1000]: '1000M/Full Duplex',
-  [Mode.f10000]: '10000M/Full Duplex',
-  [Mode.f5000]: '5000M/Full Duplex',
-  [Mode.f2500]: '2500M/Full Duplex',
+  [Mode.f1000]: '1G/Full Duplex',
+  [Mode.f10000]: '10G/Full Duplex',
+  [Mode.f5000]: '5G/Full Duplex',
+  [Mode.f2500]: '2.5G/Full Duplex',
 }
 
 export enum WanStatus {
