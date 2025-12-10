@@ -5,23 +5,23 @@ import { translate } from '@/i18n/index'
 // menu default config
 const config = {
   show: true,
-  auth: [Role.super, Role.admin],
+  auth: [Role.super, Role.admin], // 所有客户都可见
   mode: [RouterMode.router, RouterMode.bridge],
   meshRole: [MeshRole.controller, MeshRole.agent],
   wifiVersion: [WifiVersion.v6, WifiVersion.v7],
 }
 const strategyA = {
   show: true,
-  auth: [Role.super],
+  auth: [Role.super], // 仅有super权限的客户可见
   mode: [RouterMode.router, RouterMode.bridge],
   meshRole: [MeshRole.controller, MeshRole.agent],
   wifiVersion: [WifiVersion.v6, WifiVersion.v7],
 }
 const strategyB = {
   show: true,
-  auth: [Role.admin, Role.super],
+  auth: [Role.admin], // 仅有admin权限的客户可见
   mode: [RouterMode.router, RouterMode.bridge],
-  meshRole: [MeshRole.controller],
+  meshRole: [MeshRole.controller, MeshRole.agent],
   wifiVersion: [WifiVersion.v6, WifiVersion.v7],
 }
 const menusInitial = [
@@ -101,7 +101,11 @@ const menusInitial = [
       {
         url: '/status/cwmp',
         text: 'trans0249',
-        config: strategyA,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/status/sta',
@@ -133,7 +137,11 @@ const menusInitial = [
       {
         url: '/network/wan-binding',
         text: 'trans0751',
-        config: strategyA,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/network/lan',
@@ -183,7 +191,11 @@ const menusInitial = [
           {
             url: '/network/wlan/advanced-24g',
             text: format(translate('trans0611'), [translate('trans0049')]),
-            config: strategyA,
+            customers: {
+              [customers.demo]: config,
+              [customers.fhtek]: config,
+              [customers.totalplay]: strategyA,
+            },
           },
           {
             url: '/network/wlan/basic-5g',
@@ -193,14 +205,22 @@ const menusInitial = [
           {
             url: '/network/wlan/advanced-5g',
             text: format(translate('trans0611'), [translate('trans0050')]),
-            config: strategyA,
+            customers: {
+              [customers.demo]: config,
+              [customers.fhtek]: config,
+              [customers.totalplay]: strategyA,
+            },
           },
         ],
       },
       {
         url: '/network/static-route',
         text: 'trans0793',
-        config: strategyA,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       // {
       //   url: '/network/default-route',
@@ -232,7 +252,11 @@ const menusInitial = [
       {
         url: '/security/url-filter',
         text: 'trans0832',
-        config: strategyA,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/security/mac-filter',
@@ -257,7 +281,11 @@ const menusInitial = [
       {
         url: '/security/dos',
         text: 'trans0055',
-        config: strategyA,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
     ],
   },
@@ -294,12 +322,20 @@ const menusInitial = [
       {
         url: '/app/cwmp',
         text: 'trans0271',
-        config: strategyA,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/app/time',
         text: 'trans0247',
-        config: strategyA,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       // {
       //   url: '/app/igmp-mld',
@@ -334,7 +370,11 @@ const menusInitial = [
       {
         url: '/app/samba',
         text: 'trans0822',
-        config: strategyA,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/app/media-sharing',
@@ -348,12 +388,20 @@ const menusInitial = [
           {
             url: '/network/wlan/basic-voip',
             text: 'trans0546',
-            config: strategyA,
+            customers: {
+              [customers.demo]: config,
+              [customers.fhtek]: config,
+              [customers.totalplay]: strategyA,
+            },
           },
           {
             url: '/network/wlan/advanced-voip',
             text: 'trans0579',
-            config: strategyA,
+            customers: {
+              [customers.demo]: config,
+              [customers.fhtek]: config,
+              [customers.totalplay]: strategyA,
+            },
           },
         ],
       },
@@ -377,7 +425,11 @@ const menusInitial = [
       {
         url: '/management/upgrade',
         text: 'trans0187',
-        config: strategyA,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/management/log',
@@ -387,7 +439,11 @@ const menusInitial = [
       {
         url: '/management/terminal',
         text: 'trans0401',
-        config: strategyA,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/management/ont-auth',
@@ -406,7 +462,11 @@ const menusInitial = [
           {
             url: '/management/diagnose/remote',
             text: 'trans0803',
-            config: strategyA,
+            customers: {
+              [customers.demo]: config,
+              [customers.fhtek]: config,
+              [customers.totalplay]: strategyA,
+            },
           },
         ],
       },

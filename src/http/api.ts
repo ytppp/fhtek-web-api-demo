@@ -191,11 +191,11 @@ export const setWps = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getWifi5g = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.b5g.basic:get')
+  return http.get('wifi.b5g.basic:get', undefined, { timeout: 30000 })
 }
 
 export const setWifi5g = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b5g.basic:edit', createData(params))
+  return http.post('wifi.b5g.basic:edit', createData(params), { timeout: 30000 })
 }
 
 export const getIpv6Lan = (): Promise<ApiResponse<any>> => {
