@@ -178,14 +178,16 @@ const ipv4Data = reactive([])
 const ipv6Data = reactive([])
 
 function checkDestination(type: string, value: string) {
+  if (isValidDomain(value)) {
+    return true
+  }
   if (type === IP.IPv4) {
     return isIP(value)
   }
   if (type === IP.IPv6) {
     return isIP(value, IP.IPv6)
   }
-
-  return isValidDomain(value)
+  return false
 }
 function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: () => void) {
   return () => {
