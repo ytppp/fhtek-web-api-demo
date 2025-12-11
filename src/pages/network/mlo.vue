@@ -45,6 +45,9 @@
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
+        <fh-form-item>
+          <fh-alert type="info" :description="$t('trans0955')" show-icon :center="false" />
+        </fh-form-item>
       </fh-form>
     </div>
   </div>
@@ -56,7 +59,7 @@ import { useI18n } from 'vue-i18n'
 import { getWifiMlo, setWifiMlo, getWifi5g } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { useIsMobile } from '@/hooks/is-mobile'
-import { successTips, isValidLength, isValidSymbol, specialChar } from '@/util/tool'
+import { format, successTips, isValidLength, isValidSymbol, specialChar } from '@/util/tool'
 import { Encrypts, encrypts, Ssidac1 } from '@/util/constant'
 
 defineOptions({
@@ -80,28 +83,28 @@ const rules = ref({
       rule: (value: string) => !!value.trim(),
       message: t('trans0004'),
     },
-    // {
-    //   rule: (value) => isValidLength(value, 1, 32),
-    //   message: format(t('trans0003'), [t('trans0712'), 1, 32]),
-    // },
-    // {
-    //   rule: (value) => isValidSymbol(value),
-    //   message: format(t('trans0013'), [t('trans0712'), format(t('trans0042'), [specialChar])]),
-    // },
+    {
+      rule: (value) => isValidLength(value, 1, 32),
+      message: format(t('trans0003'), [t('trans0712'), 1, 32]),
+    },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: format(t('trans0013'), [t('trans0712'), format(t('trans0042'), [specialChar])]),
+    },
   ],
   password: [
     {
       rule: (value: string) => !!value.trim(),
       message: t('trans0004'),
     },
-    // {
-    //   rule: (value) => isValidLength(value, 8, 63),
-    //   message: format(t('trans0003'), [t('trans0196'), 8, 63]),
-    // },
-    // {
-    //   rule: (value) => isValidSymbol(value),
-    //   message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
-    // },
+    {
+      rule: (value) => isValidLength(value, 8, 63),
+      message: format(t('trans0003'), [t('trans0196'), 8, 63]),
+    },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
+    },
   ],
 })
 
@@ -127,26 +130,17 @@ const encryptTip = computed(() => {
 })
 
 const save = () => {
-  dialog
-    .confirm({
-      okText: t('trans0019'),
-      cancelText: t('trans0020'),
-      message: t('trans0955'),
-    })
-    .then(() => {
-      if (!formRef.value?.validate()) {
-        return
-      }
-      setWifiMlo({
-        enable: convertBooleanStatus(form.value.enable),
-        name: form.value.ssid,
-        auth_mode: form.value.encrypt,
-        pre_shared_key: form.value.password,
-      }).then(() => {
-        successTips()
-      })
-    })
-    .catch(() => {})
+  if (!formRef.value?.validate()) {
+    return
+  }
+  setWifiMlo({
+    enable: convertBooleanStatus(form.value.enable),
+    name: form.value.ssid,
+    auth_mode: form.value.encrypt,
+    pre_shared_key: form.value.password,
+  }).then(() => {
+    successTips()
+  })
 }
 
 const getWifiMloData = () => {

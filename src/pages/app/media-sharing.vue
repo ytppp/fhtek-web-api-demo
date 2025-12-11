@@ -41,7 +41,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getUsb, editMediaSharing, getMediaSharing } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
-import { isValidUnixPath, successTips } from '@/util/tool'
+import { isValidUnixPath, successTips, isInvalidSymbol, invalidChar } from '@/util/tool'
 
 const { t } = useI18n()
 const { convertBooleanStatus } = useDataClean()
@@ -53,6 +53,13 @@ const form = reactive({
 })
 const rules = {
   sharingPath: [
+    {
+      rule: (value) => {
+        if (!value) return true
+        return !isInvalidSymbol(value)
+      },
+      message: t('trans0957').format(t('trans0825'), invalidChar),
+    },
     {
       rule: (value) => (value) => {
         if (!value) return true

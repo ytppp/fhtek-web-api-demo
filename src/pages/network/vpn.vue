@@ -87,44 +87,7 @@ export default {
         },
       ],
       rules: {
-        server: [
-          {
-            rule: (value) => value,
-            message: this.$t('trans0004'),
-          },
-          {
-            rule: (value) => {
-              if (isIP(value)) {
-                return (
-                  !isMulticast(value) &&
-                  !isLoopback(value) &&
-                  !isBoardcastIP(value) &&
-                  ip2int(value) != 0
-                )
-              } else {
-                return isValidDomain(value)
-              }
-            },
-            message: this.$t('trans0397'),
-          },
-          {
-            rule: (value) => {
-              if (isValidDomain(value)) {
-                return true
-              }
-              if (!this.lanIp) {
-                return true
-              }
-              const lanIpBefore = getIpBefore(this.lanIp)
-              const ipBefore = getIpBefore(value)
-              if (ipBefore === lanIpBefore || this.lanIp === value) {
-                return false
-              }
-              return true
-            },
-            message: this.$t('trans0397'),
-          },
-        ],
+        server: [],
         username: [
           {
             rule: (value) => value,
@@ -228,6 +191,53 @@ export default {
     },
   },
   created() {
+    this.rules.server = [
+      {
+        rule: (value) => value,
+        message: this.$t('trans0004'),
+      },
+      {
+        rule: (value) => {
+          if (isIP(value)) {
+            return (
+              !isMulticast(value) &&
+              !isLoopback(value) &&
+              !isBoardcastIP(value) &&
+              ip2int(value) != 0
+            )
+          } else {
+            return true
+          }
+        },
+        message: this.$t('trans0397'),
+      },
+      {
+        rule: (value) => {
+          if (isIP(value)) {
+            return true
+          }
+          return isValidDomain(value) && isValidSymbol(value)
+        },
+        message: this.$t('trans0013').format('', this.$t('trans0042').format(specialChar)),
+      },
+      {
+        rule: (value) => {
+          if (isValidDomain(value)) {
+            return true
+          }
+          if (!this.lanIp) {
+            return true
+          }
+          const lanIpBefore = getIpBefore(this.lanIp)
+          const ipBefore = getIpBefore(value)
+          if (ipBefore === lanIpBefore || this.lanIp === value) {
+            return false
+          }
+          return true
+        },
+        message: this.$t('trans0397'),
+      },
+    ]
     this.getLanData()
     this.getVpnData()
   },

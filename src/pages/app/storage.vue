@@ -114,6 +114,8 @@ import {
   format,
   specialChar,
   successTips,
+  invalidChar,
+  isInvalidSymbol,
 } from '@/util/tool'
 import { getUsb, usbDownload, editUsbServer, getUsbDownloadList, getUsbServer } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -182,6 +184,13 @@ const clientFormRules = {
     {
       rule: (value) => {
         if (!value) return true
+        return !isInvalidSymbol(value)
+      },
+      message: t('trans0957').format(t('trans0814'), invalidChar),
+    },
+    {
+      rule: (value) => {
+        if (!value) return true
         return isValidUnixPath(value)
       },
       message: t('trans0830'),
@@ -223,6 +232,13 @@ const serverFormRules = {
     {
       rule: (value) => {
         if (!value) return true
+        return !isInvalidSymbol(value)
+      },
+      message: t('trans0957').format(t('trans0825'), invalidChar),
+    },
+    {
+      rule: (value) => {
+        if (!value) return true
         return isValidUnixPath(value)
       },
       message: t('trans0830'),
@@ -261,7 +277,7 @@ const getUsbInfo = () => {
   getUsb().then(({ data }) => {
     hasUsbDevice.value = convertBooleanStatus(data.has_usb)
     if (hasUsbDevice.value) {
-      getDownloadList(true)
+      getDownloadList()
       getUsbServerData()
     }
   })

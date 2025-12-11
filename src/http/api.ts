@@ -58,7 +58,7 @@ export const setLanSpeed = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getWan = (loading: boolean = true): Promise<ApiResponse<any>> => {
-  return http.get(`GetWan`, undefined, { timeout: 20000, loading })
+  return http.get(`GetWan`, undefined, { timeout: 90000, loading })
 }
 
 export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
@@ -66,15 +66,15 @@ export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {
-  return http.post(`AddWan`, createData(params), { timeout: 20000 })
+  return http.post(`AddWan`, createData(params), { timeout: 90000 })
 }
 
 export const editWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWan', createData(params), { timeout: 20000 })
+  return http.post('SetWan', createData(params), { timeout: 90000 })
 }
 
 export const deleteWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('DeleteWan', createData(params), { timeout: 20000 })
+  return http.post('DeleteWan', createData(params), { timeout: 90000 })
 }
 
 export const getAcl = (): Promise<ApiResponse<any>> => {
@@ -159,27 +159,27 @@ export const delIpv4FilterUp = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.b24g.basic:get', undefined, { timeout: 30000 })
+  return http.get('wifi.b24g.basic:get', undefined, { timeout: 90000 })
 }
 
 export const setWifi2g = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b24g.basic:edit', createData(params), { timeout: 30000 })
+  return http.post('wifi.b24g.basic:edit', createData(params), { timeout: 90000 })
 }
 
 export const getWifi2gAdv = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.b24g.advanced:get', undefined, { timeout: 30000 })
+  return http.get('wifi.b24g.advanced:get', undefined, { timeout: 90000 })
 }
 
 export const setWifi2gAdv = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b24g.advanced:edit', createData(params), { timeout: 30000 })
+  return http.post('wifi.b24g.advanced:edit', createData(params), { timeout: 90000 })
 }
 
 export const getWifi5gAdv = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.b5g.advanced:get', undefined, { timeout: 30000 })
+  return http.get('wifi.b5g.advanced:get', undefined, { timeout: 90000 })
 }
 
 export const setWifi5gAdv = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b5g.advanced:edit', createData(params), { timeout: 30000 })
+  return http.post('wifi.b5g.advanced:edit', createData(params), { timeout: 90000 })
 }
 
 export const getWps = (params): Promise<ApiResponse<any>> => {
@@ -191,11 +191,11 @@ export const setWps = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getWifi5g = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.b5g.basic:get', undefined, { timeout: 30000 })
+  return http.get('wifi.b5g.basic:get', undefined, { timeout: 90000 })
 }
 
 export const setWifi5g = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b5g.basic:edit', createData(params), { timeout: 30000 })
+  return http.post('wifi.b5g.basic:edit', createData(params), { timeout: 90000 })
 }
 
 export const getIpv6Lan = (): Promise<ApiResponse<any>> => {
@@ -749,9 +749,9 @@ export const getLoginTimeout = (): Promise<ApiResponse<any>> => {
 }
 
 export const getWifiMlo = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.mlo:get', undefined, { timeout: 30000 })
+  return http.get('wifi.mlo:get', undefined, { timeout: 90000 })
 }
 
 export const setWifiMlo = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.mlo:set', createData(params), { timeout: 30000 })
+  return http.post('wifi.mlo:set', createData(params), { timeout: 90000 })
 }

@@ -119,6 +119,14 @@ export function isValidSymbol(value, ruleReg = /^[\w!#$*+\-.=?@_~]+$/i) {
   return ruleReg.test(value)
 }
 
+export const invalidChar = '\:*?"<>|'
+export function isInvalidSymbol(value, ruleReg = /[\\:*?"<>|]/) {
+  if (!value) {
+    return false
+  }
+  return ruleReg.test(value)
+}
+
 export function getStringByte(str) {
   let total = 0
   /**
