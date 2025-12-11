@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, useTemplateRef, computed, inject } from 'vue'
+import { ref, onMounted, useTemplateRef, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getWifiMlo, setWifiMlo, getWifi5g } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -66,7 +66,6 @@ defineOptions({
   name: 'mloPage',
 })
 
-const dialog = inject('dialog')
 const { t } = useI18n()
 const { isMobile } = useIsMobile()
 const { convertBooleanStatus } = useDataClean()
