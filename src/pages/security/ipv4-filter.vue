@@ -530,11 +530,20 @@ export default {
         : currentData.filter((item) => item.index !== modalForm.index)
 
       const flag = !tempData.some((item) => {
-        return (
-          item.src_ip === modalForm.src_ip &&
-          item.dest_port === modalForm.dest_port &&
-          item.proto === modalForm.proto
-        )
+        if (item.proto === ProtocolType.ALL) {
+          return (
+            item.src_ip === modalForm.src_ip ||
+            item.dest_ip === modalForm.dest_ip ||
+            item.dest_port === modalForm.dest_port
+          )
+        } else {
+          return (
+            item.src_ip === modalForm.src_ip &&
+            item.dest_ip === modalForm.dest_ip &&
+            item.dest_port === modalForm.dest_port &&
+            item.proto === modalForm.proto
+          )
+        }
       })
 
       if (!flag) {

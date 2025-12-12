@@ -72,7 +72,10 @@
           <fh-form-item :label="$t('trans0446')" prop="extHost">
             <fh-input v-model="modalForm.extHost"></fh-input>
             <template #extra>
-              {{ placeholderTips }}
+              <ul style="list-style: disc">
+                <li>{{ $t('trans0958') }}</li>
+                <li>{{ placeholderTips }}</li>
+              </ul>
             </template>
           </fh-form-item>
           <fh-form-item :label="$t('trans0273')" prop="extPort">
@@ -240,11 +243,8 @@ export default {
         ],
         extHost: [
           {
-            rule: (value) => value,
-            message: this.$t('trans0004'),
-          },
-          {
             rule: (value) => {
+              if (!value) return true
               const parts = value.split('/')
               if (parts.length !== 2) return false
               const ip = parts[0]
@@ -395,7 +395,9 @@ export default {
       ]
     },
     placeholderTips() {
-      return `${format(this.$t('trans0598'), [this.$t('trans0456')])}/${this.$t('trans0459')}`
+      return this.$t('trans0959').format(
+        `${format(this.$t('trans0598'), [this.$t('trans0456')])}/${this.$t('trans0459')}`,
+      )
     },
   },
   methods: {
