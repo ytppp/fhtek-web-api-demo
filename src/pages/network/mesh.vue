@@ -39,7 +39,6 @@
             </fh-button>
           </div>
         </fh-form-item>
-        <!-- 暂不需要 -->
         <fh-form-item>
           <fh-alert type="info" :title="meshTip" show-icon :center="false" />
         </fh-form-item>
