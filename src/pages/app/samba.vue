@@ -55,6 +55,17 @@ export default {
             rule: (value) => value,
             message: this.$t('trans0004'),
           },
+          {
+            rule: (value) => isValidLength(value, 1, 32),
+            message: format(this.$t('trans0003'), [this.$t('trans0712'), 1, 32]),
+          },
+          {
+            rule: (value) => isValidSymbol(value),
+            message: format(this.$t('trans0013'), [
+              this.$t('trans0712'),
+              format(this.$t('trans0042'), [specialChar]),
+            ]),
+          },
         ],
         pwd: [
           {

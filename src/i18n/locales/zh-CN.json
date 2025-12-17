@@ -956,5 +956,15 @@
   "trans0956": "同步 5G 配置",
   "trans0957": "%s不能包含下列字符: %s",
   "trans0958": "留空表示所有地址",
-  "trans0959": "如果输入，格式为："
+  "trans0959": "如果输入，格式为：",
+  "trans0960": "为了确保 Mesh 有效工作，请将安全模式设为 WPA2 && CCMP",
+  "trans0961": "trans0961",
+  "trans0962": "trans0962",
+  "trans0963": "trans0963",
+  "trans0964": "trans0964",
+  "trans0965": "trans0965",
+  "trans0966": "trans0966",
+  "trans0967": "trans0967",
+  "trans0968": "trans0968",
+  "trans0969": "trans0969"
 }

@@ -39,7 +39,6 @@
 import { reactive, ref, inject, onMounted, computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, isValidInteger, successTips } from '@/util/tool'
-import { WifiVersion } from '@/util/constant'
 import { getWifi2gAdv, setWifi2gAdv } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { useAppStore } from '@/stores/app-store'

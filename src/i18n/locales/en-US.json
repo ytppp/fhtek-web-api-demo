@@ -956,5 +956,15 @@
   "trans0956": "Synchronize 5G Settings",
   "trans0957": "%s can‘t contain the following characters: %s",
   "trans0958": "Leave blank for all address",
-  "trans0959": "If input is provided, the format is: %s"
+  "trans0959": "If input is provided, the format is: %s",
+  "trans0960": "To ensure the mesh function works properly, please set the security mode to WPA2 && CCMP.",
+  "trans0961": "trans0961",
+  "trans0962": "trans0962",
+  "trans0963": "trans0963",
+  "trans0964": "trans0964",
+  "trans0965": "trans0965",
+  "trans0966": "trans0966",
+  "trans0967": "trans0967",
+  "trans0968": "trans0968",
+  "trans0969": "trans0969"
 }
