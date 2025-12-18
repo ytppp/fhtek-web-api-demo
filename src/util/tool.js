@@ -505,8 +505,8 @@ export function isValidUrlName(url) {
 export function isValidUnixPath(path) {
   // 匹配 Unix 路径（如 /path/to/file 或 ./file）
   // 需要转义的元字符列表： [ ] ( ) { } \ ^ $ | ? * + . /
-  // /^(?:\/|\.{1,2}\/)?([a-zA-Z0-9_\-]+\/)*[a-zA-Z0-9_\-]*\/?$/ 原来的
-  const pattern = /^(?:\.\.?\/)?(?:[^\*\?\[\]\$&!;<>\|\\"']+\/?)*$/
+  // const pattern = /^(?:\/|\.{1,2}\/)?([a-zA-Z0-9_\-]+\/)*[a-zA-Z0-9_\-]*\/?$/ // 原来的
+  const pattern = /^(?:\/|\.{1,2}\/)?([^/\s]+\/)*[^/\s]*\/?$/
   return pattern.test(path)
 }
 
