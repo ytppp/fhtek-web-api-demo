@@ -197,13 +197,13 @@ const clientFormRules = {
     },
   ],
   path: [
-    {
-      rule: (value) => {
-        if (!value) return true
-        return !isInvalidSymbol(value)
-      },
-      message: t('trans0957').format(t('trans0814'), invalidChar),
-    },
+    // {
+    //   rule: (value) => {
+    //     if (!value) return true
+    //     return !isInvalidSymbol(value)
+    //   },
+    //   message: t('trans0957').format(t('trans0814'), invalidChar),
+    // },
     {
       rule: (value) => {
         if (!value) return true

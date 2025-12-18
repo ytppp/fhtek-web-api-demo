@@ -119,8 +119,9 @@ export function isValidSymbol(value, ruleReg = /^[\w!#$*+\-.=?@_~]+$/i) {
   return ruleReg.test(value)
 }
 
-export const invalidChar = '\:*?"<>|\\'
-export function isInvalidSymbol(value, ruleReg = /[\\:*?"<>|\\]/) {
+//
+export const invalidChar = '*?[]$&!;<>|\\"\''
+export function isInvalidSymbol(value, ruleReg = /[\*\?\[\]\$&!;<>\|\\"']/) {
   if (!value) {
     return false
   }
@@ -502,9 +503,12 @@ export function isValidUrlName(url) {
   return true
 }
 
+
 export function isValidUnixPath(path) {
   // 匹配 Unix 路径（如 /path/to/file 或 ./file）
-  const pattern = /^(?:\/|\.{1,2}\/)?([a-zA-Z0-9_\-]+\/)*[a-zA-Z0-9_\-]*\/?$/
+  // 需要转义的元字符列表： [ ] ( ) { } \ ^ $ | ? * + . /
+  // /^(?:(?:\.\.?\/)?(?:[a-zA-Z0-9_\-]+\/)*)?[a-zA-Z0-9_\-\.]+$ 原来的
+  const pattern = /^(?:\.\.?\/)?(?:[^\*\?\[\]\$&!;<>\|\\"']+\/?)*$/
   return pattern.test(path)
 }
 

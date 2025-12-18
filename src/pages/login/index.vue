@@ -70,7 +70,7 @@ import {
   specialChar,
   successTips,
 } from '@/util/tool'
-import { Role } from '@/util/constant'
+import { Role, customers } from '@/util/constant'
 import { login } from '@/http/api'
 import { ResultEnum } from '@/http/config'
 import { router } from '@/router/index'
@@ -138,7 +138,18 @@ const doLogin = () => {
     formDisabled.value = true
     login(userinfo)
       .then(({ data }) => {
-        appStore.setRole(data.role as Role)
+        switch (VITE_CUSTOMER_CONFIG.name) {
+          case customers.demo:
+          case customers.fhtek:
+            appStore.setRole(Role.super)
+            break
+          case customers.totalplay:
+            appStore.setRole(data.role as Role)
+            break
+          default:
+            appStore.setRole(Role.super)
+            break
+        }
         appStore.setLoggedUser(userinfo.username)
         router.push('/home')
       })
