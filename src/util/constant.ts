@@ -109,7 +109,7 @@ export const SsidText = {
   [Lan2]: 'LAN2',
   [Lan3]: 'LAN3',
   [Lan4]: 'LAN4',
-  [Lan5]: 'LAN5(10GE)',
+  [Lan5]: '10GE',
   [Ssid1]: 'SSID1',
   [Ssid2]: 'SSID2',
   [Ssid3]: 'SSID3',
