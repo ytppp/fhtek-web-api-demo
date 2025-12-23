@@ -529,26 +529,47 @@ export default {
         ? currentData
         : currentData.filter((item) => item.index !== modalForm.index)
 
-      const flag = true
+      let flag = true
+      /*
+       * 如果新增是ALL协议，判断列表中是否已经有ALL协议项
+       *  如果有，判断两者src_ip、dest_ip、dest_port是否完全一致，一致则不允许新增
+       *  如果没有，判断列表中协议项与新增项src_ip、dest_ip、dest_port是否完全一致，一致则不允许新增
+       * 如果新增不是ALL协议，判断列表中是否已经有ALL协议项
+       *  如果有，判断两者src_ip、dest_ip、dest_port是否完全一致，一致则不允许新增
+       *  如果没有，判断列表中协议项与新增项proto、src_ip、dest_ip、dest_port是否完全一致，一致则不允许新增
+       */
       if (modalForm.proto === ProtocolType.ALL) {
+        const allItem = tempData.find((item) => item.proto === ProtocolType.ALL)
+        if (allItem) {
+          flag =
+            modalForm.src_ip !== allItem.src_ip ||
+            modalForm.dest_ip !== allItem.dest_ip ||
+            modalForm.dest_port !== allItem.dest_port
+        } else {
+          flag = !tempData.some(
+            (item) =>
+              modalForm.src_ip === item.src_ip &&
+              modalForm.dest_ip === item.dest_ip &&
+              modalForm.dest_port === item.dest_port,
+          )
+        }
       } else {
+        const allItem = tempData.find((item) => item.proto === ProtocolType.ALL)
+        if (allItem) {
+          flag =
+            modalForm.src_ip !== allItem.src_ip ||
+            modalForm.dest_ip !== allItem.dest_ip ||
+            modalForm.dest_port !== allItem.dest_port
+        } else {
+          flag = !tempData.some(
+            (item) =>
+              item.proto === modalForm.proto &&
+              modalForm.src_ip === item.src_ip &&
+              modalForm.dest_ip === item.dest_ip &&
+              modalForm.dest_port === item.dest_port,
+          )
+        }
       }
-      // const flag = !tempData.some((item) => {
-      //   if (modalForm.proto === ProtocolType.ALL) {
-      //     return (
-      //       (item.src_ip && modalForm.src_ip) ||
-      //       (item.dest_ip && modalForm.dest_ip) ||
-      //       (item.dest_port && modalForm.dest_port)
-      //     )
-      //   } else {
-      //     return (
-      //       item.src_ip === modalForm.src_ip &&
-      //       item.dest_ip === modalForm.dest_ip &&
-      //       item.dest_port === modalForm.dest_port &&
-      //       item.proto === modalForm.proto
-      //     )
-      //   }
-      // })
 
       if (!flag) {
         this.$toast({
