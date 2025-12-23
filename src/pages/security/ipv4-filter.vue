@@ -529,22 +529,26 @@ export default {
         ? currentData
         : currentData.filter((item) => item.index !== modalForm.index)
 
-      const flag = !tempData.some((item) => {
-        if (item.proto === ProtocolType.ALL) {
-          return (
-            item.src_ip === modalForm.src_ip ||
-            item.dest_ip === modalForm.dest_ip ||
-            item.dest_port === modalForm.dest_port
-          )
-        } else {
-          return (
-            item.src_ip === modalForm.src_ip &&
-            item.dest_ip === modalForm.dest_ip &&
-            item.dest_port === modalForm.dest_port &&
-            item.proto === modalForm.proto
-          )
-        }
-      })
+      const flag = true
+      if (modalForm.proto === ProtocolType.ALL) {
+      } else {
+      }
+      // const flag = !tempData.some((item) => {
+      //   if (modalForm.proto === ProtocolType.ALL) {
+      //     return (
+      //       (item.src_ip && modalForm.src_ip) ||
+      //       (item.dest_ip && modalForm.dest_ip) ||
+      //       (item.dest_port && modalForm.dest_port)
+      //     )
+      //   } else {
+      //     return (
+      //       item.src_ip === modalForm.src_ip &&
+      //       item.dest_ip === modalForm.dest_ip &&
+      //       item.dest_port === modalForm.dest_port &&
+      //       item.proto === modalForm.proto
+      //     )
+      //   }
+      // })
 
       if (!flag) {
         this.$toast({
