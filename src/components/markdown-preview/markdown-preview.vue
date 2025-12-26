@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted, nextTick, withDefaults, onUnmounted } from 'vue'
+import { ref, watch, computed, onMounted, nextTick, onUnmounted } from 'vue'
 import { Marked } from 'marked'
 import { markedHighlight } from 'marked-highlight'
 import hljs from 'highlight.js'

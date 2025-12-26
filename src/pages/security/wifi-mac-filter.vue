@@ -10,7 +10,8 @@
         </fh-form-item>
         <template v-if="form.enable">
           <fh-form-item :label="$t('trans0104')">
-            <fh-radio-group v-model="form.mode" @change="changeFilterMode">
+            <!-- 过滤模式 -->
+            <fh-radio-group v-model="form.mode">
               <fh-radio v-for="mode in filteringModes" :key="mode.value" :label="mode.value">
                 {{ mode.text }}
               </fh-radio>
