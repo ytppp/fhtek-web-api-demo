@@ -108,7 +108,6 @@ import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   isValidInteger,
-  isValidLength,
   isValidSymbol,
   isValidUnixPath,
   format,
@@ -174,12 +173,8 @@ const clientFormRules = {
       message: t('trans0004'),
     },
     {
-      rule: (value) => isValidLength(value, 1, 32),
-      message: format(t('trans0003'), [t('trans0712'), 1, 32]),
-    },
-    {
       rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0712'), format(t('trans0042'), [specialChar])]),
+      message: format(t('trans0013'), [t('trans0053'), format(t('trans0042'), [specialChar])]),
     },
   ],
   password: [
@@ -188,12 +183,8 @@ const clientFormRules = {
       message: t('trans0004'),
     },
     {
-      rule: (value) => isValidLength(value, 8, 64),
-      message: format(t('trans0003'), [t('trans0712'), 8, 64]),
-    },
-    {
       rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0712'), format(t('trans0042'), [specialChar])]),
+      message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
     },
   ],
   path: [
@@ -230,12 +221,8 @@ const serverFormRules = {
       message: t('trans0004'),
     },
     {
-      rule: (value) => isValidLength(value, 1, 32),
-      message: format(t('trans0003'), [t('trans0712'), 1, 32]),
-    },
-    {
       rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0712'), format(t('trans0042'), [specialChar])]),
+      message: format(t('trans0013'), [t('trans0053'), format(t('trans0042'), [specialChar])]),
     },
   ],
   password: [
@@ -244,12 +231,8 @@ const serverFormRules = {
       message: t('trans0004'),
     },
     {
-      rule: (value) => isValidLength(value, 8, 64),
-      message: format(t('trans0003'), [t('trans0185'), 8, 64]),
-    },
-    {
       rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0185'), format(t('trans0042'), [specialChar])]),
+      message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
     },
   ],
   rootPath: [

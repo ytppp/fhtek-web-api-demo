@@ -227,7 +227,7 @@ const isEnableWps = computed(() => {
   return wifi.enableWpsInitial && wifi.enableInitial && isSsid1.value && wifiEnable.value
 })
 const formDisabled = computed(() => {
-  return enableSteering.value || !wifiEnable.value || mloDisabled.value
+  return !wifiEnable.value || (isSsid1.value && (enableSteering.value || mloDisabled.value))
 })
 const mloDisabled = computed(() => {
   if (appStore.isWifiV7) {
@@ -341,7 +341,8 @@ const save = () => {
 }
 const getMeshData = () => {
   getMesh().then(({ data }) => {
-    enableSteering.value = convertBooleanStatus(data.steering) as boolean
+    enableSteering.value = (convertBooleanStatus(data.enable) &&
+      convertBooleanStatus(data.steering)) as boolean
   })
 }
 const getWifiMloData = () => {

@@ -56,13 +56,9 @@ export default {
             message: this.$t('trans0004'),
           },
           {
-            rule: (value) => isValidLength(value, 1, 32),
-            message: format(this.$t('trans0003'), [this.$t('trans0712'), 1, 32]),
-          },
-          {
             rule: (value) => isValidSymbol(value),
             message: format(this.$t('trans0013'), [
-              this.$t('trans0712'),
+              this.$t('trans0053'),
               format(this.$t('trans0042'), [specialChar]),
             ]),
           },
@@ -74,12 +70,12 @@ export default {
           },
           {
             rule: (value) => isValidLength(value, 8, 64),
-            message: format(this.$t('trans0003'), [this.$t('trans0185'), 8, 64]),
+            message: format(this.$t('trans0003'), [this.$t('trans0196'), 8, 64]),
           },
           {
             rule: (value) => isValidSymbol(value),
             message: format(this.$t('trans0013'), [
-              this.$t('trans0185'),
+              this.$t('trans0196'),
               format(this.$t('trans0042'), [specialChar]),
             ]),
           },

@@ -226,7 +226,7 @@ const notDisabledProp = computed(() => {
   return mloDisabled.value
 })
 const formDisabled = computed(() => {
-  return !wifiEnable.value || mloDisabled.value
+  return !wifiEnable.value || (isSsidac1.value && mloDisabled.value)
 })
 const mloDisabled = computed(() => {
   if (appStore.isWifiV7) {

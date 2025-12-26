@@ -324,7 +324,7 @@ export default {
               }
               return false
             },
-            message: this.$t('trans0566').format(this.$t('trans0136')),
+            message: this.$t('trans0566').format(this.$t('trans0138')),
           },
         ],
         dest_port: [
