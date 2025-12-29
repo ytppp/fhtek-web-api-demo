@@ -12,6 +12,10 @@ export const logout = (): Promise<ApiResponse<any>> => {
   return http.post('logout')
 }
 
+export const getDevModel = (): Promise<ApiResponse<any>> => {
+  return http.get('getDevmodel', undefined, { toast: false, loading: false, cancel: false })
+}
+
 export const getLan = (loading: boolean = true, toast = true): Promise<ApiResponse<any>> => {
   return http.post(
     api,
@@ -53,24 +57,24 @@ export const setLanSpeed = (params): Promise<ApiResponse<any>> => {
   return http.post(`SetLanSpeed`, createData(params))
 }
 
-export const getWan = (): Promise<ApiResponse<any>> => {
-  return http.get(`GetWan`, undefined, { timeout: 20000 })
+export const getWan = (loading: boolean = true): Promise<ApiResponse<any>> => {
+  return http.get(`GetWan`, undefined, { timeout: 90000, loading })
 }
 
 export const getPortBindInfo = (params): Promise<ApiResponse<any>> => {
-  return http.post(`GetPortBindInfo`, createData(params))
+  return http.post(`GetPortBindInfo`, createData(params), { loading: false })
 }
 
 export const addWan = (params): Promise<ApiResponse<any>> => {
-  return http.post(`AddWan`, createData(params), { timeout: 20000 })
+  return http.post(`AddWan`, createData(params), { timeout: 90000 })
 }
 
 export const editWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('SetWan', createData(params), { timeout: 20000 })
+  return http.post('SetWan', createData(params), { timeout: 90000 })
 }
 
 export const deleteWan = (params): Promise<ApiResponse<any>> => {
-  return http.post('DeleteWan', createData(params), { timeout: 20000 })
+  return http.post('DeleteWan', createData(params), { timeout: 90000 })
 }
 
 export const getAcl = (): Promise<ApiResponse<any>> => {
@@ -127,28 +131,55 @@ export const delIpv4Filter = (params): Promise<ApiResponse<any>> => {
   })
 }
 
+export const getIpv4FilterUp = (): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter_up:get',
+  })
+}
+
+export const addIpv4FilterUp = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter_up:add',
+    data: params,
+  })
+}
+
+export const editIpv4FilterUp = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter_up:edit',
+    data: params,
+  })
+}
+
+export const delIpv4FilterUp = (params): Promise<ApiResponse<any>> => {
+  return http.post(api, {
+    method: 'firewall.ipv4_filter_up:delete',
+    data: params,
+  })
+}
+
 export const getWifi2g = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.b24g.basic:get')
+  return http.get('wifi.b24g.basic:get', undefined, { timeout: 90000 })
 }
 
 export const setWifi2g = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b24g.basic:edit', createData(params))
+  return http.post('wifi.b24g.basic:edit', createData(params), { timeout: 90000 })
 }
 
 export const getWifi2gAdv = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.b24g.advanced:get')
+  return http.get('wifi.b24g.advanced:get', undefined, { timeout: 90000 })
 }
 
 export const setWifi2gAdv = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b24g.advanced:edit', createData(params))
+  return http.post('wifi.b24g.advanced:edit', createData(params), { timeout: 90000 })
 }
 
 export const getWifi5gAdv = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.b5g.advanced:get')
+  return http.get('wifi.b5g.advanced:get', undefined, { timeout: 90000 })
 }
 
 export const setWifi5gAdv = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b5g.advanced:edit', createData(params))
+  return http.post('wifi.b5g.advanced:edit', createData(params), { timeout: 90000 })
 }
 
 export const getWps = (params): Promise<ApiResponse<any>> => {
@@ -160,11 +191,11 @@ export const setWps = (params): Promise<ApiResponse<any>> => {
 }
 
 export const getWifi5g = (): Promise<ApiResponse<any>> => {
-  return http.get('wifi.b5g.basic:get')
+  return http.get('wifi.b5g.basic:get', undefined, { timeout: 90000 })
 }
 
 export const setWifi5g = (params): Promise<ApiResponse<any>> => {
-  return http.post('wifi.b5g.basic:edit', createData(params))
+  return http.post('wifi.b5g.basic:edit', createData(params), { timeout: 90000 })
 }
 
 export const getIpv6Lan = (): Promise<ApiResponse<any>> => {
@@ -454,10 +485,18 @@ export const delUrlFilterItem = (params): Promise<ApiResponse<any>> => {
   return http.post('delUrlFilterItem', createData(params))
 }
 
-export const getUsb = (): Promise<ApiResponse<any>> => {
-  return http.post(api, {
-    method: 'storage.usb.status:get',
-  })
+export const getUsb = (
+  loading: boolean = true,
+  toast: boolean = true,
+  cancel: boolean = true,
+): Promise<ApiResponse<any>> => {
+  return http.post(
+    api,
+    {
+      method: 'storage.usb.status:get',
+    },
+    { loading, toast, cancel },
+  )
 }
 
 export const usbDownload = (params): Promise<ApiResponse<any>> => {
@@ -571,6 +610,18 @@ export const getTracerouteResults = (): Promise<ApiResponse<any>> => {
   return http.get('getTracerouteResults')
 }
 
+export const startInformUpload = (params): Promise<ApiResponse<any>> => {
+  return http.post('startInformUpload', createData(params))
+}
+
+export const informUploadStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getInformUploadStatus', undefined, { loading: false, toast: false })
+}
+
+export const getInformUploadResults = (): Promise<ApiResponse<any>> => {
+  return http.get('getInformUploadResults')
+}
+
 export const startReset = (): Promise<ApiResponse<any>> => {
   return http.post('reset')
 }
@@ -623,8 +674,8 @@ export const setTime = (params): Promise<ApiResponse<any>> => {
   return http.post('setTime', createData(params))
 }
 
-export const getDevInfo = (config?: TAxiosRequestConfig): Promise<ApiResponse<any>> => {
-  return http.get('getDevinfo', undefined, { cancel: false, ...config })
+export const getDevInfo = (): Promise<ApiResponse<any>> => {
+  return http.get('getDevinfo')
 }
 
 export const getPonInfo = (): Promise<ApiResponse<any>> => {
@@ -679,4 +730,28 @@ export const setUpnpConfig = (params): Promise<ApiResponse<any>> => {
 
 export const getUpnpList = (): Promise<ApiResponse<any>> => {
   return http.get('getUpnpList')
+}
+
+export const getSwmpSettings = (): Promise<ApiResponse<any>> => {
+  return http.get('getSwmpSettings')
+}
+
+export const editSwmpSettings = (params): Promise<ApiResponse<any>> => {
+  return http.post('editSwmpSettings', createData(params))
+}
+
+export const getSwmpStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('getSwmpStatus')
+}
+
+export const getLoginTimeout = (): Promise<ApiResponse<any>> => {
+  return http.get('getLogintimeout', undefined, { loading: false, toast: false, cancel: false })
+}
+
+export const getWifiMlo = (): Promise<ApiResponse<any>> => {
+  return http.get('wifi.mlo:get', undefined, { timeout: 90000 })
+}
+
+export const setWifiMlo = (params): Promise<ApiResponse<any>> => {
+  return http.post('wifi.mlo:set', createData(params), { timeout: 90000 })
 }

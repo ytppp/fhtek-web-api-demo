@@ -136,12 +136,11 @@ export default {
                 tempData = this.data.filter((item) => item.index !== this.modalForm.index)
               }
               flag = !tempData.some((item) => {
-                console.log(item.id, this.modalForm.id, item.mac, value)
                 return item.url === value
               })
               return flag
             },
-            message: this.$t('trans0400'),
+            message: this.$t('trans0678').format(this.$t('trans0058')),
           },
         ],
       },
@@ -214,7 +213,7 @@ export default {
     },
     openEditModal(row) {
       this.modalForm.id = row.id
-      this.modalForm.mac = row.mac
+      this.modalForm.url = row.url
       this.modalForm.index = row.index
       this.modalType = ModalType.edit
       this.visible = true
@@ -264,9 +263,8 @@ export default {
         id: row.id,
       }
       delUrlFilterItem(data).then(() => {
-        this.getUrlFilterList()(() => {
-          successTips('trans0410')
-        })
+        successTips('trans0410')
+        this.getUrlFilterList()
       })
     },
   },

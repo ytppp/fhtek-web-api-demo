@@ -40,7 +40,7 @@
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model="visible" :title="modalTitle">
+    <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0166')">
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { ModalType, ServiceType } from '@/util/constant'
+import { ModalType, ServiceType, WanMode } from '@/util/constant'
 import { getWan, getDdns, addDdns, editDdns, delDdns } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { successTips } from '@/util/tool'
@@ -207,6 +207,9 @@ export default {
         this.getDdnsList()
       })
     },
+    handleClose() {
+      this.$refs.modalForm.clearValidate()
+    },
     save() {
       if (this.$refs.modalForm.validate()) {
         const data = {
@@ -263,8 +266,9 @@ export default {
         const wanList = []
         items.forEach((item) => {
           if (
-            item.serviceType === ServiceType.INTERNET ||
-            item.serviceType === ServiceType.TR069_INTERNET
+            (item.serviceType === ServiceType.INTERNET ||
+              item.serviceType === ServiceType.TR069_INTERNET) &&
+            item.wanMode === WanMode.route
           ) {
             wanList.push({
               value: item.id,

@@ -31,7 +31,7 @@ const DeviceRoleText = {
   [DeviceRole.controller]: 'trans0572',
   [DeviceRole.agent]: 'trans0573',
   [DeviceRole.wired]: 'trans0495',
-  [DeviceRole.wireless]: 'trans0544',
+  [DeviceRole.wireless]: 'trans0943',
 }
 const OnlineStatus = {
   online: 'online',

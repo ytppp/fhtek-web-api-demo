@@ -10,6 +10,7 @@
       <fh-input
         readonly
         :disabled="selectDisabled"
+        :not-disabled="notDisabled"
         :placeholder="selectPlaceholder"
         :label="currentLabel"
         :is-select-comp-child-node="true"
@@ -24,6 +25,7 @@
           <fh-icon
             :class="['select__caret', 'input__icon', opened ? 'is-reverse' : '']"
             name="icon-down"
+            @click="stopPropagation"
           ></fh-icon>
         </template>
       </fh-input>
@@ -95,6 +97,10 @@ const props = defineProps({
     type: Function,
     default: () => {},
   },
+  notDisabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 const model = defineModel({
   required: true,
@@ -119,6 +125,7 @@ const selectPlaceholder = computed(() => {
   return typeof props.placeholder !== 'undefined' ? props.placeholder : t('trans0001')
 })
 const selectDisabled = computed(() => {
+  if (props.notDisabled) return false
   return props.disabled || form?.disabled.value
 })
 
@@ -144,6 +151,9 @@ watch(
     deep: true,
   },
 )
+const stopPropagation = (event) => {
+  if (selectDisabled.value) event.stopPropagation()
+}
 const updatePosition = () => {
   const { width } = selectInputRef.value.getBoundingClientRect()
   computePosition(selectInputRef.value, selectPopupRef.value, {

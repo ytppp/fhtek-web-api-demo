@@ -54,7 +54,10 @@
             <fh-select v-model="modalForm.interface" :options="wanOptions"></fh-select>
           </fh-form-item>
           <fh-form-item :label="$t('trans0792')" prop="target">
-            <fh-input v-model="modalForm.target" :placeholder="placeholderTips"></fh-input>
+            <fh-input v-model="modalForm.target"></fh-input>
+            <template #extra>
+              {{ placeholderTips }}
+            </template>
           </fh-form-item>
           <fh-form-item :label="$t('trans0656')" prop="gateway">
             <fh-input v-model="modalForm.gateway"></fh-input>
@@ -75,14 +78,11 @@ import {
   isIP,
   isMulticast,
   isLoopback,
-  isNetworkIP,
-  isBoardcastIP,
   format,
   cidrToSubnetMask,
-  ip2int,
-  getIpAfter,
   isValidIpv6AddrExtra,
   successTips,
+  isValidStaticRouteMask,
 } from '@/util/tool'
 import {
   getWanInfo,
@@ -93,27 +93,8 @@ import {
 } from '@/http/api'
 import { ModalType, IP, NetType } from '@/util/constant'
 
-const maxRuleNum = 16
+const maxRuleNum = 32
 const all = 'all'
-function isValidStaticRouteMask(ip, mask) {
-  if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
-  if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
-  return false
-}
-function isValidMask(ip) {
-  if (ip.split('.').filter((val) => val).length !== 4) return false
-  const i = ip2int(ip).toString(2).padStart(32, '0')
-  const result = i.split('10')
-  // result.length !== 2
-  if (result.length > 2) {
-    return false
-  }
-  // 有效mask
-  if (result[0].includes('0') || (result[1] && result[1].includes('1'))) {
-    return false
-  }
-  return true
-}
 export default {
   data() {
     return {
@@ -121,6 +102,7 @@ export default {
       maxRuleNum,
       modalType: ModalType.add,
       wanList: [],
+      wanText: {},
       visible: false,
       display: all,
       displayOptions: [
@@ -175,13 +157,11 @@ export default {
               if (parts.length !== 2) return false
               const ip = parts[0]
               let suffix = parts[1]
+              if (!suffix) return false
               if (this.isIpv4 && isIP(ip)) {
-                const flag = isValidMask(suffix)
                 const mask = cidrToSubnetMask(parseInt(suffix))
-                if (!flag && !mask) return false
-                const maskVal = flag ? suffix : mask
-                // isNetworkIP(ip, maskVal) || sBoardcastIP(ip, maskVal)
-                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, maskVal)) {
+                if (!mask) return false
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, mask)) {
                   return false
                 }
                 if (!this.lanIp && this.lanIp === ip) {
@@ -191,10 +171,9 @@ export default {
               }
               if (this.isIpv6 && isIP(ip, IP.IPv6)) {
                 suffix = parseInt(suffix)
-                if (!isValidIpv6AddrExtra(ip) || (suffix < 0 && suffix > 128)) {
-                  return false
+                if (isValidIpv6AddrExtra(ip) && suffix > 0 && suffix <= 128) {
+                  return true
                 }
-                return true
               }
               return false
             },
@@ -210,12 +189,13 @@ export default {
         ],
         gateway: [
           {
-            rule: (value) => value.trim(),
-            message: this.$t('trans0004'),
-          },
-          {
             rule: (value) => {
-              if ((this.isIpv4 && isIP(value)) || (this.isIpv6 && isIP(value, IP.IPv6))) return true
+              if (!value) return true
+              if (
+                (this.isIpv4 && isIP(value) && !isLoopback(value) && !isMulticast(value)) ||
+                (this.isIpv6 && isIP(value, IP.IPv6))
+              )
+                return true
               return false
             },
             message: this.$t('trans0566').format(this.$t('trans0656')),
@@ -237,7 +217,7 @@ export default {
           title: this.$t('trans0656'),
         },
         {
-          key: 'interface',
+          key: 'interfaceAlias',
           title: this.$t('trans0140'),
         },
       ],
@@ -283,6 +263,7 @@ export default {
   methods: {
     changeIpType() {
       this.modalForm.interface = ''
+      this.$refs.modalForm.clearValidate()
     },
     handleClose() {
       this.$refs.modalForm.clearValidate()
@@ -353,16 +334,29 @@ export default {
           return
         }
         const wanList = []
+        const wanText = {}
         items.forEach((item) => {
           if (item.protocol !== NetType.bridge) {
             wanList.push({
               value: item.interface,
               text: item.wanname,
-              type: item.ipv4.length ? IP.IPv4 : item.ipv6.length ? IP.IPv6 : '',
+              type:
+                item.ipv4.length ||
+                item.protocol === NetType.dhcp ||
+                item.protocol === NetType.pppoe
+                  ? IP.IPv4
+                  : item.ipv6.length ||
+                      item.protocol === NetType.slaac ||
+                      item.protocol === NetType.dhcpv6
+                    ? IP.IPv6
+                    : '',
             })
+            wanText[item.interface] = item.wanname
           }
         })
         this.wanList = wanList
+        this.wanText = wanText
+        this.getStaticRouteListData()
       })
     },
     getStaticRouteListData() {
@@ -374,6 +368,7 @@ export default {
             tableData.push({
               ...item,
               target: item.type === IP.IPv4 ? `${item.target}/${item.mask}` : item.target,
+              interfaceAlias: this.wanText[item.interface],
               index: i,
             })
           })
@@ -387,7 +382,6 @@ export default {
   },
   created() {
     this.getWanData()
-    this.getStaticRouteListData()
   },
 }
 </script>

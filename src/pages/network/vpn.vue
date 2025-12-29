@@ -93,14 +93,28 @@ export default {
             message: this.$t('trans0004'),
           },
           {
-            rule: (value) =>
-              (isIP(value) &&
-                !isMulticast(value) &&
-                !isLoopback(value) &&
-                !isBoardcastIP(value) &&
-                ip2int(value) != 0) ||
-              isValidDomain(value),
+            rule: (value) => {
+              if (isIP(value)) {
+                return (
+                  !isMulticast(value) &&
+                  !isLoopback(value) &&
+                  !isBoardcastIP(value) &&
+                  ip2int(value) != 0
+                )
+              } else {
+                return true
+              }
+            },
             message: this.$t('trans0397'),
+          },
+          {
+            rule: (value) => {
+              if (isIP(value)) {
+                return true
+              }
+              return isValidDomain(value) && isValidSymbol(value)
+            },
+            message: this.$t('trans0013').format('', this.$t('trans0042').format(specialChar)),
           },
           {
             rule: (value) => {

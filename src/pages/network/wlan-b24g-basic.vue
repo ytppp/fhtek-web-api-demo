@@ -1,4 +1,3 @@
-3
 <template>
   <div class="page">
     <div class="page__header">
@@ -13,10 +12,11 @@
         ref="wifiFormRef"
         :model="wifi"
         :rules="rules"
-        :disabled="!wifiEnable"
+        :disabled="formDisabled"
       >
         <fh-form-item :label="$t('trans0711')">
-          <fh-select @change="changeSsid" v-model="wifi.id" :options="ssidOpts"> </fh-select>
+          <fh-select @change="changeSsid" v-model="wifi.id" :options="ssidOpts" not-disabled>
+          </fh-select>
         </fh-form-item>
         <fh-form-item :label="$t('trans0712')" prop="ssid">
           <fh-input v-model="wifi.ssid"> </fh-input>
@@ -28,7 +28,7 @@
           <fh-switch v-model="wifi.hide"> </fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0747')" prop="sta">
-          <fh-input v-model="wifi.sta"> </fh-input>
+          <fh-input v-model="wifi.sta" :not-disabled="notDisabledProp"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0031')">
           <fh-select v-model="wifi.encrypt" :options="encryptsOpts"> </fh-select>
@@ -50,7 +50,7 @@
           <fh-switch v-model="wifi.enableWps"> </fh-switch>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
-          <fh-button @click="save" block>
+          <fh-button @click="save" :not-disabled="notDisabledProp" block>
             {{ $t('trans0002') }}
           </fh-button>
         </fh-form-item>
@@ -89,9 +89,19 @@ import {
   successTips,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
-import { getWifi2g, setWifi2g, getWps, setWps, getWifi2gAdv } from '@/http/api'
+import { getWifi2g, setWifi2g, getWps, setWps, getMesh, getWifi2gAdv, getWifiMlo } from '@/http/api'
+import {
+  StartAndStop,
+  Encrypts,
+  encrypts,
+  WpsStatus,
+  SsidText,
+  Ssid1,
+  Ssid4,
+  Role,
+} from '@/util/constant'
 import { useCountDown } from '@/hooks/countdown'
-import { StartAndStop, Encrypts, encrypts, WpsStatus, SsidText, Ssid1 } from '@/util/constant'
+import { useAppStore } from '@/stores/app-store'
 
 defineOptions({
   name: 'b24gBasicPage',
@@ -100,13 +110,15 @@ defineOptions({
 const loading = ref(false)
 const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
+const appStore = useAppStore()
 const wifiFormRef = useTemplateRef('wifiFormRef')
+const enableSteering = ref(false)
 const timeout = 2 * 60 * 1000
 const interval = 5000
 const ssidOpts = reactive([])
 const ssidList = reactive([])
+const enableMlo = ref(false)
 const wifiEnable = ref(false)
-const encryptsOpts = encrypts
 const wifi = reactive({
   id: '',
   ssid: '',
@@ -137,11 +149,11 @@ const rules = reactive({
     },
     {
       rule: (value) => isValidLength(value, 1, 32),
-      message: format(t('trans0003'), [t('trans0051'), 1, 32]),
+      message: format(t('trans0003'), [t('trans0712'), 1, 32]),
     },
     {
       rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0051'), format(t('trans0042'), [specialChar])]),
+      message: format(t('trans0013'), [t('trans0712'), format(t('trans0042'), [specialChar])]),
     },
   ],
   password: [
@@ -169,6 +181,22 @@ const rules = reactive({
     },
   ],
 })
+
+const encryptsOpts = computed(() => {
+  if (appStore.isWifiV7) {
+    const EncryptsList = [
+      Encrypts.none,
+      Encrypts.wpa2PskCcmp,
+      Encrypts.wpa3SaeCcmp,
+      Encrypts.wpaWpa2PskCcmp,
+      Encrypts.wpaWpa2PskTkipCcmp,
+      Encrypts.wpa2PskWpa3SaeCcmp,
+    ]
+    return encrypts.filter((item) => EncryptsList.includes(item.value))
+  } else {
+    return encrypts
+  }
+})
 const wpsStatusText = computed(() => {
   if (loading.value) return defaultVal
   return WpsText[wps.status]
@@ -189,8 +217,24 @@ const encryptTip = computed(() => {
 const isSsid1 = computed(() => {
   return wifi.id === Ssid1
 })
+const notDisabledProp = computed(() => {
+  if (!wifiEnable.value) {
+    return false
+  }
+  return mloDisabled.value
+})
 const isEnableWps = computed(() => {
   return wifi.enableWpsInitial && wifi.enableInitial && isSsid1.value && wifiEnable.value
+})
+const formDisabled = computed(() => {
+  return !wifiEnable.value || (isSsid1.value && (enableSteering.value || mloDisabled.value))
+})
+const mloDisabled = computed(() => {
+  if (appStore.isWifiV7) {
+    return enableMlo.value
+  } else {
+    return false
+  }
 })
 
 const start = () => {
@@ -247,17 +291,23 @@ const getWifiData = (id?: string) => {
       return
     }
     wifiEnable.value = convertBooleanStatus(res2.data.enable)
-    const ssidOptsList = items.map((item) => ({
-      value: item.id,
-      text: SsidText[item.id],
-    }))
-    Object.assign(ssidList, items)
-    Object.assign(ssidOpts, ssidOptsList)
+    const ssidOptsList = []
+    items.forEach((item) => {
+      if (appStore.isSuper || (appStore.isAdmin && item.id !== Ssid4)) {
+        ssidOptsList.push({
+          value: item.id,
+          text: SsidText[item.id],
+        })
+      }
+    })
+    ssidList.splice(0, ssidList.length, ...items)
+    ssidOpts.splice(0, ssidOpts.length, ...ssidOptsList)
     wifi.id = id ? id : items[0].id
     changeSsid()
   })
 }
 const changeSsid = () => {
+  wifiFormRef.value?.clearValidate()
   const thisSsid = ssidList.find((item) => item.id === wifi.id)
   if (!thisSsid) return
   wifi.ssid = thisSsid.name
@@ -289,7 +339,20 @@ const save = () => {
     })
   }
 }
+const getMeshData = () => {
+  getMesh().then(({ data }) => {
+    enableSteering.value = (convertBooleanStatus(data.enable) &&
+      convertBooleanStatus(data.steering)) as boolean
+  })
+}
+const getWifiMloData = () => {
+  getWifiMlo().then(({ data }) => {
+    enableMlo.value = convertBooleanStatus(data.enable) as boolean
+  })
+}
 onMounted(() => {
   getWifiData()
+  getMeshData()
+  getWifiMloData()
 })
 </script>

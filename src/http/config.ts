@@ -9,13 +9,15 @@ export enum ResultEnum {
   INVALIDJSON = 10004,
   HASLOGIN = 10005,
   INVALIDFILE = 10006,
+  LOGIN_3_TIMES_FAILED = 10012,
+  VLAN_HAS_EXISTED = 10013,
 }
 
 const defaultUrl = '/action'
 
 export const defaultConfig: TAxiosRequestConfig = {
   baseURL: defaultUrl, // import.meta.env.VITE_API_URL || '',
-  timeout: 10000,
+  timeout: 20000,
   headers: {
     Accept: 'application/json, text/plain, */*',
     'Content-Type': 'application/json',

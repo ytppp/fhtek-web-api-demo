@@ -1,37 +1,44 @@
-import { RouterMode, Role, customers, MeshRole } from './constant'
+import { RouterMode, Role, customers, MeshRole, WifiVersion } from './constant'
 import { format } from './tool'
 import { translate } from '@/i18n/index'
 
-const name = VITE_CUSTOMER_CONFIG.name
-const role = Role.super // sessionStorage.getItem('role')
-const mode = RouterMode.router // sessionStorage.getItem('mode')
-const meshRole = MeshRole.controller // sessionStorage.getItem('meshRole')
 // menu default config
 const config = {
   show: true,
-  auth: [Role.admin, Role.super],
+  auth: [Role.super, Role.admin], // 所有客户都可见
   mode: [RouterMode.router, RouterMode.bridge],
   meshRole: [MeshRole.controller, MeshRole.agent],
+  wifiVersion: [WifiVersion.v6, WifiVersion.v7],
 }
 const strategyA = {
   show: true,
-  auth: [Role.admin, Role.super],
-  mode: [RouterMode.router],
-  meshRole: [MeshRole.controller],
+  auth: [Role.super], // 仅有super权限的客户可见
+  mode: [RouterMode.router, RouterMode.bridge],
+  meshRole: [MeshRole.controller, MeshRole.agent],
+  wifiVersion: [WifiVersion.v6, WifiVersion.v7],
 }
 const strategyB = {
   show: true,
-  auth: [Role.admin, Role.super],
+  auth: [Role.admin], // 仅有admin权限的客户可见
   mode: [RouterMode.router, RouterMode.bridge],
-  meshRole: [MeshRole.controller],
+  meshRole: [MeshRole.controller, MeshRole.agent],
+  wifiVersion: [WifiVersion.v6, WifiVersion.v7],
 }
-let menus = [
+const menusInitial = [
   // {
   //   url: '/home',
   //   text: 'trans0006',
   //   icon: 'icon-home',
-  //   config,
-  // },
+  //   config: {
+  //     ...config,
+  //     show: false,
+  //   }, 只需要给最下层节点配置
+  //   // customers: {
+  //   //   [customers.demo]: {
+  //   //     show: false,
+  //   //   },
+  //   // },
+  // }, // config demo
   {
     url: '/status',
     text: 'trans0166',
@@ -94,7 +101,11 @@ let menus = [
       {
         url: '/status/cwmp',
         text: 'trans0249',
-        config,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/status/sta',
@@ -126,7 +137,11 @@ let menus = [
       {
         url: '/network/wan-binding',
         text: 'trans0751',
-        config,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/network/lan',
@@ -146,7 +161,7 @@ let menus = [
           // {
           //   url: '/network/lan/ipv6-new',
           //   text: 'trans0457',
-          //   config,
+          //   config
           // },
         ],
       },
@@ -161,6 +176,14 @@ let menus = [
         config,
         children: [
           {
+            url: '/network/wlan/mlo',
+            text: 'trans0954',
+            config: {
+              ...config,
+              wifiVersion: [WifiVersion.v7],
+            },
+          },
+          {
             url: '/network/wlan/basic-24g',
             text: format(translate('trans0544'), [translate('trans0049')]),
             config,
@@ -168,7 +191,11 @@ let menus = [
           {
             url: '/network/wlan/advanced-24g',
             text: format(translate('trans0611'), [translate('trans0049')]),
-            config,
+            customers: {
+              [customers.demo]: config,
+              [customers.fhtek]: config,
+              [customers.totalplay]: strategyA,
+            },
           },
           {
             url: '/network/wlan/basic-5g',
@@ -178,19 +205,27 @@ let menus = [
           {
             url: '/network/wlan/advanced-5g',
             text: format(translate('trans0611'), [translate('trans0050')]),
-            config,
+            customers: {
+              [customers.demo]: config,
+              [customers.fhtek]: config,
+              [customers.totalplay]: strategyA,
+            },
           },
         ],
       },
       {
         url: '/network/static-route',
         text: 'trans0793',
-        config,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       // {
       //   url: '/network/default-route',
       //   text: 'trans0795',
-      //   config,
+      //   config
       // },
       {
         url: '/network/mesh',
@@ -201,23 +236,6 @@ let menus = [
         url: '/network/vpn',
         text: 'trans0647',
         config,
-      },
-      {
-        url: '/network/voip',
-        text: 'trans0732',
-        config,
-        children: [
-          {
-            url: '/network/wlan/basic-voip',
-            text: 'trans0546',
-            config,
-          },
-          {
-            url: '/network/wlan/advanced-voip',
-            text: 'trans0579',
-            config,
-          },
-        ],
       },
     ],
   },
@@ -234,7 +252,11 @@ let menus = [
       {
         url: '/security/url-filter',
         text: 'trans0832',
-        config,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/security/mac-filter',
@@ -259,7 +281,11 @@ let menus = [
       {
         url: '/security/dos',
         text: 'trans0055',
-        config,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
     ],
   },
@@ -276,7 +302,7 @@ let menus = [
       // {
       //   url: '/app/port-trigger',
       //   text: 'trans0427',
-      //   config,
+      //   config
       // },
       {
         url: '/app/dmz',
@@ -296,22 +322,30 @@ let menus = [
       {
         url: '/app/cwmp',
         text: 'trans0271',
-        config,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/app/time',
         text: 'trans0247',
-        config,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       // {
       //   url: '/app/igmp-mld',
       //   text: 'trans0248',
-      //   config,
+      //   config
       // },
       // {
       //   url: '/app/static-arp',
       //   text: 'trans0805',
-      //   config,
+      //   config
       // },
       {
         url: '/app/static-dns',
@@ -336,12 +370,40 @@ let menus = [
       {
         url: '/app/samba',
         text: 'trans0822',
-        config,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/app/media-sharing',
         text: 'trans0823',
         config,
+      },
+      {
+        url: '/network/voip',
+        text: 'trans0732',
+        children: [
+          {
+            url: '/network/wlan/basic-voip',
+            text: 'trans0546',
+            customers: {
+              [customers.demo]: config,
+              [customers.fhtek]: config,
+              [customers.totalplay]: strategyA,
+            },
+          },
+          {
+            url: '/network/wlan/advanced-voip',
+            text: 'trans0579',
+            customers: {
+              [customers.demo]: config,
+              [customers.fhtek]: config,
+              [customers.totalplay]: strategyA,
+            },
+          },
+        ],
       },
     ],
   },
@@ -363,7 +425,11 @@ let menus = [
       {
         url: '/management/upgrade',
         text: 'trans0187',
-        config,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/management/log',
@@ -373,7 +439,11 @@ let menus = [
       {
         url: '/management/terminal',
         text: 'trans0401',
-        config,
+        customers: {
+          [customers.demo]: config,
+          [customers.fhtek]: config,
+          [customers.totalplay]: strategyA,
+        },
       },
       {
         url: '/management/ont-auth',
@@ -383,7 +453,6 @@ let menus = [
       {
         url: '/management/diagnose',
         text: 'trans0802',
-        config,
         children: [
           {
             url: '/management/diagnose/internet',
@@ -393,22 +462,27 @@ let menus = [
           {
             url: '/management/diagnose/remote',
             text: 'trans0803',
-            config,
+            customers: {
+              [customers.demo]: config,
+              [customers.fhtek]: config,
+              [customers.totalplay]: strategyA,
+            },
           },
         ],
       },
     ],
   },
 ]
-export function getMenu() {
+export function getMenu(name, role, mode, meshRole, wifiVersion) {
   console.log('Init menus...')
   console.log(`customer is: ${name}`)
-  if (!role || !mode || !meshRole) {
-    return menus
+  if (!role || !mode || !meshRole || !wifiVersion) {
+    return menusInitial
   }
   console.log(`role is: ${role}`)
   console.log(`mode is: ${mode}`)
   console.log(`meshRole is: ${meshRole}`)
+  console.log(`wifiVersion is: ${wifiVersion}`)
   const generateMenu = (menus, name) => {
     menus.forEach((menu) => {
       if (menu.children) {
@@ -422,11 +496,11 @@ export function getMenu() {
     })
     return menus
   }
-  const filterMenu = (menus, role, mode, meshRole) => {
+  const filterMenu = (menus, role, mode, meshRole, wifiVersion) => {
     const parents = []
     menus.forEach((menu) => {
       if (menu.children) {
-        const filteredChildren = filterMenu(menu.children, role, mode, meshRole)
+        const filteredChildren = filterMenu(menu.children, role, mode, meshRole, wifiVersion)
         if (filteredChildren.length) {
           parents.push({
             ...menu,
@@ -438,7 +512,8 @@ export function getMenu() {
           menu.config.show &&
           menu.config.auth.includes(role) &&
           menu.config.mode.includes(mode) &&
-          menu.config.meshRole.includes(meshRole)
+          menu.config.meshRole.includes(meshRole) &&
+          menu.config.wifiVersion.includes(wifiVersion)
         ) {
           parents.push(menu)
         }
@@ -446,7 +521,7 @@ export function getMenu() {
     })
     return parents
   }
-  menus = generateMenu(menus, name)
-  menus = filterMenu(menus, role, mode, meshRole)
-  return menus
+  const menuGenerated = generateMenu(menusInitial, name)
+  const menuFilterd = filterMenu(menuGenerated, role, mode, meshRole, wifiVersion)
+  return menuFilterd
 }

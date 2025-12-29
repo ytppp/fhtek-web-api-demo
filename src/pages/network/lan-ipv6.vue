@@ -93,7 +93,7 @@ const getWanData = () => {
         })
       }
     })
-    Object.assign(wanList, thisWanList)
+    wanList.splice(0, wanList.length, ...thisWanList)
   })
 }
 function getIpv6LanData() {

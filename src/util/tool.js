@@ -119,6 +119,14 @@ export function isValidSymbol(value, ruleReg = /^[\w!#$*+\-.=?@_~]+$/i) {
   return ruleReg.test(value)
 }
 
+export const invalidChar = '$*?[]&!;<>|\\"\''
+export function isInvalidSymbol(value, ruleReg = /[\*\?\[\]\$&!;<>\|\\"']/) {
+  if (!value) {
+    return false
+  }
+  return ruleReg.test(value)
+}
+
 export function getStringByte(str) {
   let total = 0
   /**
@@ -264,7 +272,7 @@ export function isValidMask(ip) {
     return false
   }
   // 有效mask
-  if (result[0].includes('0') || result[1].includes('1')) {
+  if (result[0].includes('0') || (result[1] && result[1].includes('1'))) {
     return false
   }
   return true
@@ -357,6 +365,7 @@ export function isValidIpv6AddrExtra(value) {
     fullAddr.startsWith('FEC0') ||
     fullAddr.startsWith('FECC') ||
     fullAddr.startsWith('FC00') ||
+    fullAddr.startsWith('FD00') ||
     fullAddr === ipv6OfAll0 ||
     fullAddr === ipv6OfAllF ||
     fullAddr === ipv6End1
@@ -450,9 +459,12 @@ export function isObjExistVal(obj, val) {
 }
 
 export function isValidDomain(value, flag = true) {
+  // const domainReg = flag
+  //   ? /^(https?:\/\/)?([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
+  //   : /^([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
   const domainReg = flag
-    ? /^(https?:\/\/)?([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
-    : /^([\w-]+\.)*([\w-]+\.[a-zA-Z]{2,})(\/\S*)?$/i
+    ? /^(https?:\/\/)?(?:(?:[a-zA-Z0-9\u00a1-\uffff](?:[a-zA-Z0-9\u00a1-\uffff-_]{0,61}[a-zA-Z0-9\u00a1-\uffff])?\.)+[a-zA-Z\u00a1-\uffff]{2,}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?::\d{1,5})?(\/\S*)?$/
+    : /^(?:(?:[a-zA-Z0-9\u00a1-\uffff](?:[a-zA-Z0-9\u00a1-\uffff-_]{0,61}[a-zA-Z0-9\u00a1-\uffff])?\.)+[a-zA-Z\u00a1-\uffff]{2,}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?::\d{1,5})?(\/\S*)?$/
   return domainReg.test(value)
 }
 function isMulticastMac(mac) {
@@ -492,8 +504,10 @@ export function isValidUrlName(url) {
 
 export function isValidUnixPath(path) {
   // 匹配 Unix 路径（如 /path/to/file 或 ./file）
-  const pattern = /^(?:\/|(?:\.\/)?(?:[^\/\0]+\/)*[^\/\0]+)$/
-  return !pattern.test(path)
+  // 需要转义的元字符列表： [ ] ( ) { } \ ^ $ | ? * + . /
+  // const pattern = /^(?:\/|\.{1,2}\/)?([a-zA-Z0-9_\-]+\/)*[a-zA-Z0-9_\-]*\/?$/ // 原来的
+  const pattern = /^(?:\/|\.{1,2}\/)?([^/\s]+\/)*[^/\s]*\/?$/
+  return pattern.test(path)
 }
 
 export const formatDuration = (value) => {
@@ -517,7 +531,7 @@ export const formatDuration = (value) => {
 }
 
 export function cidrToSubnetMask(prefixLength) {
-  if (typeof prefixLength !== 'number' || prefixLength < 0 || prefixLength > 32) {
+  if (typeof prefixLength !== 'number' || prefixLength <= 0 || prefixLength > 32) {
     return false
   }
 
@@ -613,4 +627,16 @@ export const findObjectsWithValue = (database, searchVal) => {
     }
     return false
   })
+}
+
+export function isValidStaticRouteMask(ip, mask) {
+  if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
+  if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
+  return false
+}
+
+export function isHexadecimal(input) {
+  const str = typeof input === 'string' ? input : String(input)
+  const hexRegex = /^[0-9a-fA-F]+$/
+  return hexRegex.test(str)
 }

@@ -4,14 +4,27 @@
       <h1 class="page__title">{{ $t('trans0014') }}</h1>
     </div>
     <div class="page__content">
-      <fh-form class="form form--small wan-form" ref="wanRef" :model="wan" :rules="wanRules">
+      <fh-form
+        class="form form--small wan-form"
+        ref="wanRef"
+        :model="wan"
+        :rules="wanRules"
+        :disabled="appStore.isAdmin"
+      >
         <fh-form-item :label="t('trans0140')">
-          <div style="display: flex; align-items: center">
+          <div
+            style="display: flex; align-items: center"
+            :style="isMobile ? { width: '100%' } : {}"
+          >
             <fh-select
-              style="width: 300px; margin-right: 4px"
+              :style="{
+                width: isMobile && appStore.isAdmin ? '100%' : '300px',
+                marginRight: appStore.isSuper ? '4px' : '0px',
+              }"
               v-model="wan.id"
               :before-change="beforeChangeWan"
               :options="wanOpts"
+              :not-disabled="true"
               @change="changeWan"
             ></fh-select>
             <fh-icon
@@ -19,7 +32,7 @@
               @click="delWanConn"
               name="icon-delete"
               :title="$t('trans0759')"
-              v-if="isEdit"
+              v-if="isEdit && appStore.isSuper"
             />
           </div>
         </fh-form-item>
@@ -58,7 +71,7 @@
               </fh-radio>
             </fh-radio-group>
           </fh-form-item>
-          <fh-form-item :label="t('trans0092')" prop="mtu">
+          <fh-form-item :label="t('trans0092')" prop="mtu" ref="mtuRef">
             <fh-input v-model="wan.mtu"></fh-input>
             <template #extra>{{ getMtuTips().tips }}</template>
           </fh-form-item>
@@ -109,14 +122,16 @@
         <template v-if="isHidePortBinding">
           <fh-form-item :label="t('trans0755')">
             <fh-checkbox-group class="wan-form__checkbox-group" v-model="wan.lan">
-              <fh-checkbox
-                v-for="item in lanOptions"
-                :key="item.value"
-                :label="item.value"
-                :disabled="item.readonly"
-              >
-                {{ SsidText[item.value] }}
-              </fh-checkbox>
+              <template v-for="item in lanOptions">
+                <fh-checkbox
+                  :key="item.value"
+                  :label="item.value"
+                  :disabled="item.readonly"
+                  v-if="item.show"
+                >
+                  {{ SsidText[item.value] }}
+                </fh-checkbox>
+              </template>
             </fh-checkbox-group>
           </fh-form-item>
         </template>
@@ -229,6 +244,7 @@
 import { ref, computed, reactive, onMounted, watch, inject, useTemplateRef } from 'vue'
 import cloneDeep from 'lodash-es/cloneDeep'
 import { useI18n } from 'vue-i18n'
+import { useIsMobile } from '@/hooks/is-mobile'
 import {
   IP,
   VlanMode,
@@ -240,6 +256,7 @@ import {
   Lan2,
   Lan3,
   Lan4,
+  Lan5,
   Ssid1,
   Ssid2,
   Ssid3,
@@ -271,8 +288,10 @@ import {
   specialChar,
   isValidInteger,
   successTips,
+  tranSimIpv6ToFullIpv6,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
+import { useAppStore } from '@/stores/app-store'
 import { getLan, getWan, addWan, editWan, deleteWan, getPortBindInfo } from '@/http/api'
 
 defineOptions({
@@ -291,11 +310,20 @@ enum LinkMode {
   ip = 'IP',
   ppp = 'PPP',
 }
+interface PortItem {
+  value: string
+  readonly: boolean
+  show: boolean
+}
+const clubWifiVlanId = VITE_CUSTOMER_CONFIG.clubWifiVlanId
 const maxRuleNum = 8
 const { convertBooleanStatus } = useDataClean()
+const appStore = useAppStore()
+const { isMobile } = useIsMobile()
 const { t } = useI18n()
 const dialog = inject('dialog')
 const wanRef = useTemplateRef('wanRef')
+const mtuRef = useTemplateRef('mtuRef')
 const ipRef = useTemplateRef('ipRef')
 const maskRef = useTemplateRef('maskRef')
 const gatewayRef = useTemplateRef('gatewayRef')
@@ -304,54 +332,71 @@ const ipv6Dns2Ref = useTemplateRef('ipv6Dns2Ref')
 const modalType = ref(ModalType.add)
 const lanIp = ref('')
 
-const lanOptions = reactive([
+const lanOptions = ref<PortItem[]>([
   {
     value: Lan1,
     readonly: false,
+    show: false,
   },
   {
     value: Lan2,
     readonly: false,
+    show: false,
   },
   {
     value: Lan3,
     readonly: false,
+    show: false,
   },
   {
     value: Lan4,
     readonly: false,
+    show: false,
+  },
+  {
+    value: Lan5,
+    readonly: false,
+    show: false,
   },
   {
     value: Ssid1,
     readonly: false,
+    show: false,
   },
   {
     value: Ssid2,
     readonly: false,
+    show: false,
   },
   {
     value: Ssid3,
     readonly: false,
+    show: false,
   },
   {
     value: Ssid4,
     readonly: false,
+    show: false,
   },
   {
     value: Ssidac1,
     readonly: false,
+    show: false,
   },
   {
     value: Ssidac2,
     readonly: false,
+    show: false,
   },
   {
     value: Ssidac3,
     readonly: false,
+    show: false,
   },
   {
     value: Ssidac4,
     readonly: false,
+    show: false,
   },
 ])
 const ipOptions = [
@@ -466,11 +511,11 @@ const serviceTypesInit = [
     text: 'VOICE',
     show: true,
   },
-  {
-    value: ServiceType.VOICE_INTERNET,
-    text: 'VOICE_INTERNET',
-    show: true,
-  },
+  // {
+  //   value: ServiceType.VOICE_INTERNET,
+  //   text: 'VOICE_INTERNET',
+  //   show: true,
+  // },
 ]
 const linkModeOptions = [
   {
@@ -661,9 +706,11 @@ const changeLinkMode = () => {
   } else {
     wan.ipv4.netType = NetType.dhcp
   }
+  mtuRef.value?.clearValidate()
   initMtu()
 }
 const changeProtocol = () => {
+  mtuRef.value?.clearValidate()
   initMtu()
 }
 const isGatewaySameWithIp = (gateway, ip) => !gateway || !ip || gateway !== ip
@@ -737,12 +784,12 @@ const p8021Options = (max: number) => {
 const rangeTips = (text: string, min: string, max: string) => {
   return format(t('trans0373'), [text, min, max])
 }
-const getWanList = (id?: string) => {
-  getWan().then(({ data }) => {
+const getWanList = (loading: boolean = true, id?: string) => {
+  getWan(loading).then(({ data }) => {
     const { items, total } = data
     const wanOptsList = []
     wanList.length = 0
-    if (total < maxRuleNum) {
+    if (total < maxRuleNum && appStore.isSuper) {
       wanOptsList.push({
         value: ModalType.add,
         text: t('trans0760'),
@@ -750,10 +797,15 @@ const getWanList = (id?: string) => {
     }
     if (total) {
       items.forEach((item) => {
-        wanOptsList.push({
-          value: item.id,
-          text: item.wanName,
-        })
+        if (
+          appStore.isSuper ||
+          (appStore.isAdmin && clubWifiVlanId && item.vlan.id && item.vlan.id !== clubWifiVlanId)
+        ) {
+          wanOptsList.push({
+            value: item.id,
+            text: item.wanName,
+          })
+        }
       })
     }
     wanOpts.splice(0, wanOpts.length, ...wanOptsList)
@@ -762,7 +814,7 @@ const getWanList = (id?: string) => {
       initWanForm()
       return
     }
-    wan.id = id ? id : items[items.length - 1].id
+    wan.id = id ? id : wanOptsList[wanOptsList.length - 1].value
     modalType.value = ModalType.edit
     initWan()
   })
@@ -838,6 +890,9 @@ const initWanForm = (wanInfo: any = '') => {
 }
 const save = () => {
   if (wanRef.value.validate()) {
+    if (wan.serviceType === ServiceType.TR069 || wan.serviceType === ServiceType.VOICE) {
+      wan.lan = []
+    }
     const newWan = {
       enable: convertBooleanStatus(wan.enable),
       serviceType: wan.serviceType,
@@ -890,7 +945,7 @@ const save = () => {
     if (isAdd.value) {
       addWan(newWan).then(() => {
         successTips()
-        getWanList()
+        getWanList(false)
       })
     }
     if (isEdit.value) {
@@ -898,7 +953,7 @@ const save = () => {
       editWan(newWan).then(({ data }) => {
         successTips()
         const { id } = data
-        getWanList(id)
+        getWanList(false, id)
       })
     }
   }
@@ -913,7 +968,7 @@ const delWanConn = () => {
     .then(() => {
       deleteWan({ id: wan.id }).then(() => {
         successTips('trans0410')
-        getWanList()
+        getWanList(false)
       })
     })
     .catch(() => {})
@@ -942,8 +997,12 @@ const getLanData = () => {
 const getPortBind = (id = '') => {
   getPortBindInfo({ id }).then(({ data }) => {
     const { items } = data
-    items.forEach((item) => {
-      lanOptions.find((lan) => lan.value === item.id).readonly = convertBooleanStatus(item.readonly)
+    items.forEach((item: { id: string; readonly: '0' | '1' }) => {
+      const portItem = lanOptions.value.find((lan) => lan.value === item.id)
+      if (portItem) {
+        portItem.readonly = convertBooleanStatus(item.readonly) as boolean
+        portItem.show = true
+      }
     })
   })
 }
@@ -991,6 +1050,16 @@ const wanRules = reactive({
               )
           }
         }
+        // if (value === ServiceType.IPTV) {
+        //   if (isAdd.value) {
+        //     return !wanList.some((item) => item.serviceType === ServiceType.IPTV)
+        //   }
+        //   if (isEdit.value) {
+        //     return !wanList
+        //       .filter((item) => item.id !== wan.id)
+        //       .some((item) => item.serviceType === ServiceType.IPTV)
+        //   }
+        // }
         return true
       },
       message: format(t('trans0678'), [t('trans0763')]),
@@ -1150,10 +1219,13 @@ const wanRules = reactive({
         const parts = value.split('/')
         if (parts.length === 2) {
           const ip = parts[0]
-          const prefix = parseInt(parts[1])
-          if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && prefix >= 0 && prefix <= 128) {
+          let suffix = parts[1]
+          if (!suffix) return false
+          suffix = parseInt(suffix)
+          if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && suffix > 0 && suffix <= 128) {
             return true
           }
+          return false
         }
         return isIP(value, IP.IPv6)
       },
@@ -1213,12 +1285,14 @@ const wanRules = reactive({
     },
     {
       rule: (value) => {
+        let tempData = []
         if (isAdd.value) {
-          return !wanList.some((item) => item.vlan.id === value)
+          tempData = wanList
         }
         if (isEdit.value) {
-          return !wanList.some((item) => item.id !== wan.id && item.vlan.id === value)
+          tempData = wanList.filter((item) => item.id !== wan.id)
         }
+        return !tempData.some((item) => item.vlan.id === value || item.multiVlanId === value)
       },
       message: format(t('trans0678'), [t('trans0775')]),
     },
@@ -1234,14 +1308,14 @@ const wanRules = reactive({
     },
     {
       rule: (value) => {
+        let tempData = []
         if (isAdd.value) {
-          return !wanList.some((item) => item.vlan.id === value || item.multiVlanId === value)
+          tempData = wanList
         }
         if (isEdit.value) {
-          return !wanList.some(
-            (item) => item.id !== wan.id && (item.vlan.id === value || item.multiVlanId === value),
-          )
+          tempData = wanList.filter((item) => item.id !== wan.id)
         }
+        return !tempData.some((item) => item.vlan.id === value || item.multiVlanId === value)
       },
       message: format(t('trans0678'), [t('trans0777')]),
     },
@@ -1266,12 +1340,21 @@ const wanRules = reactive({
         const parts = value.split('/')
         if (parts.length === 2) {
           const ip = parts[0]
+          const fullIp = tranSimIpv6ToFullIpv6(ip)
           const prefix = parseInt(parts[1])
-          if (isIP(ip, IP.IPv6) && isValidIpv6AddrExtra(ip) && prefix >= 0 && prefix <= 128) {
+          if (
+            isIP(ip, IP.IPv6) &&
+            isValidIpv6AddrExtra(ip) &&
+            (fullIp !== '2200:3366::1' ||
+              fullIp !== '2200:3366::1/10' ||
+              fullIp !== '2200:3366::1/65') &&
+            prefix >= 16 &&
+            prefix <= 64
+          ) {
             return true
           }
         }
-        return isIP(value, IP.IPv6)
+        return false
       },
       message: t('trans0397'),
     },

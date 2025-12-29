@@ -11,6 +11,40 @@
           </fh-form-item>
         </fh-form> -->
         <div class="page__table">
+          <div class="page__sub-header">
+            <h2 class="page__title">{{ $t('trans0132') }}</h2>
+          </div>
+          <fh-table :columns="columns" :data-source="dataUp" :show-header="isShowAddBtnUp">
+            <template #operationgroup>
+              <fh-icon
+                class="page__header-icon"
+                v-if="isShowAddBtnUp"
+                @click="openAddModalUp"
+                name="icon-add"
+                :title="$t('trans0164')"
+              />
+            </template>
+            <template #enable="scope">
+              <fh-switch v-model="scope.row.enable" @change="toggleStatusUp(scope.row)" />
+            </template>
+            <template #operation="scope">
+              <fh-icon
+                class="page__header-icon"
+                @click="openEditModalUp(scope.row)"
+                name="icon-edit-square"
+                :title="$t('trans0165')"
+              />
+              <fh-icon
+                class="page__header-icon"
+                @click="delUp(scope.row)"
+                name="icon-delete"
+                :title="$t('trans0111')"
+              />
+            </template>
+          </fh-table>
+          <div class="page__sub-header">
+            <h2 class="page__title">{{ $t('trans0133') }}</h2>
+          </div>
           <fh-table :columns="columns" :data-source="data" :show-header="isShowAddBtn">
             <template #operationgroup>
               <fh-icon
@@ -42,26 +76,31 @@
         </div>
         <fh-modal v-model="visible" :title="modalTitle" :before-close="handleClose">
           <template #body>
-            <fh-form
-              class="form modal-form"
-              ref="modalForm"
-              :model="modalForm"
-              :rules="modalFormRules"
-            >
+            <fh-form class="form modal-form" ref="modalForm" :model="modalForm" :rules="formRules">
               <fh-form-item :label="$t('trans0166')">
                 <fh-switch v-model="modalForm.enable"></fh-switch>
               </fh-form-item>
               <fh-form-item :label="$t('trans0150')" prop="name">
                 <fh-input name="AclRuleName" v-model="modalForm.name"></fh-input>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0136')" prop="src_ip">
-                <fh-input
-                  name="src_ip"
-                  v-model="modalForm.src_ip"
-                  :placeholder="placeholderTips"
-                ></fh-input>
+              <fh-form-item :label="$t('trans0136')" prop="src_ip" ref="srcIpRef">
+                <fh-input name="src_ip" v-model="modalForm.src_ip"></fh-input>
+                <template #extra>
+                  {{ placeholderTips }}
+                </template>
               </fh-form-item>
-              <fh-form-item :label="$t('trans0139')" prop="dest_port">
+              <fh-form-item :label="$t('trans0138')" prop="dest_ip" ref="destIpRef">
+                <fh-input name="dest_ip" v-model="modalForm.dest_ip"></fh-input>
+                <template #extra>
+                  {{ placeholderTips }}
+                </template>
+              </fh-form-item>
+              <fh-form-item
+                :label="$t('trans0139')"
+                prop="dest_port"
+                ref="destPortRef"
+                v-if="showDestPort"
+              >
                 <fh-input
                   name="dest_port"
                   v-model="modalForm.dest_port"
@@ -72,10 +111,74 @@
                 </template>
               </fh-form-item>
               <fh-form-item :label="$t('trans0135')">
-                <fh-select v-model="modalForm.proto" :options="protoList" name="proto"> </fh-select>
+                <fh-select
+                  v-model="modalForm.proto"
+                  :options="protoList"
+                  name="proto"
+                  @change="changeProto"
+                >
+                </fh-select>
               </fh-form-item>
               <fh-form-item class="form__submit-btn">
                 <fh-button id="submitbutton" @click="save" block>
+                  {{ $t('trans0002') }}
+                </fh-button>
+              </fh-form-item>
+            </fh-form>
+          </template>
+        </fh-modal>
+        <fh-modal v-model="visibleUp" :title="modalTitleUp" :before-close="handleCloseUp">
+          <template #body>
+            <fh-form
+              class="form modal-form"
+              ref="modalFormUp"
+              :model="modalFormUp"
+              :rules="formRules"
+            >
+              <fh-form-item :label="$t('trans0166')">
+                <fh-switch v-model="modalFormUp.enable"></fh-switch>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0150')" prop="name">
+                <fh-input name="AclRuleNameUp" v-model="modalFormUp.name"></fh-input>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0136')" prop="src_ip" ref="srcIpRefUp">
+                <fh-input name="src_ipUp" v-model="modalFormUp.src_ip"></fh-input>
+                <template #extra>
+                  {{ placeholderTips }}
+                </template>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0138')" prop="dest_ip" ref="destIpRefUp">
+                <fh-input name="dest_ipUp" v-model="modalFormUp.dest_ip"></fh-input>
+                <template #extra>
+                  {{ placeholderTips }}
+                </template>
+              </fh-form-item>
+              <fh-form-item
+                :label="$t('trans0139')"
+                prop="dest_port"
+                ref="destPortRefUp"
+                v-if="showDestPortUp"
+              >
+                <fh-input
+                  name="dest_portUp"
+                  v-model="modalFormUp.dest_port"
+                  :placeholder="numPlaceholder"
+                ></fh-input>
+                <template #extra>
+                  {{ $t('trans0902').format($t('trans0139')) }}
+                </template>
+              </fh-form-item>
+              <fh-form-item :label="$t('trans0135')">
+                <fh-select
+                  v-model="modalFormUp.proto"
+                  :options="protoList"
+                  name="protoUp"
+                  @change="changeProtoUp"
+                >
+                </fh-select>
+              </fh-form-item>
+              <fh-form-item class="form__submit-btn">
+                <fh-button id="submitbuttonUp" @click="saveUp" block>
                   {{ $t('trans0002') }}
                 </fh-button>
               </fh-form-item>
@@ -99,8 +202,8 @@ import {
   isMulticast,
   isLoopback,
   successTips,
-  getIpAfter,
   isValidInteger,
+  isValidStaticRouteMask,
 } from '@/util/tool'
 import { ModalType, ProtocolType } from '@/util/constant'
 import { useDataClean } from '@/hooks/data-clean'
@@ -109,14 +212,13 @@ import {
   addIpv4Filter,
   editIpv4Filter,
   delIpv4Filter,
+  getIpv4FilterUp,
+  addIpv4FilterUp,
+  editIpv4FilterUp,
+  delIpv4FilterUp,
   getFirewall,
 } from '@/http/api'
 
-function isValidStaticRouteMask(ip, mask) {
-  if (getIpAfter(ip) !== '0' && mask === '255.255.255.255') return true
-  if (getIpAfter(ip) === '0' && mask !== '255.255.255.255') return true
-  return false
-}
 const { convertBooleanStatus } = useDataClean()
 const Interface = {
   wan: 'wan',
@@ -131,22 +233,44 @@ export default {
     return {
       numPlaceholder,
       maxAclRuleNum,
-      modalType: ModalType.add,
-      visible: false, // dialog visible
       form: {
         enable: false,
       },
-      lanIp: '',
+      isEnable: false,
+      protoText: {
+        [ProtocolType.ALL]: this.$t('trans0158'),
+        [ProtocolType.TCP]: this.$t('trans0190'),
+        [ProtocolType.UDP]: this.$t('trans0191'),
+        [ProtocolType.ICMP]: this.$t('trans0192'),
+        [ProtocolType.IGMP]: this.$t('trans0375'),
+      },
+      showDestPort: false,
+      showDestPortUp: false,
+      modalType: ModalType.add,
+      modalTypeUp: ModalType.add,
+      visible: false,
+      visibleUp: false,
       modalForm: {
         index: -1,
         id: '',
         src_ip: '',
+        dest_ip: '',
         dest_port: '',
         enable: true,
         name: '',
         proto: ProtocolType.ALL,
       },
-      modalFormRules: {
+      modalFormUp: {
+        index: -1,
+        id: '',
+        src_ip: '',
+        dest_ip: '',
+        dest_port: '',
+        enable: true,
+        name: '',
+        proto: ProtocolType.ALL,
+      },
+      formRules: {
         name: [
           {
             rule: (value) => value,
@@ -160,22 +284,6 @@ export default {
             rule: (value) => isValidVal(value, 1, 32),
             message: this.$t('trans0167'),
           },
-          {
-            rule: (value) => {
-              let flag = true
-              let tempData = []
-              if (this.isAdd) {
-                tempData = this.data
-              } else {
-                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
-              }
-              flag = !tempData.some((item) => {
-                return item.name === value
-              })
-              return flag
-            },
-            message: this.$t('trans0678').format(this.$t('trans0150')),
-          },
         ],
         src_ip: [
           {
@@ -188,11 +296,7 @@ export default {
               if (isPrivateIP(ip)) {
                 const mask = cidrToSubnetMask(parseInt(suffix))
                 if (!mask) return false
-                // isNetworkIP(ip, mask) || sBoardcastIP(ip, mask)
                 if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, mask)) {
-                  return false
-                }
-                if (!this.lanIp && this.lanIp === ip) {
                   return false
                 }
                 return true
@@ -201,21 +305,26 @@ export default {
             },
             message: this.$t('trans0566').format(this.$t('trans0136')),
           },
+        ],
+        dest_ip: [
           {
             rule: (value) => {
-              let flag = true
-              let tempData = []
-              if (this.isAdd) {
-                tempData = this.data
-              } else {
-                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
+              if (!value) return true
+              const parts = value.split('/')
+              if (parts.length !== 2) return false
+              const ip = parts[0]
+              const suffix = parts[1]
+              if (isPrivateIP(ip)) {
+                const mask = cidrToSubnetMask(parseInt(suffix))
+                if (!mask) return false
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, mask)) {
+                  return false
+                }
+                return true
               }
-              flag = !tempData.some((item) => {
-                return item.src_ip === value
-              })
-              return flag
+              return false
             },
-            message: this.$t('trans0678').format(this.$t('trans0136')),
+            message: this.$t('trans0566').format(this.$t('trans0138')),
           },
         ],
         dest_port: [
@@ -228,30 +337,7 @@ export default {
             },
             message: this.$t('trans0566').format(this.$t('trans0139')),
           },
-          {
-            rule: (value) => {
-              let flag = true
-              let tempData = []
-              if (this.isAdd) {
-                tempData = this.data
-              } else {
-                tempData = this.data.filter((item) => item.index !== this.modalForm.index)
-              }
-              flag = !tempData.some((item) => {
-                return item.dest_port === value
-              })
-              return flag
-            },
-            message: this.$t('trans0678').format(this.$t('trans0139')),
-          },
         ],
-      },
-      protoText: {
-        [ProtocolType.ALL]: this.$t('trans0158'),
-        [ProtocolType.TCP]: this.$t('trans0190'),
-        [ProtocolType.UDP]: this.$t('trans0191'),
-        [ProtocolType.ICMP]: this.$t('trans0192'),
-        [ProtocolType.IGMP]: this.$t('trans0375'),
       },
       columns: [
         {
@@ -262,6 +348,10 @@ export default {
         {
           key: 'src_ip',
           title: this.$t('trans0136'),
+        },
+        {
+          key: 'dest_ip',
+          title: this.$t('trans0138'),
         },
         {
           key: 'dest_port',
@@ -278,21 +368,33 @@ export default {
         },
       ],
       data: [],
-      isEnable: false,
+      dataUp: [],
     }
   },
   computed: {
     isShowAddBtn() {
       return this.data.length < maxAclRuleNum
     },
+    isShowAddBtnUp() {
+      return this.dataUp.length < maxAclRuleNum
+    },
     isAdd() {
       return this.modalType === ModalType.add
+    },
+    isAddUp() {
+      return this.modalTypeUp === ModalType.add
     },
     isEdit() {
       return this.modalType === ModalType.edit
     },
+    isEditUp() {
+      return this.modalTypeUp === ModalType.edit
+    },
     modalTitle() {
-      return this.isAdd ? this.$t('trans0164') : this.$t('trans0165')
+      return `${this.isAdd ? this.$t('trans0164') : this.$t('trans0165')} ${this.$t('trans0133')}`
+    },
+    modalTitleUp() {
+      return `${this.isAdd ? this.$t('trans0164') : this.$t('trans0165')} ${this.$t('trans0132')}`
     },
     placeholderTips() {
       return `${this.$t('trans0598').format(this.$t('trans0456'))}/${this.$t('trans0459')}`
@@ -311,10 +413,10 @@ export default {
           value: ProtocolType.UDP,
           text: this.protoText[ProtocolType.UDP],
         },
-        // {
-        //   value: ProtocolType.ICMP,
-        //   text: this.protoText[ProtocolType.ICMP],
-        // },
+        {
+          value: ProtocolType.ICMP,
+          text: this.protoText[ProtocolType.ICMP],
+        },
         // {
         //   value: ProtocolType.IGMP,
         //   text: this.protoText[ProtocolType.IGMP],
@@ -323,96 +425,196 @@ export default {
     },
   },
   methods: {
-    // switchEnable(val) {
-    // },
     handleClose() {
       this.$refs.modalForm.clearValidate()
     },
+    handleCloseUp() {
+      this.$refs.modalFormUp.clearValidate()
+    },
+    getDefaultModalForm() {
+      return {
+        index: -1,
+        id: '',
+        src_ip: '',
+        dest_port: '',
+        enable: true,
+        name: '',
+        dest_ip: '',
+        proto: ProtocolType.ALL,
+      }
+    },
+    openAddModalCommon(formProp, typeProp, visibleProp) {
+      this[formProp] = this.getDefaultModalForm()
+      this[formProp === 'modalFormUp' ? 'showDestPortUp' : 'showDestPort'] = true
+      this[typeProp] = ModalType.add
+      this[visibleProp] = true
+    },
+    openEditModalCommon(row, formProp, typeProp, visibleProp) {
+      const showDestPort = row.proto !== ProtocolType.ICMP
+      this[formProp] = {
+        index: row.index,
+        id: row.id,
+        src_ip: row.src_ip,
+        dest_ip: row.dest_ip,
+        dest_port: row.dest_port,
+        enable: row.enable,
+        name: row.name,
+        proto: row.proto,
+      }
+      this[formProp === 'modalFormUp' ? 'showDestPortUp' : 'showDestPort'] = showDestPort
+      this[typeProp] = ModalType.edit
+      this[visibleProp] = true
+    },
     openAddModal() {
-      this.modalForm.index = -1
-      this.modalForm.id = ''
-      this.modalForm.src_ip = ''
-      this.modalForm.dest_port = ''
-      this.modalForm.enable = true
-      this.modalForm.name = ''
-      this.modalForm.proto = ProtocolType.ALL
-      this.modalType = ModalType.add
-      this.visible = true
+      this.openAddModalCommon('modalForm', 'modalType', 'visible')
+    },
+    openAddModalUp() {
+      this.openAddModalCommon('modalFormUp', 'modalTypeUp', 'visibleUp')
     },
     openEditModal(row) {
-      this.modalForm.index = row.index
-      this.modalForm.id = row.id
-      this.modalForm.src_ip = row.src_ip
-      this.modalForm.dest_port = row.dest_port
-      this.modalForm.enable = row.enable
-      this.modalForm.name = row.name
-      this.modalForm.proto = row.proto
-      this.modalType = ModalType.edit
-      this.visible = true
+      this.openEditModalCommon(row, 'modalForm', 'modalType', 'visible')
     },
-    toggleStatus(row) {
-      editIpv4Filter([
+    openEditModalUp(row) {
+      this.openEditModalCommon(row, 'modalFormUp', 'modalTypeUp', 'visibleUp')
+    },
+    toggleStatuCommon(row, apiCall, fetchMethod) {
+      apiCall([
         {
           id: row.id,
           enabled: convertBooleanStatus(row.enable),
         },
       ]).then(() => {
-        this.getIpv4FilterData()
+        successTips()
+        this[fetchMethod]()
       })
     },
-    del(row) {
-      delIpv4Filter({
+    toggleStatus(row) {
+      this.toggleStatuCommon(row, editIpv4Filter, 'getIpv4FilterData')
+    },
+    toggleStatusUp(row) {
+      this.toggleStatuCommon(row, editIpv4FilterUp, 'getIpv4FilterDataUp')
+    },
+    deleteCommon(row, apiCall, fetchMethod) {
+      apiCall({
         id: row.id,
       }).then(() => {
         successTips('trans0410')
-        this.getIpv4FilterData()
+        this[fetchMethod]()
+      })
+    },
+    del(row) {
+      this.deleteCommon(row, delIpv4Filter, 'getIpv4FilterData')
+    },
+    delUp(row) {
+      this.deleteCommon(row, delIpv4FilterUp, 'getIpv4FilterDataUp')
+    },
+    saveCommon(modalForm, isAdd, isUp) {
+      const formRef = isUp ? this.$refs.modalFormUp : this.$refs.modalForm
+      if (!formRef.validate()) return
+
+      const data = {
+        src: isUp ? Interface.lan : Interface.wan,
+        dest: isUp ? Interface.wan : Interface.lan,
+        target: 'REJECT',
+        src_ip: modalForm.src_ip,
+        dest_ip: modalForm.dest_ip,
+        dest_port: modalForm.dest_port || '',
+        enabled: convertBooleanStatus(modalForm.enable),
+        proto: modalForm.proto,
+        name: modalForm.name.trim(),
+      }
+
+      const currentData = isUp ? this.dataUp : this.data
+      const tempData = isAdd
+        ? currentData
+        : currentData.filter((item) => item.index !== modalForm.index)
+
+      let flag = true
+      /*
+       * 如果新增是ALL协议
+       *  判断与列表项src_ip、dest_ip、dest_port是否完全一致
+       * 如果新增不是ALL协议
+       *  判断与列表中ALL协议项两者src_ip、dest_ip、dest_port是否完全一致，一致则不允许新增
+       *  判断与列表中不是ALL协议项proto、src_ip、dest_ip、dest_port是否完全一致，一致则不允许新增
+       */
+      if (modalForm.proto === ProtocolType.ALL) {
+        flag = !tempData.some(
+          (item) =>
+            modalForm.src_ip === item.src_ip &&
+            modalForm.dest_ip === item.dest_ip &&
+            modalForm.dest_port === item.dest_port,
+        )
+      } else {
+        flag = !(
+          tempData
+            .filter((item) => item.proto !== ProtocolType.ALL)
+            .some(
+              (item) =>
+                modalForm.proto === item.proto &&
+                modalForm.src_ip === item.src_ip &&
+                modalForm.dest_ip === item.dest_ip &&
+                modalForm.dest_port === item.dest_port,
+            ) ||
+          tempData
+            .filter((item) => item.proto === ProtocolType.ALL)
+            .some(
+              (item) =>
+                modalForm.src_ip === item.src_ip &&
+                modalForm.dest_ip === item.dest_ip &&
+                modalForm.dest_port === item.dest_port,
+            )
+        )
+      }
+
+      if (!flag) {
+        this.$toast({
+          text: this.$t('trans0678').format(this.$t('trans0112')),
+          type: 'error',
+        })
+        return
+      }
+
+      let apiCall
+      if (isAdd) {
+        apiCall = isUp ? addIpv4FilterUp([data]) : addIpv4Filter([data])
+      } else {
+        data.id = modalForm.id
+        apiCall = isUp ? editIpv4FilterUp([data]) : editIpv4Filter([data])
+      }
+
+      apiCall.then(() => {
+        successTips()
+        isUp ? this.getIpv4FilterDataUp() : this.getIpv4FilterData()
       })
     },
     save() {
-      if (!this.$refs.modalForm.validate()) return
-      const data = {
-        src: Interface.wan, // 传固定值
-        dest: Interface.lan, // 传固定值
-        target: 'REJECT', // 传固定值
-        src_ip: this.modalForm.src_ip,
-        dest_port: this.modalForm.dest_port,
-        enabled: convertBooleanStatus(this.modalForm.enable),
-        proto: this.modalForm.proto,
-        name: this.modalForm.name,
-      }
-      if (this.isAdd) {
-        addIpv4Filter([data]).then(() => {
-          successTips()
-          this.getIpv4FilterData()
-        })
-      }
-      if (this.isEdit) {
-        data.id = this.modalForm.id
-        editIpv4Filter([data]).then(() => {
-          successTips()
-          this.getIpv4FilterData()
-        })
-      }
+      this.saveCommon(this.modalForm, this.isAdd, false)
     },
-    getIpv4FilterData(isInit = false) {
-      getIpv4Filter()
+    saveUp() {
+      this.saveCommon(this.modalFormUp, this.isAddUp, true)
+    },
+    fetchIpv4FilterData(apiCall, dataProp, visibleProp, isInit = false) {
+      apiCall()
         .then(({ data }) => {
           const { items } = data
-          const tableData = []
-          items.forEach((item, i) => {
-            tableData.push({
-              ...item,
-              enable: convertBooleanStatus(item.enabled),
-              protoAlias: this.protoText[item.proto],
-              index: i,
-            })
-          })
-          this.data = tableData
+          const tableData = items.map((item, i) => ({
+            ...item,
+            enable: convertBooleanStatus(item.enabled),
+            protoAlias: this.protoText[item.proto] || this.$t('trans0158'),
+            index: i,
+          }))
+          this[dataProp] = tableData
         })
         .catch(() => {})
         .finally(() => {
-          if (!isInit) this.visible = false
+          if (!isInit) this[visibleProp] = false
         })
+    },
+    getIpv4FilterData(isInit = false) {
+      this.fetchIpv4FilterData(getIpv4Filter, 'data', 'visible', isInit)
+    },
+    getIpv4FilterDataUp(isInit = false) {
+      this.fetchIpv4FilterData(getIpv4FilterUp, 'dataUp', 'visibleUp', isInit)
     },
     getFirewallData() {
       getFirewall().then(({ data }) => {
@@ -420,8 +622,29 @@ export default {
         this.isEnable = convertBooleanStatus(enable) && convertBooleanStatus(custom)
         if (this.isEnable) {
           this.getIpv4FilterData(true)
+          this.getIpv4FilterDataUp(true)
         }
       })
+    },
+    changeProtoCommon(srcIpRef, destPortRef, isUp) {
+      const modalForm = isUp ? this.modalFormUp : this.modalForm
+      const showDestPort = modalForm.proto !== ProtocolType.ICMP
+
+      if (modalForm.proto === ProtocolType.ICMP) {
+        modalForm.dest_port = ''
+      } else {
+        this.$nextTick(() => {
+          this.$refs[srcIpRef].validate()
+          this.$refs[destPortRef].validate()
+        })
+      }
+      this[isUp ? 'showDestPortUp' : 'showDestPort'] = showDestPort
+    },
+    changeProto() {
+      this.changeProtoCommon('srcIpRef', 'destPortRef', false)
+    },
+    changeProtoUp() {
+      this.changeProtoCommon('srcIpRefUp', 'destPortRefUp', true)
     },
   },
   created() {

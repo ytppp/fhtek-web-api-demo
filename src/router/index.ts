@@ -1,3 +1,4 @@
+import type { App } from 'vue'
 import { createWebHashHistory, createRouter } from 'vue-router'
 import { http } from '@/http'
 
@@ -20,6 +21,7 @@ import wanBinding from '../pages/network/wan-binding.vue'
 import lan from '../pages/network/lan.vue'
 import lanipv6 from '../pages/network/lan-ipv6.vue'
 import lanipv6New from '../pages/network/lan-ipv6-old.vue'
+import mlo from '../pages/network/mlo.vue'
 import basicB24g from '../pages/network/wlan-b24g-basic.vue'
 import advancedB24g from '../pages/network/wlan-b24g-advanced.vue'
 import basicB5g from '../pages/network/wlan-b5g-basic.vue'
@@ -61,6 +63,7 @@ import terminal from '../pages/management/terminal.vue'
 import ontAuth from '../pages/management/ont-auth.vue'
 import internetDiagnose from '../pages/management/diagnose-internet.vue'
 import remoteDiagnose from '../pages/management/diagnose-remote.vue'
+import help from '../pages/help/index.vue'
 
 export const loginPath = '/login'
 
@@ -175,6 +178,11 @@ export const router = createRouter({
     //   name: 'lanipv6New',
     //   component: lanipv6New,
     // },
+    {
+      path: '/network/wlan/mlo',
+      name: 'mlo',
+      component: mlo,
+    },
     {
       path: '/network/wlan/basic-24g',
       name: 'basicB24g',
@@ -393,6 +401,11 @@ export const router = createRouter({
       component: remoteDiagnose,
     },
     {
+      path: '/help',
+      name: 'help',
+      component: help,
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: '/home',
     },
@@ -401,14 +414,14 @@ export const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (to.path !== loginPath) {
-    if (sessionStorage.getItem('login_user')) {
+    if (sessionStorage.getItem('logged_user')) {
       http.cancelAllRequests()
       next()
     } else {
       next(loginPath)
     }
   } else {
-    if (sessionStorage.getItem('login_user')) {
+    if (sessionStorage.getItem('logged_user')) {
       next('/home')
     } else {
       next()
@@ -416,7 +429,7 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
-function registerRouter(app) {
+function registerRouter(app: App) {
   app.use(router)
 }
 

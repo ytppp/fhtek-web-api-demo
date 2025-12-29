@@ -10,10 +10,11 @@
         </fh-form-item>
         <template v-if="form.enable">
           <fh-form-item :label="$t('trans0104')">
-            <fh-radio-group v-model="form.mode" @change="changeFilterMode">
-              <fh-radio v-for="mode in filteringModes" :key="mode.value" :label="mode.value">{{
-                mode.text
-              }}</fh-radio>
+            <!--  @change="changeFilterMode" 暂时不用切换提示 -->
+            <fh-radio-group v-model="form.mode">
+              <fh-radio v-for="mode in filteringModes" :key="mode.value" :label="mode.value">
+                {{ mode.text }}
+              </fh-radio>
             </fh-radio-group>
           </fh-form-item>
         </template>
@@ -64,9 +65,10 @@
             :rules="modalRules"
           >
             <fh-form-item :label="$t('trans0711')" prop="id">
-              <fh-select v-model="modalForm.id" :options="ssidOpts"> </fh-select>
+              <fh-select v-model="modalForm.id" :options="ssidOpts" @change="changeSsid">
+              </fh-select>
             </fh-form-item>
-            <fh-form-item :label="$t('trans0097')" prop="mac">
+            <fh-form-item :label="$t('trans0097')" prop="mac" ref="macRef">
               <fh-input v-model="modalForm.mac" :placeholder="$t('trans0396')"> </fh-input>
             </fh-form-item>
             <fh-form-item class="form__submit-btn">
@@ -83,7 +85,7 @@
 
 <script>
 import { isMac, format, successTips } from '@/util/tool'
-import { FilteringModes, ModalType, SsidText } from '@/util/constant'
+import { FilteringModes, ModalType, SsidText, Ssid4, Ssidac4, customers } from '@/util/constant'
 import {
   getWifiMacFilterStatus,
   setWifiMacFilterStatus,
@@ -154,7 +156,13 @@ export default {
                 tempData = this.data.filter((item) => item.index !== this.modalForm.index)
               }
               flag = !tempData.some((item) => {
-                return item.mac === value
+                let flag1 = false
+                if (this.modalForm.id === this.all || item.id === this.all) {
+                  flag1 = true
+                } else {
+                  flag1 = item.id === this.modalForm.id
+                }
+                return flag1 && item.mac === value
               })
               return flag
             },
@@ -247,13 +255,15 @@ export default {
           const tableData = []
           const { items } = data
           items.forEach((item, i) => {
-            tableData.push({
-              ...item,
-              idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
-              pre_id: item.id,
-              pre_mac: item.mac,
-              index: i,
-            })
+            if (item.id !== Ssid4 && item.id !== Ssidac4) {
+              tableData.push({
+                ...item,
+                idAlias: item.id === this.all ? this.$t('trans0537') : SsidText[item.id],
+                pre_id: item.id,
+                pre_mac: item.mac,
+                index: i,
+              })
+            }
           })
           this.data = tableData
         })
@@ -277,10 +287,17 @@ export default {
         ]
         ;[...wifi2g, ...wifi5g].forEach((item) => {
           if (convertBooleanStatus(item.enable)) {
-            ssidOpts.push({
-              value: item.id,
-              text: SsidText[item.id],
-            })
+            if (
+              VITE_CUSTOMER_CONFIG.name !== customers.totalplay ||
+              (VITE_CUSTOMER_CONFIG.name === customers.totalplay &&
+                item.id !== Ssid4 &&
+                item.id !== Ssidac4)
+            ) {
+              ssidOpts.push({
+                value: item.id,
+                text: SsidText[item.id],
+              })
+            }
           }
         })
         this.ssidOpts = ssidOpts
@@ -349,6 +366,11 @@ export default {
             this.modalForm.mac = this.$route.query.mac
           })
         }
+      }
+    },
+    changeSsid() {
+      if (this.modalForm.mac) {
+        this.$refs.macRef.validate()
       }
     },
   },

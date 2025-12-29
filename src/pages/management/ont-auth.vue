@@ -22,6 +22,9 @@
           </fh-form-item>
           <fh-form-item :label="$t('trans0196')" prop="password.password">
             <fh-input v-model="form.password.password"> </fh-input>
+            <template #extra>
+              {{ $t('trans0913') }}
+            </template>
           </fh-form-item>
         </template>
         <fh-form-item class="form__submit-btn">
@@ -37,14 +40,15 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { isValidLength, format, isValidSymbol, specialChar, successTips } from '@/util/tool'
+import { isValidLength, format, isValidSymbol, successTips, isHexadecimal } from '@/util/tool'
 import { getOntAuth, editOntAuth } from '@/http/api'
 
 enum AuthMode {
   loid = 'LOID',
   password = 'sn',
 }
-
+const specialChar = '!#+-.=?@_~'
+const ruleReg = /^[\w!#+\-.=?@_~]+$/i
 const { t } = useI18n()
 const authModeOpts = [
   {
@@ -68,6 +72,12 @@ const form = reactive({
     sn: '',
   },
 })
+function getLastCharsByIndex(str: string, index: number) {
+  if (typeof str !== 'string') {
+    return ''
+  }
+  return str.slice(-index)
+}
 const rules = {
   'loid.loid': [
     {
@@ -78,6 +88,10 @@ const rules = {
       rule: (value) => isValidLength(value, 1, 24),
       message: format(t('trans0003'), [t('trans0781'), 1, 24]),
     },
+    {
+      rule: (value) => isValidSymbol(value, ruleReg),
+      message: t('trans0013').format(t('trans0781'), t('trans0042').format(specialChar)),
+    },
   ],
   'loid.checkCode': [
     {
@@ -86,6 +100,13 @@ const rules = {
         return isValidLength(value, 1, 12)
       },
       message: format(t('trans0003'), [t('trans0768'), 1, 12]),
+    },
+    {
+      rule: (value) => {
+        if (!value) return true
+        return isValidSymbol(value, ruleReg)
+      },
+      message: t('trans0013').format(t('trans0768'), t('trans0042').format(specialChar)),
     },
   ],
   'password.password': [
@@ -99,9 +120,9 @@ const rules = {
     {
       rule: (value) => {
         if (!value) return true
-        return isValidSymbol(value)
+        return isValidSymbol(value, ruleReg)
       },
-      message: format(t('trans0013'), [t('trans0541'), format(t('trans0042'), [specialChar])]),
+      message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
     },
   ],
   'password.sn': [
@@ -110,8 +131,8 @@ const rules = {
       message: t('trans0004'),
     },
     {
-      rule: (value) => value.length === 12,
-      message: format(t('trans0769'), [t('trans0541'), 12]),
+      rule: (value) => value.length === 12 && isHexadecimal(getLastCharsByIndex(value, 8)),
+      message: format(t('trans0769'), [t('trans0541'), 12, 8]),
     },
   ],
 }

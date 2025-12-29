@@ -7,13 +7,13 @@ fhtek web pages, each router is in a directory.
 ### for dev
 
 ```sh
-make dev CUSTOMER_ID=xxxx // CUSTOMER_ID should be oneof (demo fhtek)
+make dev CUSTOMER_ID=xxxx // CUSTOMER_ID should be oneof (demo fhtek totalplay)
 ```
 
 ### for build
 
 ```sh
-make build CUSTOMER_ID=xxxx // CUSTOMER_ID should be oneof (demo fhtek)
+make build CUSTOMER_ID=xxxx // CUSTOMER_ID should be oneof (demo fhtek totalplay)
 ```
 
 ## how to get i18n data

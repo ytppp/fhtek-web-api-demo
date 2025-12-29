@@ -13,11 +13,11 @@
         :model="pingForm"
         name="pingForm"
         method="post"
-        :rules="rules"
+        :rules="pingRules"
         :disabled="pingFormDisabled"
       >
         <fh-form-item :label="$t('trans0135')">
-          <fh-radio-group v-model="pingForm.type">
+          <fh-radio-group @change="changePingIpType" v-model="pingForm.type">
             <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
               {{ item.text }}
             </fh-radio>
@@ -36,7 +36,7 @@
             {{ repetitionsTips }}
           </template>
         </fh-form-item>
-        <fh-form-item prop="destination" :label="$t('trans0556')">
+        <fh-form-item prop="destination" :label="$t('trans0556')" ref="pingDestinationRef">
           <fh-input name="destination" v-model="pingForm.destination"></fh-input>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
@@ -59,11 +59,11 @@
         ref="tracerouteRef"
         :model="tracerouteForm"
         name="tracerouteForm"
-        :rules="rules"
+        :rules="tracerouteRules"
         :disabled="tracerouteFormDisabled"
       >
         <fh-form-item :label="$t('trans0135')">
-          <fh-radio-group v-model="tracerouteForm.type">
+          <fh-radio-group @change="changeTracerouteIpType" v-model="tracerouteForm.type">
             <fh-radio v-for="item in ipOptions" :key="item.value" :label="item.value">
               {{ item.text }}
             </fh-radio>
@@ -76,7 +76,7 @@
             :options="tracerouteWanOpts"
           ></fh-select>
         </fh-form-item>
-        <fh-form-item prop="destination" :label="$t('trans0556')">
+        <fh-form-item prop="destination" :label="$t('trans0556')" ref="tracerouteDestinationRef">
           <fh-input name="destination" v-model="tracerouteForm.destination"></fh-input>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
@@ -91,6 +91,26 @@
       <div class="diagnose__result" v-if="tracerouteResult && tracerouteSuccessFlag">
         <pre>{{ tracerouteResult }}</pre>
       </div>
+      <template v-if="appStore.isSuper">
+        <div class="page__sub-header">
+          <h2 class="page__title">{{ $t('trans0915') }}</h2>
+        </div>
+        <fh-form
+          class="form form--padding"
+          :model="informUploadForm"
+          name="informUploadForm"
+          :disabled="informUploadFormDisabled"
+        >
+          <fh-form-item class="form__submit-btn">
+            <fh-button @click="informUpload" block>
+              {{ $t('trans0916') }}
+            </fh-button>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0920')" v-if="informUploadForm.result">
+            {{ informUploadResult }}
+          </fh-form-item>
+        </fh-form>
+      </template>
     </div>
   </div>
 </template>
@@ -98,10 +118,11 @@
 <script setup lang="ts">
 import { reactive, computed, useTemplateRef, ref, inject, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IP, NetType } from '@/util/constant'
+import { IP, NetType, WanStatus } from '@/util/constant'
 import { isIP, isValidInteger, isValidDomain } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { useCountDown } from '@/hooks/countdown'
+import { useAppStore } from '@/stores/app-store'
 import {
   startPing,
   pingStatus,
@@ -109,10 +130,13 @@ import {
   startTraceroute,
   tracerouteStatus,
   getTracerouteResults,
+  startInformUpload,
+  informUploadStatus,
+  getInformUploadResults,
   getWanInfo,
 } from '@/http/api'
 
-type OperateType = 'ping' | 'traceroute'
+type OperateType = 'ping' | 'traceroute' | 'informUpload'
 
 enum Order {
   start = '1',
@@ -122,9 +146,11 @@ enum Status {
   testing = '1',
   done = '2',
   idle = '3',
+  fail = '4',
 }
 
 const { t } = useI18n()
+const appStore = useAppStore()
 const { defaultVal } = useDataClean()
 const loading = inject('loading')
 const timeout = 1000 * 60 * 2 // 2 minutes
@@ -150,34 +176,19 @@ const FormDataRange = {
 }
 const ipv4Data = reactive([])
 const ipv6Data = reactive([])
-const rules = reactive({
-  repetitions: [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-    {
-      rule: (value) =>
-        isValidInteger(value, FormDataRange.repetitions.min, FormDataRange.repetitions.max),
-      message: t('trans0388').format(
-        `'${t(FormDataRange.repetitions.label)}'`,
-        FormDataRange.repetitions.min,
-        FormDataRange.repetitions.max,
-      ),
-    },
-  ],
-  destination: [
-    {
-      rule: (value) => value,
-      message: t('trans0004'),
-    },
-    {
-      rule: (value) => isIP(value) || isIP(value, IP.IPv6) || isValidDomain(value),
-      message: t('trans0397'),
-    },
-  ],
-})
 
+function checkDestination(type: string, value: string) {
+  if (isValidDomain(value)) {
+    return true
+  }
+  if (type === IP.IPv4) {
+    return isIP(value)
+  }
+  if (type === IP.IPv6) {
+    return isIP(value, IP.IPv6)
+  }
+  return false
+}
 function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: () => void) {
   return () => {
     checkStatus().then((status) => {
@@ -214,7 +225,7 @@ const getWanData = () => {
       return
     }
     items.forEach((item) => {
-      if (item.protocol !== NetType.bridge) {
+      if (item.protocol !== NetType.bridge && item.status === WanStatus.UP) {
         if (
           item.ipv4.length > 0 ||
           item.protocol === NetType.dhcp ||
@@ -232,13 +243,14 @@ const getWanData = () => {
         }
       }
     })
-    Object.assign(ipv4Data, thisIpv4Data)
-    Object.assign(ipv6Data, thisIpv6Data)
+    ipv4Data.splice(0, ipv4Data.length, ...thisIpv4Data)
+    ipv6Data.splice(0, ipv6Data.length, ...thisIpv6Data)
   })
 }
 
 const pingResult = ref('')
 const pingRef = useTemplateRef('pingRef')
+const pingDestinationRef = useTemplateRef('pingDestinationRef')
 const pingFormDisabled = ref(false)
 const pingSuccessFlag = ref(false)
 const pingForm = reactive({
@@ -246,6 +258,33 @@ const pingForm = reactive({
   interface: '',
   repetitions: '',
   destination: '',
+})
+const pingRules = reactive({
+  repetitions: [
+    {
+      rule: (value) => value,
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) =>
+        isValidInteger(value, FormDataRange.repetitions.min, FormDataRange.repetitions.max),
+      message: t('trans0388').format(
+        `'${t(FormDataRange.repetitions.label)}'`,
+        FormDataRange.repetitions.min,
+        FormDataRange.repetitions.max,
+      ),
+    },
+  ],
+  destination: [
+    {
+      rule: (value) => value,
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => checkDestination(pingForm.type, value),
+      message: t('trans0397'),
+    },
+  ],
 })
 const pingWanOpts = computed(() => {
   if (pingForm.type === IP.IPv4) {
@@ -312,15 +351,49 @@ const handlePing = () => {
   sessionStorage.setItem('ping', '1')
   createPingCountDown()
 }
+const changePingIpType = () => {
+  pingForm.interface = ''
+  if (pingForm.destination) {
+    pingDestinationRef.value.validate()
+  }
+}
 
 const tracerouteResult = ref('')
 const tracerouteRef = useTemplateRef('tracerouteRef')
+const tracerouteDestinationRef = useTemplateRef('tracerouteDestinationRef')
 const tracerouteFormDisabled = ref(false)
 const tracerouteSuccessFlag = ref(false)
 const tracerouteForm = reactive({
   type: IP.IPv4,
   interface: '',
   destination: '',
+})
+const tracerouteRules = reactive({
+  repetitions: [
+    {
+      rule: (value) => value,
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) =>
+        isValidInteger(value, FormDataRange.repetitions.min, FormDataRange.repetitions.max),
+      message: t('trans0388').format(
+        `'${t(FormDataRange.repetitions.label)}'`,
+        FormDataRange.repetitions.min,
+        FormDataRange.repetitions.max,
+      ),
+    },
+  ],
+  destination: [
+    {
+      rule: (value) => value,
+      message: t('trans0004'),
+    },
+    {
+      rule: (value) => checkDestination(tracerouteForm.type, value),
+      message: t('trans0397'),
+    },
+  ],
 })
 const tracerouteWanOpts = computed(() => {
   if (tracerouteForm.type === IP.IPv4) {
@@ -369,6 +442,71 @@ const handleTraceroute = () => {
   sessionStorage.setItem('traceroute', '1')
   createTracerouteCountDown()
 }
+const changeTracerouteIpType = () => {
+  tracerouteForm.interface = ''
+  if (tracerouteForm.destination) {
+    tracerouteDestinationRef.value.validate()
+  }
+}
+
+const informUploadForm = ref({
+  result: '',
+})
+const informUploadFormDisabled = ref(false)
+const informUploadResult = computed(() => {
+  const resultMap = {
+    '1': t('trans0921'),
+    '2': t('trans0944'),
+    '3': t('trans0403'),
+    '4': t('trans0945'),
+    '5': t('trans0946'),
+    '6': t('trans0911'),
+  }
+  return resultMap[informUploadForm.value.result]
+})
+let cleanInformUploadCountDown: () => void
+const checkInformUploadStatus = () => informUploadStatus().then(({ data }) => data.status)
+const doingInformUploadHandle = createDoingHandle(checkInformUploadStatus, () =>
+  cleanInformUploadCountDown(),
+)
+const getInformUploadResultsData = () =>
+  getInformUploadResults()
+    .then(({ data }) => {
+      informUploadForm.value.result = data.result
+    })
+    .catch(() => {
+      informUploadForm.value.result = t('trans0563')
+    })
+const doneInformUploadHandle = createDoneHandle('informUpload', getInformUploadResultsData)
+const {
+  createCountDown: createInformUploadCountDown,
+  cleanCountDown: _cleanInformUploadCountDown,
+} = useCountDown(timeout, interval, doingInformUploadHandle, doneInformUploadHandle)
+cleanInformUploadCountDown = _cleanInformUploadCountDown
+const informUpload = () => {
+  informUploadForm.value.result = ''
+  startInformUpload({
+    order: Order.start,
+  }).then(({ data }) => {
+    const status = data.status
+    if (status === Status.testing) {
+      handleInformUpload()
+    }
+    if (status === Status.done) {
+      getInformUploadResultsData()
+    }
+    if (status === Status.fail) {
+      informUploadForm.value.result = '6'
+    }
+  })
+}
+const handleInformUpload = () => {
+  loading.open({
+    tip: t('trans0921'),
+  })
+  sessionStorage.setItem('informUpload', '1')
+  createInformUploadCountDown()
+}
 
 onMounted(() => {
   getWanData()
@@ -393,6 +531,18 @@ onMounted(() => {
         createTracerouteCountDown()
       } else if (status === Status.done || status === Status.idle) {
         doneTracerouteHandle()
+      }
+    })
+  }
+  if (sessionStorage.getItem('informUpload') === '1') {
+    loading.open({
+      tip: t('trans0921'),
+    })
+    checkInformUploadStatus().then((status) => {
+      if (status === Status.testing) {
+        createInformUploadCountDown()
+      } else if (status === Status.done || status === Status.idle) {
+        doneInformUploadHandle()
       }
     })
   }

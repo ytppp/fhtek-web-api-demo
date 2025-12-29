@@ -28,8 +28,10 @@
 </template>
 
 <script>
+import { mapStores } from 'pinia'
 import { isValidLength, isValidSymbol, specialChar, handleLogout, successTips } from '@/util/tool'
 import { getAccount, setAccount } from '@/http/api'
+import { useAppStore } from '@/stores/app-store'
 
 export default {
   data() {
@@ -49,8 +51,8 @@ export default {
             message: this.$t('trans0004'),
           },
           {
-            rule: (value) => isValidLength(value, 8, 64),
-            message: this.$t('trans0003').format(this.$t('trans0185'), 8, 64),
+            rule: (value) => isValidLength(value, 1, 64),
+            message: this.$t('trans0003').format(this.$t('trans0185'), 1, 64),
           },
           {
             rule: (value) => isValidSymbol(value),
@@ -66,8 +68,8 @@ export default {
             message: this.$t('trans0004'),
           },
           {
-            rule: (value) => isValidLength(value, 8, 64),
-            message: this.$t('trans0003').format(this.$t('trans0186'), 8, 64),
+            rule: (value) => isValidLength(value, 1, 64),
+            message: this.$t('trans0003').format(this.$t('trans0186'), 1, 64),
           },
           {
             rule: (value) => isValidSymbol(value),
@@ -85,6 +87,9 @@ export default {
       roleOpts: [],
       userList: [],
     }
+  },
+  computed: {
+    ...mapStores(useAppStore),
   },
   methods: {
     changePwd() {
@@ -126,7 +131,7 @@ export default {
           return
         }
         const roleOpts = items.map((item) => ({
-          value: item.role,
+          value: item.name,
           text: item.role,
         }))
         this.roleOpts = roleOpts
@@ -142,8 +147,8 @@ export default {
     },
   },
   created() {
-    this.form.username = this.usernameStoraged = sessionStorage.getItem('login_user')
-    this.form.role = sessionStorage.getItem('role')
+    this.form.username = this.usernameStoraged = this.appStore.loggedUser
+    this.form.role = this.appStore.role
   },
   mounted() {
     this.getAccountData()

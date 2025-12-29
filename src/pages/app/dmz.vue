@@ -38,7 +38,7 @@ import {
 } from '@/util/tool'
 import { getDmz, setDmz, getLan, getWan } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
-import { ServiceType } from '@/util/constant'
+import { ServiceType, WanMode } from '@/util/constant'
 
 const { convertBooleanStatus } = useDataClean()
 export default {
@@ -98,6 +98,7 @@ export default {
           enable: convertBooleanStatus(this.form.enable),
           ip: this.form.ip,
         }).then(() => {
+          this.formEnable = this.form.enable
           successTips()
         })
       }
@@ -129,9 +130,10 @@ export default {
         const wanList = []
         items.forEach((item) => {
           if (
-            item.serviceType === ServiceType.INTERNET ||
-            item.serviceType === ServiceType.TR069_INTERNET ||
-            item.serviceType === ServiceType.VOICE_INTERNET
+            (item.serviceType === ServiceType.INTERNET ||
+              item.serviceType === ServiceType.TR069_INTERNET ||
+              item.serviceType === ServiceType.VOICE_INTERNET) &&
+            item.wanMode === WanMode.route
           ) {
             wanList.push({
               value: item.id,

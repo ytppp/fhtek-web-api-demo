@@ -8,15 +8,18 @@
         <fh-form-item :label="$t('trans0829')">
           <fh-switch v-model="form.enable"> </fh-switch>
         </fh-form-item>
-        <fh-form-item :label="$t('trans0053')" prop="username">
-          <fh-input v-model="form.username"> </fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0185')" prop="pwd">
-          <fh-input v-model="form.pwd" type="password" show-password @blur="changePwd"> </fh-input>
-        </fh-form-item>
-        <fh-form-item :label="$t('trans0186')" prop="confirmPwd" ref="confirmPwd">
-          <fh-input v-model="form.confirmPwd" type="password" show-password> </fh-input>
-        </fh-form-item>
+        <template v-if="form.enable">
+          <fh-form-item :label="$t('trans0053')" prop="username">
+            <fh-input v-model="form.username"> </fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0185')" prop="pwd">
+            <fh-input v-model="form.pwd" type="password" show-password @blur="changePwd">
+            </fh-input>
+          </fh-form-item>
+          <fh-form-item :label="$t('trans0186')" prop="confirmPwd" ref="confirmPwd">
+            <fh-input v-model="form.confirmPwd" type="password" show-password> </fh-input>
+          </fh-form-item>
+        </template>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
             {{ $t('trans0002') }}
@@ -52,6 +55,13 @@ export default {
             rule: (value) => value,
             message: this.$t('trans0004'),
           },
+          {
+            rule: (value) => isValidSymbol(value),
+            message: format(this.$t('trans0013'), [
+              this.$t('trans0053'),
+              format(this.$t('trans0042'), [specialChar]),
+            ]),
+          },
         ],
         pwd: [
           {
@@ -60,12 +70,12 @@ export default {
           },
           {
             rule: (value) => isValidLength(value, 8, 64),
-            message: format(this.$t('trans0003'), [this.$t('trans0185'), 8, 64]),
+            message: format(this.$t('trans0003'), [this.$t('trans0196'), 8, 64]),
           },
           {
             rule: (value) => isValidSymbol(value),
             message: format(this.$t('trans0013'), [
-              this.$t('trans0185'),
+              this.$t('trans0196'),
               format(this.$t('trans0042'), [specialChar]),
             ]),
           },
@@ -120,7 +130,7 @@ export default {
       getSamba().then(({ data }) => {
         this.form.enable = convertBooleanStatus(data.enable)
         this.form.username = data.username
-        this.form.pwd = data.password
+        this.form.confirmPwd = this.form.pwd = data.password
       })
     },
     getUsbInfo() {

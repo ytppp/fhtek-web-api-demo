@@ -31,12 +31,12 @@
 </template>
 
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
 import { format, formatNetworkData } from '@/util/tool'
 import { getLanInfo } from '@/http/api'
-import { Lan1, Lan2, Lan3, Lan4, SsidText, ModeText } from '@/util/constant'
+import { lan, SsidText, ModeText } from '@/util/constant'
 
 const { t, n } = useI18n()
 const { defaultDataObj, defaultVal } = useDataClean()
@@ -55,24 +55,7 @@ const basicInfo = reactive({
     value: defaultVal,
   },
 })
-const lanListColumns = reactive([
-  {
-    key: Lan1,
-    title: SsidText[Lan1],
-  },
-  {
-    key: Lan2,
-    title: SsidText[Lan2],
-  },
-  {
-    key: Lan3,
-    title: SsidText[Lan3],
-  },
-  {
-    key: Lan4,
-    title: SsidText[Lan4],
-  },
-])
+const lanListColumns = ref([])
 const interfaceColumns = reactive([
   {
     key: 'interface',
@@ -123,26 +106,31 @@ const interfaceColumns = reactive([
     ],
   },
 ])
-const lanListData = reactive([])
+const lanListData = ref([])
 const interfaceData = reactive([])
 
 const getLanInfoData = () => {
   getLanInfo().then(({ data }) => {
-    const { ip, ipv6, mac, lan, datas } = data
+    const { ip, ipv6, mac, lan: lanData, datas } = data
+    const thisLanListData = {}
+    const thisLanListColumns = []
     const thisInterfaceData = []
     const thisBasicInfo = {
       ip,
       ipv6,
       mac,
     }
-    const thisLanListData = [
-      {
-        [Lan1]: convertLan(lan[Lan1]),
-        [Lan2]: convertLan(lan[Lan2]),
-        [Lan3]: convertLan(lan[Lan3]),
-        [Lan4]: convertLan(lan[Lan4]),
-      },
-    ]
+    const lanKeyTotal = Object.keys(lanData).length
+    for (let i = 1; i <= lanKeyTotal; i++) {
+      const key = `${lan}${i}`
+      if (lanData[key]) {
+        thisLanListData[key] = convertLan(lanData[key])
+        thisLanListColumns.push({
+          key,
+          title: SsidText[key],
+        })
+      }
+    }
     datas.forEach((item) => {
       const receiveByte = formatNetworkData(item.receive.byte)
       const sendByte = formatNetworkData(item.send.byte)
@@ -159,8 +147,9 @@ const getLanInfoData = () => {
       })
     })
     defaultDataObj(basicInfo, thisBasicInfo)
-    Object.assign(lanListData, thisLanListData)
-    Object.assign(interfaceData, thisInterfaceData)
+    lanListData.value = [thisLanListData]
+    lanListColumns.value = thisLanListColumns
+    interfaceData.splice(0, interfaceData.length, ...thisInterfaceData)
   })
 }
 const convertLan = (lanVal) => {

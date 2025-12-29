@@ -39,10 +39,9 @@
             </fh-button>
           </div>
         </fh-form-item>
-        <!-- 暂不需要 -->
-        <!-- <fh-form-item>
+        <fh-form-item>
           <fh-alert type="info" :title="meshTip" show-icon :center="false" />
-        </fh-form-item> -->
+        </fh-form-item>
       </fh-form>
       <fh-modal class="mesh-tip-modal" v-model="visible" width="50%">
         <template #body>
@@ -115,7 +114,7 @@ const roleText = computed(() => {
   return roles.find((item) => item.value === form.role).text
 })
 const meshTip = computed(() => {
-  return t('trans0521').format(t('trans0035'))
+  return t('trans0960')
 })
 
 const getTopoData = () => {

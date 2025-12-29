@@ -71,6 +71,12 @@
           </fh-form-item>
           <fh-form-item :label="$t('trans0446')" prop="extHost">
             <fh-input v-model="modalForm.extHost"></fh-input>
+            <template #extra>
+              <ul style="list-style: disc">
+                <li>{{ $t('trans0958') }}</li>
+                <li>{{ placeholderTips }}</li>
+              </ul>
+            </template>
           </fh-form-item>
           <fh-form-item :label="$t('trans0273')" prop="extPort">
             <fh-input name="ExternalPort" v-model="modalForm.extPort"></fh-input>
@@ -94,7 +100,17 @@
 
 <script>
 import { ModalType, ProtocolType } from '@/util/constant'
-import { isValidInteger, isValidVal, isIP, successTips } from '@/util/tool'
+import {
+  isValidInteger,
+  isValidVal,
+  isIP,
+  successTips,
+  cidrToSubnetMask,
+  isMulticast,
+  isLoopback,
+  format,
+  isValidStaticRouteMask,
+} from '@/util/tool'
 import { getPortMapping, setPortMapping, editPortMapping, delPortMapping } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 
@@ -227,12 +243,23 @@ export default {
         ],
         extHost: [
           {
-            rule: (value) => value,
-            message: this.$t('trans0004'),
-          },
-          {
-            rule: (value) => isIP(value),
-            message: this.$t('trans0397'),
+            rule: (value) => {
+              if (!value) return true
+              const parts = value.split('/')
+              if (parts.length !== 2) return false
+              const ip = parts[0]
+              const suffix = parts[1]
+              if (isIP(ip)) {
+                const mask = cidrToSubnetMask(parseInt(suffix))
+                if (!mask) return false
+                if (isMulticast(ip) || isLoopback(ip) || !isValidStaticRouteMask(ip, mask)) {
+                  return false
+                }
+                return true
+              }
+              return false
+            },
+            message: this.$t('trans0566').format(this.$t('trans0446')),
           },
         ],
         extPort: [
@@ -367,6 +394,11 @@ export default {
         // },
       ]
     },
+    placeholderTips() {
+      return this.$t('trans0959').format(
+        `${format(this.$t('trans0598'), [this.$t('trans0456')])}/${this.$t('trans0459')}`,
+      )
+    },
   },
   methods: {
     handleClose() {
@@ -447,7 +479,7 @@ export default {
       editPortMapping([
         {
           id: row.id,
-          enable: row.enable,
+          enable: convertBooleanStatus(row.enable),
         },
       ])
     },

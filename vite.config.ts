@@ -6,16 +6,24 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import path from 'path'
 
-let CUSTOMER_ID = ''
+let CUSTOMER_ID = 'demo'
+let WIFI_VERSION = 'v6'
 if (process.env.CUSTOMER_ID) {
-  CUSTOMER_ID = `${process.env.CUSTOMER_ID}`
-} else {
-  CUSTOMER_ID = 'fhtek'
+  CUSTOMER_ID = process.env.CUSTOMER_ID
+}
+if (process.env.WIFI_VERSION) {
+  WIFI_VERSION = process.env.WIFI_VERSION
 }
 
 // https://vite.dev/config/
 export default defineConfig(async () => {
   const module = await import(`./src/customer-conf/${CUSTOMER_ID}.json`)
+  console.log(`CUSTOMER_ID: ${CUSTOMER_ID}, WIFI_VERSION: ${WIFI_VERSION}`)
+  console.log(`CUSTOMER_CONFIG: ${JSON.stringify(module.default)}`)
+  const customerConf = {
+    ...module.default,
+    wifiVersion: WIFI_VERSION,
+  }
   return {
     plugins: [vue(), vueJsx, vueDevTools()],
     resolve: {
@@ -24,7 +32,7 @@ export default defineConfig(async () => {
       },
     },
     define: {
-      VITE_CUSTOMER_CONFIG: module.default,
+      VITE_CUSTOMER_CONFIG: customerConf,
     },
     css: {
       preprocessorOptions: {
@@ -38,12 +46,12 @@ export default defineConfig(async () => {
     server: {
       proxy: {
         '/sys_log.log': {
-          target: 'http://192.168.29.1',
+          target: 'http://192.168.100.1',
           changeOrigin: true,
           rewrite: (path) => path,
         },
         '/action': {
-          target: 'http://192.168.29.1',
+          target: 'http://192.168.100.1',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/action/, '/action'),
           configure: (proxy, options) => {

@@ -4,5 +4,6 @@
   "languages": ["zh-CN", "en-US"],
   "defaultLanguage": "en-US",
   "favicon": "/images/customer-conf/fhtek/favicon.ico",
-  "logo": "/images/customer-conf/fhtek/logo.png"
+  "logo": "/images/customer-conf/fhtek/logo.png",
+  "clubWifiVlanId": ""
 }

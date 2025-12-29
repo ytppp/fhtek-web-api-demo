@@ -4,14 +4,19 @@ export const DefaultVal = '-'
 export const customers = {
   demo: 'demo',
   fhtek: 'fhtek',
+  totalplay: 'totalplay',
 }
-export const RouterMode = {
-  router: '0',
-  bridge: '3',
+export enum WifiVersion {
+  v6 = 'v6',
+  v7 = 'v7',
 }
-export const Role = {
-  super: 'root',
-  admin: 'admin',
+export enum RouterMode {
+  router = '0',
+  bridge = '3',
+}
+export enum Role {
+  super = 'root',
+  admin = 'admin',
 }
 export const FileType = {
   config: '1',
@@ -84,11 +89,12 @@ export enum FilteringModes {
   blackList = '0',
   whiteList = '1',
 }
-
-export const Lan1 = 'lan1'
-export const Lan2 = 'lan2'
-export const Lan3 = 'lan3'
-export const Lan4 = 'lan4'
+export const lan = 'lan'
+export const Lan1 = `${lan}1`
+export const Lan2 = `${lan}2`
+export const Lan3 = `${lan}3`
+export const Lan4 = `${lan}4`
+export const Lan5 = `${lan}5`
 export const Ssid1 = 'ssid1'
 export const Ssid2 = 'ssid2'
 export const Ssid3 = 'ssid3'
@@ -103,6 +109,7 @@ export const SsidText = {
   [Lan2]: 'LAN2',
   [Lan3]: 'LAN3',
   [Lan4]: 'LAN4',
+  [Lan5]: '10GE',
   [Ssid1]: 'SSID1',
   [Ssid2]: 'SSID2',
   [Ssid3]: 'SSID3',
@@ -237,6 +244,9 @@ export enum Mode {
   h100 = '100half',
   f100 = '100full',
   f1000 = '1000full',
+  f10000 = '10000full',
+  f5000 = '5000full',
+  f2500 = '2500full',
 }
 
 export const ModeText = {
@@ -245,5 +255,27 @@ export const ModeText = {
   [Mode.f10]: '10M/Full Duplex',
   [Mode.h100]: '100M/Half Duplex',
   [Mode.f100]: '100M/Full Duplex',
-  [Mode.f1000]: '1000M/Full Duplex',
+  [Mode.f1000]: '1G/Full Duplex',
+  [Mode.f10000]: '10G/Full Duplex',
+  [Mode.f5000]: '5G/Full Duplex',
+  [Mode.f2500]: '2.5G/Full Duplex',
+}
+
+export enum WanStatus {
+  UP = 'UP',
+  DOWN = 'DOWN',
+  DISCONNECTED = 'DISCONNECTED',
+}
+
+export enum VoipConnetStatus {
+  idle = 'Idle',
+  ringing = 'Ringing',
+  ringback = 'Ringback',
+  connecting = 'Connect',
+}
+
+export enum CwmpStatus {
+  ReportedSuccessfully = '0',
+  ReportedFail = '1',
+  Tring = '2',
 }

@@ -60,13 +60,15 @@ import { useI18n } from 'vue-i18n'
 import { format } from '@/util/tool'
 import { getWifi2gAdv, getWifi5gAdv, getWifi2g, getWifi5g, getWlanDevices } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
-import { encryptsText, NetType, netTypeText, SsidText } from '@/util/constant'
+import { useAppStore } from '@/stores/app-store'
+import { encryptsText, NetType, netTypeText, SsidText, Ssid4, Ssidac4 } from '@/util/constant'
 
 defineOptions({
   name: 'StatusWlanInfoPage',
 })
 
 const { t } = useI18n()
+const appStore = useAppStore()
 const { convertBooleanStatus, defaultVal, defaultDataObj } = useDataClean()
 const b24gInfo = reactive({
   status: {
@@ -145,7 +147,7 @@ const b24gSsidColumns = reactive([
   },
   {
     key: 'name',
-    title: t('trans0051'),
+    title: t('trans0712'),
   },
   {
     key: 'enableAlias',
@@ -167,7 +169,7 @@ const b5gSsidColumns = reactive([
   },
   {
     key: 'name',
-    title: t('trans0051'),
+    title: t('trans0712'),
   },
   {
     key: 'enableAlias',
@@ -211,14 +213,19 @@ const getWifi2gBasicData = () => {
     if (items.length === 0) {
       return
     }
-    const tableData = items.map((item) => ({
-      ...item,
-      ssid: SsidText[item.id],
-      enableAlias: convertBooleanStatus(item.enable) ? t('trans0103') : t('trans0054'),
-      hideAlias: convertBooleanStatus(item.enable_hide) ? t('trans0103') : t('trans0054'),
-      encryptAlias: encryptsText[item.auth_mode],
-    }))
-    Object.assign(b24gSsidData, tableData)
+    const tableData = []
+    items.forEach((item) => {
+      if (appStore.isSuper || (appStore.isAdmin && item.id !== Ssid4)) {
+        tableData.push({
+          ...item,
+          ssid: SsidText[item.id],
+          enableAlias: convertBooleanStatus(item.enable) ? t('trans0103') : t('trans0054'),
+          hideAlias: convertBooleanStatus(item.enable_hide) ? t('trans0103') : t('trans0054'),
+          encryptAlias: encryptsText[item.auth_mode],
+        })
+      }
+    })
+    b24gSsidData.splice(0, b24gSsidData.length, ...tableData)
   })
 }
 const getWifi5gBasicData = () => {
@@ -227,14 +234,19 @@ const getWifi5gBasicData = () => {
     if (items.length === 0) {
       return
     }
-    const tableData = items.map((item) => ({
-      ...item,
-      ssid: SsidText[item.id],
-      enableAlias: convertBooleanStatus(item.enable) ? t('trans0103') : t('trans0054'),
-      hideAlias: convertBooleanStatus(item.enable_hide) ? t('trans0103') : t('trans0054'),
-      encryptAlias: encryptsText[item.auth_mode],
-    }))
-    Object.assign(b5gSsidData, tableData)
+    const tableData = []
+    items.forEach((item) => {
+      if (appStore.isSuper || (appStore.isAdmin && item.id !== Ssidac4)) {
+        tableData.push({
+          ...item,
+          ssid: SsidText[item.id],
+          enableAlias: convertBooleanStatus(item.enable) ? t('trans0103') : t('trans0054'),
+          hideAlias: convertBooleanStatus(item.enable_hide) ? t('trans0103') : t('trans0054'),
+          encryptAlias: encryptsText[item.auth_mode],
+        })
+      }
+    })
+    b5gSsidData.splice(0, b5gSsidData.length, ...tableData)
   })
 }
 onMounted(() => {

@@ -92,6 +92,15 @@ if ! cp -f timezone.json $project_dir/src/i18n/locales; then
 fi
 beautify_echo "completed copy timezone files..." success
 
+# 返回上级菜单
+cd ..
+
+# 拷贝帮助文件
+beautify_echo "copy help files..." info
+cp -f help-zh.md $project_dir/src/i18n/locales
+cp -f help-en.md $project_dir/src/i18n/locales
+beautify_echo "complete copy help files..." success
+
 # 拷贝区域文件
 # beautify_echo "copy region files..." info
 # cp country_code/zh_CN_region_web.json $project_dir/src/assets/regions/zh-CN.json

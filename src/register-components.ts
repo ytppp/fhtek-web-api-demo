@@ -1,3 +1,5 @@
+import type { App } from 'vue'
+
 import FhButton from './components/button/button.vue'
 import FhDescriptions from './components/descriptions/descriptions.vue'
 import FhIcon from './components/icon/icon.vue'
@@ -24,6 +26,7 @@ import FhStep from './components/step/step.vue'
 import FhTable from './components/table/table.vue'
 import FhTableNew from './components/table/table-new.vue'
 import FhPagination from './components/pagination/pagination.vue'
+import FhMarkdownPreview from './components/markdown-preview/markdown-preview.vue'
 
 import clickoutside from './components/directives/clickoutside.js'
 import vloading from './components/directives/loading.js'
@@ -34,7 +37,7 @@ import loading from '@/components/loading'
 import upgrade from '@/components/upgrade'
 
 // Dialog 等组件需要手动导入
-const registerComponents = (app) => {
+const registerComponents = (app: App) => {
   app.component('FhButton', FhButton)
   app.component('FhIcon', FhIcon)
   app.component('FhInput', FhInput)
@@ -60,6 +63,7 @@ const registerComponents = (app) => {
   app.component('FhTable', FhTableNew)
   app.component('FhDescriptions', FhDescriptions)
   app.component('FhPagination', FhPagination)
+  app.component('FhMarkdownPreview', FhMarkdownPreview)
 
   app.directive('clickoutside', clickoutside)
   app.directive('loading', vloading)

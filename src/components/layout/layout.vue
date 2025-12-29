@@ -70,10 +70,12 @@
 </template>
 
 <script>
+import { mapStores, mapActions } from 'pinia'
 import { getMenu } from '@/util/menu'
 import { isMobileDevice, isObjArrHasVal } from '@/util/tool'
-import { getDevInfo } from '@/http/api'
+import { getDevModel } from '@/http/api'
 import { loginPath } from '@/router'
+import { useAppStore } from '@/stores/app-store'
 
 // 若多维对象数组中存在某个值，返回其顶级对象
 const getTopObjFromObjArr = (arr, val, childNodeName = 'children', keyName = 'url') => {
@@ -98,6 +100,7 @@ const getObjFromObjArr = (arr, childNodeName = 'children', keyName = 'url') => {
   }
   return menu
 }
+
 export default {
   data() {
     return {
@@ -112,6 +115,7 @@ export default {
     }
   },
   computed: {
+    ...mapStores(useAppStore),
     isNoAuthPage() {
       return [loginPath, '/guide'].includes(this.url)
     },
@@ -119,7 +123,13 @@ export default {
       return this.childMenus.length > 0
     },
     menus() {
-      return getMenu()
+      return getMenu(
+        VITE_CUSTOMER_CONFIG.name,
+        this.appStore.role,
+        this.appStore.mode,
+        this.appStore.meshRole,
+        this.appStore.wifiVersion,
+      )
     },
     childMenus() {
       if (!this.url.length) return
@@ -139,9 +149,15 @@ export default {
   watch: {
     $route(val) {
       this.url = val.path
+      this.startLoginTimeoutCheck(this.isNoAuthPage)
     },
   },
   methods: {
+    ...mapActions(useAppStore, [
+      'loadFromStorage',
+      'startLoginTimeoutCheck',
+      'stopLoginTimeoutCheck',
+    ]),
     isToolbarActive(menu) {
       if (menu.children) {
         return isObjArrHasVal(menu.children, this.url)
@@ -188,18 +204,19 @@ export default {
         this.title = productName
         return
       }
-      getDevInfo({
-        toast: false,
-        loading: false,
-      }).then(({ data }) => {
+      getDevModel().then(({ data }) => {
         this.title = data.model
         sessionStorage.setItem('product_name', this.title)
       })
     },
   },
+  created() {
+    this.loadFromStorage()
+  },
   mounted() {
     this.getDevInfoData()
     this.changeScreen()
+    this.startLoginTimeoutCheck(this.isNoAuthPage)
     if (window.addEventListener) {
       window.addEventListener('resize', this.changeScreen)
     } else if (window.attachEvent) {
@@ -207,6 +224,7 @@ export default {
     }
   },
   beforeUnmount() {
+    this.stopLoginTimeoutCheck()
     if (window.addEventListener) {
       window.removeEventListener('resize', this.changeScreen)
     } else if (window.attachEvent) {

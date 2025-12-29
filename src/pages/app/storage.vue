@@ -31,7 +31,10 @@
           <fh-form-item :label="$t('trans0814')" prop="path">
             <fh-input v-model="clientForm.path"></fh-input>
             <template #extra>
-              {{ $t('trans0818') }}
+              <ul style="list-style: disc">
+                <li>{{ $t('trans0818') }}</li>
+                <li>{{ $t('trans0855') }}</li>
+              </ul>
             </template>
           </fh-form-item>
           <fh-form-item class="form__submit-btn">
@@ -41,11 +44,18 @@
           </fh-form-item>
         </fh-form>
         <div class="page__table">
-          <fh-table
-            :columns="columns"
-            :data-source="tableData"
-            :show-row-checkbox="false"
-          ></fh-table>
+          <fh-table :columns="columns" :data-source="tableData" :show-row-checkbox="false">
+            <template #url="scope">
+              <fh-popover :title="scope.row.url">
+                <div class="ellipsis" style="width: 100px">{{ scope.row.url }}</div>
+              </fh-popover>
+            </template>
+            <template #path="scope">
+              <fh-popover :title="scope.row.path">
+                <div class="ellipsis" style="width: 100px">{{ scope.row.path }}</div>
+              </fh-popover>
+            </template>
+          </fh-table>
         </div>
         <div class="page__sub-header">
           <h2 class="page__title">{{ $t('trans0815') }}</h2>
@@ -72,7 +82,10 @@
             <fh-form-item :label="$t('trans0825')" prop="rootPath">
               <fh-input v-model="serverForm.rootPath"></fh-input>
               <template #extra>
-                {{ $t('trans0819') }}
+                <ul style="list-style: disc">
+                  <li>{{ $t('trans0819') }}</li>
+                  <li>{{ $t('trans0855') }}</li>
+                </ul>
               </template>
             </fh-form-item>
           </template>
@@ -95,12 +108,13 @@ import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   isValidInteger,
-  isValidLength,
   isValidSymbol,
   isValidUnixPath,
   format,
   specialChar,
   successTips,
+  invalidChar,
+  isInvalidSymbol,
 } from '@/util/tool'
 import { getUsb, usbDownload, editUsbServer, getUsbDownloadList, getUsbServer } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
@@ -109,6 +123,7 @@ enum DownloadStatus {
   done = '0',
   failed = '2',
   doing = '1',
+  init = '3',
 }
 const { t } = useI18n()
 const UrlAppend = 'ftp://'
@@ -157,20 +172,34 @@ const clientFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: format(t('trans0013'), [t('trans0053'), format(t('trans0042'), [specialChar])]),
+    },
   ],
   password: [
     {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
+    },
   ],
   path: [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value) return true
+        return !isInvalidSymbol(value)
+      },
+      message: t('trans0957').format(t('trans0814'), invalidChar),
     },
     {
-      rule: (value) => isValidUnixPath(value),
+      rule: (value) => {
+        if (!value) return true
+        return isValidUnixPath(value)
+      },
       message: t('trans0830'),
     },
   ],
@@ -191,6 +220,10 @@ const serverFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => isValidSymbol(value),
+      message: format(t('trans0013'), [t('trans0053'), format(t('trans0042'), [specialChar])]),
+    },
   ],
   password: [
     {
@@ -198,21 +231,23 @@ const serverFormRules = {
       message: t('trans0004'),
     },
     {
-      rule: (value) => isValidLength(value, 8, 64),
-      message: format(t('trans0003'), [t('trans0185'), 8, 64]),
-    },
-    {
       rule: (value) => isValidSymbol(value),
-      message: format(t('trans0013'), [t('trans0185'), format(t('trans0042'), [specialChar])]),
+      message: format(t('trans0013'), [t('trans0196'), format(t('trans0042'), [specialChar])]),
     },
   ],
   rootPath: [
     {
-      rule: (value) => value,
-      message: t('trans0004'),
+      rule: (value) => {
+        if (!value) return true
+        return !isInvalidSymbol(value)
+      },
+      message: t('trans0957').format(t('trans0825'), invalidChar),
     },
     {
-      rule: (value) => isValidUnixPath(value),
+      rule: (value) => {
+        if (!value) return true
+        return isValidUnixPath(value)
+      },
       message: t('trans0830'),
     },
   ],
@@ -249,7 +284,7 @@ const getUsbInfo = () => {
   getUsb().then(({ data }) => {
     hasUsbDevice.value = convertBooleanStatus(data.has_usb)
     if (hasUsbDevice.value) {
-      getDownloadList(true)
+      getDownloadList()
       getUsbServerData()
     }
   })
@@ -263,6 +298,7 @@ const download = () => {
     username: clientForm.username,
     password: clientForm.password,
     path: clientForm.path,
+    status: DownloadStatus.init,
   }
   usbDownload([data]).then(() => {
     successTips()
@@ -304,7 +340,15 @@ const getDownloadList = () => {
         statusAilas: DownloadStatusText[item.status],
       })
     })
-    Object.assign(tableData, table)
+    tableData.splice(0, tableData.length, ...table)
+    if (tableData.length) {
+      const index = tableData.length - 1
+      clientForm.url = tableData[index].url.substring(UrlAppend.length)
+      clientForm.port = tableData[index].port
+      clientForm.username = tableData[index].username
+      clientForm.password = tableData[index].password
+      clientForm.path = tableData[index].path
+    }
   })
 }
 

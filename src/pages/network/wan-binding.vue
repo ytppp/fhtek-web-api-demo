@@ -17,12 +17,13 @@
               @click="openEditModal(scope.row)"
               name="icon-edit-square"
               :title="$t('trans0165')"
+              v-if="scope.row.mode !== Mode.L2"
             />
           </template>
         </fh-table>
       </div>
     </div>
-    <fh-modal v-model="visible" :title="$t('trans0165')">
+    <fh-modal v-model="visible" :title="$t('trans0165')" :before-close="handleClose">
       <template #body>
         <fh-form class="form modal-form" ref="modalFormRef" :model="form" :rules="modalFormRules">
           <fh-form-item :label="$t('trans0754')">
@@ -56,15 +57,23 @@ import { useI18n } from 'vue-i18n'
 import { useDataClean } from '@/hooks/data-clean'
 import { getWanBinding, setWanBinding } from '@/http/api'
 import { SsidText } from '@/util/constant'
-import { successTips } from '@/util/tool'
+import { successTips, isValidInteger } from '@/util/tool'
 
 enum Mode {
   port = 'port',
   vlan = 'vlan',
+  L2 = 'L2',
 }
 const { t } = useI18n()
 const { defaultVal } = useDataClean()
 
+const l2Text = 'L2'
+const l2PortText = 'L2 port'
+const ModeText = {
+  [Mode.port]: t('trans0755'),
+  [Mode.vlan]: t('trans0756'),
+  [Mode.L2]: l2Text,
+}
 const modalFormRef = useTemplateRef('modalFormRef')
 const visible = ref(false)
 const columns = reactive([
@@ -110,17 +119,30 @@ const modalFormRules = reactive({
       rule: (value) => {
         const multiPairRegex = /^(\d+\/\d+)(;\d+\/\d+)*$/
         if (!multiPairRegex.test(value)) return false
-        const value2Arr = value
-          .split(';')
-          .map((val) => val.split('/'))
-          .map((val) => val[0])
-        return value2Arr.length === new Set(value2Arr).size
+        let value2Arr = value.split(';').map((val) => val.split('/'))
+        if (!value2Arr.flat().every((val) => isValidInteger(val, 1, 4094))) {
+          return false
+        } else {
+          value2Arr = value2Arr.map((val) => val[0])
+          return value2Arr.length === new Set(value2Arr).size
+        }
       },
       message: t('trans0566').format(t('trans0753')),
     },
   ],
 })
 const isVlan = computed(() => form.mode === Mode.vlan)
+const getPairText = (type, vlanpair) => {
+  if (type === Mode.port) {
+    return defaultVal
+  }
+  if (type === Mode.vlan) {
+    return vlanpair
+  }
+  if (type === Mode.L2) {
+    return l2PortText
+  }
+}
 const openEditModal = (row) => {
   form.index = row.index
   form.id = row.id
@@ -129,6 +151,9 @@ const openEditModal = (row) => {
   form.mode = row.type
   form.pair = row.vlanpair
   visible.value = true
+}
+const handleClose = () => {
+  modalFormRef.value.clearValidate()
 }
 const save = () => {
   if (!modalFormRef.value.validate()) return
@@ -152,8 +177,8 @@ const getWanBindingData = () => {
         tableData.push({
           ...item,
           port: SsidText[item.ifname],
-          mode: item.type === Mode.port ? t('trans0755') : t('trans0756'),
-          pair: item.type === Mode.port ? defaultVal : item.vlanpair,
+          mode: ModeText[item.type],
+          pair: getPairText(item.type, item.vlanpair),
           index: i,
         })
       })
