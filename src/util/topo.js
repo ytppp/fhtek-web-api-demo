@@ -17,6 +17,7 @@ const RadioInfoStr = 'Radio Info'
 const BssInfoStr = 'BSSINFO'
 const ConnectedStaInfoStr = 'connected sta info'
 const StaMACAddrStr = 'STA MAC address'
+const MldMacStr = 'MLD_MAC'
 const UplinkRssiStr = 'uplink rssi'
 const BhStaStr = 'BH STA'
 const Upstream1905Device = 'Upstream 1905 device'
@@ -176,7 +177,7 @@ function addConnection(source) {
           r[BssInfoStr].forEach((b) => {
             if (b[ConnectedStaInfoStr]?.length) {
               b[ConnectedStaInfoStr].forEach((sta) => {
-                let mac = aliasMacAdded(sta[StaMACAddrStr])
+                let mac = aliasMacAdded(sta[MldMacStr] ? sta[MldMacStr] : sta[StaMACAddrStr])
                 if (sta[BhStaStr] === 'No') {
                   neighbors.push({
                     mac,

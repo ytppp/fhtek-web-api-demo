@@ -535,7 +535,7 @@ export default {
        *  判断与列表项src_ip、dest_ip、dest_port是否完全一致
        * 如果新增不是ALL协议
        *  判断与列表中ALL协议项两者src_ip、dest_ip、dest_port是否完全一致，一致则不允许新增
-       *  判断与列表中不是ALL协议项proto、src_ip、dest_ip、dest_port是否完全一致，一致则不允许新增
+       *  判断与列表中不是ALL协议项两者proto、src_ip、dest_ip、dest_port是否完全一致，一致则不允许新增
        */
       if (modalForm.proto === ProtocolType.ALL) {
         flag = !tempData.some(
