@@ -68,11 +68,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import * as echarts from 'echarts'
 import { genData, MediumTypeText, DeviceRoleText } from '@/util/topo'
-import { getMesh, setMesh, triggerMesh, getTopology } from '@/http/api'
+import { getMesh, setMesh, triggerMesh, getTopology, getMeshStatus } from '@/http/api'
 import { MeshRole } from '@/util/constant'
 import { successTips } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
@@ -84,8 +84,11 @@ defineOptions({
 
 const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
+const loading = inject('loading')
 const timeout = -1
+const meshStatusTimeout = 2 * 60 * 1000
 const interval = 30 * 1000
+const meshStatusInterval = 5 * 1000
 const onboarding = '1'
 const visible = ref<boolean>(false)
 const roles = [
@@ -116,25 +119,52 @@ const roleText = computed(() => {
 const meshTip = computed(() => {
   return t('trans0960')
 })
-
 const getTopoData = () => {
   getTopology().then(({ data }) => {
     const { items } = data
     drawTopo(items)
   })
 }
+const getMeshStatusData = (fn: (done: boolean) => void) => {
+  getMeshStatus().then(({ data }) => {
+    const { done } = data
+    fn(convertBooleanStatus(done) as boolean)
+  })
+}
+const doingMeshStatusHandle = () => {
+  getMeshStatusData((done) => {
+    if (done) {
+      cleanMeshStatusCountDown()
+    }
+  })
+}
+const startMeshStatus = () => {
+  loading.open({
+    tip: t('trans0576'),
+  })
+  createMeshStatusCountDown()
+}
+const doneMeshStatusHandle = () => {
+  loading.close()
+  enableIninial.value = true
+  getMeshData()
+}
+const { createCountDown: createMeshStatusCountDown, cleanCountDown: cleanMeshStatusCountDown } =
+  useCountDown(meshStatusTimeout, meshStatusInterval, doingMeshStatusHandle, doneMeshStatusHandle)
 const save = () => {
   setMesh({
     enable: convertBooleanStatus(form.enable),
     steering: convertBooleanStatus(form.enableSteering),
   }).then(() => {
     successTips()
-    getMeshData()
+    startMeshStatus()
   })
 }
 const trigger = () => {
   triggerMesh({
     onboarding,
+  }).then(() => {
+    startMeshStatus()
   })
 }
 const initChart = () => {
@@ -303,7 +333,11 @@ const doingHandle = () => {
 }
 const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle)
 onMounted(() => {
-  getMeshData()
+  getMeshStatusData((done) => {
+    if (!done) {
+      startMeshStatus()
+    }
+  })
 })
 onUnmounted(() => {
   window.removeEventListener('resize', () => {

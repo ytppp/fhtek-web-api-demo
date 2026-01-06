@@ -64,13 +64,17 @@ let macArrAdded = {}
 function findController(source) {
   return source.filter((s) => s[DeviceRoleStr] === DeviceRole.controller)[0]
 }
-function aliasMacAdded(mac) {
+function aliasMacAdded(mac, isCount = true) {
   if (macArrAdded.hasOwnProperty(mac)) {
     macArrAdded[mac] = macArrAdded[mac] + 1
   } else {
     macArrAdded[mac] = 0
   }
-  return !macArrAdded[mac] ? mac : `${mac}(${macArrAdded[mac]})`
+  if (isCount) {
+    return !macArrAdded[mac] ? mac : `${mac}(${macArrAdded[mac]})`
+  } else {
+    return mac
+  }
 }
 // 补充关系
 function addConnection(source) {
@@ -177,7 +181,7 @@ function addConnection(source) {
           r[BssInfoStr].forEach((b) => {
             if (b[ConnectedStaInfoStr]?.length) {
               b[ConnectedStaInfoStr].forEach((sta) => {
-                let mac = aliasMacAdded(sta[MldMacStr] ? sta[MldMacStr] : sta[StaMACAddrStr])
+                let mac = aliasMacAdded(sta[MldMacStr] ? sta[MldMacStr] : sta[StaMACAddrStr], false)
                 if (sta[BhStaStr] === 'No') {
                   neighbors.push({
                     mac,

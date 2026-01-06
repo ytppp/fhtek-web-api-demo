@@ -554,6 +554,9 @@ export const getMediaSharing = (): Promise<ApiResponse<any>> => {
 export const getMesh = (): Promise<ApiResponse<any>> => {
   return http.get('mesh.settings:get')
 }
+export const getMeshStatus = (): Promise<ApiResponse<any>> => {
+  return http.get('mesh.status:get', undefined, { loading: false })
+}
 export const setMesh = (params): Promise<ApiResponse<any>> => {
   return http.post('mesh.settings:edit', createData(params))
 }
