@@ -146,7 +146,6 @@ const startMeshStatus = () => {
 }
 const doneMeshStatusHandle = () => {
   loading.close()
-  enableIninial.value = true
   getMeshData()
 }
 const { createCountDown: createMeshStatusCountDown, cleanCountDown: cleanMeshStatusCountDown } =
@@ -336,6 +335,8 @@ onMounted(() => {
   getMeshStatusData((done) => {
     if (!done) {
       startMeshStatus()
+    } else {
+      getMeshData()
     }
   })
 })
