@@ -77,11 +77,13 @@ import { MeshRole } from '@/util/constant'
 import { successTips } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
 import { useCountDown } from '@/hooks/countdown'
+import { useAppStore } from '@/stores/app-store'
 
 defineOptions({
   name: 'MeshPage',
 })
 
+const appStore = useAppStore()
 const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
 const loading = inject('loading')
@@ -151,19 +153,23 @@ const doneMeshStatusHandle = () => {
 const { createCountDown: createMeshStatusCountDown, cleanCountDown: cleanMeshStatusCountDown } =
   useCountDown(meshStatusTimeout, meshStatusInterval, doingMeshStatusHandle, doneMeshStatusHandle)
 const save = () => {
+  const enable = convertBooleanStatus(form.enable)
+  const steering = convertBooleanStatus(form.enableSteering)
   setMesh({
-    enable: convertBooleanStatus(form.enable),
-    steering: convertBooleanStatus(form.enableSteering),
+    enable,
+    steering,
   }).then(() => {
     successTips()
-    startMeshStatus()
+    if (appStore.isWifiV7) {
+      startMeshStatus()
+    } else if (appStore.isWifiV6) {
+      getTopoData()
+    }
   })
 }
 const trigger = () => {
   triggerMesh({
     onboarding,
-  }).then(() => {
-    startMeshStatus()
   })
 }
 const initChart = () => {
@@ -332,13 +338,17 @@ const doingHandle = () => {
 }
 const { createCountDown, cleanCountDown } = useCountDown(timeout, interval, doingHandle)
 onMounted(() => {
-  getMeshStatusData((done) => {
-    if (!done) {
-      startMeshStatus()
-    } else {
-      getMeshData()
-    }
-  })
+  if (appStore.isWifiV7) {
+    getMeshStatusData((done) => {
+      if (!done) {
+        startMeshStatus()
+      } else {
+        getMeshData()
+      }
+    })
+  } else if (appStore.isWifiV6) {
+    getTopoData()
+  }
 })
 onUnmounted(() => {
   window.removeEventListener('resize', () => {

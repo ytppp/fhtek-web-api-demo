@@ -7,7 +7,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import path from 'path'
 
 let CUSTOMER_ID = 'demo'
-let WIFI_VERSION = 'v6'
+let WIFI_VERSION = 'v7'
 if (process.env.CUSTOMER_ID) {
   CUSTOMER_ID = process.env.CUSTOMER_ID
 }
