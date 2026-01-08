@@ -6,7 +6,8 @@
     <div class="page__content">
       <fh-form class="form form--padding" ref="wifiFormRef" :model="wifi" :rules="rules">
         <fh-form-item :label="format($t('trans0027'), [$t('trans0049')])">
-          <fh-switch @change="switchEnable" v-model="wifi.enable"> </fh-switch>
+          <fh-switch @change="switchEnable" v-model="wifi.enable" :disabled="enableMesh">
+          </fh-switch>
         </fh-form-item>
         <template v-if="wifi.enable">
           <fh-form-item :label="$t('trans0508')">
@@ -39,7 +40,7 @@
 import { reactive, ref, inject, onMounted, computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format, isValidInteger, successTips } from '@/util/tool'
-import { getWifi2gAdv, setWifi2gAdv } from '@/http/api'
+import { getWifi2gAdv, setWifi2gAdv, getMesh } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { useAppStore } from '@/stores/app-store'
 
@@ -87,6 +88,7 @@ const { t } = useI18n()
 const appStore = useAppStore()
 const channelCurrent = ref('0')
 const wifiEnableInitial = ref(false)
+const enableMesh = ref(false)
 const wifiFormRef = useTemplateRef('wifiFormRef')
 const b24gModeInit = [
   {
@@ -348,6 +350,11 @@ const save = () => {
     setWifi2gAdvData(data)
   }
 }
+const getMeshData = () => {
+  getMesh().then(({ data }) => {
+    enableMesh.value = convertBooleanStatus(data.enable) as boolean
+  })
+}
 const setWifi2gAdvData = (data) => {
   setWifi2gAdv(data).then(() => {
     successTips()
@@ -356,5 +363,6 @@ const setWifi2gAdvData = (data) => {
 }
 onMounted(() => {
   getWifi2gData()
+  getMeshData()
 })
 </script>

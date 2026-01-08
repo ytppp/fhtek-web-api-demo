@@ -22,7 +22,7 @@
           <fh-input v-model="wifi.ssid"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0796')">
-          <fh-switch v-model="wifi.enable"> </fh-switch>
+          <fh-switch v-model="wifi.enable" :disabled="wifiDisabled"> </fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0797')">
           <fh-switch v-model="wifi.hide"> </fh-switch>
@@ -89,7 +89,7 @@ import {
   successTips,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
-import { getWifi5g, setWifi5g, getWps, setWps, getWifi5gAdv, getWifiMlo } from '@/http/api'
+import { getWifi5g, setWifi5g, getWps, setWps, getWifi5gAdv, getWifiMlo, getMesh } from '@/http/api'
 import {
   StartAndStop,
   Encrypts,
@@ -118,6 +118,7 @@ const ssidOpts = reactive([])
 const ssidList = reactive([])
 const enableMlo = ref(false)
 const wifiEnable = ref(false)
+const enableMesh = ref(false)
 const wifi = reactive({
   id: '',
   ssid: '',
@@ -227,6 +228,12 @@ const notDisabledProp = computed(() => {
 })
 const formDisabled = computed(() => {
   return !wifiEnable.value || (isSsidac1.value && mloDisabled.value)
+})
+const wifiDisabled = computed(() => {
+  if (formDisabled.value) {
+    return true
+  }
+  return isSsidac1.value && enableMesh.value
 })
 const mloDisabled = computed(() => {
   if (appStore.isWifiV7) {
@@ -343,8 +350,14 @@ const getWifiMloData = () => {
     enableMlo.value = convertBooleanStatus(data.enable) as boolean
   })
 }
+const getMeshData = () => {
+  getMesh().then(({ data }) => {
+    enableMesh.value = convertBooleanStatus(data.enable) as boolean
+  })
+}
 onMounted(() => {
   getWifiData()
   getWifiMloData()
+  getMeshData()
 })
 </script>

@@ -22,7 +22,7 @@
           <fh-input v-model="wifi.ssid"> </fh-input>
         </fh-form-item>
         <fh-form-item :label="$t('trans0796')">
-          <fh-switch v-model="wifi.enable"> </fh-switch>
+          <fh-switch v-model="wifi.enable" :disabled="wifiDisabled"> </fh-switch>
         </fh-form-item>
         <fh-form-item :label="$t('trans0797')">
           <fh-switch v-model="wifi.hide"> </fh-switch>
@@ -89,7 +89,15 @@ import {
   successTips,
 } from '@/util/tool'
 import { useDataClean } from '@/hooks/data-clean'
-import { getWifi2g, setWifi2g, getWps, setWps, getMesh, getWifi2gAdv, getWifiMlo } from '@/http/api'
+import {
+  getWifi2g,
+  setWifi2g,
+  getWps,
+  setWps,
+  getMesh,
+  getWifi2gAdv,
+  getWifiMlo,
+} from '@/http/api'
 import {
   StartAndStop,
   Encrypts,
@@ -112,6 +120,7 @@ const { t } = useI18n()
 const { convertBooleanStatus, defaultVal } = useDataClean()
 const appStore = useAppStore()
 const wifiFormRef = useTemplateRef('wifiFormRef')
+const enableMesh = ref(false)
 const enableSteering = ref(false)
 const timeout = 2 * 60 * 1000
 const interval = 5000
@@ -229,6 +238,12 @@ const isEnableWps = computed(() => {
 const formDisabled = computed(() => {
   return !wifiEnable.value || (isSsid1.value && (enableSteering.value || mloDisabled.value))
 })
+const wifiDisabled = computed(() => {
+  if (formDisabled.value) {
+    return true
+  }
+  return isSsid1.value && enableMesh.value
+})
 const mloDisabled = computed(() => {
   if (appStore.isWifiV7) {
     return enableMlo.value
@@ -341,8 +356,8 @@ const save = () => {
 }
 const getMeshData = () => {
   getMesh().then(({ data }) => {
-    enableSteering.value = (convertBooleanStatus(data.enable) &&
-      convertBooleanStatus(data.steering)) as boolean
+    enableMesh.value = convertBooleanStatus(data.enable) as boolean
+    enableSteering.value = convertBooleanStatus(data.steering) as boolean
   })
 }
 const getWifiMloData = () => {
