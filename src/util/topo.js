@@ -181,7 +181,7 @@ function addConnection(source) {
           r[BssInfoStr].forEach((b) => {
             if (b[ConnectedStaInfoStr]?.length) {
               b[ConnectedStaInfoStr].forEach((sta) => {
-                let mac = aliasMacAdded(sta[MldMacStr] ? sta[MldMacStr] : sta[StaMACAddrStr], false)
+                let mac = aliasMacAdded(sta[MldMacStr] ? sta[MldMacStr] : sta[StaMACAddrStr])
                 if (sta[BhStaStr] === 'No') {
                   neighbors.push({
                     mac,
