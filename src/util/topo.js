@@ -41,13 +41,13 @@ const OnlineStatus = {
 const MediumType = {
   b5g: '5G',
   b24g: '2.4G',
-  allWired: '2.4G/5G',
+  allWireless: '2.4G/5G',
   ethernet: 'Ethernet',
 }
 const MediumTypeText = {
   [MediumType.b5g]: 'trans0050',
   [MediumType.b24g]: 'trans0049',
-  [MediumType.allWired]: 'trans0051',
+  [MediumType.allWireless]: 'trans0051',
   [MediumType.ethernet]: 'trans0494',
 }
 const Color = {
@@ -126,11 +126,13 @@ function addConnection(source) {
     //     }
     //   })
     // }
+    // 节点
     if (s[Upstream1905Device]) {
       const neighborNode = source.find((ss) => ss[AlMacStr] === s[Upstream1905Device])
       if (!neighborNode) {
         return
       }
+      // controller 节点
       if (s[DeviceRoleStr] === DeviceRole.controller) {
         // 从邻居结点取自己的信息
         const self = neighborNode[BhInfoStr].filter(
@@ -145,6 +147,7 @@ function addConnection(source) {
           })
         }
       }
+      // agent 节点
       if (s[DeviceRoleStr] === DeviceRole.agent) {
         // 从自身的"BH Info"获取邻居结点的信息
         const self = s[BhInfoStr].filter(
@@ -160,6 +163,7 @@ function addConnection(source) {
         }
       }
     }
+    // 有线设备
     if (s[OtherClientsInfoStr]?.length) {
       s[OtherClientsInfoStr].forEach((n) => {
         let mac = aliasMacAdded(n[ClientAddrStr])
@@ -177,6 +181,7 @@ function addConnection(source) {
         })
       })
     }
+    // 无线设备
     if (s[RadioInfoStr]?.length) {
       s[RadioInfoStr].forEach((r) => {
         if (r[BssInfoStr]?.length) {

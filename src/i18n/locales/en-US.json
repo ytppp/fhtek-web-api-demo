@@ -49,7 +49,7 @@
   "trans0048": "SSID will be merged into: %s,please reconnect WiFi after apply",
   "trans0049": "2.4G",
   "trans0050": "5G",
-  "trans0051": "2.4G/5G",
+  "trans0051": "MLO(2.4G&5G)",
   "trans0052": "%s cannot be empty",
   "trans0053": "Username",
   "trans0054": "Disable",
