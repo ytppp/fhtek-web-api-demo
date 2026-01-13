@@ -41,11 +41,13 @@ const OnlineStatus = {
 const MediumType = {
   b5g: '5G',
   b24g: '2.4G',
+  allWired: '2.4G/5G',
   ethernet: 'Ethernet',
 }
 const MediumTypeText = {
   [MediumType.b5g]: 'trans0050',
   [MediumType.b24g]: 'trans0049',
+  [MediumType.allWired]: 'trans0051',
   [MediumType.ethernet]: 'trans0494',
 }
 const Color = {
