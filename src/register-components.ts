@@ -8,6 +8,7 @@ import FhForm from './components/form/form.vue'
 import FhFormItem from './components/form-item/form-item.vue'
 import FhSwitch from './components/switch/switch.vue'
 import FhSelect from './components/select/select.vue'
+import FhCascader from './components/cascader/cascader.vue'
 import FhModal from './components/modal/modal.vue'
 import FhLayout from './components/layout/layout.vue'
 import FhHeader from './components/header/header.vue'
@@ -45,6 +46,7 @@ const registerComponents = (app: App) => {
   app.component('FhFormItem', FhFormItem)
   app.component('FhSwitch', FhSwitch)
   app.component('FhSelect', FhSelect)
+  app.component('FhCascader', FhCascader)
   app.component('FhModal', FhModal)
   app.component('FhLayout', FhLayout)
   app.component('FhHeader', FhHeader)

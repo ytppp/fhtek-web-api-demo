@@ -758,3 +758,7 @@ export const getWifiMlo = (): Promise<ApiResponse<any>> => {
 export const setWifiMlo = (params): Promise<ApiResponse<any>> => {
   return http.post('wifi.mlo:set', createData(params), { timeout: 90000 })
 }
+
+export const getUsbDirs = (params): Promise<ApiResponse<any>> => {
+  return http.post('getUsbDir', createData(params))
+}

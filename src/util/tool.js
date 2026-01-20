@@ -59,6 +59,53 @@ export function isObjArrHasVal(arr, val, childNodeName = 'children', keyName = '
   })
 }
 
+/**
+ * 在树形结构中查找包含指定节点值的唯一节点（找到即返回）
+ * @param {Array|Object} tree - 树形结构数据（数组或单个节点对象）
+ * @param {string|number} target - 要查找的目标值
+ * @param {string} [key='id'] - 节点中用于匹配的属性名（默认id）
+ * @param {string} [childrenKey='children'] - 子节点属性名（默认children）
+ * @returns {Object|null} 找到的节点对象，未找到则返回null
+ */
+export function findUniqueNode(tree, target, key = 'id', childrenKey = 'children') {
+  // 递归遍历函数，找到目标节点立即返回
+  function traverse(node) {
+    // 跳过空节点
+    if (!node) return null
+
+    // 找到目标节点，直接返回
+    if (node[key] === target) {
+      return node
+    }
+
+    // 如果有子节点，递归遍历子节点
+    if (node[childrenKey] && Array.isArray(node[childrenKey])) {
+      for (const child of node[childrenKey]) {
+        const foundNode = traverse(child)
+        // 子节点中找到目标，立即返回，终止后续遍历
+        if (foundNode) return foundNode
+      }
+    }
+
+    // 当前节点及子节点都未找到，返回null
+    return null
+  }
+
+  // 处理树形结构：如果是数组（多根节点），遍历每个根节点
+  if (Array.isArray(tree)) {
+    for (const rootNode of tree) {
+      const foundNode = traverse(rootNode)
+      if (foundNode) return foundNode
+    }
+  } else {
+    // 如果是单个节点对象，直接遍历
+    return traverse(tree)
+  }
+
+  // 整个树形结构都未找到目标节点
+  return null
+}
+
 export function isMobileDevice(width = 768) {
   // let isMobileUserAgent = false;
   // const userAgent = navigator.userAgent;

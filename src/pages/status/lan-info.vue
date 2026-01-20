@@ -59,7 +59,7 @@ const lanListColumns = ref([])
 const interfaceColumns = reactive([
   {
     key: 'interface',
-    title: t('trans0140'),
+    title: t('trans0961'),
   },
   {
     key: 'receive',
