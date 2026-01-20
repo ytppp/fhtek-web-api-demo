@@ -7,18 +7,18 @@
       }"
       :style="{ paddingLeft: `${option.level * 10 + 10}px` }"
     >
+      <div class="cascader-item__text" @click.stop="selectItem">{{ option.text }}</div>
+      <fh-icon
+        class="select__caret input__icon"
+        name="icon-loading"
+        v-if="option.loading && !option.isCollapsed"
+      ></fh-icon>
       <fh-icon
         v-if="option.children?.length || option.isSonDict"
         class="cascader__caret input__icon"
         :class="!option.loading && option.isCollapsed ? '' : 'is-reverse'"
         name="icon-down"
         @click.stop="toggleCollapse"
-      ></fh-icon>
-      <div class="cascader-item__text" @click.stop="selectItem">{{ option.text }}</div>
-      <fh-icon
-        class="select__caret input__icon"
-        name="icon-loading"
-        v-if="option.loading && !option.isCollapsed"
       ></fh-icon>
     </div>
     <ul class="cascader-item__children" v-if="option.children?.length" v-show="!option.isCollapsed">
@@ -98,7 +98,6 @@ const handleSelect = (option) => {
   }
   .cascader-item__text {
     flex: 1;
-    padding-left: 5px;
   }
 }
 </style>

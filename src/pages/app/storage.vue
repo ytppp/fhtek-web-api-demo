@@ -30,13 +30,13 @@
           </fh-form-item>
           <fh-form-item :label="$t('trans0814')" prop="path">
             <!-- <fh-input v-model="clientForm.path"></fh-input> -->
-            <fh-cascader v-model="clientForm.path" :request="getUsbDirs"></fh-cascader>
             <!-- <template #extra>
               <ul style="list-style: disc">
                 <li>{{ $t('trans0818') }}</li>
                 <li>{{ $t('trans0855') }}</li>
               </ul>
             </template> -->
+            <fh-cascader v-model="clientForm.path" :request="getUsbDirs"></fh-cascader>
           </fh-form-item>
           <fh-form-item class="form__submit-btn">
             <fh-button @click="download" block>

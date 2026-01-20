@@ -15,13 +15,14 @@
           <fh-switch v-model="form.enable" />
         </fh-form-item>
         <fh-form-item :label="$t('trans0825')" prop="sharingPath" v-if="form.enable">
-          <fh-input v-model="form.sharingPath"></fh-input>
+          <!-- <fh-input v-model="form.sharingPath"></fh-input>
           <template #extra>
             <ul style="list-style: disc">
               <li>{{ $t('trans0826') }}</li>
               <li>{{ $t('trans0855') }}</li>
             </ul>
-          </template>
+          </template> -->
+          <fh-cascader v-model="form.sharingPath" :request="getUsbDirs"></fh-cascader>
         </fh-form-item>
         <fh-form-item class="form__submit-btn">
           <fh-button @click="save" block>
@@ -39,7 +40,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getUsb, editMediaSharing, getMediaSharing } from '@/http/api'
+import { getUsb, editMediaSharing, getMediaSharing, getUsbDirs } from '@/http/api'
 import { useDataClean } from '@/hooks/data-clean'
 import { isValidUnixPath, successTips, isInvalidSymbol, invalidChar } from '@/util/tool'
 
