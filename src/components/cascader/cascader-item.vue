@@ -53,7 +53,6 @@ const props = defineProps({
 })
 
 const isSelected = (option) => {
-  console.log(props.selected, option.value)
   return props.selected === option.value
 }
 const emit = defineEmits(['select', 'toggle'])

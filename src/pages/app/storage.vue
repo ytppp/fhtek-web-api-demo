@@ -355,7 +355,7 @@ const getDownloadList = () => {
       clientForm.port = tableData[index].port
       clientForm.username = tableData[index].username
       clientForm.password = tableData[index].password
-      clientForm.path = tableData[index].path
+      clientForm.path = '' // tableData[index].path
     }
   })
 }

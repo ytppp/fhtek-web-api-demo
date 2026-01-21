@@ -49,19 +49,9 @@
 </template>
 
 <script setup>
-import {
-  computed,
-  inject,
-  watch,
-  nextTick,
-  reactive,
-  ref,
-  onMounted,
-  useSlots,
-  useTemplateRef,
-} from 'vue'
+import { computed, inject, watch, ref, onMounted, useSlots, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { scrollTo, findUniqueNode } from '@/util/tool'
+import { findUniqueNode } from '@/util/tool'
 import { computePosition, flip, shift, offset } from '@floating-ui/vue'
 import { useDataClean } from '@/hooks/data-clean'
 import CascaderItem from './cascader-item.vue'
@@ -189,7 +179,20 @@ const cleanData = (data, name = '') => {
     item.text = item.name
   })
   if (!name) {
-    list.value = data
+    list.value = [
+      {
+        value: '/',
+        text: '/',
+        level: 0,
+        path: '/',
+        name: '/',
+        hasSonDict: '0',
+        isSonDict: false,
+        isCollapsed: false,
+        loading: false,
+      }, // 根目录
+      ...data,
+    ]
   } else {
     thisItem.children = data
   }
