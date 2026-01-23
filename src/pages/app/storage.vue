@@ -164,6 +164,10 @@ const clientFormRules = {
       rule: (value) => value,
       message: t('trans0004'),
     },
+    {
+      rule: (value) => !/\s/.test(value),
+      message: format(t('trans0566'), [t('trans0812')]),
+    },
   ],
   port: [
     {
@@ -197,19 +201,23 @@ const clientFormRules = {
   ],
   path: [
     {
-      rule: (value) => {
-        if (!value) return true
-        return !isInvalidSymbol(value)
-      },
-      message: t('trans0957').format(t('trans0814'), invalidChar),
+      rule: (value) => value,
+      message: format(t('trans0677'), [t('trans0814')]),
     },
-    {
-      rule: (value) => {
-        if (!value) return true
-        return isValidUnixPath(value)
-      },
-      message: t('trans0830'),
-    },
+    // {
+    //   rule: (value) => {
+    //     if (!value) return true
+    //     return !isInvalidSymbol(value)
+    //   },
+    //   message: t('trans0957').format(t('trans0814'), invalidChar),
+    // },
+    // {
+    //   rule: (value) => {
+    //     if (!value) return true
+    //     return isValidUnixPath(value)
+    //   },
+    //   message: t('trans0830'),
+    // },
   ],
 }
 const serverFormRules = {
