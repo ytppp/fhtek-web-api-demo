@@ -346,6 +346,9 @@ const save = () => {
   }
 }
 const getWifiMloData = () => {
+  if (!appStore.isWifiV7) {
+    return
+  }
   getWifiMlo().then(({ data }) => {
     enableMlo.value = convertBooleanStatus(data.enable) as boolean
   })
