@@ -163,7 +163,7 @@ const save = () => {
     if (appStore.isWifiV7) {
       startMeshStatus()
     } else if (appStore.isWifiV6) {
-      getTopoData()
+      getMeshData()
     }
   })
 }
@@ -347,7 +347,7 @@ onMounted(() => {
       }
     })
   } else if (appStore.isWifiV6) {
-    getTopoData()
+    getMeshData()
   }
 })
 onUnmounted(() => {

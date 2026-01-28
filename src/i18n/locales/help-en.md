@@ -111,13 +111,13 @@
 
 - Static Route: Add or delete static route rules, include setup destination network address,subnet mask,gateway address and interface of the rule. at least one of 'gateway address' or 'interface' should be choosed.
 
-### 2.7 Mesh
+### 2.7 Easy Mesh
 
 - Activate or not.
-- Set Mesh Device work Role.
+- Set Easy Mesh Device work Role.
 - Display current device Role.
 - Enable or Disable band steering.
-- Trigger easyMesh on-board.
+- Trigger Easy Mesh on-board.
 
 ### 2.8 Vpn
 
