@@ -375,6 +375,10 @@ const menusInitial = [
           [customers.fhtek]: config,
           [customers.totalplay]: strategyA,
         },
+        config: {
+          ...config,
+          wifiVersion: [WifiVersion.v7],
+        },
       },
       {
         url: '/app/media-sharing',
