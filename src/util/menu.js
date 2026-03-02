@@ -371,13 +371,18 @@ const menusInitial = [
         url: '/app/samba',
         text: 'trans0822',
         customers: {
-          [customers.demo]: config,
-          [customers.fhtek]: config,
-          [customers.totalplay]: strategyA,
-        },
-        config: {
-          ...config,
-          wifiVersion: [WifiVersion.v7],
+          [customers.demo]: {
+            ...config,
+            wifiVersion: [WifiVersion.v7],
+          },
+          [customers.fhtek]: {
+            ...config,
+            wifiVersion: [WifiVersion.v7],
+          },
+          [customers.totalplay]: {
+            ...strategyA,
+            wifiVersion: [WifiVersion.v7],
+          },
         },
       },
       {
