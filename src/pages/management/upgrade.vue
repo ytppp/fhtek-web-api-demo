@@ -90,10 +90,10 @@ export default {
     beforeUpload(files) {
       this.isHasfile = files.length > 0
       const isValidFileName = !!files.find((file) => {
-        return true // file.name.split('_')[0] === this.uploadFileName // eg: file name: FTG6214X-B4I_V1.0.0-rc.1.bin
+        return !/\s/.test(file.name) // file.name.split('_')[0] === this.uploadFileName // eg: file name: FTG6214X-B4I_V1.0.0-rc.1.bin
       })
       if (!isValidFileName) {
-        this.$toast({ text: this.$t('trans0366') })
+        this.$toast(this.$t('trans0366'), 3000, 'error')
       }
       return isValidFileName
     },

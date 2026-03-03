@@ -38,6 +38,7 @@
             dragable
             ref="uploader"
             :accept="accept"
+            :before-upload="beforeUpload"
             :on-error="handleUploadError"
             :on-success="handleUploadsuccess"
             :on-cancel="handleUploadcancel"
@@ -91,6 +92,7 @@ const toast = inject('toast')
 const uploader = useTemplateRef('uploader')
 const lanIp = ref('')
 const appStore = useAppStore()
+const isHasfile = ref(false)
 
 function createDoingHandle(checkStatus: () => Promise<string>, cleanCountDown: () => void) {
   return () => {
@@ -210,16 +212,16 @@ const handleUploadsuccess = () => {
 const handleUploadcancel = () => {
   saveBtnDisabled.value = false
 }
-// const beforeUpload = (files) => {
-//   this.isHasfile = files.length > 0
-//   const isValidFileName = !!files.find((file) => {
-//     return true // file.name.split('_')[0] === this.uploadFileName // eg: file name: FTG6214X-B4I_V1.0.0-rc.1.bin
-//   })
-//   if (!isValidFileName) {
-//     this.$toast({ text: this.$t('trans0366') })
-//   }
-//   return isValidFileName
-// }
+const beforeUpload = (files) => {
+  isHasfile.value = files.length > 0
+  const isValidFileName = !!files.find((file) => {
+    return !/\s/.test(file.name) // file.name.split('_')[0] === this.uploadFileName // eg: file name: FTG6214X-B4I_V1.0.0-rc.1.bin
+  })
+  if (!isValidFileName) {
+    toast(t('trans0366'), 3000, 'error')
+  }
+  return isValidFileName
+}
 const save = () => {
   if (!uploader.value.files.length) {
     toast(t('trans0222'), 3000, 'error')
