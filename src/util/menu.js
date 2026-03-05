@@ -388,7 +388,20 @@ const menusInitial = [
       {
         url: '/app/media-sharing',
         text: 'trans0823',
-        config,
+        customers: {
+          [customers.demo]: {
+            ...config,
+            wifiVersion: [WifiVersion.v7],
+          },
+          [customers.fhtek]: {
+            ...config,
+            wifiVersion: [WifiVersion.v7],
+          },
+          [customers.totalplay]: {
+            ...config,
+            wifiVersion: [WifiVersion.v7],
+          },
+        },
       },
       {
         url: '/network/voip',

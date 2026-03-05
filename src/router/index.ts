@@ -247,6 +247,7 @@ export const router = createRouter({
       name: 'firewall',
       component: firewall,
     },
+    
     {
       path: '/security/url-filter',
       name: 'urlFilter',
