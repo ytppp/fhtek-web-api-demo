@@ -30,7 +30,7 @@ const isLine1Active = ref(false)
 const isLine2Active = ref(false)
 const VoipConnetStatusText = {
   [VoipConnetStatus.idle]: t('trans0807'),
-  [VoipConnetStatus.connecting]: t('trans0853'),
+  [VoipConnetStatus.connecting]: t('trans0962'),
   [VoipConnetStatus.ringing]: t('trans0905'),
   [VoipConnetStatus.ringback]: t('trans0859'),
 }
