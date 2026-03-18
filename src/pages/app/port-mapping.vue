@@ -224,7 +224,7 @@ export default {
           },
           {
             rule: (value) => isValidVal(value, 0, 32),
-            message: this.$t('trans0453'),
+            message: this.$t('trans0566').format(this.$t('trans0425')),
           },
           {
             rule: (value) => {
@@ -269,7 +269,7 @@ export default {
           },
           {
             rule: (value) => isValidInteger(value, 1, 65535),
-            message: this.$t('trans0452'),
+            message: this.$t('trans0566').format(this.$t('trans0273')),
           },
           {
             rule: (value) => {
@@ -293,7 +293,7 @@ export default {
           },
           {
             rule: (value) => isIP(value),
-            message: this.$t('trans0397'),
+            message: this.$t('trans0566').format(this.$t('trans0449')),
           },
         ],
         intPort: [
@@ -303,7 +303,7 @@ export default {
           },
           {
             rule: (value) => isValidInteger(value, 1, 65535),
-            message: this.$t('trans0452'),
+            message: this.$t('trans0566').format(this.$t('trans0274')),
           },
         ],
       },
